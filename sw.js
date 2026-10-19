@@ -1,7 +1,7 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-const C = 'kyvo-mvp-v7';
+const C = 'kyvo-mvp-v7-1';
 const A = [
-  './', 'index.html', 'app.js', 'manifest.json',
+  './', 'index.html', 'app.js', 'chart.js', 'profile.js', 'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   'data/x_viral.json', 'data/smart_money.json', 'data/leaderboard.json'

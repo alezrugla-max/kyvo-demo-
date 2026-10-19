@@ -1,849 +1,4211 @@
 {
-  "updated_at": "2026-10-19T17:42:11Z",
-  "updated_at_warsaw": "2026-10-19T19:42:11+02:00",
-  "source": "Public Solana RPC (getSignaturesForAddress/getTransaction) + DexScreener token metadata. No private keys.",
-  "note": "Realized PnL is approximate FIFO over recent public RPC signatures only. Missing values shown as —.",
-  "wallets_count": 24,
-  "leaders": [
-    {
-      "id": "appiesol_",
-      "name": "appiesol_",
-      "handle": null,
-      "address": "DieowDJ137xDRyCDn3YZYfAe4qzeGmdQJvryyqdWhtuc",
-      "source": "https://www.solanatracker.io/wallet/DieowDJ137xDRyCDn3YZYfAe4qzeGmdQJvryyqdWhtuc",
-      "source_note": "Public Solana Tracker title labels this wallet \"appiesol_\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": -4.12,
-          "trades": 2,
-          "wins": 1,
-          "win_rate": 0.5,
-          "note": "Przybliżone FIFO z ostatnich sygnatur publicznych RPC — nie pełna historia."
-        },
-        "7d": {
-          "realized_pnl_usd": -4.12,
-          "trades": 2,
-          "wins": 1,
-          "win_rate": 0.5,
-          "note": "Przybliżone FIFO z ostatnich sygnatur publicznych RPC — nie pełna historia."
-        },
-        "30d": {
-          "realized_pnl_usd": -4.12,
-          "trades": 2,
-          "wins": 1,
-          "win_rate": 0.5,
-          "note": "Przybliżone FIFO z ostatnich sygnatur publicznych RPC — nie pełna historia."
-        }
-      },
-      "recent_buys_1d": 3,
-      "events_scanned": 8
+ "updated_at": "2026-10-19T19:50:58Z",
+ "updated_at_warsaw": "2026-10-19T21:50:58+02:00",
+ "source": "Public Solana RPC + DexScreener; SOL priced via Binance SOLUSDT 1h (data-api.binance.vision). No keys.",
+ "note": "Realized PnL = FIFO on observed swaps (≤300 sigs or 30d per wallet). Sells whose buys happened before the window are excluded. SOL legs priced with hourly historical SOL/USD. Approximate.",
+ "wallets_count": 24,
+ "wallets_with_pnl": 13,
+ "params": {
+  "max_sigs": 300,
+  "days": 30
+ },
+ "leaders": [
+  {
+   "id": "quanterty",
+   "name": "Quanterty",
+   "handle": "Quanterty",
+   "address": "8f39XhhZoRD8sYb6K5K9N7iSHXkL7BDmFFQNDF3TtsEr",
+   "source": "https://www.solanatracker.io/wallet/8f39XhhZoRD8sYb6K5K9N7iSHXkL7BDmFFQNDF3TtsEr",
+   "source_note": "Alez v7 brief: publicly attributed Quanterty smart wallet",
+   "avatar": "data/avatars/quanterty.jpg",
+   "x_url": "https://x.com/Quanterty",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
     },
-    {
-      "id": "bastille",
-      "name": "Bastille",
-      "handle": null,
-      "address": "3kebnKw7cPdSkLRfiMEALyZJGZ4wdiSRvmoN4rD1yPzV",
-      "source": "https://www.solanatracker.io/wallet/3kebnKw7cPdSkLRfiMEALyZJGZ4wdiSRvmoN4rD1yPzV",
-      "source_note": "Public Solana Tracker title labels this wallet \"Bastille\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 10,
-      "events_scanned": 28
+    "7d": {
+     "realized_pnl_usd": 3928.63,
+     "trades": 1,
+     "wins": 1,
+     "win_rate": 1.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
     },
-    {
-      "id": "bobby",
-      "name": "Bobby",
-      "handle": null,
-      "address": "DBmRHNbSsVX8F6NyVaaaiuGdwo1aYGawiy3jfNcvXYSC",
-      "source": "https://www.solanatracker.io/wallet/DBmRHNbSsVX8F6NyVaaaiuGdwo1aYGawiy3jfNcvXYSC",
-      "source_note": "Public Solana Tracker title labels this wallet \"Bobby\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 10,
-      "events_scanned": 28
-    },
-    {
-      "id": "arnz",
-      "name": "arnz",
-      "handle": null,
-      "address": "2G6CNJqfvGP3KWZXtV8rQHra3kxGK28nvzT6TjyWNtiJ",
-      "source": "https://www.solanatracker.io/wallet/2G6CNJqfvGP3KWZXtV8rQHra3kxGK28nvzT6TjyWNtiJ",
-      "source_note": "Public Solana Tracker title labels this wallet \"arnz\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 11,
-      "events_scanned": 28
-    },
-    {
-      "id": "achi",
-      "name": "Achi",
-      "handle": null,
-      "address": "FPx2BavA7J2C7Nz6WpoPL9f5kDAKjxLb38PHNZMoxCra",
-      "source": "https://www.solanatracker.io/wallet/FPx2BavA7J2C7Nz6WpoPL9f5kDAKjxLb38PHNZMoxCra",
-      "source_note": "Public Solana Tracker title labels this wallet \"Achi\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 10,
-      "events_scanned": 27
-    },
-    {
-      "id": "aroa",
-      "name": "Aroa",
-      "handle": null,
-      "address": "Aen6LKc7sGVPTyjMd5cu9B9XVjL7m9pnvAiP2ZNJC4GZ",
-      "source": "https://www.solanatracker.io/wallet/Aen6LKc7sGVPTyjMd5cu9B9XVjL7m9pnvAiP2ZNJC4GZ",
-      "source_note": "Public Solana Tracker title labels this wallet \"Aroa\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 9,
-      "events_scanned": 27
-    },
-    {
-      "id": "brox",
-      "name": "Brox",
-      "handle": null,
-      "address": "7VBTpiiEjkwRbRGHJFUz6o5fWuhPFtAmy8JGhNqwHNnn",
-      "source": "https://www.solanatracker.io/wallet/7VBTpiiEjkwRbRGHJFUz6o5fWuhPFtAmy8JGhNqwHNnn",
-      "source_note": "Public Solana Tracker title labels this wallet \"Brox\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 9,
-      "events_scanned": 26
-    },
-    {
-      "id": "bilo",
-      "name": "bilo",
-      "handle": null,
-      "address": "7sA5em1nTKmLvGm8H85cpgA9hM9YvCoPp729mwe6akhh",
-      "source": "https://www.solanatracker.io/wallet/7sA5em1nTKmLvGm8H85cpgA9hM9YvCoPp729mwe6akhh",
-      "source_note": "Public Solana Tracker title labels this wallet \"bilo\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 8,
-      "events_scanned": 26
-    },
-    {
-      "id": "bradjae",
-      "name": "bradjae",
-      "handle": null,
-      "address": "8Dg8J8xSeKqtBvL1nBe9waX348w5FSFjVnQaRLMpf7eV",
-      "source": "https://www.solanatracker.io/wallet/8Dg8J8xSeKqtBvL1nBe9waX348w5FSFjVnQaRLMpf7eV",
-      "source_note": "Public Solana Tracker title labels this wallet \"bradjae\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 11,
-      "events_scanned": 26
-    },
-    {
-      "id": "affu",
-      "name": "Affu",
-      "handle": null,
-      "address": "BjNueAZDxLpwHnpMVZrB5b8DTTBHdmXtg1ZaRPCJ1yYJ",
-      "source": "https://www.solanatracker.io/wallet/BjNueAZDxLpwHnpMVZrB5b8DTTBHdmXtg1ZaRPCJ1yYJ",
-      "source_note": "Public Solana Tracker title labels this wallet \"Affu\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 11,
-      "events_scanned": 26
-    },
-    {
-      "id": "ban",
-      "name": "Ban",
-      "handle": null,
-      "address": "8DGbkGgQewL9mx4aXzZCUChr7hBVXvPK9fYqSqc7Ajpn",
-      "source": "https://www.solanatracker.io/wallet/8DGbkGgQewL9mx4aXzZCUChr7hBVXvPK9fYqSqc7Ajpn",
-      "source_note": "Public Solana Tracker title labels this wallet \"Ban\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 9,
-      "events_scanned": 23
-    },
-    {
-      "id": "absol",
-      "name": "Absol",
-      "handle": null,
-      "address": "BXNiM7pqt9Ld3b2Hc8iT3mA5bSwoe9CRrtkSUs15SLWN",
-      "source": "https://www.solanatracker.io/wallet/BXNiM7pqt9Ld3b2Hc8iT3mA5bSwoe9CRrtkSUs15SLWN",
-      "source_note": "Public Solana Tracker title labels this wallet \"Absol\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 9,
-      "events_scanned": 21
-    },
-    {
-      "id": "orangie",
-      "name": "orangie",
-      "handle": "orangie",
-      "address": "83b2LMf12aLec92kur3duRA8VvUkLaXUtML31aCcZNCM",
-      "source": "https://www.solanatracker.io/wallet/83b2LMf12aLec92kur3duRA8VvUkLaXUtML31aCcZNCM",
-      "source_note": "Public Solana Tracker title labels this wallet \"orangie\"; address also observed on public kolscan.io feed",
-      "avatar": "data/avatars/orangie.jpg",
-      "x_url": "https://x.com/orangie",
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 20,
-      "events_scanned": 20
-    },
-    {
-      "id": "boomer",
-      "name": "Boomer",
-      "handle": null,
-      "address": "4JyenL2p8eQZAQuRS8QAASy7TzEcqAeKGha6bhiJXudh",
-      "source": "https://www.solanatracker.io/wallet/4JyenL2p8eQZAQuRS8QAASy7TzEcqAeKGha6bhiJXudh",
-      "source_note": "Public Solana Tracker title labels this wallet \"Boomer\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 19,
-      "events_scanned": 20
-    },
-    {
-      "id": "bigwarz",
-      "name": "BIGWARZ",
-      "handle": null,
-      "address": "7bsTkeWcSPG6nzsbXucxV89YUULoSExNJdX2WqfLHwZ4",
-      "source": "https://www.solanatracker.io/wallet/7bsTkeWcSPG6nzsbXucxV89YUULoSExNJdX2WqfLHwZ4",
-      "source_note": "Public Solana Tracker title labels this wallet \"BIGWARZ\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 8,
-      "events_scanned": 20
-    },
-    {
-      "id": "advyth",
-      "name": "Advyth",
-      "handle": null,
-      "address": "GEKZWL474tFAyYDUoTgKEgYuMxT3Se7HzKDDptrnXnvS",
-      "source": "https://www.solanatracker.io/wallet/GEKZWL474tFAyYDUoTgKEgYuMxT3Se7HzKDDptrnXnvS",
-      "source_note": "Public Solana Tracker title labels this wallet \"Advyth\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 14,
-      "events_scanned": 14
-    },
-    {
-      "id": "beaver",
-      "name": "Beaver",
-      "handle": null,
-      "address": "GM7Hrz2bDq33ezMtL6KGidSWZXMWgZ6qBuugkb5H8NvN",
-      "source": "https://www.solanatracker.io/wallet/GM7Hrz2bDq33ezMtL6KGidSWZXMWgZ6qBuugkb5H8NvN",
-      "source_note": "Public Solana Tracker title labels this wallet \"Beaver\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 5,
-      "events_scanned": 5
-    },
-    {
-      "id": "asta",
-      "name": "asta",
-      "handle": null,
-      "address": "AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL",
-      "source": "https://www.solanatracker.io/wallet/AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL",
-      "source_note": "Public Solana Tracker title labels this wallet \"asta\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 4,
-      "events_scanned": 4
-    },
-    {
-      "id": "bagcalls",
-      "name": "BagCalls",
-      "handle": null,
-      "address": "4AHgEkTsGqY77qtde4UJn9yZCrbGcM7UM3vjT3qM4G5H",
-      "source": "https://www.solanatracker.io/wallet/4AHgEkTsGqY77qtde4UJn9yZCrbGcM7UM3vjT3qM4G5H",
-      "source_note": "Public Solana Tracker title labels this wallet \"BagCalls\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 4,
-      "events_scanned": 4
-    },
-    {
-      "id": "quanterty",
-      "name": "Quanterty",
-      "handle": "Quanterty",
-      "address": "8f39XhhZoRD8sYb6K5K9N7iSHXkL7BDmFFQNDF3TtsEr",
-      "source": "https://www.solanatracker.io/wallet/8f39XhhZoRD8sYb6K5K9N7iSHXkL7BDmFFQNDF3TtsEr",
-      "source_note": "Alez v7 brief: publicly attributed Quanterty smart wallet",
-      "avatar": "data/avatars/quanterty.jpg",
-      "x_url": "https://x.com/Quanterty",
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 1,
-      "events_scanned": 1
-    },
-    {
-      "id": "bandit",
-      "name": "bandit",
-      "handle": null,
-      "address": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
-      "source": "https://www.solanatracker.io/wallet/5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
-      "source_note": "Public Solana Tracker title labels this wallet \"bandit\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 1,
-      "events_scanned": 1
-    },
-    {
-      "id": "cupsey",
-      "name": "Cupsey",
-      "handle": "Cupseyy",
-      "address": "suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK",
-      "source": "https://www.solanatracker.io/wallet/suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK",
-      "source_note": "Public Solana Tracker title labels this wallet \"Cupsey\"; address also observed on public kolscan.io feed",
-      "avatar": "data/avatars/cupsey.jpg",
-      "x_url": "https://x.com/Cupseyy",
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 0,
-      "events_scanned": 0
-    },
-    {
-      "id": "art",
-      "name": "Art",
-      "handle": null,
-      "address": "CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
-      "source": "https://www.solanatracker.io/wallet/CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
-      "source_note": "Public Solana Tracker title labels this wallet \"Art\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 0,
-      "events_scanned": 0
-    },
-    {
-      "id": "alxcooks",
-      "name": "AlxCooks",
-      "handle": null,
-      "address": "89HbgWduLwoxcofWpmn1EiF9wEdpgkNDEyPjzZ72mkDi",
-      "source": "https://www.solanatracker.io/wallet/89HbgWduLwoxcofWpmn1EiF9wEdpgkNDEyPjzZ72mkDi",
-      "source_note": "Public Solana Tracker title labels this wallet \"AlxCooks\"; address also observed on public kolscan.io feed",
-      "avatar": null,
-      "x_url": null,
-      "stats": {
-        "1d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "7d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        },
-        "30d": {
-          "realized_pnl_usd": null,
-          "trades": 0,
-          "wins": null,
-          "win_rate": null,
-          "note": "Za mało zamkniętych legów z wiarygodnym USD w oknie (tylko ostatnie sygnatury RPC)."
-        }
-      },
-      "recent_buys_1d": 0,
-      "events_scanned": 0
+    "30d": {
+     "realized_pnl_usd": 3928.63,
+     "trades": 1,
+     "wins": 1,
+     "win_rate": 1.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
     }
-  ]
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791996784,
+     "pnl_usd": 3928.63,
+     "usd": 27168.63,
+     "cost_usd": 23240.0,
+     "sig": "2gCDG2ooK4ZT7xxXAAGqbSAzYtmMyjyjeGmK5874TQFdbDQyDnPrX8mVC6Ey11MYfMv9HdWUMxoEUCPLPnJNEuoS",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791937073,
+     "usd": 5000.0,
+     "sig": "QMzxNyf5nGv441tqqEMsgKNtusVL2qet4e7N2QUpV5yLGUhcBVPPN6oU1xgameVoCvUQKsqs2HsDmempftFy4r3",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791937069,
+     "usd": 5000.0,
+     "sig": "2FApCxRFp37ZnG4eALTzjVg7vbLcGEwnd7rnbrWgwCi8RLBt5VozKFpuzMnH2Wn7BQpQ6YSZ7P9xyv9jqXomJ7j1",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791937066,
+     "usd": 5000.0,
+     "sig": "5SVJgVU5NF2HQ4UtWg7jQEFvFaqL7KgDY5itw7TTgp63BkaPNDACHwDfWUu21wPtyEN8pcgL2NMWUuST38BRbgSH",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791937063,
+     "usd": 5000.0,
+     "sig": "tBfJfAQe9xyPeHpX8F38SykWcbbLZT8PsGGEj29jxsQoZsv6RsP1gN15Ah76NrBjoSm8hbnDR4sL8sEGpobtVcM",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791935820,
+     "usd": 3240.0,
+     "sig": "2Yr7G8XZ2meE4AEqZB2sSy21YaSrEJ3uA2UYnE3Th63Dj3cpZUEg1fHAvHs899P4wAVzfk4C5fzjXULMvLEEbnvr",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791924977,
+     "usd": 5000.0,
+     "sig": "2sF2uZVKvw6RZADFcD5o966hoPPMRcL6G321PRcHoLZP4vGD5aC4W8LmVtMTUreoxamG6kG5joZaH8umitn7wPk4",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791924970,
+     "usd": 5000.0,
+     "sig": "2W9tj3JYqaF6hkUBpLgQTYiSZVcqp84xvKcvQZbA5TsEofzpd9wiNPxWTxyjAr2dmK6dupPsdhx7GtYkBdKifZDQ",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791923093,
+     "usd": 5000.0,
+     "sig": "5ekdRur3MMNj8UKzzivbfU8WCHsUzMNvtwZhyW4B58GP5ReDEw3YFegwDsW7NaTdc4ar4pSECPCxEEazd5iFpKHF",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "t": 1791923086,
+     "usd": 5000.0,
+     "sig": "5webX9Ya86DmpmNGZb991wH8v8WvPLUw69T98uMRsYUBueswZLVmKRtDPNDXwecBJtewRkKD6983K6vhhyfJBP3U",
+     "symbol": "Altai",
+     "name": "Altai the Tiger"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791906291,
+     "usd": 2303.0,
+     "sig": "5Qv7pPZNPr3vp45pDr6KfP42oFJfBwVmTTR11i5mtQeWwzPFdzqjE7Eo8WjSo5ejNbvCkxZWEKTCHn741oEvDdms",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791906284,
+     "usd": 7500.0,
+     "sig": "65dxs4JaXeiy6rR99oPhXUSQSfoAMNtkaNWZGi1dXdag8tZwTmgyXHE8WKW17bipeja3MxRAas9cY6gUQNVqwhHP",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791906280,
+     "usd": 7500.0,
+     "sig": "5H6FTrXWKKYmQrLqtkz93ZCxEqZypWfDFnbRe3bPm1zSzWFKUnq15BVZKQ2S9d9reQTnue3wo75U3f9EzRRs5pYa",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791906277,
+     "usd": 7500.0,
+     "sig": "2hxTHVVwNzcFuL1Y8AR8gk8zR8LJv9QCuceeg9yMzSnLyt1oesj7bLSrwTW4DW6ecQxWtyTLP8n7M5HqzVdoJFLx",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    },
+    {
+     "side": "buy",
+     "mint": "6Mix12LiHrQFojaQEnfPUC65Qkwd6X4Y5Qg93oFbordr",
+     "t": 1791906274,
+     "usd": 7500.0,
+     "sig": "2RijbP61zEJh25oQBMYyjXtKrGnfmf61dSKJMEpqtjr7rTVfV87iPQ65SQUDDGcdnjzGm2sQNr6d5uTDySqTPUJC",
+     "symbol": "BORDR",
+     "name": "Bordrless"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791996784,
+     "p": 3928.63,
+     "m": "Gyk9Z93Ri2JUjqES9HTpc7pxCJTLD7vhBhEjBhyApump",
+     "u": 27168.63
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 118181.7,
+    "30d": 118181.7
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 334,
+    "oldest_ts": 1791664271,
+    "window_days": 9.0,
+    "missing_tx": 0,
+    "unmatched_sells": 1,
+    "closed": 1,
+    "priced_hist": 18,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "orangie",
+   "name": "orangie",
+   "handle": "orangie",
+   "address": "83b2LMf12aLec92kur3duRA8VvUkLaXUtML31aCcZNCM",
+   "source": "https://www.solanatracker.io/wallet/83b2LMf12aLec92kur3duRA8VvUkLaXUtML31aCcZNCM",
+   "source_note": "Public Solana Tracker title labels this wallet \"orangie\"; address also observed on public kolscan.io feed",
+   "avatar": "data/avatars/orangie.jpg",
+   "x_url": "https://x.com/orangie",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -120.97,
+     "trades": 3,
+     "wins": 2,
+     "win_rate": 0.667,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": 96.0,
+     "trades": 10,
+     "wins": 5,
+     "win_rate": 0.5,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": 96.0,
+     "trades": 10,
+     "wins": 5,
+     "win_rate": 0.5,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792362345,
+     "usd": 5000.0,
+     "sig": "5DCV4T4oTsnCuSR6ccPks1cXf8s4wmB4pLd9r9g5YSDmNomMutYFs1CJq18MduTzCEQM7uDHkNEuav3b4FLU2rZi",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "sell",
+     "mint": "ArpPsesHXKbGeJsHdquM6acT3uNs7BChyetJjiNYpump",
+     "t": 1792360622,
+     "pnl_usd": 204.72,
+     "usd": 3204.72,
+     "cost_usd": 3000.0,
+     "sig": "2XhPz7U4fa9fD37Wda49nwD4HqmBKdD7L1Zzy2U6uaxLsnKSZydhjoNU1U1m5W966kSKMKRokvEfJPWdvus9SWNF",
+     "symbol": "godspeed",
+     "name": "godspeed"
+    },
+    {
+     "side": "buy",
+     "mint": "ArpPsesHXKbGeJsHdquM6acT3uNs7BChyetJjiNYpump",
+     "t": 1792360518,
+     "usd": 3000.0,
+     "sig": "3Xyju9VtpGH4YU7xuhUFmV3QJQDgWamZ1XyYcxKe3mFKrKDR9PMagjKLcWii5PwzY8bqmhrM1KZAntktPqWSCHs5",
+     "symbol": "godspeed",
+     "name": "godspeed"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792358967,
+     "usd": 4600.0,
+     "sig": "h9pW3LCrqy3TQepG7rKkyb1AaWtc9pUvHaBYH9poVukp2MF6kisFmSKiAQA3kCXWayNrrC8ohg674ttSJSDnVc9",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792358657,
+     "usd": 1000.0,
+     "sig": "3UMQdurk7A6rTrkjQ9KUEcDPV76YPDYcSpxchQ8wfxNEspSecHe6JeZWeh2L9uvSrpTCyvwoq25j6j8UBhxE2ikv",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792358657,
+     "usd": 1000.0,
+     "sig": "4p39cdeN4rJv94rENEM3wy7GMpSvHeukHx2B3FSfXJrseNJEzKHmGtT9LtHuuFfnoTLj3MnAyUrQfvRnoX7hpEct",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792357764,
+     "usd": 5000.0,
+     "sig": "5BJWHLhQZ6anT5cC9gs3Yr2dgT6RwBx8fj3n7ULBMFe43KDQgLwSqJeRpRxNGcn99E23CsaV4MWn4fo7cfd1dLvz",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "sell",
+     "mint": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+     "t": 1792357759,
+     "pnl_usd": -496.33,
+     "usd": 17503.67,
+     "cost_usd": 18000.0,
+     "sig": "36UoiNetcmbw8NsSTovkLbhEmP9MmoHeeN7VGkQins6iedA3j4QxWE9uCb8Js6qSa7q1tBfALK9qxvK7yJVF84XJ",
+     "symbol": "ANSEM",
+     "name": "The Black Bull"
+    },
+    {
+     "side": "buy",
+     "mint": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+     "t": 1792356819,
+     "usd": 2500.0,
+     "sig": "8QmadZN9X8bRJRTs6Ffz44i3Ye2yfdU7MbcpXEoYH9N3oey2SjnGMn8wpFFLZwbgMDzm9WZYBhZCuiHDvzwXrF1",
+     "symbol": "ANSEM",
+     "name": "The Black Bull"
+    },
+    {
+     "side": "buy",
+     "mint": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+     "t": 1792356795,
+     "usd": 5000.0,
+     "sig": "24FTimb2HYycADFuAobLsgPQgTGBk1zS8n2dug1MaseBQsUGdz8aNswhhWJBTnEGjPGWzYfwumyhSv3X7UaGSyz8",
+     "symbol": "ANSEM",
+     "name": "The Black Bull"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792356600,
+     "usd": 100.0,
+     "sig": "67SWBnnJmaAgQLvCuc15keRJWz3LHCt23uYWauU6FrsB62NSwqEjaaGHS5sQYZSV78UNwyMvgTAGs4VUx65GiSc2",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792356596,
+     "usd": 5000.0,
+     "sig": "2NHJbCrFW3eGGXEiU9WsZ5c4oH4DeHCocvDXquqWHmQg1n7DnBU6pgoYjWDqLvj6mjgCeQmhPUr9bhgqZa6aFB5W",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792356407,
+     "usd": 1000.0,
+     "sig": "3tLkf5o9bT7AcsrZrpkmu77Gsp7NBdZMJ6WpAtHz3KQoyr6jjhMsBcLAk8oPLyt1Bd2PSbnnq19fWLRrzX4icJ4K",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "t": 1792356407,
+     "usd": 1000.0,
+     "sig": "2ZVdBjCxMkBti1sE96ufeBs2qm3ULcjuDKnANhaHD3pW3snS78U99Sa8fzhHbBff4KzxhgqSApinrCxbowtFxfkP",
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "side": "sell",
+     "mint": "33TdSo6P4ux6WSHV6T4y6ZddB1ufgboMwq817NT8641u",
+     "t": 1792356165,
+     "pnl_usd": 170.64,
+     "usd": 2392.64,
+     "cost_usd": 2222.0,
+     "sig": "2r9ENiN67aj4aj4ZF1EsqooxCBkCSQykrXj32pB3FY811odCUTaapMP1HTHKhis354i25z6e1xTXFo8cboBuFHaV",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792182437,
+     "p": -555.4,
+     "m": "FhSdbdBF1vGzUZF3boQz8KZoXCBN7vocxh2D5vthEuUS",
+     "u": 694.6
+    },
+    {
+     "t": 1792185616,
+     "p": 1199.3,
+     "m": "5ubruMYpgKqw9ip5J1qrXbVGmMdn2VCsMg421B4bpump",
+     "u": 3699.38
+    },
+    {
+     "t": 1792185618,
+     "p": 1487.68,
+     "m": "5ubruMYpgKqw9ip5J1qrXbVGmMdn2VCsMg421B4bpump",
+     "u": 6487.6
+    },
+    {
+     "t": 1792236886,
+     "p": -413.86,
+     "m": "8hnMfF4XL717GVwzDmvqjJvULozKW6w7BhHFABjvHje4",
+     "u": 586.14
+    },
+    {
+     "t": 1792275611,
+     "p": -685.99,
+     "m": "55A3VxMBfzw6uSe64zms5iMPw9k6kx9WzzusbCU6pump",
+     "u": 4314.01
+    },
+    {
+     "t": 1792275613,
+     "p": -837.33,
+     "m": "56EcX4uyENdUrCEJcBT9nXUnWDm1Q1NkKrPWLkh1pump",
+     "u": 1162.67
+    },
+    {
+     "t": 1792276464,
+     "p": 22.57,
+     "m": "J8PSdNP3QewKq2Z1JJJFDMaqF7KcaiJhR7gbr5KZpump",
+     "u": 1484.89
+    },
+    {
+     "t": 1792356165,
+     "p": 170.64,
+     "m": "33TdSo6P4ux6WSHV6T4y6ZddB1ufgboMwq817NT8641u",
+     "u": 2392.64
+    },
+    {
+     "t": 1792357759,
+     "p": -496.33,
+     "m": "9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump",
+     "u": 17503.67
+    },
+    {
+     "t": 1792360622,
+     "p": 204.72,
+     "m": "ArpPsesHXKbGeJsHdquM6acT3uNs7BChyetJjiNYpump",
+     "u": 3204.72
+    }
+   ],
+   "positions": [
+    {
+     "mint": "nxPqZ4F7ux8Vph5NFu25rEP6Kx9Gr1U6Fmj36Rjpump",
+     "tok": 13760900.0,
+     "cost_usd": 50000.0,
+     "symbol": "Dacity",
+     "name": "Dacity Coin"
+    },
+    {
+     "mint": "J8PSdNP3QewKq2Z1JJJFDMaqF7KcaiJhR7gbr5KZpump",
+     "tok": 6701050.0,
+     "cost_usd": 39383.61,
+     "symbol": "TripleT",
+     "name": "Tung Tung Tung Sahur"
+    }
+   ],
+   "volume_usd": {
+    "1d": 96097.93,
+    "7d": 205877.17,
+    "30d": 205877.17
+   },
+   "recent_buys_1d": 15,
+   "coverage": {
+    "sigs": 308,
+    "oldest_ts": 1792162179,
+    "window_days": 3.2,
+    "missing_tx": 0,
+    "unmatched_sells": 4,
+    "closed": 10,
+    "priced_hist": 76,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "boomer",
+   "name": "Boomer",
+   "handle": null,
+   "address": "4JyenL2p8eQZAQuRS8QAASy7TzEcqAeKGha6bhiJXudh",
+   "source": "https://www.solanatracker.io/wallet/4JyenL2p8eQZAQuRS8QAASy7TzEcqAeKGha6bhiJXudh",
+   "source_note": "Public Solana Tracker title labels this wallet \"Boomer\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": -65.35,
+     "trades": 2,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -65.35,
+     "trades": 2,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "buy",
+     "mint": "3RTAi3MrNK4atVCuGPW7DATargP354wDEMCVQevepump",
+     "t": 1792411617,
+     "usd": 105.31,
+     "sig": "3ueeWwNWstcA9pggpmiME6zMdGGG8zqvBknVZ4yEtYoDeAjhWn6TaF73sRYSbLr9UyJXeeiVYvdEDiwQ1d9Yh1So",
+     "symbol": "KWH",
+     "name": "Kim Wif Hat"
+    },
+    {
+     "side": "buy",
+     "mint": "721co7BJpcwRsiDmPeXwaACM5sY7RmPzuakNHrnbpump",
+     "t": 1792275744,
+     "usd": 102.85,
+     "sig": "3nWeBVRiPxzCyP6dMEQa5pauhPL1qhAnbGBm1dSycANjS7ACSS16oWQA67miAnGm5G69s9ehvcBFGEBp8FfjGqjE",
+     "symbol": "sc",
+     "name": "screaming cat"
+    },
+    {
+     "side": "sell",
+     "mint": "9mFocoKd6XR9uiMPnXBVkVPh1jiGYspdfNrD9GMttsAx",
+     "t": 1792107555,
+     "pnl_usd": -53.52,
+     "usd": 51.07,
+     "cost_usd": 104.59,
+     "sig": "2T15qb1RAhM5jwx8Z7o271u7VN1gwEFRzLW9Fe5NwZKH36NjzkoPJCVvGDd2umdvH8yJYvmdsUWS1kGivWNcsRtv",
+     "symbol": "Fred",
+     "name": "Fred"
+    },
+    {
+     "side": "buy",
+     "mint": "9mFocoKd6XR9uiMPnXBVkVPh1jiGYspdfNrD9GMttsAx",
+     "t": 1792013151,
+     "usd": 104.59,
+     "sig": "L68jg6uVJeyT5ZoMyRwH9dn5LExZesYNHdWa1Ajqwc5rFur6GcTFjF6viTzf4F8vWWS9Fa5wxmuc4Dqif8pfsWq",
+     "symbol": "Fred",
+     "name": "Fred"
+    },
+    {
+     "side": "sell",
+     "mint": "BzA6JBKgH8qK3XzBpXUiF283jd1k7yCKzwJEiEFAhc68",
+     "t": 1792013136,
+     "pnl_usd": -11.83,
+     "usd": 37.93,
+     "cost_usd": 49.76,
+     "sig": "55MkXRWuAPZN828aZmMcje6riXcEshDoJ7S7cJCsNM7xP4oXbxmR7GApvkyaW1ex6eZatTUrynCFoLtDZPawzyyB",
+     "symbol": "SLOPCOIN",
+     "name": "Slopcoin"
+    },
+    {
+     "side": "buy",
+     "mint": "BzA6JBKgH8qK3XzBpXUiF283jd1k7yCKzwJEiEFAhc68",
+     "t": 1791670165,
+     "usd": 99.52,
+     "sig": "4UsY3WZo7sJjJnfiyFaRDH8YRxWMW1EP4jninC6Jmy4W5sEE5CUjwVm9A3hMCyV9kDfZx6vU2wd6cKn5Bd98DBQT",
+     "symbol": "SLOPCOIN",
+     "name": "Slopcoin"
+    },
+    {
+     "side": "buy",
+     "mint": "9pZL5BtFgYFeSGrGMeMf8sKyNX1Mg4R7LjfbpLkJAYT",
+     "t": 1791588078,
+     "usd": 163.92,
+     "sig": "4CD2XT2NtJ4cxHUUaTaQBVkkqVMDWwFBH4wVcSLrZbKnuK1eFrAuGEu1QVCxBfYAfompLDqLsLs4iYvLWWQTYTSW",
+     "symbol": "Jarvis",
+     "name": "Jarvis"
+    },
+    {
+     "side": "buy",
+     "mint": "2zaRV1r3GoRhAQzzmoqAcWs5cg7RhQfamfeAUNGjpump",
+     "t": 1791552605,
+     "usd": 11.0,
+     "sig": "2DL6s8jM4NXaxRqqMDZf3iM969X85NnjFWLaZMJTtfkQY2EJzncWEquMWX8Mnt4aUHdgug2rbM8QoNjVcVTzCyEg",
+     "symbol": "DANSE",
+     "name": "Alors on Danse"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792013136,
+     "p": -11.83,
+     "m": "BzA6JBKgH8qK3XzBpXUiF283jd1k7yCKzwJEiEFAhc68",
+     "u": 37.93
+    },
+    {
+     "t": 1792107555,
+     "p": -53.52,
+     "m": "9mFocoKd6XR9uiMPnXBVkVPh1jiGYspdfNrD9GMttsAx",
+     "u": 51.07
+    }
+   ],
+   "positions": [
+    {
+     "mint": "9pZL5BtFgYFeSGrGMeMf8sKyNX1Mg4R7LjfbpLkJAYT",
+     "tok": 5178100.0,
+     "cost_usd": 163.92,
+     "symbol": "Jarvis",
+     "name": "Jarvis"
+    },
+    {
+     "mint": "3RTAi3MrNK4atVCuGPW7DATargP354wDEMCVQevepump",
+     "tok": 17119100.0,
+     "cost_usd": 105.31,
+     "symbol": "KWH",
+     "name": "Kim Wif Hat"
+    },
+    {
+     "mint": "721co7BJpcwRsiDmPeXwaACM5sY7RmPzuakNHrnbpump",
+     "tok": 8628130.0,
+     "cost_usd": 72.0,
+     "symbol": "sc",
+     "name": "screaming cat"
+    },
+    {
+     "mint": "BzA6JBKgH8qK3XzBpXUiF283jd1k7yCKzwJEiEFAhc68",
+     "tok": 6292180.0,
+     "cost_usd": 49.76,
+     "symbol": "SLOPCOIN",
+     "name": "Slopcoin"
+    },
+    {
+     "mint": "2zaRV1r3GoRhAQzzmoqAcWs5cg7RhQfamfeAUNGjpump",
+     "tok": 237943.0,
+     "cost_usd": 11.0,
+     "symbol": "DANSE",
+     "name": "Alors on Danse"
+    }
+   ],
+   "volume_usd": {
+    "1d": 141.33,
+    "7d": 548.68,
+    "30d": 1050.62
+   },
+   "recent_buys_1d": 1,
+   "coverage": {
+    "sigs": 589,
+    "oldest_ts": 1791517249,
+    "window_days": 10.7,
+    "missing_tx": 0,
+    "unmatched_sells": 13,
+    "closed": 2,
+    "priced_hist": 21,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "advyth",
+   "name": "Advyth",
+   "handle": null,
+   "address": "GEKZWL474tFAyYDUoTgKEgYuMxT3Se7HzKDDptrnXnvS",
+   "source": "https://www.solanatracker.io/wallet/GEKZWL474tFAyYDUoTgKEgYuMxT3Se7HzKDDptrnXnvS",
+   "source_note": "Public Solana Tracker title labels this wallet \"Advyth\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 86.67,
+     "trades": 11,
+     "wins": 6,
+     "win_rate": 0.545,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -93.98,
+     "trades": 15,
+     "wins": 7,
+     "win_rate": 0.467,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -93.98,
+     "trades": 15,
+     "wins": 7,
+     "win_rate": 0.467,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "t": 1792439055,
+     "pnl_usd": 26.52,
+     "usd": 130.77,
+     "cost_usd": 104.25,
+     "sig": "5om9RFDph1jonRwWMmLp5tMaeB57zjqEG3tihx6K7DNB1g4auUzsgYYWFNsYNkRTE1kVSy8w4RSaBYAbbZK9xic4",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "t": 1792438985,
+     "usd": 104.25,
+     "sig": "4MoPSooWULFJ5gXD2RiyKNc3g7Vya7K37sH2JStgPZ1j5F79fETrBZh7UbHhnmh3WAKvB22v14sFbkNxsmfCRbY5",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "ABNB56TteaTZG1S3DY2W8VMncQmHMvNCGaZgAba49CLP",
+     "t": 1792438959,
+     "usd": 313.15,
+     "sig": "229A4uFDzGViWU6MEUhsSx11tqMGNuqSGfxC7cJrpQeGJR6sqM6jAT3i1eBr33kiF3rKbKWR83AdR2fib9qjYBUE",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "AzBHp2xqUXZYLwHQVMdHH1k2UHiDhrm9234xA5dPpump",
+     "t": 1792437035,
+     "pnl_usd": 40.09,
+     "usd": 222.4,
+     "cost_usd": 182.31,
+     "sig": "evK1K9KPvvyHiEDmZeQ9ay4eS75UaNiAND9xCwzDfNvmd82BQFNCLYaMgRLPrhqminH8tM7QXjn5teZxVt8abAx",
+     "symbol": "PACKS",
+     "name": "Pump Packs"
+    },
+    {
+     "side": "buy",
+     "mint": "AzBHp2xqUXZYLwHQVMdHH1k2UHiDhrm9234xA5dPpump",
+     "t": 1792437004,
+     "usd": 182.31,
+     "sig": "2NHXQfYCT4JqdN6vqixvWY2vWPDPNp31fdecZ1QRPcRfALjgjznMC8ZLnb1QRQR6nxMgAWgJdtNSEB5mryBxS7AC",
+     "symbol": "PACKS",
+     "name": "Pump Packs"
+    },
+    {
+     "side": "sell",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792436565,
+     "pnl_usd": 50.84,
+     "usd": 154.93,
+     "cost_usd": 104.09,
+     "sig": "2wb3fWYgPqmbKqssyARgU677fYLivZ3xb9wx5TR8QiEt8XDBpBszrvMcEtGKenipYTYUhrgvLsiQQabMjAiAgvJk",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792436537,
+     "usd": 104.09,
+     "sig": "5AuupKr3Fz3HWg9duZZdtaaRitGVPRix47KTvghWMt6bbEAc4CiFvayNb9BaPgnTHJbHdEFvkc17YoZuFYMkpMbw",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "3RsptkPiQvQDdVbJa6Ms487cobLUy41tdfkv1LGNpump",
+     "t": 1792436487,
+     "pnl_usd": -14.17,
+     "usd": 38.04,
+     "cost_usd": 52.21,
+     "sig": "3PWYa6BuG8sQYDXCxGvFP2NWe57Kjtu1avqciXyVNTPYBw72qwpZMr2YwCiYJG8fqdY4LHhMjbQhsg6wmiqAWpqt",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "3RsptkPiQvQDdVbJa6Ms487cobLUy41tdfkv1LGNpump",
+     "t": 1792436483,
+     "usd": 52.21,
+     "sig": "2VKBWHWE7QUAmXyUkZKDAJngGo3NHKPoiRofxnxNDjw7EonAhsRzVX1mNbBwqBg1ffXgAaqYcovZWF7gz1tauVob",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792436324,
+     "pnl_usd": 33.4,
+     "usd": 215.46,
+     "cost_usd": 182.06,
+     "sig": "U7KrsqFN9MPPtfGSFDz64TxdE9zJNcwNQWvPGvwxdZ54XfkeNdDMA6F8SENsHFFQJAWqGJdY7AroQTfJ9RVsPHz",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792436212,
+     "usd": 182.06,
+     "sig": "YoM76CFS4xCWGgySeBfC9FYGD6BkYHN3fGaofnyTntXRWucgxovfGoYTb3VNM9WezfzDeUSd9NLR3SetytH2gqd",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792435939,
+     "pnl_usd": 69.08,
+     "usd": 225.21,
+     "cost_usd": 156.13,
+     "sig": "3wqUHF7HwxZNXRP8KRLECH1TrhH9juhNcuk2eoSj6jErZfdHxEVD1Zn9i542QbBuEXxiknFPsiEap1VsBcXJWUPo",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792435933,
+     "pnl_usd": 71.57,
+     "usd": 227.7,
+     "cost_usd": 156.13,
+     "sig": "5nzjvZo9n3yGUxrmj9N5HGKDyTu1QNCKAnpXu2Rj2a14Z3U9TDtwGvQb2VZYJRp6oBfLCpxSZhSjmK8Ac54DT7qZ",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "t": 1792435769,
+     "usd": 312.26,
+     "sig": "2cVXjwu6K6kmZiR5FdkRL3bm4RuW2Dyo74qzBXCwe5xGkcxkFcJ9ndgGoL8Swx8VtkmZetkqGN6scC3cEN27LRkr",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "5ETDAsgDKLTyPhkocvQbioB6gGJknKZtvoBmgC6Vpump",
+     "t": 1792435706,
+     "pnl_usd": -124.87,
+     "usd": 57.35,
+     "cost_usd": 182.22,
+     "sig": "4RnJcXzczGQPomvhtzgDS1vCBHUPQdCLci3mx1BF2cLMsasLexP58z7hCtsbLzSpKRD9L5HTQM35hfBtasiZVgGe",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792253997,
+     "p": -32.75,
+     "m": "7iuKRt9QpnAQTY6y4nqMxNuNdSppP3uaLySfGcwKpump",
+     "u": 148.38
+    },
+    {
+     "t": 1792256048,
+     "p": -104.72,
+     "m": "FLaTjYbiMZoiUV1rUfN1FdVmLLSikEXPyrxVMtx5pump",
+     "u": 360.79
+    },
+    {
+     "t": 1792256190,
+     "p": -44.22,
+     "m": "HtfVSLbiMeXP29vwAyrEqoXopE1rHcC59GrkpaJzpump",
+     "u": 136.91
+    },
+    {
+     "t": 1792300091,
+     "p": 1.03,
+     "m": "GKjVpqy1oiHcdNFpTcwphQQFd99w69Aw3B9ztnPupump",
+     "u": 104.88
+    },
+    {
+     "t": 1792434924,
+     "p": -7.0,
+     "m": "6y9s4eKmV8q7MHDeG3rszUB3tJSUc738NVpk8pXbpump",
+     "u": 68.69
+    },
+    {
+     "t": 1792435488,
+     "p": -55.2,
+     "m": "9RupQ3Fba75VVAg8p6mWLWtc9YR97vWxvfmg444va97r",
+     "u": 49.0
+    },
+    {
+     "t": 1792435593,
+     "p": -3.6,
+     "m": "FvGLnRiX1RakYAyJEHsG6EVqn3MVFxoLL5wVakzjpump",
+     "u": 137.02
+    },
+    {
+     "t": 1792435706,
+     "p": -124.87,
+     "m": "5ETDAsgDKLTyPhkocvQbioB6gGJknKZtvoBmgC6Vpump",
+     "u": 57.35
+    },
+    {
+     "t": 1792435933,
+     "p": 71.57,
+     "m": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "u": 227.7
+    },
+    {
+     "t": 1792435939,
+     "p": 69.08,
+     "m": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "u": 225.21
+    },
+    {
+     "t": 1792436324,
+     "p": 33.4,
+     "m": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "u": 215.46
+    },
+    {
+     "t": 1792436487,
+     "p": -14.17,
+     "m": "3RsptkPiQvQDdVbJa6Ms487cobLUy41tdfkv1LGNpump",
+     "u": 38.04
+    },
+    {
+     "t": 1792436565,
+     "p": 50.84,
+     "m": "F8HU5yuz226rYu3zqucvizqUjfq7vnF5D2So6BqSpump",
+     "u": 154.93
+    },
+    {
+     "t": 1792437035,
+     "p": 40.09,
+     "m": "AzBHp2xqUXZYLwHQVMdHH1k2UHiDhrm9234xA5dPpump",
+     "u": 222.4
+    },
+    {
+     "t": 1792439055,
+     "p": 26.52,
+     "m": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "u": 130.77
+    }
+   ],
+   "positions": [
+    {
+     "mint": "ABNB56TteaTZG1S3DY2W8VMncQmHMvNCGaZgAba49CLP",
+     "tok": 1.72053,
+     "cost_usd": 313.14,
+     "symbol": null,
+     "name": null
+    },
+    {
+     "mint": "WLFinEv6ypjkczcS83FZqFpgFZYwQXutRbxGe7oC16g",
+     "tok": 5667.6,
+     "cost_usd": 312.97,
+     "symbol": "WLFI",
+     "name": "World Liberty Financial"
+    },
+    {
+     "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+     "tok": 141505.0,
+     "cost_usd": 310.47,
+     "symbol": "PUMP",
+     "name": "Pump"
+    }
+   ],
+   "volume_usd": {
+    "1d": 4297.09,
+    "7d": 6932.95,
+    "30d": 6932.95
+   },
+   "recent_buys_1d": 13,
+   "coverage": {
+    "sigs": 394,
+    "oldest_ts": 1792253423,
+    "window_days": 2.2,
+    "missing_tx": 0,
+    "unmatched_sells": 10,
+    "closed": 15,
+    "priced_hist": 45,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bandit",
+   "name": "bandit",
+   "handle": null,
+   "address": "5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "source": "https://www.solanatracker.io/wallet/5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X",
+   "source_note": "Public Solana Tracker title labels this wallet \"bandit\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -94.46,
+     "trades": 2,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -94.46,
+     "trades": 2,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -94.46,
+     "trades": 2,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "t": 1792438975,
+     "pnl_usd": -47.21,
+     "usd": 577.93,
+     "cost_usd": 625.14,
+     "sig": "322RbAb7ftci6tgedShR48oUtscWiaaMKwgJa4ad5cbxCkZ5fKeiPzx3WawsFvcKdbiDQgddm5UFHv7dgMQvz2pi",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "t": 1792438933,
+     "usd": 312.41,
+     "sig": "yJ2KPjMQdSWjDaLd6czEuGnND2TVVZeaBPi8cjB4M4mYJ9iwZi1kJgBKFVaRCaNYZsX1pKsmCckXyHD1onfgLZ5",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "t": 1792438932,
+     "usd": 312.73,
+     "sig": "2kv4nxFjdJg3KeqvE1yGbDsLndNAZSFaTz7bVS3pZejDDxmbk1JwBRnC7W3CRUjJWvDS5ZU3HqADRunMEVuM6qFM",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "9eeExWnsFPYcwyTE8Y8inpiPWz5ncNpBJCaBkt56pump",
+     "t": 1792438871,
+     "pnl_usd": -47.25,
+     "usd": 369.42,
+     "cost_usd": 416.67,
+     "sig": "62tiEqMU9mbHVXwq1tKa8t9RRVN84Bc4suGz8RkhAbH5j5LJ3GFBU6txX88eUnru5PqpaEMEzQ96vXj2c2uaoJTz",
+     "symbol": "KUM",
+     "name": "kum jung on"
+    },
+    {
+     "side": "buy",
+     "mint": "9eeExWnsFPYcwyTE8Y8inpiPWz5ncNpBJCaBkt56pump",
+     "t": 1792438772,
+     "usd": 416.67,
+     "sig": "4ZX8jbzaQRpwqrkRZctDZBEFgcd1EgcU6zWfeptZL6QNLv9RAWJvMQ1SDvXTAbD8NBmNc8F3VQKhr284PpBPEikV",
+     "symbol": "KUM",
+     "name": "kum jung on"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792438871,
+     "p": -47.25,
+     "m": "9eeExWnsFPYcwyTE8Y8inpiPWz5ncNpBJCaBkt56pump",
+     "u": 369.42
+    },
+    {
+     "t": 1792438975,
+     "p": -47.21,
+     "m": "4zXRgZL9DmhoiSTp6hJscP5nnfmWMav6PEauFZjBirpz",
+     "u": 577.93
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 1989.17,
+    "7d": 1989.17,
+    "30d": 1989.17
+   },
+   "recent_buys_1d": 3,
+   "coverage": {
+    "sigs": 5000,
+    "oldest_ts": 1792435955,
+    "window_days": 0.0,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 2,
+    "priced_hist": 5,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "absol",
+   "name": "Absol",
+   "handle": null,
+   "address": "BXNiM7pqt9Ld3b2Hc8iT3mA5bSwoe9CRrtkSUs15SLWN",
+   "source": "https://www.solanatracker.io/wallet/BXNiM7pqt9Ld3b2Hc8iT3mA5bSwoe9CRrtkSUs15SLWN",
+   "source_note": "Public Solana Tracker title labels this wallet \"Absol\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -86.08,
+     "trades": 3,
+     "wins": 1,
+     "win_rate": 0.333,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -344.88,
+     "trades": 21,
+     "wins": 7,
+     "win_rate": 0.333,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -365.2,
+     "trades": 25,
+     "wins": 8,
+     "win_rate": 0.32,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "HKGF7irWT4fbreXspdYPR1x1MctTibU5dvifVBGeD4zQ",
+     "t": 1792436029,
+     "pnl_usd": 27.99,
+     "usd": 236.95,
+     "cost_usd": 208.95,
+     "sig": "3jhbqWoPc1fsSWp3Gq2H14tr4cgiDjfGBsSgYFFwUTqwjLDKNySsGP1LWAa4W5srq2cibfBQb3ViwrDRb4cGofup",
+     "symbol": "Pumpcards",
+     "name": "Pumpcards"
+    },
+    {
+     "side": "buy",
+     "mint": "HKGF7irWT4fbreXspdYPR1x1MctTibU5dvifVBGeD4zQ",
+     "t": 1792436014,
+     "usd": 208.95,
+     "sig": "65CySbU7v3giyu8UV69aJG4EWUuLCYiJiDc5rTvRJPys97kBKfJe7Wup35yR7Mr9yuAVc5jsF72tEqbr2LqnpHFo",
+     "symbol": "Pumpcards",
+     "name": "Pumpcards"
+    },
+    {
+     "side": "sell",
+     "mint": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "t": 1792434307,
+     "pnl_usd": -93.13,
+     "usd": 220.7,
+     "cost_usd": 313.83,
+     "sig": "tKpb7szugetrJfTcyyMat3bbYKNXt8vuLmc4DD2kpTMoQTCvGEseFufCto5TiFwTwfMCBSkC1JcB6AwsuiJKAKj",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "t": 1792434295,
+     "usd": 104.76,
+     "sig": "5adNdcFCjuWsyMMkDYWysQjaqHPZMCSzzRMc5nXCHcu3ixmsSD2K57pAeCuMeieR5NKvdgC1Sk5iZEeMnPiJE5pW",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "t": 1792434294,
+     "usd": 209.07,
+     "sig": "5yv1zZEdTjvH9L1jEoVWTuzQozJ4kG6N4UZUDi69yqrTtTVsj3Lo4Gt1TxYgYBGYRjH4EUVCVzPZfTp7KYK1wT9g",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "2BoLeyuwSft2QdfeFyW5Gnv2F8JWSrM1UorxtXWESTNK",
+     "t": 1792407657,
+     "pnl_usd": -20.94,
+     "usd": 52.85,
+     "cost_usd": 73.79,
+     "sig": "3zfxiKDkr3ZuEHGJWjwXj8uBFndzuYD5g4DLdMsYv1b4FJFm3tCDhjqWgBsWYQqXg7WMdhXekgXY12atPwTWqa6k",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "2BoLeyuwSft2QdfeFyW5Gnv2F8JWSrM1UorxtXWESTNK",
+     "t": 1792407644,
+     "usd": 34.29,
+     "sig": "3pUJnz3kyzFPf5XXYdN1xR2eKFaTLXgLxhQ4anUtzXaq6Hgf2aHvFPgVx7KgAmLPwSCXF77Fzgdga4vfPEjFW7hv",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "2BoLeyuwSft2QdfeFyW5Gnv2F8JWSrM1UorxtXWESTNK",
+     "t": 1792407643,
+     "usd": 39.51,
+     "sig": "nweoqoEx2E7o2UpYFTEDRWb1QsNHmZ7msa6RHpX9vRsPyH9FGtN5ZSVp4i4A12c8psE9dkheLFhBgztoVLbtJfP",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "9KcwEpr7TnnaTuoXVcc3J4wxq5ptVr7fsH53w9M7pump",
+     "t": 1792175392,
+     "pnl_usd": -2.28,
+     "usd": 30.26,
+     "cost_usd": 32.54,
+     "sig": "3iCGsL38vm4tEuXAJfWCTQttDg56RtKkRDbqv5ntB94xcb5Ah82cfAUxnyvyq7xq6QcLgrrQSoLYX5NC4BkqaXX2",
+     "symbol": "HUGO",
+     "name": "The First Human Companion"
+    },
+    {
+     "side": "buy",
+     "mint": "9KcwEpr7TnnaTuoXVcc3J4wxq5ptVr7fsH53w9M7pump",
+     "t": 1792175327,
+     "usd": 32.54,
+     "sig": "4qqov6eJdGLbxveJYae4Mi7wzbGKg1DnPJpXwqDbhUNNu2JdA8JFPVHgCRZ1tRYZ3XpWTLZ6Y8F6UHFFva4VGuut",
+     "symbol": "HUGO",
+     "name": "The First Human Companion"
+    },
+    {
+     "side": "sell",
+     "mint": "8986NN252oM2AodzKGQcYhvqrK8e5Zk3DodMJcYYpump",
+     "t": 1792159221,
+     "pnl_usd": -1.36,
+     "usd": 30.57,
+     "cost_usd": 31.94,
+     "sig": "5mXMdyxzKVafwSReLa3wF7MzZ54bRRx6eW7MXPjPzY72NAmpoXCoR9sGJuCZPGr2yMYCTykXDotf1C761wFaG5bb",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "8986NN252oM2AodzKGQcYhvqrK8e5Zk3DodMJcYYpump",
+     "t": 1792159181,
+     "usd": 31.94,
+     "sig": "2Lptzh68qnN5J3HiLvysMqkkj5f48j6Hfm3JSVpi1Azokaz7HropU4cpG39VdBQPXhhGicmnuDC1yQopTY1iEeR9",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "BhmFZAucgyzS5ibPcPvt9Zp7L3iPVum2ALvPQ3h6UYib",
+     "t": 1792157483,
+     "pnl_usd": 2.39,
+     "usd": 40.81,
+     "cost_usd": 38.42,
+     "sig": "41P2h6jDpvQqiUfBidUBhy1yR3uHpvgjbRHu9JWnzWT1CdjLde5334CJkCUHZxzL9oCak5YYrMMCe32Mx4tsu3nv",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "BhmFZAucgyzS5ibPcPvt9Zp7L3iPVum2ALvPQ3h6UYib",
+     "t": 1792157470,
+     "usd": 38.42,
+     "sig": "4FdS56nqUFyfLWLGoxT2m1rnJsMP8b75FMbm1xHmjNncDwkGoFgk6Hc5KuUnkhgy56Ycu2xoauqFPoDwaFLFaxLL",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "2jJbqDqdjNupLra7avyMDP79zJDTcXV8cUv7FnduDpFx",
+     "t": 1792157090,
+     "pnl_usd": -33.74,
+     "usd": 43.02,
+     "cost_usd": 76.75,
+     "sig": "4EWKojgexwsmdqiM3L9B4JswXjgMP3aHjorxFQXZpAv9zFwTu6KzKFmM8zVsjaKF7awn5X8Lg7pw2ZxPDUcds3K3",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791727075,
+     "p": -1.12,
+     "m": "7dvY8Ww9hYUeM2zN6vLXrn2JGwymjfbupQu4yz76pump",
+     "u": 38.5
+    },
+    {
+     "t": 1791729948,
+     "p": 0.53,
+     "m": "4kLiUzW3ss94uey72GartFk5QSKbG9ELxD5RS3MKpump",
+     "u": 19.56
+    },
+    {
+     "t": 1791734800,
+     "p": -17.57,
+     "m": "2sGufbvVibvSR1VViwsJJEqqUbqD5KMSXXCwUoxVUGFA",
+     "u": 19.88
+    },
+    {
+     "t": 1791818215,
+     "p": -2.16,
+     "m": "DBAYypej4wPUjQwtTT9wbktoMne7yL1nPsQKn31jspfk",
+     "u": 33.34
+    },
+    {
+     "t": 1791908105,
+     "p": -27.78,
+     "m": "JDYzZdojpXJWj6JGs8x7cE3gu3TuMZLGZGhRE6L3Rrzk",
+     "u": 7.91
+    },
+    {
+     "t": 1792089653,
+     "p": -2.65,
+     "m": "95LduyaqLQkaPKJTG1BnJiFhAXjDndKY3RSknbJpump",
+     "u": 62.0
+    },
+    {
+     "t": 1792145152,
+     "p": -15.79,
+     "m": "Fg9vkiKMUg2aX8SdveasLwZGHEkEhRYCniqxABbVWgmn",
+     "u": 118.92
+    },
+    {
+     "t": 1792148434,
+     "p": -55.19,
+     "m": "DdkLjLtiCoyhxPR6i8dtgVgVyDxdHL82JY4NqYL9pump",
+     "u": 157.69
+    },
+    {
+     "t": 1792149337,
+     "p": 9.69,
+     "m": "A5jhK3CrcH5zBAPdtR86BxXJKWdQus4qKea9SRsjAvq4",
+     "u": 121.96
+    },
+    {
+     "t": 1792151988,
+     "p": 73.48,
+     "m": "5aGRLchKmNDvNtzZ7qv2sPW1v349pPYWQZu88uNcTTLG",
+     "u": 211.63
+    },
+    {
+     "t": 1792152293,
+     "p": -43.69,
+     "m": "DfMTU5Jqx4S6wxjnvWnt7qcbkapGoSEgsgp9GNpGkm3J",
+     "u": 220.06
+    },
+    {
+     "t": 1792152346,
+     "p": 7.02,
+     "m": "AUMZ7ppHJt5H3hSheTa5jYKt6B16QNVmWCB1yM7Npump",
+     "u": 16.94
+    },
+    {
+     "t": 1792152346,
+     "p": 7.57,
+     "m": "AUMZ7ppHJt5H3hSheTa5jYKt6B16QNVmWCB1yM7Npump",
+     "u": 18.0
+    },
+    {
+     "t": 1792152349,
+     "p": 15.82,
+     "m": "AUMZ7ppHJt5H3hSheTa5jYKt6B16QNVmWCB1yM7Npump",
+     "u": 221.49
+    },
+    {
+     "t": 1792152708,
+     "p": -27.04,
+     "m": "DvhdN47K9n68TA1CZvknnor8mLvBMMdZmFMgwzJWYRr9",
+     "u": 84.9
+    },
+    {
+     "t": 1792153017,
+     "p": -11.02,
+     "m": "4yg7UQ6H4BozxheqbCuRGdPa9cFX7NnmZRLSds62pump",
+     "u": 27.09
+    },
+    {
+     "t": 1792154785,
+     "p": -126.99,
+     "m": "2g6t3kAQ9hUXk4UatSXfYU1Yg9smcujXYxjFx8G6pump",
+     "u": 59.56
+    },
+    {
+     "t": 1792155069,
+     "p": -27.25,
+     "m": "GqNkx3SEEuPUSenzArXBmwCCYrZnRL7EExWTqBsn3n7h",
+     "u": 81.56
+    },
+    {
+     "t": 1792157090,
+     "p": -33.74,
+     "m": "2jJbqDqdjNupLra7avyMDP79zJDTcXV8cUv7FnduDpFx",
+     "u": 43.02
+    },
+    {
+     "t": 1792157483,
+     "p": 2.39,
+     "m": "BhmFZAucgyzS5ibPcPvt9Zp7L3iPVum2ALvPQ3h6UYib",
+     "u": 40.81
+    },
+    {
+     "t": 1792159221,
+     "p": -1.36,
+     "m": "8986NN252oM2AodzKGQcYhvqrK8e5Zk3DodMJcYYpump",
+     "u": 30.57
+    },
+    {
+     "t": 1792175392,
+     "p": -2.28,
+     "m": "9KcwEpr7TnnaTuoXVcc3J4wxq5ptVr7fsH53w9M7pump",
+     "u": 30.26
+    },
+    {
+     "t": 1792407657,
+     "p": -20.94,
+     "m": "2BoLeyuwSft2QdfeFyW5Gnv2F8JWSrM1UorxtXWESTNK",
+     "u": 52.85
+    },
+    {
+     "t": 1792434307,
+     "p": -93.13,
+     "m": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "u": 220.7
+    },
+    {
+     "t": 1792436029,
+     "p": 27.99,
+     "m": "HKGF7irWT4fbreXspdYPR1x1MctTibU5dvifVBGeD4zQ",
+     "u": 236.95
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 1123.01,
+    "7d": 4556.86,
+    "30d": 4800.7
+   },
+   "recent_buys_1d": 5,
+   "coverage": {
+    "sigs": 526,
+    "oldest_ts": 1791662790,
+    "window_days": 9.0,
+    "missing_tx": 0,
+    "unmatched_sells": 26,
+    "closed": 25,
+    "priced_hist": 85,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "beaver",
+   "name": "Beaver",
+   "handle": null,
+   "address": "GM7Hrz2bDq33ezMtL6KGidSWZXMWgZ6qBuugkb5H8NvN",
+   "source": "https://www.solanatracker.io/wallet/GM7Hrz2bDq33ezMtL6KGidSWZXMWgZ6qBuugkb5H8NvN",
+   "source_note": "Public Solana Tracker title labels this wallet \"Beaver\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -675.04,
+     "trades": 23,
+     "wins": 8,
+     "win_rate": 0.348,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -629.95,
+     "trades": 30,
+     "wins": 11,
+     "win_rate": 0.367,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -629.95,
+     "trades": 30,
+     "wins": 11,
+     "win_rate": 0.367,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "GfPeFQieP3JPQbQBUiuunmAbNwbaASEPmRUcqZjcpump",
+     "t": 1792436241,
+     "pnl_usd": -80.14,
+     "usd": 232.31,
+     "cost_usd": 312.45,
+     "sig": "3oXN9tNFfvMQBtJGEa5BdpXHoPS7ZvUJqpxhvXHSmE93iwgD4fuJgU5AgY1RmsYmu2WSjubhmqQwkuxzhDGQ7Yks",
+     "symbol": "EPIC",
+     "name": "Epic Coin"
+    },
+    {
+     "side": "buy",
+     "mint": "GfPeFQieP3JPQbQBUiuunmAbNwbaASEPmRUcqZjcpump",
+     "t": 1792436153,
+     "usd": 312.45,
+     "sig": "52UZZsrWVeuG5Mz2x8z6ii1t7EyCQPbEG5gzzr4LpDTum3PrYm1HSzCTnYGxC3FEcvK2CjNrWrZc3NVbuaxzQAJc",
+     "symbol": "EPIC",
+     "name": "Epic Coin"
+    },
+    {
+     "side": "sell",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792436126,
+     "pnl_usd": -84.32,
+     "usd": 315.68,
+     "cost_usd": 400.0,
+     "sig": "4HXyRSWsbAVrEfaKcbcHBsn9Lv7dZF8G8jZeQZgvCBPYhArWg6LWaZ6vCeXfofZqTxk6MSdoQhet9MpnqpNZBsxY",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435951,
+     "usd": 400.0,
+     "sig": "3TTZ33xYrJHNYYpAz5qrrY1bKCKmPNbhHvc3dUxiieoHKUSh8PiUHNAdbEwmNR43Aa9XVZLxTLBUrX4d7bkRz77J",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "7EWGzCpzsmQXXcdZWYJbuskPNLWbtd8usdvKjSHLpump",
+     "t": 1792435691,
+     "pnl_usd": -11.38,
+     "usd": 93.15,
+     "cost_usd": 104.53,
+     "sig": "rxGRxQnbfafzhLT6zgYd2FwBpioHWLBPtkRxJLevuZ5ZEYFrsRABNk5KgfusU26hvwnpjuPacsVyakKMSmoLxpA",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "7EWGzCpzsmQXXcdZWYJbuskPNLWbtd8usdvKjSHLpump",
+     "t": 1792435667,
+     "usd": 104.53,
+     "sig": "2j3bfedJBVGYaoCPzWmtnEBfYZaFaT5gFcJ5tutPUi5u1vJxqzohVCB6YUEXPrFxzjqdhSpPqTGfx83NmSommAct",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435469,
+     "pnl_usd": 15.74,
+     "usd": 120.13,
+     "cost_usd": 104.39,
+     "sig": "38vw5q6mFUChcz33ytBoPdJyk53LXVzButuyaD4bseB5ease73zCzWVoyEGsk8nkuWKXsU9VwJessHq6jLx2cFLP",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435468,
+     "usd": 104.39,
+     "sig": "44hHUSJoE2LWNgC35rYN9b4DSptxvqmPS6j5uMQdk2tZVMYNfpjzcUd1kLm7FTqH2UjhGcEWgWAV7NeHw2J9tk3x",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "3AzbL7Z3A2EadG91f8driwccR7sTPRNBSbduY2VDpump",
+     "t": 1792434984,
+     "pnl_usd": -0.48,
+     "usd": 114.48,
+     "cost_usd": 114.96,
+     "sig": "2DshYXZi67ypCAXUrPj4FHTr9Mw6g7sjs3onHX7i9HEbFdZ5wAj9rzXy81LYDJLSpYj3RNvEvrDLqJmkh7N3Z7Qv",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "3AzbL7Z3A2EadG91f8driwccR7sTPRNBSbduY2VDpump",
+     "t": 1792434810,
+     "usd": 10.59,
+     "sig": "4ei1Jb98ZcccT5tzZZsYfWdPiWXNU9UojfnCDyyrFEhdn4N7agU6qrVCShRmtf4zcfZFtXJHtsrP9Fi9CEjKP6Wo",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "3AzbL7Z3A2EadG91f8driwccR7sTPRNBSbduY2VDpump",
+     "t": 1792434754,
+     "usd": 104.37,
+     "sig": "4FT86AVSatACyFEM9gZWfPuB7RmuMP8JYqfgjmrAzBYWu1Mvc5YtvFrwjgp3hHxRbHTKP3Z276RTRDT4TGHeSqFb",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "9oAjf3hNqSnvijzT8GsUZstdM6KZEvRonoc5bcWmpump",
+     "t": 1792434712,
+     "pnl_usd": 18.41,
+     "usd": 122.79,
+     "cost_usd": 104.38,
+     "sig": "GLefKwrumtXPTTis5PDdDFxeCDWfZFHqSLurTQ55tCG8xwfCKJLf4cATGJsRYRxiC4iFQASbozR3RLctCs1wAkH",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "9oAjf3hNqSnvijzT8GsUZstdM6KZEvRonoc5bcWmpump",
+     "t": 1792434660,
+     "usd": 104.38,
+     "sig": "4ZKCFkdNsnydud7J8UCMDqVnvZG2BuSQTJw8dMb7NxhjsrQYZR7bc7J8JyRF3ESKmZqJQ6nCc11szf7Pn8BpCReW",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "FBSECyrSRkwXYCtfJZZgwimxEfJiqQ6eroKckWaspTKM",
+     "t": 1792434442,
+     "pnl_usd": 1.11,
+     "usd": 209.52,
+     "cost_usd": 208.41,
+     "sig": "5Y56ApYYgSaKZdT9a9ASct2vqq9zSbgkjmigedDzNELNWvNhrFLSN9eAXHZ9yS3zz9ds6Be7pbvmWn3xJSsycs9q",
+     "symbol": "PRERICH",
+     "name": "pre-rich"
+    },
+    {
+     "side": "sell",
+     "mint": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "t": 1792434408,
+     "pnl_usd": 3.33,
+     "usd": 107.69,
+     "cost_usd": 104.36,
+     "sig": "5HEwgyZbUwUmfuwzUhndd4hQLbcgXpSrcMBDjxQ75gu5n4tVAg5DnJaXHUTwwuY7GeVtrq9JqMsEGFaYfGycAAig",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792249565,
+     "p": -112.35,
+     "m": "FHi7Ph78mQTdrCkoenM7iokda44vk34ScCw76nPMUJKL",
+     "u": 200.37
+    },
+    {
+     "t": 1792249780,
+     "p": 7.23,
+     "m": "H8C7nmRFGRpVYQsowRp8raEgzkJCzFTCGQcNN2T9pump",
+     "u": 215.55
+    },
+    {
+     "t": 1792252880,
+     "p": 240.09,
+     "m": "2ToDyk3tzSc3x8BECvrEq33ZdEHutc3iXUzvsgJVnJo9",
+     "u": 396.24
+    },
+    {
+     "t": 1792253033,
+     "p": -52.54,
+     "m": "9kc6BtuZ3Zq7QohB8d2dZmX7BDXChdkKT6CGDn8Zf7CR",
+     "u": 154.63
+    },
+    {
+     "t": 1792253281,
+     "p": 14.78,
+     "m": "2ToDyk3tzSc3x8BECvrEq33ZdEHutc3iXUzvsgJVnJo9",
+     "u": 274.53
+    },
+    {
+     "t": 1792346208,
+     "p": -37.17,
+     "m": "7ohidW569HmN8NyY83x1CbDii5L9W4efREVt78ZHpump",
+     "u": 167.4
+    },
+    {
+     "t": 1792351006,
+     "p": -14.95,
+     "m": "Bdvj3yghGToyY55G6UFzw3ehCt8FeLEtjxwr8eVe1gLk",
+     "u": 189.8
+    },
+    {
+     "t": 1792362169,
+     "p": -131.19,
+     "m": "2y4b4chPooVJZta323vk746Fh87JooNtxiuEvDjypump",
+     "u": 196.39
+    },
+    {
+     "t": 1792362825,
+     "p": -23.98,
+     "m": "HA2mbc5VM9mB9XytiLfcPyv8Kazb8CjreLtvhhS7pump",
+     "u": 182.38
+    },
+    {
+     "t": 1792364451,
+     "p": -10.9,
+     "m": "71qW2ZEXiD1vjQBJ225M5raXYYNMpqVHmjNcSdVPyVq7",
+     "u": 93.46
+    },
+    {
+     "t": 1792364617,
+     "p": -146.75,
+     "m": "3U3E7AB693u3V8phRdWTjVR3HciMRGYx7fZysMCTDHgL",
+     "u": 162.75
+    },
+    {
+     "t": 1792376327,
+     "p": -224.05,
+     "m": "JDWExL8BZmMF4kUwJxpguuZ6VS7CosKJYrvAP9gbVDUa",
+     "u": 95.94
+    },
+    {
+     "t": 1792423659,
+     "p": -112.64,
+     "m": "68qNx9cinkWs8DDENPV9RkVsVErvDtKgockuyBmopump",
+     "u": 96.75
+    },
+    {
+     "t": 1792423990,
+     "p": 18.86,
+     "m": "C3x55drBGnHwaGm8vAnyCCQRWW4zQM7pqJVRYVpJpump",
+     "u": 228.23
+    },
+    {
+     "t": 1792425601,
+     "p": 87.55,
+     "m": "7siPfDByiXoQhZvDfn1A1VMo6ZoWk6aCc3j2y9M6HUhY",
+     "u": 192.34
+    },
+    {
+     "t": 1792425688,
+     "p": -7.7,
+     "m": "9rMJzQoHWxBFt1TFe7FQAe9jcuCG8ZJ8VQbY5Efnpump",
+     "u": 97.25
+    },
+    {
+     "t": 1792428765,
+     "p": 105.04,
+     "m": "FPDFsEUMUPdQxhGMRrk8g6xRHn9qkZXxQocQqiynJv1Y",
+     "u": 209.68
+    },
+    {
+     "t": 1792430907,
+     "p": -52.76,
+     "m": "ABLMQjh1aeqdR47UGQsPrzL33PSiSZbyXegWuVP9pump",
+     "u": 156.23
+    },
+    {
+     "t": 1792431143,
+     "p": -18.67,
+     "m": "1bZV8tb27yPsCsgbn2SVxpJRSkptTbNg5xAKXVBpump",
+     "u": 190.19
+    },
+    {
+     "t": 1792432089,
+     "p": 1.05,
+     "m": "CzK3cj7DYThWGBuQcFfy8qLyFgyBEbriWhqJt6nHWyJ9",
+     "u": 116.28
+    },
+    {
+     "t": 1792432375,
+     "p": -0.63,
+     "m": "73C5f3Si5ENVUNVTmcA6XLxKEZ1cuhe4paBeZmsqpump",
+     "u": 103.94
+    },
+    {
+     "t": 1792434279,
+     "p": -20.54,
+     "m": "CKstg8ULmjC1ZVfFjV3EvYrmaMn76RgU9REuspPcpump",
+     "u": 94.55
+    },
+    {
+     "t": 1792434408,
+     "p": 3.33,
+     "m": "5EVNL7TULcZPH7uTQ2wCAeGjWKUuzyTYAytSXiodpump",
+     "u": 107.69
+    },
+    {
+     "t": 1792434442,
+     "p": 1.11,
+     "m": "FBSECyrSRkwXYCtfJZZgwimxEfJiqQ6eroKckWaspTKM",
+     "u": 209.52
+    },
+    {
+     "t": 1792434712,
+     "p": 18.41,
+     "m": "9oAjf3hNqSnvijzT8GsUZstdM6KZEvRonoc5bcWmpump",
+     "u": 122.79
+    },
+    {
+     "t": 1792434984,
+     "p": -0.48,
+     "m": "3AzbL7Z3A2EadG91f8driwccR7sTPRNBSbduY2VDpump",
+     "u": 114.48
+    },
+    {
+     "t": 1792435469,
+     "p": 15.74,
+     "m": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "u": 120.13
+    },
+    {
+     "t": 1792435691,
+     "p": -11.38,
+     "m": "7EWGzCpzsmQXXcdZWYJbuskPNLWbtd8usdvKjSHLpump",
+     "u": 93.15
+    },
+    {
+     "t": 1792436126,
+     "p": -84.32,
+     "m": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "u": 315.68
+    },
+    {
+     "t": 1792436241,
+     "p": -80.14,
+     "m": "GfPeFQieP3JPQbQBUiuunmAbNwbaASEPmRUcqZjcpump",
+     "u": 232.31
+    }
+   ],
+   "positions": [
+    {
+     "mint": "CSRRgTwf9o5KLgguS2M16aEAhV5PUUzfshrAAQ8opump",
+     "tok": 803859.0,
+     "cost_usd": 1000.0,
+     "symbol": "RETARDIO",
+     "name": "RETARDIO"
+    }
+   ],
+   "volume_usd": {
+    "1d": 9996.0,
+    "7d": 13802.65,
+    "30d": 13802.65
+   },
+   "recent_buys_1d": 27,
+   "coverage": {
+    "sigs": 302,
+    "oldest_ts": 1792243202,
+    "window_days": 2.3,
+    "missing_tx": 0,
+    "unmatched_sells": 23,
+    "closed": 30,
+    "priced_hist": 91,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "brox",
+   "name": "Brox",
+   "handle": null,
+   "address": "7VBTpiiEjkwRbRGHJFUz6o5fWuhPFtAmy8JGhNqwHNnn",
+   "source": "https://www.solanatracker.io/wallet/7VBTpiiEjkwRbRGHJFUz6o5fWuhPFtAmy8JGhNqwHNnn",
+   "source_note": "Public Solana Tracker title labels this wallet \"Brox\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -417.62,
+     "trades": 1,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -1293.45,
+     "trades": 5,
+     "wins": 1,
+     "win_rate": 0.2,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -1319.89,
+     "trades": 6,
+     "wins": 1,
+     "win_rate": 0.167,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792427094,
+     "pnl_usd": -417.62,
+     "usd": 83.64,
+     "cost_usd": 501.26,
+     "sig": "4DupsoEV7BHdqcYa8t3ssM2DKc1uEVCD17rCqjRL6g2PsnqscogMbCynMPwEu2bg1hiyEzpW1PYSVgpb4YJxHLoV",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792425934,
+     "usd": 501.26,
+     "sig": "4rCUCFaJ58xVGaaXy5MUgCCEjJd8fBhG1LTWEQnXXiN9KWzeVLqhWt9xFo2YUxwmrkgxMjS1Ahv9hyPpC8VjTRAt",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "DABRZJNsXKFnvXf9aUDcMtodbQWHaUPwv1n5NzGhcX6N",
+     "t": 1791836845,
+     "pnl_usd": -423.27,
+     "usd": 176.0,
+     "cost_usd": 599.27,
+     "sig": "2T9nZ1ZjSwoyuxGarhvVfdvSkxSLw2ETUhfJckjppeDNQXTXYrTScm9VwymwmDLkvF5M6KWh6axQgYvLASM2Ydu9",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "DABRZJNsXKFnvXf9aUDcMtodbQWHaUPwv1n5NzGhcX6N",
+     "t": 1791836729,
+     "usd": 599.27,
+     "sig": "2MSBXbK6Z3WrXkhMKAdiiuM35FNxobdGFrBK3fbGEcWi9XEQu3QvdMK9SuR2JziZDkVDp3PnN3Ut3H7i2Cahk6dK",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "cRDDhdkeeqhaigByPw6FSuBgkcu7sbyYTGVobeWhHHY",
+     "t": 1791836453,
+     "pnl_usd": 242.93,
+     "usd": 842.38,
+     "cost_usd": 599.45,
+     "sig": "wkJT7BM6NktN4pt6ceWW1y1R1kZHHKYYHVeVFsqps1j85aWCAEPqfXdaG14SuSJRRjjpWjxfsiXWbMLovNM4rTe",
+     "symbol": "CARLO",
+     "name": "Cyber Apostle"
+    },
+    {
+     "side": "buy",
+     "mint": "cRDDhdkeeqhaigByPw6FSuBgkcu7sbyYTGVobeWhHHY",
+     "t": 1791836242,
+     "usd": 599.45,
+     "sig": "4ZLSjw9wejEFeq1ihPFfhi2tecDENLzsy2NkfuXeJxfYyQk9Gb8DrqehkNEPg5prrWko5jWVcgfnbkj8AqJigH9n",
+     "symbol": "CARLO",
+     "name": "Cyber Apostle"
+    },
+    {
+     "side": "sell",
+     "mint": "FowTKhHKpRkG2oFqmLC81pgJeJDDpdfYBfpHTFMzpump",
+     "t": 1791834726,
+     "pnl_usd": -257.22,
+     "usd": 45.96,
+     "cost_usd": 303.18,
+     "sig": "62zHzJFUSDmjDwhGcEhMM8DzJZTNY7hTm4cT26ow4VaMDZ3ujgJV331DLMFNBezVwSQcpLN2gynNM6eXi6WJ9wAr",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "6vGXr4h347VMKnJLu6kToE9xPDGRNqjBE26Rr3SCpump",
+     "t": 1791834718,
+     "pnl_usd": -438.27,
+     "usd": 57.62,
+     "cost_usd": 495.89,
+     "sig": "4E3STM4CvvJjfZdeAhNgCg7dnFfqGk2LViaYNYGNJk88KeZwpom7sVErtvFTkRs95DpqgsUg5JT5eDcQFhbJy4Gj",
+     "symbol": "ADOG",
+     "name": "aDogymous"
+    },
+    {
+     "side": "buy",
+     "mint": "6vGXr4h347VMKnJLu6kToE9xPDGRNqjBE26Rr3SCpump",
+     "t": 1791813376,
+     "usd": 495.89,
+     "sig": "5w1unKHakh8D1rNQEx1aABuTZS48qprUD6MnwVrAmYXRuMqP4sJTq7VJw9VRevCfdsjTi7MGTvzUChCzcTEckb6N",
+     "symbol": "ADOG",
+     "name": "aDogymous"
+    },
+    {
+     "side": "buy",
+     "mint": "FowTKhHKpRkG2oFqmLC81pgJeJDDpdfYBfpHTFMzpump",
+     "t": 1791482252,
+     "usd": 303.18,
+     "sig": "4EiAVQoC2czAqX15tQ1UKsYRtrUj2BjcUY1FtD5ZAcC1puKchmAwo9Co8YiTfnaNMXKMV6RJc42zmTH2frWk4HZ1",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "AYHHpvAVf27Rv64PBPXHEJKg8MXaJ35vmsn8GV6wFigf",
+     "t": 1791194094,
+     "pnl_usd": -26.44,
+     "usd": 582.08,
+     "cost_usd": 608.52,
+     "sig": "2FPC1tftXnBhSsyyP7nzdjNtfW5daKwfWeC5MNemFUW6BbDmpPZ9wrtBrc2RFeE6f2Fh99S7Kf5C4LJtTS3PPKd6",
+     "symbol": "zDOG",
+     "name": "Privacy Dog"
+    },
+    {
+     "side": "buy",
+     "mint": "AYHHpvAVf27Rv64PBPXHEJKg8MXaJ35vmsn8GV6wFigf",
+     "t": 1791155935,
+     "usd": 608.52,
+     "sig": "udpMrPKWoFgDMdskZRJGEiW9NLVtjxX8TT6zFYxaHrbk5hvzmukf5aq7FBiyiRUmFfWRUJwQwHZWUZMZx6ubq99",
+     "symbol": "zDOG",
+     "name": "Privacy Dog"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791194094,
+     "p": -26.44,
+     "m": "AYHHpvAVf27Rv64PBPXHEJKg8MXaJ35vmsn8GV6wFigf",
+     "u": 582.08
+    },
+    {
+     "t": 1791834718,
+     "p": -438.27,
+     "m": "6vGXr4h347VMKnJLu6kToE9xPDGRNqjBE26Rr3SCpump",
+     "u": 57.62
+    },
+    {
+     "t": 1791834726,
+     "p": -257.22,
+     "m": "FowTKhHKpRkG2oFqmLC81pgJeJDDpdfYBfpHTFMzpump",
+     "u": 45.96
+    },
+    {
+     "t": 1791836453,
+     "p": 242.93,
+     "m": "cRDDhdkeeqhaigByPw6FSuBgkcu7sbyYTGVobeWhHHY",
+     "u": 842.38
+    },
+    {
+     "t": 1791836845,
+     "p": -423.27,
+     "m": "DABRZJNsXKFnvXf9aUDcMtodbQWHaUPwv1n5NzGhcX6N",
+     "u": 176.0
+    },
+    {
+     "t": 1792427094,
+     "p": -417.62,
+     "m": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "u": 83.64
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 584.89,
+    "7d": 2905.55,
+    "30d": 5336.73
+   },
+   "recent_buys_1d": 1,
+   "coverage": {
+    "sigs": 516,
+    "oldest_ts": 1791061263,
+    "window_days": 16.0,
+    "missing_tx": 0,
+    "unmatched_sells": 2,
+    "closed": 6,
+    "priced_hist": 14,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "alxcooks",
+   "name": "AlxCooks",
+   "handle": null,
+   "address": "89HbgWduLwoxcofWpmn1EiF9wEdpgkNDEyPjzZ72mkDi",
+   "source": "https://www.solanatracker.io/wallet/89HbgWduLwoxcofWpmn1EiF9wEdpgkNDEyPjzZ72mkDi",
+   "source_note": "Public Solana Tracker title labels this wallet \"AlxCooks\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -1559.82,
+     "trades": 42,
+     "wins": 9,
+     "win_rate": 0.214,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -1559.82,
+     "trades": 42,
+     "wins": 9,
+     "win_rate": 0.214,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -1559.82,
+     "trades": 42,
+     "wins": 9,
+     "win_rate": 0.214,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436845,
+     "pnl_usd": 119.91,
+     "usd": 236.06,
+     "cost_usd": 116.14,
+     "sig": "5KsSnDSdnicYbBbyA2xtHWeAcCBPmJ1cMrQ61jvq14wDn85Azs9Sji9XdY4yUPRriba4m9VjgSgZ6YKdnnSvx9aa",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "buy",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436835,
+     "usd": 6.38,
+     "sig": "2rDMf1XnqKJtuqv8fnD8ruVjtbHdNhdR5GVyJJexeck6MYTUkmqnZYkShntUxWhUhmts2kZsZFFN83EdNnT7KX3n",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "buy",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436739,
+     "usd": 6.38,
+     "sig": "2caizjv7zrQh8FEDEn6vakbySbayxMkfpeeCQwQna1hrbt62YuG6B5SNe8fqfZ8ZqThbcJ66crUKwHJN8E4xDQNY",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "buy",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436698,
+     "usd": 6.38,
+     "sig": "671s6mofjLVcNS6d29K9fEqm3Qn2kLeBWWb86XCfNVe72HamKFqx5V1DCwYgFMxnAgUbW3vGiMWZxPXK1AHu3xZw",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "buy",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436544,
+     "usd": 6.38,
+     "sig": "3y1beQ6kaWtzVfBvpRfGNPAxgDfBxdLH4oudxtRBDQQi2LBhDCQ3rbGU2D9mN9ZsaxofiRNS2XP41fLDqsm2QfzU",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "buy",
+     "mint": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "t": 1792436387,
+     "usd": 192.05,
+     "sig": "5ASMqAoj1xkRHckdJQE4rA2YxPx8cmAKmZdHofRgGiQXt3YbYqJKuF2KAAnJoYUVp61XW5Jw78Pv4RxLQzvo3pLH",
+     "symbol": "HOUSE",
+     "name": "Gently Used House"
+    },
+    {
+     "side": "sell",
+     "mint": "5JnjiPFtBBkXXPkN2moW1Wq4bZ6m1iCK8tu8dMxVpump",
+     "t": 1792436379,
+     "pnl_usd": 18.66,
+     "usd": 217.09,
+     "cost_usd": 198.43,
+     "sig": "3P4BTm7p8XBbM2WoE7rRYxBKLJ5jAcQbqYeSiDB9rsJUJRQVdxieBiVgpYPu74XCbFKxqb9wd3jPAZ7x5vUsWqoJ",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "5JnjiPFtBBkXXPkN2moW1Wq4bZ6m1iCK8tu8dMxVpump",
+     "t": 1792436370,
+     "usd": 6.38,
+     "sig": "CYW5DuqfsfERfmUq4zjXwR1eB1isrWaGsUoCysJtbVpMPkdt63JA3pN8ndZD9xybh8VBRwD6LSywPXNLuojgasH",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "5JnjiPFtBBkXXPkN2moW1Wq4bZ6m1iCK8tu8dMxVpump",
+     "t": 1792436367,
+     "usd": 192.05,
+     "sig": "3HSCJQdqEBphWckc1A7dp4fnvHGtkEnwy8WCkeTL8sVPcCugxfZb1hchwiQuzm5CG6Chm1feqEsimpUkwj78FMFh",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435913,
+     "usd": 6.38,
+     "sig": "r3ZzjT59BtoHCwaavCbWzvWCsKW3ed4ECnvfafR4f7N6DTEdUg2fDwyHmK85fE9qpEG6684VMBmvRdo93de7SYz",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435874,
+     "usd": 191.9,
+     "sig": "56Ro6gksqp4sKMPBkmcbL8F9dFThMMxnZWMRY9zJRyfPyG4aWrXVwY9XcuSqszo8v2R9FiF52CMHCb1scEbs3RrX",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435654,
+     "usd": 573.34,
+     "sig": "3jQFfBwV6SqEjGpNfJwXRLTZatzQtnH39CpHNoTYhzdJDtCcP7N2zPHY9hHrcx5JS1jDLrn39o5mgyqmFRdL1QhA",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "MgRf5QZLW7Tcq42o1A2KTWSJiM5j5CaEPdFKKEawFxf",
+     "t": 1792435572,
+     "usd": 417.45,
+     "sig": "2iATHKFgVcKAt4dZJPa927xh4SNzeu6jW6ANBzbGDkpQ8HKafPUHevzeiecPbwHLLxfQGha9eaboLCoqCqXDny5v",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "GhDRqSaoDuq65KGnDmiWkr5FAvq2NmqUPgXp1P3ypump",
+     "t": 1792435472,
+     "pnl_usd": -68.3,
+     "usd": 130.13,
+     "cost_usd": 198.43,
+     "sig": "xMaMQdt9ds1SSmjHs8XPHUgJ3duSrvajpsBvrCgMfePFuXonjZQ8vZnuJTa4JiBYaXa1bqWM9Ernd9guHrcC9Fn",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "GhDRqSaoDuq65KGnDmiWkr5FAvq2NmqUPgXp1P3ypump",
+     "t": 1792435470,
+     "usd": 6.38,
+     "sig": "23mBb6FYi4bYJ3fFAdm99XceedTRCbn2fXMdPWBmv9G5WcKb6KSLwuncbxompdot7GRQ5iteQfLUn1W2SrWNhcH7",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792418283,
+     "p": -42.73,
+     "m": "6JFdG6ChCtpBwNckCV2CUDfYsiGk9ap5TDae3JPF6AeF",
+     "u": 150.72
+    },
+    {
+     "t": 1792418323,
+     "p": 12.32,
+     "m": "CcUrtnexD2DUQMVYwx14JMcsMEetBDnafDySxJ4Jpump",
+     "u": 205.93
+    },
+    {
+     "t": 1792418509,
+     "p": -53.47,
+     "m": "DoJuguGa5QLu4mFeerqXkNTgCr7d1Rct84LRPUntekfu",
+     "u": 139.46
+    },
+    {
+     "t": 1792418591,
+     "p": -18.89,
+     "m": "5Nwtp3JMNruHcDmAjw2J7dUhGVdKRkzi1Vk2PU6Lpump",
+     "u": 174.04
+    },
+    {
+     "t": 1792418626,
+     "p": -69.36,
+     "m": "BBcVbEfrqdamjFJKbXhnTvr8z34kxLjsWN8ua5vddFwX",
+     "u": 123.57
+    },
+    {
+     "t": 1792418665,
+     "p": -73.42,
+     "m": "At86xLgnTgEdHAkJC5NcTpnejt19ZyCGmHDPvdQmdPF",
+     "u": 119.51
+    },
+    {
+     "t": 1792419532,
+     "p": -106.73,
+     "m": "CWuB1aktmPk2JKdSg9wcTcpR95CseWp8sf5B8zhnnRmm",
+     "u": 118.23
+    },
+    {
+     "t": 1792419825,
+     "p": -55.1,
+     "m": "9PKcdUrddmnD1fjzFJDCc7DQdn4S3NV4TFQVZXaopump",
+     "u": 157.05
+    },
+    {
+     "t": 1792420461,
+     "p": -22.07,
+     "m": "88kayP2HBCdWJXjHcY4qGzaEEawceb6AhGLvNhKHpump",
+     "u": 170.86
+    },
+    {
+     "t": 1792420554,
+     "p": 62.34,
+     "m": "EVxbPtNgGXpFS5Xk1qiqN5TR2HfgmHpZeCcq87ugpump",
+     "u": 158.81
+    },
+    {
+     "t": 1792420676,
+     "p": 33.26,
+     "m": "EVxbPtNgGXpFS5Xk1qiqN5TR2HfgmHpZeCcq87ugpump",
+     "u": 129.73
+    },
+    {
+     "t": 1792420878,
+     "p": 8.81,
+     "m": "23J5DV6N2LBK9tEeXPstjkcH3dsT9y5ciDMwxQ2smPKe",
+     "u": 105.27
+    },
+    {
+     "t": 1792420882,
+     "p": -18.1,
+     "m": "23J5DV6N2LBK9tEeXPstjkcH3dsT9y5ciDMwxQ2smPKe",
+     "u": 78.36
+    },
+    {
+     "t": 1792421851,
+     "p": -62.77,
+     "m": "7L6mNv9y4vGvXZBVM7PrVoUL98DEtwoxFUmHN9vQcamW",
+     "u": 223.81
+    },
+    {
+     "t": 1792422750,
+     "p": -324.46,
+     "m": "3RQEUv6by3V3JbV4wmmnZe42vbEWby8FJDgsfGG3pmbA",
+     "u": 60.96
+    },
+    {
+     "t": 1792423152,
+     "p": 66.1,
+     "m": "2MceFKxikTavZgT69RS8AiFedG1Fn9DEUZvXtUK3pump",
+     "u": 258.9
+    },
+    {
+     "t": 1792423258,
+     "p": -62.43,
+     "m": "D8E42EBcmNU2FccKdDEUSprj8K3i18BeZvSBEbD7pump",
+     "u": 214.13
+    },
+    {
+     "t": 1792423836,
+     "p": -20.58,
+     "m": "GEf3gjp3rTZ5bhxwj52VifqHdJgccByC3R5FAoovpump",
+     "u": 116.57
+    },
+    {
+     "t": 1792424104,
+     "p": 33.53,
+     "m": "8cHqLAGU9qtEcX19gPT2jDaK9DoPKZ1eyefJWXAQpump",
+     "u": 226.32
+    },
+    {
+     "t": 1792424289,
+     "p": -29.76,
+     "m": "Fxbabq6WjbkP5SFF9kwFFEk5TGhTNTMgXpkCCUS1GaT2",
+     "u": 120.27
+    },
+    {
+     "t": 1792425035,
+     "p": -50.86,
+     "m": "9nLHf6SWaPavnVcYwWVm4Ug7HEM4eXU7adiLnq23pump",
+     "u": 205.95
+    },
+    {
+     "t": 1792425628,
+     "p": -54.94,
+     "m": "GLNgZ7hAehbTJSevJeAiudQgJqVjGsKMkkuRUJu9pump",
+     "u": 150.65
+    },
+    {
+     "t": 1792425660,
+     "p": -31.07,
+     "m": "ER3CVVwYzpLRxNVP2RdPPK4e13vmPPdW9Tj6jnQ5pump",
+     "u": 174.25
+    },
+    {
+     "t": 1792425932,
+     "p": -93.92,
+     "m": "4yKrYATUb5zGE6RnjjUEfBvzVWhcDjkBWWNavKLZpump",
+     "u": 111.39
+    },
+    {
+     "t": 1792425941,
+     "p": -5.19,
+     "m": "8SyeANLY44ydw5w5CJvDcEWUZ48o8qurNwBknMYzAfi4",
+     "u": 1.53
+    },
+    {
+     "t": 1792426261,
+     "p": -21.93,
+     "m": "5C242UJWH6D1aeQVtJ1pLw1xfPKTDX36SuDdsDx6ZeB",
+     "u": 176.99
+    },
+    {
+     "t": 1792426393,
+     "p": -21.85,
+     "m": "Eomp5UzBHhKVyN9aQBU2Usp3CbFspEJNan3Hy7MFpump",
+     "u": 177.24
+    },
+    {
+     "t": 1792426672,
+     "p": -20.03,
+     "m": "BeNf7fZAg2zEoFSRXCb6EB5fPTck28wM97Ju5dG7RXst",
+     "u": 172.5
+    },
+    {
+     "t": 1792426708,
+     "p": -47.04,
+     "m": "BeNf7fZAg2zEoFSRXCb6EB5fPTck28wM97Ju5dG7RXst",
+     "u": 151.72
+    },
+    {
+     "t": 1792426970,
+     "p": -18.05,
+     "m": "33u3v5mb7mDY1fKDUvJbWBVjWa7Tk7738CVzVDnL7wL7",
+     "u": 174.48
+    },
+    {
+     "t": 1792429219,
+     "p": -219.55,
+     "m": "GaNDz4FXgLLgUW5FPgeaRKj7knERQRgxdCkfpcbipump",
+     "u": 154.97
+    },
+    {
+     "t": 1792430113,
+     "p": 35.0,
+     "m": "RcsSXQXzbReXnzLDyQbBwgNMc7PMtDmj3WDUkEJpump",
+     "u": 161.39
+    },
+    {
+     "t": 1792431749,
+     "p": -46.42,
+     "m": "B59LeYh3MSrP6q6PeTStPAQh5Fius1dBRkfhUCW7LaQw",
+     "u": 146.04
+    },
+    {
+     "t": 1792431935,
+     "p": -49.4,
+     "m": "H3c7ui7kwPpYeH69DHdP6EtZweVmK3kUToJtpMmJpump",
+     "u": 170.24
+    },
+    {
+     "t": 1792431976,
+     "p": -11.38,
+     "m": "H3c7ui7kwPpYeH69DHdP6EtZweVmK3kUToJtpMmJpump",
+     "u": 160.11
+    },
+    {
+     "t": 1792432736,
+     "p": -4.83,
+     "m": "2mfc8T7NEzvXJRNtQX2RH5VqVZ9dZAkBa7R8pAvfpump",
+     "u": 187.62
+    },
+    {
+     "t": 1792433960,
+     "p": -124.48,
+     "m": "HvnJVCfMhW3W7fvraJnvUN7u5fgtHhF2P8qTVf3qpump",
+     "u": 157.24
+    },
+    {
+     "t": 1792434415,
+     "p": -3.97,
+     "m": "4yKrYATUb5zGE6RnjjUEfBvzVWhcDjkBWWNavKLZpump",
+     "u": 2.42
+    },
+    {
+     "t": 1792434667,
+     "p": -96.68,
+     "m": "Hxvrb8kCheWKWGbfmm6BnmGqyxvy8pMyHXQjKtYQpump",
+     "u": 95.53
+    },
+    {
+     "t": 1792435472,
+     "p": -68.3,
+     "m": "GhDRqSaoDuq65KGnDmiWkr5FAvq2NmqUPgXp1P3ypump",
+     "u": 130.13
+    },
+    {
+     "t": 1792436379,
+     "p": 18.66,
+     "m": "5JnjiPFtBBkXXPkN2moW1Wq4bZ6m1iCK8tu8dMxVpump",
+     "u": 217.09
+    },
+    {
+     "t": 1792436845,
+     "p": 119.91,
+     "m": "EzSVTRJ3WTtf951mLYXaJNKERjY4Q18jSKzcbyM5pump",
+     "u": 236.06
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 17328.95,
+    "7d": 17328.95,
+    "30d": 17328.95
+   },
+   "recent_buys_1d": 105,
+   "coverage": {
+    "sigs": 637,
+    "oldest_ts": 1792418011,
+    "window_days": 0.2,
+    "missing_tx": 0,
+    "unmatched_sells": 9,
+    "closed": 42,
+    "priced_hist": 156,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bagcalls",
+   "name": "BagCalls",
+   "handle": null,
+   "address": "4AHgEkTsGqY77qtde4UJn9yZCrbGcM7UM3vjT3qM4G5H",
+   "source": "https://www.solanatracker.io/wallet/4AHgEkTsGqY77qtde4UJn9yZCrbGcM7UM3vjT3qM4G5H",
+   "source_note": "Public Solana Tracker title labels this wallet \"BagCalls\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -390.13,
+     "trades": 1,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -1887.6,
+     "trades": 20,
+     "wins": 4,
+     "win_rate": 0.2,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -1887.6,
+     "trades": 20,
+     "wins": 4,
+     "win_rate": 0.2,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "2gLnaQN8Y73Qc62gMmX6WtJQjFnbvE7vgzUJ37WJpump",
+     "t": 1792372536,
+     "pnl_usd": -390.13,
+     "usd": 130.6,
+     "cost_usd": 520.73,
+     "sig": "45EfWyyVf9F71uNe9t3q3PupkeT3jgFNUumPAEVkYQDBpt7EtUQQ6UY7XEBQ9SVomMMW55CexYMpua51bRADKeWE",
+     "symbol": "UV",
+     "name": "Ultraviolet"
+    },
+    {
+     "side": "buy",
+     "mint": "2gLnaQN8Y73Qc62gMmX6WtJQjFnbvE7vgzUJ37WJpump",
+     "t": 1792366646,
+     "usd": 520.73,
+     "sig": "5GGygGU6rf2Lapzcoce8BW7dv68nsytvoFp3zRrkQbCHjzNLb5y1Qdr8QU6C1U9BxNN3cwJHyyqYrvM8dN6zy4bq",
+     "symbol": "UV",
+     "name": "Ultraviolet"
+    },
+    {
+     "side": "sell",
+     "mint": "GNA7ztNeHzUdrTFMSAfLr1Dinnw97KAXrwkNnNbxpump",
+     "t": 1792289495,
+     "pnl_usd": -100.49,
+     "usd": 210.82,
+     "cost_usd": 311.31,
+     "sig": "5LRooCBKYXVqASxipqfuJumKimhthZFNwXx6fbicgoFNPvEUJS4AL3ZNHw74yDS3cUcavPvzskP5mTVEuXjxrWch",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "GNA7ztNeHzUdrTFMSAfLr1Dinnw97KAXrwkNnNbxpump",
+     "t": 1792286256,
+     "usd": 311.31,
+     "sig": "5ARuyyg3oJdryZpUCAkMDwzMiE2CKVUZBfPWBiL2RSySUZtFPWpoL6jpJ55Vo9qD5eDrqDk5QXWtDVrpkTwG9epx",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "6S77uAJNz4gPgfQ5dhfzhoVR8zZ7tFr1usCYdLSbpump",
+     "t": 1792218624,
+     "pnl_usd": -59.48,
+     "usd": 256.07,
+     "cost_usd": 315.55,
+     "sig": "2oEQNt6brkyRk2annbnqu7UbzeHmKyW9MyN7RiUQqXpqYSUMhiHpcimKW8XkAkjeVERnUh1fPq8nFQMd7URyUrje",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "6S77uAJNz4gPgfQ5dhfzhoVR8zZ7tFr1usCYdLSbpump",
+     "t": 1792218587,
+     "usd": 315.55,
+     "sig": "2CKoy7VPut8LHkUsyJnUxNer64LRGMQQqasWJFGMK3CRgzRE1gYxTaJaEvWdsiJMHaDvTWHMTYNtXjwvJ8LD8Ew8",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "t": 1792198937,
+     "pnl_usd": -21.71,
+     "usd": 187.53,
+     "cost_usd": 209.23,
+     "sig": "3Z7JcQEnZeZh4xHDqGJZyHB38HChJKfxa78X7J2Snkc2BAcWESV5ofH1kqiSvwruv6HfNjPLAyq4iqN8LjEHTQMQ",
+     "symbol": "THERANOS",
+     "name": "Theranos"
+    },
+    {
+     "side": "buy",
+     "mint": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "t": 1792198922,
+     "usd": 209.23,
+     "sig": "eNP4PtfK5b4UVgpBMihvLkd6mmCpqZtW4AbXx7KcY3B6MV4PA4LAghLxhyd7N4zySDb8fNXBHEtkQjiboExnZQw",
+     "symbol": "THERANOS",
+     "name": "Theranos"
+    },
+    {
+     "side": "sell",
+     "mint": "Azcf4vgf5FPC9RK1CsAreYY5rSBcnpF8g7p5C2RHpump",
+     "t": 1792196211,
+     "pnl_usd": 47.45,
+     "usd": 570.76,
+     "cost_usd": 523.3,
+     "sig": "3y5UoaemRMPBzTSgJ3D3eYtcE3C7UfMF8RuRukJHDkGLfTy6RtRkLZ2zJaVq9mW1kQmnAgehuUVnUgCWcphGnCnM",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "Azcf4vgf5FPC9RK1CsAreYY5rSBcnpF8g7p5C2RHpump",
+     "t": 1792196207,
+     "usd": 209.36,
+     "sig": "61sDUjV7n5qbUS32DBHUDzKjfqroPQ6mJazazCo7uFrxQeR75gWMtDSNhNtKGivdgvWCCmmUtXKR5gwNE2mJetpV",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "Azcf4vgf5FPC9RK1CsAreYY5rSBcnpF8g7p5C2RHpump",
+     "t": 1792195768,
+     "usd": 313.94,
+     "sig": "3jSPv7EoXPWt6EmMbur8qVRYVb7134r8ZndJP6hCpUntym7k8UpTyfPsNa6zv6SaypqoPTMGVWZgiSRjsVW5qMdi",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "Hzx4WX6wGB1McrjCViY76xRZWnsgW2yhse5WSSoppump",
+     "t": 1792184502,
+     "pnl_usd": 0.65,
+     "usd": 53.38,
+     "cost_usd": 52.74,
+     "sig": "2V8tb2KyRtXvYC6ktsutwLxaVg2bERoMCVjjYkpbiW8hNvzrTuTbxtzCVEH32wY529GXPcVp7F2pmK5fwVj51s39",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "Hzx4WX6wGB1McrjCViY76xRZWnsgW2yhse5WSSoppump",
+     "t": 1792184290,
+     "usd": 52.74,
+     "sig": "3NmUZiYJJ59iQLMamcohWh58uPbpC4nyRwbq2VaFtd82M4tomAYGEStfMGRKCcH2nfzqaKg96Hrt2FLjwdReV4Dp",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "t": 1792174104,
+     "pnl_usd": -131.08,
+     "usd": 81.89,
+     "cost_usd": 212.97,
+     "sig": "4HoNsoWFRkBy5JBLz3TvCuwBkM9ZDJCosAMRjE65g7sH1o6khGVLCSzktBi7f3RVuaV43Zu8fsVzjPJ51Z1dpuU9",
+     "symbol": "THERANOS",
+     "name": "Theranos"
+    },
+    {
+     "side": "buy",
+     "mint": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "t": 1792132837,
+     "usd": 212.97,
+     "sig": "4kFqNiTzwivN6v5aVnquPYZaTdSa294aygagZ5nNoyrwioBGYkFzyWbNmuM3C7oEPNsGvgDwkt9xPdkkmavECWmQ",
+     "symbol": "THERANOS",
+     "name": "Theranos"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791846082,
+     "p": -48.62,
+     "m": "H8mQV4buHoZ4h3vCWxTcmx8q2TZu7kShnjQTxjBXd8Q",
+     "u": 59.04
+    },
+    {
+     "t": 1791902856,
+     "p": -58.73,
+     "m": "RtD7Dm8HUc8eHiLQ1XoZ7WqhXPftvjfNdKSSMiTCsfw",
+     "u": 156.31
+    },
+    {
+     "t": 1791907664,
+     "p": -9.56,
+     "m": "GYFEVRDp5GVbHAnX1mFYmdsxtuC5YBJuJiU8JKBypump",
+     "u": 55.79
+    },
+    {
+     "t": 1791909328,
+     "p": -170.06,
+     "m": "7VJc41hYUpNHpLF5DAi9jdy5vT3Coq4xgVjQNaf1pump",
+     "u": 368.04
+    },
+    {
+     "t": 1791910557,
+     "p": -108.34,
+     "m": "EuR6SWJQmqdxbvemF9KHtKeiXa6wTFiYXcqex1ZUnLVx",
+     "u": 429.76
+    },
+    {
+     "t": 1791926227,
+     "p": -69.89,
+     "m": "GdD4ss7TsM8AYEwPBaQkYaF5n639rGX2jQrHPmiHoirV",
+     "u": 38.32
+    },
+    {
+     "t": 1791928740,
+     "p": 53.12,
+     "m": "FY6CZ5JZMYcKfboBYKqqBVkhbknfjUELqAFiq2Qupump",
+     "u": 375.21
+    },
+    {
+     "t": 1792010665,
+     "p": -99.93,
+     "m": "9NYARwcxuf41oph31mDrjbwpcq4w96cVyvCqdDCJpump",
+     "u": 213.24
+    },
+    {
+     "t": 1792016649,
+     "p": -4.79,
+     "m": "AZD6QmwCjuFw716HVGPkycTXptCJbbdQFmwymUABtjhH",
+     "u": 56.06
+    },
+    {
+     "t": 1792053052,
+     "p": -205.88,
+     "m": "87sezD3dkRJfmVtJfFivMKTjd4afSDahTjq664Yapump",
+     "u": 215.95
+    },
+    {
+     "t": 1792075032,
+     "p": 42.39,
+     "m": "2Y26CHEP5fPnMTPz9hHX4HjsANYxnAKHkwP2ebh4maze",
+     "u": 631.22
+    },
+    {
+     "t": 1792093276,
+     "p": -132.69,
+     "m": "AXDjihwNsYQqDueHamwHDnE3JvMf2yb86U4kqvxGpump",
+     "u": 398.0
+    },
+    {
+     "t": 1792095827,
+     "p": -419.85,
+     "m": "AXDjihwNsYQqDueHamwHDnE3JvMf2yb86U4kqvxGpump",
+     "u": 216.68
+    },
+    {
+     "t": 1792174104,
+     "p": -131.08,
+     "m": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "u": 81.89
+    },
+    {
+     "t": 1792184502,
+     "p": 0.65,
+     "m": "Hzx4WX6wGB1McrjCViY76xRZWnsgW2yhse5WSSoppump",
+     "u": 53.38
+    },
+    {
+     "t": 1792196211,
+     "p": 47.45,
+     "m": "Azcf4vgf5FPC9RK1CsAreYY5rSBcnpF8g7p5C2RHpump",
+     "u": 570.76
+    },
+    {
+     "t": 1792198937,
+     "p": -21.71,
+     "m": "F4z3aJrGvg3YVzhTymRkyszpbf3RZk2dfubv2pZrWsdr",
+     "u": 187.53
+    },
+    {
+     "t": 1792218624,
+     "p": -59.48,
+     "m": "6S77uAJNz4gPgfQ5dhfzhoVR8zZ7tFr1usCYdLSbpump",
+     "u": 256.07
+    },
+    {
+     "t": 1792289495,
+     "p": -100.49,
+     "m": "GNA7ztNeHzUdrTFMSAfLr1Dinnw97KAXrwkNnNbxpump",
+     "u": 210.82
+    },
+    {
+     "t": 1792372536,
+     "p": -390.13,
+     "m": "2gLnaQN8Y73Qc62gMmX6WtJQjFnbvE7vgzUJ37WJpump",
+     "u": 130.6
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 651.33,
+    "7d": 11983.42,
+    "30d": 14535.23
+   },
+   "recent_buys_1d": 1,
+   "coverage": {
+    "sigs": 517,
+    "oldest_ts": 1791791810,
+    "window_days": 7.5,
+    "missing_tx": 0,
+    "unmatched_sells": 5,
+    "closed": 20,
+    "priced_hist": 47,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "appiesol_",
+   "name": "appiesol_",
+   "handle": null,
+   "address": "DieowDJ137xDRyCDn3YZYfAe4qzeGmdQJvryyqdWhtuc",
+   "source": "https://www.solanatracker.io/wallet/DieowDJ137xDRyCDn3YZYfAe4qzeGmdQJvryyqdWhtuc",
+   "source_note": "Public Solana Tracker title labels this wallet \"appiesol_\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": -2671.03,
+     "trades": 41,
+     "wins": 13,
+     "win_rate": 0.317,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "7d": {
+     "realized_pnl_usd": -2671.03,
+     "trades": 41,
+     "wins": 13,
+     "win_rate": 0.317,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    },
+    "30d": {
+     "realized_pnl_usd": -2671.03,
+     "trades": 41,
+     "wins": 13,
+     "win_rate": 0.317,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439214,
+     "pnl_usd": -42.86,
+     "usd": 359.9,
+     "cost_usd": 402.76,
+     "sig": "59XQftZwZeasbtrgN5akGu2ZLtbscAmvgVdxpdyupaRMFAWcKa5onaKSk7VQHvA6JgUajYjF6avwN1qmit4U8ZtR",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "sell",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439211,
+     "pnl_usd": -71.25,
+     "usd": 358.9,
+     "cost_usd": 430.15,
+     "sig": "2DhVjSit4jE6r97PoeZfbCqjmxTbN4tdLtvgPWSrvevXGg1dLzxJKogXAqHYU3tRSuGZ4EKdR57XZm6HSzurarRx",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "sell",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439207,
+     "pnl_usd": -160.23,
+     "usd": 693.75,
+     "cost_usd": 853.97,
+     "sig": "M8ZXi5TrrAHCuqymZKHxZaUT7q5BZgPjpu3fH2uWbVjt5XhK5hapvVpzAbq9G1JymjNQbLPuC2JpiTiou2aYRAQ",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439161,
+     "usd": 10.51,
+     "sig": "2NXj72NeMN2uEAX7eFtADjLEj8aFhveggZh7HNnJMti4vb3cGYazDa8QwY5LJnw7bRW9pwgUDtfotx83ECpfAhcK",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439123,
+     "usd": 104.18,
+     "sig": "46WHjiwVLBEtj5DmrXCM7T1oxbDgaG69nKJJPdFzd1kdT7Ly6Z5AZnKR8XoqG2Bh6sdd8QKF3FAAiLRf1sNNLM2G",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792439099,
+     "usd": 10.51,
+     "sig": "3q8o6FphFDSN7YM8H1F5Y9PLrzVfWCHiz9vjfEnPSWxf2KtaHKnA8N9CFRDKd7fhm19HJAnhMWWa7LXUzAmvQkDc",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792438880,
+     "usd": 520.5,
+     "sig": "vGviUJuwNWtztknWCiWVqRqPUqaH2M333a89jpGBX2cKhcrFQ7j3bCD5oGYCWRQQagfN4TW763T6X5MAg3t4SVA",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792438874,
+     "usd": 520.5,
+     "sig": "3awXXcFec2vPLfiNibpJFwukAnhi64rFj76UXEswJc8pKv9t26BxxY7cmrh3RyCamFi9g1WBdsWjLbge2noDkUFN",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "buy",
+     "mint": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "t": 1792438872,
+     "usd": 520.66,
+     "sig": "3zZWQQxrozSD2vJkTXt7yvq32U1vTRso7bWr9JugpocALLQMeDch6MhvLwXKog9KZMg5snXWkri6DB8v2n41N3DT",
+     "symbol": "Kim",
+     "name": "Rip Kim Jong-Un"
+    },
+    {
+     "side": "sell",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792424854,
+     "pnl_usd": -74.61,
+     "usd": 523.6,
+     "cost_usd": 598.21,
+     "sig": "34qKp8TVebNHpHr6aBcueaDY5udN5Pfn5SVBAD58RfEjCMwesoR9u7g3xTHe4rpdWcfTdGUwhd4gNMHvg8vtp7hu",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792424800,
+     "pnl_usd": 33.89,
+     "usd": 234.23,
+     "cost_usd": 200.33,
+     "sig": "WuqyqBtmWjsrgGzj57x4SC83FZFAN95D4GPmZ4YUuvfta5vaSEsykQx5waHBVPoaAdo6w1Tm2whp1Rj5BDmvQtu",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792424795,
+     "pnl_usd": 54.82,
+     "usd": 321.94,
+     "cost_usd": 267.11,
+     "sig": "48mE7nns91WTY78wADLaPe6YLUiPHekD7A1enFyxmRaTV9BFWxzi748jEhW73q3FURqtN5WLiwyhmJePgVLGUsLb",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "t": 1792424719,
+     "pnl_usd": -138.06,
+     "usd": 504.18,
+     "cost_usd": 642.24,
+     "sig": "63aRxJfZRahuZHBsZ6UCyVNEXarA5ttFnfBp28ygHjjHzj36y2Bnec9y3yiu9P741Gcv1oZyvPkowoY9BQhKrcxa",
+     "symbol": "COMPUTE",
+     "name": "web4"
+    },
+    {
+     "side": "buy",
+     "mint": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "t": 1792424709,
+     "usd": 10.55,
+     "sig": "56QGKHHhqnoyBu36MwMtEo1U7kp7ydRddtXbDfD8nz8m5NNGxUiqjkejYtUhbTeZvDZt7nBdJJ8ammxrEhCmBapF",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "t": 1792424699,
+     "pnl_usd": -250.86,
+     "usd": 506.49,
+     "cost_usd": 757.35,
+     "sig": "3JVjntn2D2AmMsVpPELeXjXk4wsSn7Sp4mwjqtHyoz1SD4Q2wVcAUzjvAjfmHAmYs5SppaM4LgAFiKhNJD9VwXEh",
+     "symbol": "COMPUTE",
+     "name": "web4"
+    }
+   ],
+   "closed": [
+    {
+     "t": 1792354931,
+     "p": -247.01,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 387.35
+    },
+    {
+     "t": 1792354935,
+     "p": -165.13,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 223.76
+    },
+    {
+     "t": 1792354941,
+     "p": -96.38,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 325.99
+    },
+    {
+     "t": 1792355883,
+     "p": -245.84,
+     "m": "8HKibwqkAbQfJ8Jncj8PNKF3VZFh85st6kj7fwaQpump",
+     "u": 189.53
+    },
+    {
+     "t": 1792358083,
+     "p": 6.29,
+     "m": "9CCWgfaazPMrPZE8BecgrfirZi7kLPBXW3ouJitDpump",
+     "u": 142.26
+    },
+    {
+     "t": 1792359879,
+     "p": 178.36,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 334.37
+    },
+    {
+     "t": 1792359882,
+     "p": 145.05,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 277.66
+    },
+    {
+     "t": 1792360581,
+     "p": -50.98,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 358.73
+    },
+    {
+     "t": 1792360584,
+     "p": -89.47,
+     "m": "8GroyR3X7C2qTWX33EY6T2tLYkvXFTuvoTExUVTApump",
+     "u": 341.86
+    },
+    {
+     "t": 1792361670,
+     "p": -172.1,
+     "m": "GknXDusSLCFE12EDGXFBegpUuxGgaEfCpb1NgpsuYkNZ",
+     "u": 185.22
+    },
+    {
+     "t": 1792361671,
+     "p": -176.37,
+     "m": "GknXDusSLCFE12EDGXFBegpUuxGgaEfCpb1NgpsuYkNZ",
+     "u": 280.79
+    },
+    {
+     "t": 1792361713,
+     "p": -131.99,
+     "m": "9C8mUFPN4iUckghm2KS9ikk12DNgKstaYipZBcsgpump",
+     "u": 486.37
+    },
+    {
+     "t": 1792362021,
+     "p": -206.95,
+     "m": "9C8mUFPN4iUckghm2KS9ikk12DNgKstaYipZBcsgpump",
+     "u": 281.95
+    },
+    {
+     "t": 1792362024,
+     "p": -313.62,
+     "m": "9C8mUFPN4iUckghm2KS9ikk12DNgKstaYipZBcsgpump",
+     "u": 351.49
+    },
+    {
+     "t": 1792362458,
+     "p": -27.44,
+     "m": "31YhAU7U56BSg86ZYtxormQbNEFWVXdpZ5GeLeE8pump",
+     "u": 195.71
+    },
+    {
+     "t": 1792363862,
+     "p": 7.46,
+     "m": "26z5Pr5jLpN29M6Uio51qVeynZZoygzPym56Gwx5pump",
+     "u": 104.69
+    },
+    {
+     "t": 1792366641,
+     "p": -298.34,
+     "m": "Ez7eEs53hQiXgCGmcbhdX5i1jgg2gC3F6MoeosuVpump",
+     "u": 868.77
+    },
+    {
+     "t": 1792366654,
+     "p": -115.6,
+     "m": "Ez7eEs53hQiXgCGmcbhdX5i1jgg2gC3F6MoeosuVpump",
+     "u": 427.76
+    },
+    {
+     "t": 1792366660,
+     "p": -89.06,
+     "m": "Ez7eEs53hQiXgCGmcbhdX5i1jgg2gC3F6MoeosuVpump",
+     "u": 418.33
+    },
+    {
+     "t": 1792368805,
+     "p": 24.19,
+     "m": "vNAQLMLPNuSH8yUstgbMPomEh6paXSLjreg5HCtpump",
+     "u": 289.95
+    },
+    {
+     "t": 1792369004,
+     "p": -6.56,
+     "m": "EMRjzAdUDeKZi6w32yGJiERb7W9spV6UuL7827zUpump",
+     "u": 228.66
+    },
+    {
+     "t": 1792369013,
+     "p": -86.11,
+     "m": "EMRjzAdUDeKZi6w32yGJiERb7W9spV6UuL7827zUpump",
+     "u": 263.05
+    },
+    {
+     "t": 1792370894,
+     "p": -154.46,
+     "m": "EvjEH98qRErESLmwZK5d5yTtMcSmXrBKN4Fsei1TPEdx",
+     "u": 492.12
+    },
+    {
+     "t": 1792371093,
+     "p": 101.65,
+     "m": "vNAQLMLPNuSH8yUstgbMPomEh6paXSLjreg5HCtpump",
+     "u": 316.85
+    },
+    {
+     "t": 1792371111,
+     "p": 5.23,
+     "m": "vNAQLMLPNuSH8yUstgbMPomEh6paXSLjreg5HCtpump",
+     "u": 429.9
+    },
+    {
+     "t": 1792371982,
+     "p": -102.33,
+     "m": "EvjEH98qRErESLmwZK5d5yTtMcSmXrBKN4Fsei1TPEdx",
+     "u": 360.59
+    },
+    {
+     "t": 1792371988,
+     "p": -14.62,
+     "m": "EvjEH98qRErESLmwZK5d5yTtMcSmXrBKN4Fsei1TPEdx",
+     "u": 127.94
+    },
+    {
+     "t": 1792410737,
+     "p": 46.82,
+     "m": "2rLuDEBwuXM6cBAQnK2bjFYXfsUozYwXsFSmA3Eupump",
+     "u": 300.19
+    },
+    {
+     "t": 1792410741,
+     "p": 50.22,
+     "m": "2rLuDEBwuXM6cBAQnK2bjFYXfsUozYwXsFSmA3Eupump",
+     "u": 426.13
+    },
+    {
+     "t": 1792420778,
+     "p": -58.32,
+     "m": "W85Lkahh94ijLQWAS976Q94JmAzYbJcnTMSJR3Spump",
+     "u": 113.85
+    },
+    {
+     "t": 1792421113,
+     "p": 214.7,
+     "m": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "u": 867.35
+    },
+    {
+     "t": 1792421770,
+     "p": -85.61,
+     "m": "BG7321meCAhd2uco5mx8QFhfoaBU122K2fSG8Y1epump",
+     "u": 322.33
+    },
+    {
+     "t": 1792423208,
+     "p": 132.41,
+     "m": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "u": 647.89
+    },
+    {
+     "t": 1792424699,
+     "p": -250.86,
+     "m": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "u": 506.49
+    },
+    {
+     "t": 1792424719,
+     "p": -138.06,
+     "m": "GWe3TNg1UPxeaSazxK8U49PDAqXCaX9Jc8zbttFLpump",
+     "u": 504.18
+    },
+    {
+     "t": 1792424795,
+     "p": 54.82,
+     "m": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "u": 321.94
+    },
+    {
+     "t": 1792424800,
+     "p": 33.89,
+     "m": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "u": 234.23
+    },
+    {
+     "t": 1792424854,
+     "p": -74.61,
+     "m": "HkcMAgZAzPvktzCHREyNHFTJb8VjAJaS2rZyWau2N1w8",
+     "u": 523.6
+    },
+    {
+     "t": 1792439207,
+     "p": -160.23,
+     "m": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "u": 693.75
+    },
+    {
+     "t": 1792439211,
+     "p": -71.25,
+     "m": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "u": 358.9
+    },
+    {
+     "t": 1792439214,
+     "p": -42.86,
+     "m": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
+     "u": 359.9
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 37542.71,
+    "7d": 37542.71,
+    "30d": 37542.71
+   },
+   "recent_buys_1d": 150,
+   "coverage": {
+    "sigs": 500,
+    "oldest_ts": 1792353774,
+    "window_days": 1.0,
+    "missing_tx": 0,
+    "unmatched_sells": 10,
+    "closed": 41,
+    "priced_hist": 201,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "affu",
+   "name": "Affu",
+   "handle": null,
+   "address": "BjNueAZDxLpwHnpMVZrB5b8DTTBHdmXtg1ZaRPCJ1yYJ",
+   "source": "https://www.solanatracker.io/wallet/BjNueAZDxLpwHnpMVZrB5b8DTTBHdmXtg1ZaRPCJ1yYJ",
+   "source_note": "Public Solana Tracker title labels this wallet \"Affu\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": -0.54,
+     "trades": 1,
+     "wins": 0,
+     "win_rate": 0.0,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "sell",
+     "mint": "gwKjejSt4VeyQAhpgdohawGECcRFqNcnrZDEFUopump",
+     "t": 1791605842,
+     "pnl_usd": -0.54,
+     "usd": 5.51,
+     "cost_usd": 6.05,
+     "sig": "4h9UfYw2FZWaatHLK2Dsc6Nmj6PeA5QEtCoAuxvw8pXuMKyTpwvfSAHePSpVQftaaUZSqFrByR6cZXzsnYuhR6iH",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "gwKjejSt4VeyQAhpgdohawGECcRFqNcnrZDEFUopump",
+     "t": 1791605365,
+     "usd": 6.05,
+     "sig": "4pUqKXnwAuNXnu6TAG2uFZfbh5WACHwVx5QzfXFEdLU28w5rnffneo2sYrLMYbdU1fPX4DnmtbAo1vvWC7mfiwEr",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791605842,
+     "p": -0.54,
+     "m": "gwKjejSt4VeyQAhpgdohawGECcRFqNcnrZDEFUopump",
+     "u": 5.51
+    }
+   ],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 11.57
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 551,
+    "oldest_ts": 1791273084,
+    "window_days": 13.5,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 1,
+    "priced_hist": 2,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "achi",
+   "name": "Achi",
+   "handle": null,
+   "address": "FPx2BavA7J2C7Nz6WpoPL9f5kDAKjxLb38PHNZMoxCra",
+   "source": "https://www.solanatracker.io/wallet/FPx2BavA7J2C7Nz6WpoPL9f5kDAKjxLb38PHNZMoxCra",
+   "source_note": "Public Solana Tracker title labels this wallet \"Achi\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": -369.25,
+     "trades": 11,
+     "wins": 1,
+     "win_rate": 0.091,
+     "note": "FIFO z publicznych transakcji RPC; SOL wyceniany historycznie (1h)."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "buy",
+     "mint": "HvT9sqCq8WQUKzpLvKfS5oRKbArh9AkTu496yuEvpump",
+     "t": 1791886651,
+     "usd": 1.27,
+     "sig": "5nn2D6rDZaVEyvHjHAkjBo2HNk6zCudXSyE8AHq6XJMkNPU14Ct1ov5AUUaSCunxWqBBxc5w6UkSYZCzEb5bBB7T",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "HvT9sqCq8WQUKzpLvKfS5oRKbArh9AkTu496yuEvpump",
+     "t": 1791886650,
+     "usd": 1.57,
+     "sig": "MSyZEfvUEAmzL5JxVmZx1wCF2xknmeGTuzW3bRv5Mgn7iR3ksmLvEpCc9K2JhSCEVinCoeZa2GBuWL4ZSMxXkEr",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "t": 1791826671,
+     "pnl_usd": -1.82,
+     "usd": 2.51,
+     "cost_usd": 4.33,
+     "sig": "64QTS199gEUQydfWZakKtEBxxWbrVv5LFbvJnQZW8zUEYSpFSATUTi6ZiPdrFVQocTA4HaHBA4zB8gRDJcT5exfh",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "t": 1791826660,
+     "usd": 1.28,
+     "sig": "2FTUJH2xnbh4B5mEMgExDUGQi4XsmXWhUrxxAQ5xwAjwiufpbPm6kL556Xe7Pbr7kr9XrEet5dKRrjcyzg2Zoyr6",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "t": 1791826659,
+     "usd": 1.28,
+     "sig": "ARU9JoMYhUwwbgToXkvpNqX5oMJZGWaNgcrqLCPWkTQncN6usRsVcdxVffjd2gTKSgKZkDwUF4jAJS3BiqHiZDf",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "t": 1791826648,
+     "usd": 0.7,
+     "sig": "4YdUz3Rz4cAqjzpxC6uf5d468zVAn4n32uaPUBQ86EsQSABQ8BRA62SnZEcNmUp6JDnJimFg4iU85hCVrpSxjoCt",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "t": 1791826644,
+     "usd": 1.07,
+     "sig": "5XMqJJHSNtAQCd3dZ4xHNXX8e1rkYxm7fxNfqS5br1oBu2V33ZaWnqR5DaYwyxHAKHyLkvscH328WAFVtcrbFLhS",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "t": 1791811012,
+     "pnl_usd": -372.1,
+     "usd": 69.8,
+     "cost_usd": 441.9,
+     "sig": "8eNcdWQ75JhbGDV12rEcHvcwP7CEi7uieTiMVkozqtKqmig3fVGZWp3p6PbEJXcWJG67qBf8vksPcEoJbAWg2Qn",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "EbRysSwSJXDDyxRauU9cCs4AZSCs7oQjV54RYmsFpump",
+     "t": 1791810585,
+     "pnl_usd": 57.12,
+     "usd": 389.39,
+     "cost_usd": 332.27,
+     "sig": "qh7SLAVDNaP1z6sCSsTZcpgiUvJd5F8WmC7q77het6R348hqt3ydaMw1CWtzPV6GHvSh9kaZDLpCPb6ZGsq8czN",
+     "symbol": "Pelung",
+     "name": "Pelung"
+    },
+    {
+     "side": "buy",
+     "mint": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "t": 1791810325,
+     "usd": 110.58,
+     "sig": "T6oyuJS9vXDFoVD6qNN727MPdDNNNjQZ4W7MR6JU54rf8BwejSNoRsA29S2TYgbZVYSNvyvARMEtbmswEJQRgsj",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "t": 1791810125,
+     "usd": 331.32,
+     "sig": "4PF5py3wKfbr9qLpKKJR5Q33CAMnchvVryNtJcv18c1a7efh71hujm6pcNQq27h1femgimAdNWSu8kQJGEYsQtcN",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "sell",
+     "mint": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "t": 1791809920,
+     "pnl_usd": -6.03,
+     "usd": 326.23,
+     "cost_usd": 332.26,
+     "sig": "2wGMGAfPxgbrNqyerNNNp929rVEAeiCqQ44x1Hx1RuwstyKuxyvp6otW8PWoTGCWiCCGtMBAWGfWsXhQVWCbGi8J",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "t": 1791809806,
+     "usd": 332.26,
+     "sig": "364rPfkuwSJeL9vnrhZ8etJsbY2RoPVRjbWiegDPZjbCNA8gpXDPBhSZPraiEUNcHAPMY2pVjWDMTbARKYY7XLF3",
+     "symbol": null,
+     "name": null
+    },
+    {
+     "side": "buy",
+     "mint": "EbRysSwSJXDDyxRauU9cCs4AZSCs7oQjV54RYmsFpump",
+     "t": 1791809755,
+     "usd": 332.27,
+     "sig": "29rHrdECRmnFd1y1Hf5QCKJGR48xzY5R4jQMpBY9voQcg8RYHEYqhSTwbaktn1TeMXuztvVisR3CJCLXQe3FgSsz",
+     "symbol": "Pelung",
+     "name": "Pelung"
+    },
+    {
+     "side": "sell",
+     "mint": "UCkDcn3oDVuUe9EyjuQmbVJ49CQBkD6jpibBnr5pump",
+     "t": 1791809593,
+     "pnl_usd": -13.29,
+     "usd": 97.69,
+     "cost_usd": 110.99,
+     "sig": "2eM8P6fzVHL9TUJ3g97ZhbuYDbDB6hnkmBZaxekqiAAFJHho3UdgfUSTJZatgwhJ9ssVoCALL7YYk51wEa5tKETC",
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "closed": [
+    {
+     "t": 1791201383,
+     "p": -11.46,
+     "m": "5EzT3yMRKhHHY36KUBK1iemQVDTCMjLDMA7wSArjjZ2z",
+     "u": 13.4
+    },
+    {
+     "t": 1791374660,
+     "p": -4.78,
+     "m": "D7V5N3zombc4GzU1jxqit1uRomXW72yzSFeh2f66b2y3",
+     "u": 8.03
+    },
+    {
+     "t": 1791395497,
+     "p": -1.61,
+     "m": "5wPEiRucewrtttaPBHoYJMnQVFjgLZ3qRQYnx3wDPpmS",
+     "u": 4.93
+    },
+    {
+     "t": 1791549584,
+     "p": -3.95,
+     "m": "AoVeVJsk3vzePWAqtSmU3MMeCETxY69pJNZdEHe3N49C",
+     "u": 7.51
+    },
+    {
+     "t": 1791549718,
+     "p": -1.99,
+     "m": "7bDPqPX5JBCnDuXAeNRsNWmtnVrFcUeKEPJcYqrz1M8w",
+     "u": 9.69
+    },
+    {
+     "t": 1791582903,
+     "p": -9.34,
+     "m": "Bf2ydoeNgje7Y2kQ772SEmYuBNhgJtKQvPGNFMkgBMoD",
+     "u": 2.01
+    },
+    {
+     "t": 1791809593,
+     "p": -13.29,
+     "m": "UCkDcn3oDVuUe9EyjuQmbVJ49CQBkD6jpibBnr5pump",
+     "u": 97.69
+    },
+    {
+     "t": 1791809920,
+     "p": -6.03,
+     "m": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "u": 326.23
+    },
+    {
+     "t": 1791810585,
+     "p": 57.12,
+     "m": "EbRysSwSJXDDyxRauU9cCs4AZSCs7oQjV54RYmsFpump",
+     "u": 389.39
+    },
+    {
+     "t": 1791811012,
+     "p": -372.1,
+     "m": "CQUZwBayTJZvutdmNQ7J5rFRmJKUxXJ4GozrjkSapump",
+     "u": 69.8
+    },
+    {
+     "t": 1791826671,
+     "p": -1.82,
+     "m": "9c1BXwgJpm2kJ1vQA62Hjquf3iitiBpGnaXU8yurpump",
+     "u": 2.51
+    }
+   ],
+   "positions": [
+    {
+     "mint": "HvT9sqCq8WQUKzpLvKfS5oRKbArh9AkTu496yuEvpump",
+     "tok": 141491.0,
+     "cost_usd": 2.85,
+     "symbol": null,
+     "name": null
+    }
+   ],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 2.85,
+    "30d": 2255.94
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 539,
+    "oldest_ts": 1790998717,
+    "window_days": 16.7,
+    "missing_tx": 0,
+    "unmatched_sells": 2,
+    "closed": 11,
+    "priced_hist": 30,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "cupsey",
+   "name": "Cupsey",
+   "handle": "Cupseyy",
+   "address": "suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK",
+   "source": "https://www.solanatracker.io/wallet/suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK",
+   "source_note": "Public Solana Tracker title labels this wallet \"Cupsey\"; address also observed on public kolscan.io feed",
+   "avatar": "data/avatars/cupsey.jpg",
+   "x_url": "https://x.com/Cupseyy",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 5000,
+    "oldest_ts": 1792439364,
+    "window_days": 0.0,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bastille",
+   "name": "Bastille",
+   "handle": null,
+   "address": "3kebnKw7cPdSkLRfiMEALyZJGZ4wdiSRvmoN4rD1yPzV",
+   "source": "https://www.solanatracker.io/wallet/3kebnKw7cPdSkLRfiMEALyZJGZ4wdiSRvmoN4rD1yPzV",
+   "source_note": "Public Solana Tracker title labels this wallet \"Bastille\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 560,
+    "oldest_ts": 1791360437,
+    "window_days": 12.5,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "asta",
+   "name": "asta",
+   "handle": null,
+   "address": "AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL",
+   "source": "https://www.solanatracker.io/wallet/AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL",
+   "source_note": "Public Solana Tracker title labels this wallet \"asta\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 503,
+    "oldest_ts": 1792025173,
+    "window_days": 4.8,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bobby",
+   "name": "Bobby",
+   "handle": null,
+   "address": "DBmRHNbSsVX8F6NyVaaaiuGdwo1aYGawiy3jfNcvXYSC",
+   "source": "https://www.solanatracker.io/wallet/DBmRHNbSsVX8F6NyVaaaiuGdwo1aYGawiy3jfNcvXYSC",
+   "source_note": "Public Solana Tracker title labels this wallet \"Bobby\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 545,
+    "oldest_ts": 1791329806,
+    "window_days": 12.8,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "arnz",
+   "name": "arnz",
+   "handle": null,
+   "address": "2G6CNJqfvGP3KWZXtV8rQHra3kxGK28nvzT6TjyWNtiJ",
+   "source": "https://www.solanatracker.io/wallet/2G6CNJqfvGP3KWZXtV8rQHra3kxGK28nvzT6TjyWNtiJ",
+   "source_note": "Public Solana Tracker title labels this wallet \"arnz\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 560,
+    "oldest_ts": 1791432505,
+    "window_days": 11.7,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "aroa",
+   "name": "Aroa",
+   "handle": null,
+   "address": "Aen6LKc7sGVPTyjMd5cu9B9XVjL7m9pnvAiP2ZNJC4GZ",
+   "source": "https://www.solanatracker.io/wallet/Aen6LKc7sGVPTyjMd5cu9B9XVjL7m9pnvAiP2ZNJC4GZ",
+   "source_note": "Public Solana Tracker title labels this wallet \"Aroa\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 542,
+    "oldest_ts": 1791306164,
+    "window_days": 13.1,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "art",
+   "name": "Art",
+   "handle": null,
+   "address": "CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
+   "source": "https://www.solanatracker.io/wallet/CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
+   "source_note": "Public Solana Tracker title labels this wallet \"Art\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 5000,
+    "oldest_ts": 1792438979,
+    "window_days": 0.0,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "ban",
+   "name": "Ban",
+   "handle": null,
+   "address": "8DGbkGgQewL9mx4aXzZCUChr7hBVXvPK9fYqSqc7Ajpn",
+   "source": "https://www.solanatracker.io/wallet/8DGbkGgQewL9mx4aXzZCUChr7hBVXvPK9fYqSqc7Ajpn",
+   "source_note": "Public Solana Tracker title labels this wallet \"Ban\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 550,
+    "oldest_ts": 1791476225,
+    "window_days": 11.1,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bilo",
+   "name": "bilo",
+   "handle": null,
+   "address": "7sA5em1nTKmLvGm8H85cpgA9hM9YvCoPp729mwe6akhh",
+   "source": "https://www.solanatracker.io/wallet/7sA5em1nTKmLvGm8H85cpgA9hM9YvCoPp729mwe6akhh",
+   "source_note": "Public Solana Tracker title labels this wallet \"bilo\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 544,
+    "oldest_ts": 1791362153,
+    "window_days": 12.5,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bigwarz",
+   "name": "BIGWARZ",
+   "handle": null,
+   "address": "7bsTkeWcSPG6nzsbXucxV89YUULoSExNJdX2WqfLHwZ4",
+   "source": "https://www.solanatracker.io/wallet/7bsTkeWcSPG6nzsbXucxV89YUULoSExNJdX2WqfLHwZ4",
+   "source_note": "Public Solana Tracker title labels this wallet \"BIGWARZ\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [
+    {
+     "side": "buy",
+     "mint": "CSRRgTwf9o5KLgguS2M16aEAhV5PUUzfshrAAQ8opump",
+     "t": 1792026987,
+     "usd": 0.59,
+     "sig": "1dxNNrkBLkyP5LHPLWGhxC4V8LEk8JuvBb43wjNNWuBSPCo7aor6QBAYmRmkjXv6dQUrhzFq41P3qQfXgfQDkYe",
+     "symbol": "RETARDIO",
+     "name": "RETARDIO"
+    }
+   ],
+   "closed": [],
+   "positions": [
+    {
+     "mint": "CSRRgTwf9o5KLgguS2M16aEAhV5PUUzfshrAAQ8opump",
+     "tok": 5.87375,
+     "cost_usd": 0.59,
+     "symbol": "RETARDIO",
+     "name": "RETARDIO"
+    }
+   ],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 1.63,
+    "30d": 10.76
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 625,
+    "oldest_ts": 1791214962,
+    "window_days": 14.2,
+    "missing_tx": 0,
+    "unmatched_sells": 2,
+    "closed": 0,
+    "priced_hist": 3,
+    "priced_current": 0
+   }
+  },
+  {
+   "id": "bradjae",
+   "name": "bradjae",
+   "handle": null,
+   "address": "8Dg8J8xSeKqtBvL1nBe9waX348w5FSFjVnQaRLMpf7eV",
+   "source": "https://www.solanatracker.io/wallet/8Dg8J8xSeKqtBvL1nBe9waX348w5FSFjVnQaRLMpf7eV",
+   "source_note": "Public Solana Tracker title labels this wallet \"bradjae\"; address also observed on public kolscan.io feed",
+   "avatar": null,
+   "x_url": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Brak sprzedaży z dopasowanym kosztem zakupu w tym oknie."
+    }
+   },
+   "recent_trades": [],
+   "closed": [],
+   "positions": [],
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "recent_buys_1d": 0,
+   "coverage": {
+    "sigs": 542,
+    "oldest_ts": 1791355397,
+    "window_days": 12.5,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   }
+  }
+ ]
 }

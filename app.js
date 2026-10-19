@@ -1,4 +1,4 @@
-/* KYVO_MVP_LIVE_v7 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
+/* KYVO_MVP_LIVE_v7_1 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
   const CHAIN_KEY = 'kyvo_chain_v7';
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
-  const MVP_MARKER = 'KYVO_MVP_LIVE_v7';
+  const MVP_MARKER = 'KYVO_MVP_LIVE_v7_1';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -136,14 +136,14 @@
   }
   async function loadSmartMoney() {
     try {
-      smartMoney = await fetchJson('data/smart_money.json?v=7');
+      smartMoney = await fetchJson('data/smart_money.json?v=7.1');
     } catch (e) {
       smartMoney = { by_mint: {}, activity: [], updated_at: null };
     }
   }
   async function loadLeaderboard() {
     try {
-      leaderboard = await fetchJson('data/leaderboard.json?v=7');
+      leaderboard = await fetchJson('data/leaderboard.json?v=7.1');
     } catch (e) {
       leaderboard = { leaders: [], updated_at: null };
     }
@@ -468,6 +468,7 @@
   }
 
   async function fetchJson(url) {
+    if (window.KyvoGT && url.indexOf(GT) === 0) return window.KyvoGT.fetch(url, 120000); // shared GT rate gate (2 min cache)
     const r = await fetch(url, { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
@@ -525,7 +526,7 @@
   async function loadNewPoolsNetwork(net, intoMap) {
     const addrs = [];
     // page=1 only: some Gecko networks (e.g. robinhood) 400/fail on page>1 and spam console
-    const pages = net === 'robinhood' ? [1] : [1, 2];
+    const pages = [1]; // one page per network keeps GeckoTerminal calls well under the public limit (chart shares it)
     for (const page of pages) {
       try {
         const g = await fetchJson(GT + '/networks/' + net + '/new_pools?page=' + page);
@@ -681,7 +682,7 @@
 
   async function loadViral() {
     try {
-      viral = await fetchJson('data/x_viral.json?v=7');
+      viral = await fetchJson('data/x_viral.json?v=7.1');
       return viral;
     } catch (e) {
       viral = { posts: [], topics: [], updated_at: null };
@@ -779,6 +780,41 @@
     return `<img class="${cls || 'tok'}" src="${esc(src || FALLBACK_IMG)}" width="${s}" height="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">`;
   }
 
+  /* first-seen per list (localStorage) → "na liście od X" */
+  const SEEN_KEY = 'kyvo_seen_v1';
+  let seen = {};
+  try { seen = JSON.parse(localStorage.getItem(SEEN_KEY) || '{}') || {}; } catch (e) { seen = {}; }
+  let seenDirty = false;
+  function seenSince(listId, key) {
+    if (!listId) return null;
+    const m = seen[listId] || (seen[listId] = {});
+    if (!m[key]) { m[key] = Date.now(); seenDirty = true; }
+    return m[key];
+  }
+  function flushSeen() {
+    if (!seenDirty) return;
+    seenDirty = false;
+    const cut = Date.now() - 3 * 86400000;
+    for (const l of Object.keys(seen)) {
+      const ent = Object.entries(seen[l]).filter(([, t]) => t > cut).sort((a, b) => b[1] - a[1]).slice(0, 400);
+      seen[l] = Object.fromEntries(ent);
+    }
+    try { localStorage.setItem(SEEN_KEY, JSON.stringify(seen)); } catch (e) {}
+  }
+  setInterval(flushSeen, 5000);
+  function onListLabel(ms) {
+    const m = Math.floor((Date.now() - ms) / 60000);
+    if (m < 1) return 'na liście od <1 min';
+    if (m < 60) return 'na liście od ' + m + ' min';
+    if (m < 1440) return 'na liście od ' + Math.floor(m / 60) + ' h';
+    return 'na liście od ' + Math.floor(m / 1440) + ' d';
+  }
+  function rowTimeHtml(c, listId) {
+    const age = ageFrom(c.pairCreatedAt);
+    const fs = seenSince(listId, keyOf(c));
+    return `<span class="tm"><span class="agepill" title="Wiek pary (od utworzenia)">⏱ ${esc(age)}</span>${fs ? `<span class="onlist" title="Od kiedy coin jest w tej zakładce (zapamiętane w tej przeglądarce)">${onListLabel(fs)}</span>` : ''}</span>`;
+  }
+
   function coinRow(c, opts) {
     opts = opts || {};
     const ch = c.change.h1 != null ? c.change.h1 : c.change.h24;
@@ -798,7 +834,8 @@
     return `<div class="row" data-key="${esc(keyOf(c))}" role="button" tabindex="0">
       ${imgTag(c.image)}
       <div class="nm"><b>${badge} ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
-        <small>MC ${fmtUsd(c.mcap)} · ${fmtLiq(c) === 'krzywa' ? 'Liq: krzywa' : 'Liq ' + fmtLiq(c)} · ${ageFrom(c.pairCreatedAt)}${extra ? ' · ' + extra : ''}</small></div>
+        <small>MC ${fmtUsd(c.mcap)} · ${fmtLiq(c) === 'krzywa' ? 'Liq: krzywa' : 'Liq ' + fmtLiq(c)}${extra ? ' · ' + extra : ''}</small>
+        ${rowTimeHtml(c, opts.listId)}</div>
       <div class="rt"><b class="${pctClass(ch)}">${fmtPct(ch)}</b>
         <small class="mut">Vol ${fmtUsd(c.volume.h24)}</small></div>
     </div>`;
@@ -898,7 +935,7 @@
       ${opts.hideNote ? `<div class="card" style="font-size:12.5px;color:var(--warn)">${esc(opts.hideNote)}</div>` : ''}
       ${
         list.length
-          ? `<div class="card" style="padding:4px 10px">${list.map((c) => coinRow(c, opts.rowOpts)).join('')}</div>`
+          ? `<div class="card" style="padding:4px 10px">${list.map((c) => coinRow(c, Object.assign({ listId: (opts.filtTab || view) + ':' + activeChain }, opts.rowOpts))).join('')}</div>`
           : opts.hideNote
             ? ''
             : `<div class="empty">Brak coinów dla tych filtrów.</div>`
@@ -941,13 +978,13 @@
     document.body.classList.add('pulse-on');
     $('#listBody').innerHTML = '';
     const desk = $('#pulseDesk');
-    const col = (title, list, tip, rowOpts, emptyNote) => `
+    const col = (title, list, tip, rowOpts, emptyNote, listKey = title === 'New Pairs' ? 'new' : title === 'Final Stretch' ? 'stretch' : 'migrated') => `
       <div class="pcol">
         <h3>${esc(title)} <span class="badge live">${list.length}</span></h3>
         <div class="mut" style="font-size:11px;margin-bottom:8px">${esc(tip)}</div>
         ${
           list.length
-            ? list.map((c) => coinRow(c, rowOpts)).join('')
+            ? list.map((c) => coinRow(c, Object.assign({ listId: listKey + ':' + activeChain }, rowOpts))).join('')
             : `<div class="empty" style="padding:16px 4px">${esc(emptyNote || 'Brak — zmień filtry lub poczekaj na refresh')}</div>`
         }
       </div>`;
@@ -1138,6 +1175,7 @@
         <b style="font-size:26px">${fmtUsd(c.mcap)}</b> <span class="mut">MC</span>
         <span class="${pctClass(c.change.h24)}" style="font-weight:700;margin-left:6px">${fmtPct(c.change.h24)} 24h</span>
       </div>
+      <div id="chartSlot" class="chartslot"></div>
       ${curveLine}
       <div class="statg">
         <div class="st"><small>Price</small><b>${fmtUsd(c.priceUsd)}</b></div>
@@ -1158,6 +1196,12 @@
         ${urls.Explorer ? `<a href="${esc(urls.Explorer)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Explorer ↗</a>` : ''}
       </div>
       <div class="foot">To nie jest porada finansowa · ${MVP_MARKER}</div>`;
+    if (window.KyvoChart) {
+      window.KyvoChart.mount($('#chartSlot'), {
+        key: keyOf(c), network: GECKO_NET[c.chainId || 'solana'], pool: c.pairAddress || null, token: c.address,
+        dsChain: c.chainId || 'solana', pair: c.pairAddress || '', smBuys,
+      });
+    }
     $('#coinBack').onclick = () => (history.length > 1 ? history.back() : setView('pulse'));
     $('#copyCa').onclick = async () => {
       try {
@@ -1226,55 +1270,115 @@
     })();
   }
 
+  /* ---------------- Ranking (Kolscan-style) + trader profile ---------------- */
+  let rankPeriod = localStorage.getItem('kyvo_rank_period') || '7d';
+  function pnlOf(L, per) {
+    const v = L && L.stats && L.stats[per] && L.stats[per].realized_pnl_usd;
+    return v == null || !isFinite(v) ? null : v;
+  }
+  function pnlHtml(v, tip) {
+    if (v == null) return `<span class="mut" title="${esc(tip || 'Brak sprzedaży z dopasowanym kosztem zakupu w tym okresie')}">—</span>`;
+    return `<b class="${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '+' : ''}${fmtUsd(v)}</b>`;
+  }
+  function avatarHtml(L, size) {
+    size = size || 34;
+    return L.avatar
+      ? `<img class="av" src="${esc(L.avatar)}" width="${size}" height="${size}" style="width:${size}px;height:${size}px" alt="" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="av avl" style="width:${size}px;height:${size}px">${esc((L.name || '?')[0].toUpperCase())}</div>`;
+  }
+  function sortedLeaders(per) {
+    const leaders = ((leaderboard && leaderboard.leaders) || []).slice();
+    leaders.sort((a, b) => {
+      const pa = pnlOf(a, per), pb = pnlOf(b, per);
+      if (pa == null && pb == null) return (pnlOf(b, '30d') ?? -1e18) - (pnlOf(a, '30d') ?? -1e18);
+      if (pa == null) return 1;
+      if (pb == null) return -1;
+      return pb - pa;
+    });
+    return leaders;
+  }
+  function renderRank() {
+    document.body.classList.remove('pulse-on');
+    const body = $('#rankBody');
+    if (!leaderboard || !(leaderboard.leaders || []).length) {
+      body.innerHTML = `<div class="h">Ranking</div><div class="empty">Ranking jest chwilowo niedostępny — spróbuj za kilka minut.</div>`;
+      return;
+    }
+    const per = rankPeriod;
+    const L = sortedLeaders(per);
+    const withPnl = L.filter((x) => pnlOf(x, per) != null).length;
+    const rows = L.map((x, i) => {
+      const st = (x.stats && x.stats[per]) || {};
+      const wr = st.win_rate == null ? '—' : Math.round(st.win_rate * 100) + '%';
+      const wl = st.trades ? `<span class="up">${st.wins}</span>/<span class="dn">${st.trades - st.wins}</span>` : '<span class="mut">—</span>';
+      return `<div class="rk-row" data-trader="${esc(x.id)}" role="button" tabindex="0">
+        <div class="rk-n ${i < 3 && pnlOf(x, per) != null ? 'top' + (i + 1) : ''}">${i + 1}</div>
+        ${avatarHtml(x, 34)}
+        <div class="rk-nm"><b>${esc(x.name)}</b>${x.handle ? `<small>@${esc(x.handle)}</small>` : `<small class="mut">${esc(shortCa(x.address))}</small>`}</div>
+        <div class="rk-c rk-wl" title="Wygrane / przegrane (zamknięte pozycje)">${wl}</div>
+        <div class="rk-c rk-wr" title="Win rate">${wr}</div>
+        <div class="rk-c rk-tr" title="Zamknięte trade'y">${st.trades || 0}</div>
+        <div class="rk-c rk-pnl">${pnlHtml(pnlOf(x, per), st.note)}</div>
+        ${x.handle ? `<a class="rk-x" href="${esc(x.x_url || 'https://x.com/' + x.handle)}" target="_blank" rel="noopener" title="Obserwuj na X" data-noop="1">𝕏</a>` : '<span class="rk-x off"></span>'}
+      </div>`;
+    }).join('');
+    body.innerHTML = `
+      <div class="h">Ranking traderów <span class="badge live">on-chain</span></div>
+      <div class="sub">Zrealizowany PnL z publicznych transakcji Solana · zaktualizowano ${esc(agoLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} portfeli w tym okresie</div>
+      <div class="rk-per" id="rankPer">${['1d', '7d', '30d'].map((p) => `<button type="button" data-per="${p}" class="${p === per ? 'on' : ''}">${p === '1d' ? 'Dzień' : p === '7d' ? 'Tydzień' : 'Miesiąc'}</button>`).join('')}</div>
+      <div class="card rk">
+        <div class="rk-row rk-head"><div class="rk-n">#</div><div style="width:34px"></div><div class="rk-nm">Trader</div><div class="rk-c rk-wl">W/L</div><div class="rk-c rk-wr">Win</div><div class="rk-c rk-tr">Trade'y</div><div class="rk-c rk-pnl">PnL</div><span class="rk-x off"></span></div>
+        ${rows}
+      </div>
+      <div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">„—” = brak sprzedaży z dopasowanym zakupem w tym okresie (np. kupił wcześniej niż obejmuje nasze okno). Kwoty w SOL przeliczane po historycznym kursie SOL/USD. Wyniki przybliżone · to nie jest porada finansowa.</div>
+      <div class="foot">${MVP_MARKER}</div>`;
+    $$('#rankPer [data-per]').forEach((b) => b.addEventListener('click', () => {
+      rankPeriod = b.dataset.per;
+      localStorage.setItem('kyvo_rank_period', rankPeriod);
+      renderRank();
+    }));
+    $$('[data-trader]', body).forEach((el) => {
+      const go = (e) => {
+        if (e.target.closest('[data-noop]')) return;
+        location.hash = 'trader/' + encodeURIComponent(el.dataset.trader);
+      };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(e); });
+    });
+  }
+
+  function renderTrader(id) {
+    document.body.classList.remove('pulse-on');
+    const body = $('#traderBody');
+    const L = ((leaderboard && leaderboard.leaders) || []).find((x) => x.id === id || x.address === id);
+    if (!L) {
+      body.innerHTML = `<div class="err">Nie znaleziono tradera.<div class="back" id="trBackF">‹ Ranking</div></div>`;
+      $('#trBackF').onclick = () => setView('rank');
+      return;
+    }
+    window.KyvoProfile.renderTrader(body, L, leaderboard);
+  }
+
+  function renderProfil() {
+    document.body.classList.remove('pulse-on');
+    window.KyvoProfile.renderOwn($('#profilBody'));
+  }
+
   function renderMore() {
     document.body.classList.remove('pulse-on');
-    const leaders = (leaderboard && leaderboard.leaders) || [];
-    const lbUp = leaderboard && leaderboard.updated_at ? agoLabel(leaderboard.updated_at) : '—';
-    const rows = leaders.length
-      ? leaders.map((L) => {
-          const s7 = (L.stats && L.stats['7d']) || {};
-          const s1 = (L.stats && L.stats['1d']) || {};
-          const s30 = (L.stats && L.stats['30d']) || {};
-          const av = L.avatar
-            ? `<img class="av" src="${esc(L.avatar)}" width="36" height="36" alt="" loading="lazy" onerror="this.style.display='none'">`
-            : `<div class="av" style="display:grid;place-items:center;background:#222;font-size:11px;font-weight:800">${esc((L.name || '?')[0])}</div>`;
-          const tip = esc(s7.note || 'Przybliżone z publicznych sygnatur RPC');
-          const pnl = (v) => (v == null || !isFinite(v) ? '—' : fmtUsd(v));
-          const wr = (v) => (v == null ? '—' : Math.round(v * 100) + '%');
-          return `<div class="card" style="padding:10px">
-            <div style="display:flex;gap:10px;align-items:center">
-              ${av}
-              <div style="flex:1;min-width:0">
-                <b style="font-size:14px">${esc(L.name)}</b>
-                ${L.handle ? ` <a href="${esc(L.x_url || ('https://x.com/' + L.handle))}" target="_blank" rel="noopener">@${esc(L.handle)}</a>` : ''}
-                <div class="mut" style="font-size:11px;font-family:ui-monospace,Menlo,monospace">${esc(shortCa(L.address))} · <a href="https://solscan.io/account/${esc(L.address)}" target="_blank" rel="noopener">solscan</a></div>
-              </div>
-            </div>
-            <div class="statg" style="margin-top:8px">
-              <div class="st" title="${tip}"><small>PnL 1d</small><b>${pnl(s1.realized_pnl_usd)}</b></div>
-              <div class="st" title="${tip}"><small>PnL 7d</small><b>${pnl(s7.realized_pnl_usd)}</b></div>
-              <div class="st" title="${tip}"><small>PnL 30d</small><b>${pnl(s30.realized_pnl_usd)}</b></div>
-              <div class="st" title="${tip}"><small>Trades 7d</small><b>${s7.trades != null ? s7.trades : '—'}</b></div>
-              <div class="st" title="${tip}"><small>Win 7d</small><b>${wr(s7.win_rate)}</b></div>
-              <div class="st"><small>Buys 1d</small><b>${L.recent_buys_1d != null ? L.recent_buys_1d : '—'}</b></div>
-            </div>
-            <div class="mut" style="font-size:10.5px;margin-top:6px" title="${tip}">Źródło: ${esc((L.source_note || '').slice(0, 120))}</div>
-          </div>`;
-        }).join('')
-      : `<div class="empty">Brak leaderboardu — uruchom <code>python3 tools/build_snapshots.py</code></div>`;
-
     $('#moreBody').innerHTML = `
-      <div class="h">Leaderboard <span class="badge live">snapshot</span></div>
-      <div class="sub">Real z publicznych sygnatur RPC · zaktualizowano ${esc(lbUp)} · PnL przybliżone (— gdy niewiarygodne)</div>
-      ${rows}
+      <div class="h">Więcej</div>
+      <div class="card" role="button" id="moreRank" style="cursor:pointer"><div class="h" style="font-size:13px;margin:0">🏆 Ranking traderów →</div>
+        <div class="mut" style="font-size:12.5px;margin-top:4px">PnL, win rate i ostatnie trade'y publicznych portfeli KOL.</div></div>
       <div class="card"><div class="h" style="font-size:13px">Insider / fresh wallets <span class="badge demo">Przykładowe dane</span></div>
-        <div class="mut" style="font-size:13px">Wymaga własnego indeksu — niedostępne tanio z publicznych RPC.</div></div>
-      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7</div>
+        <div class="mut" style="font-size:13px">Wkrótce — ta funkcja jest jeszcze w przygotowaniu.</div></div>
+      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7.1</div>
         <div style="font-size:13px;color:#ccc;line-height:1.45">
-          Multi-chain Pulse · Smart money badge (Solana) · Leaderboard z <code>data/leaderboard.json</code>.<br>
-          Odświeżanie: <code>python3 tools/build_snapshots.py</code> + Viral: patrz <code>tools/update_x_viral.md</code>.
+          Live Pulse dla Solana, BSC i Robinhood · wykresy świecowe na stronie coina · smart money (Solana) · ranking traderów on-chain · Viral z X.<br>
+          Ranking i smart money odświeżamy kilka razy dziennie z publicznych danych blockchain. Viral z X — kilka razy dziennie.
         </div></div>
       <div class="foot">${MVP_MARKER}</div>`;
+    $('#moreRank').onclick = () => setView('rank');
   }
 
   function show(which) {
@@ -1282,10 +1386,11 @@
     const map = {
       pulse: 's-list', hot: 's-list', good: 's-list', new: 's-list', stretch: 's-list',
       migrated: 's-list', boosted: 's-list', search: 's-list', viral: 's-viral', more: 's-more', coin: 's-coin',
+      rank: 's-rank', trader: 's-trader', profil: 's-profil',
     };
     $('#' + (map[which] || 's-list')).classList.add('on');
-    $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'search' ? 'hot' : which)));
-    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', more: 'more' };
+    $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' ? 'rank' : which === 'search' ? 'hot' : which)));
+    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
@@ -1296,6 +1401,20 @@
       renderFilterPanel('viral');
       renderViral();
       location.hash = 'viral';
+      return;
+    }
+    if (v === 'profil') {
+      show('profil');
+      renderFilterPanel('more');
+      renderProfil();
+      location.hash = 'profil';
+      return;
+    }
+    if (v === 'rank') {
+      show('rank');
+      renderFilterPanel('more');
+      renderRank();
+      location.hash = 'rank';
       return;
     }
     if (v === 'more') {
@@ -1319,7 +1438,7 @@
       renderList(listGood(), 'Good Coins', 'Curated quality — ' + smNote, {
         filtTab: 'good',
         footnote: `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">Smart money</button>
-          <span class="mut" style="font-size:11px">Badge SM = KOL z data/smart_money.json (publiczny snapshot)</span></div>`,
+          <span class="mut" style="font-size:11px">Badge SM = zakupy publicznych portfeli KOL (odświeżane kilka razy dziennie)</span></div>`,
       });
       const btn = $('#goodSmartSort');
       if (btn) btn.onclick = () => { goodSortSmart = !goodSortSmart; setView('good'); };
@@ -1383,9 +1502,18 @@
 
   function routeFromHash() {
     const h = (location.hash || '#pulse').slice(1);
-    const [a, b] = h.split('/');
+    let [a, b] = h.split('/');
+    if (a === 'leaderboard') a = 'rank';
     if (a === 'coin' && b) {
       openCoin(decodeURIComponent(b));
+      return;
+    }
+    if (a === 'trader' && b) {
+      view = 'rank';
+      show('trader');
+      renderFilterPanel('more');
+      renderTrader(decodeURIComponent(b));
+      window.scrollTo(0, 0);
       return;
     }
     if (a === 'search' && b) {
@@ -1393,7 +1521,7 @@
       runSearch(decodeURIComponent(b));
       return;
     }
-    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'viral', 'more'].includes(a)) {
+    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'viral', 'more', 'rank', 'profil'].includes(a)) {
       setView(a);
       return;
     }
@@ -1469,8 +1597,15 @@
     if (view === 'pulse') setView('pulse');
   });
 
+  if (window.KyvoProfile) window.KyvoProfile.init({ esc, fmtUsd, agoLabel, shortCa, toast });
   loadCache();
-  Promise.all([loadViral(), loadSmartMoney(), loadLeaderboard(), refresh()]).then(() => routeFromHash());
+  // Ranking / trader / profil don't need live coins — route them as soon as the snapshot is in
+  let earlyRouted = null;
+  const pLb = loadLeaderboard().then(() => {
+    const h = (location.hash || '').slice(1).split('/')[0];
+    if (['rank', 'trader', 'profil', 'leaderboard'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
+  });
+  Promise.all([loadViral(), loadSmartMoney(), pLb, refresh()]).then(() => { if (location.hash !== earlyRouted) routeFromHash(); });
   setInterval(() => refresh(), REFRESH_MS);
   setInterval(updateClock, 1000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

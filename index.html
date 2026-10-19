@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>Kyvo · live v7</title>
+<title>Kyvo · live v7.1</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -61,7 +61,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1c1c24;color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:50;box-shadow:0 8px 30px #000a,inset 0 0 0 1px #fff2;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .tb{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;background:#0a0a10ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 8px max(8px,env(safe-area-inset-bottom))}
-.tb nav{width:100%;max-width:480px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.tb nav{width:100%;max-width:520px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .tb button{padding:8px 4px;border-radius:12px;color:var(--mut);font-size:11px;font-weight:700}
 .tb button.on{color:#fff;background:#ffffff0d}
 .tb button span{display:block;font-size:16px;margin-bottom:2px}
@@ -131,6 +131,116 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .swipe button:disabled{opacity:.35;cursor:not-allowed}
 .empty code{font-size:11px;color:#ccc}
 .av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222;flex:none}
+
+/* v7.1: row time */
+.tm{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.agepill{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:#22D3EE1f;color:#7DE8F7;box-shadow:inset 0 0 0 1px #22D3EE44;white-space:nowrap}
+.onlist{font-size:10.5px;color:var(--mut);white-space:nowrap}
+/* v7.1: chart */
+.chartslot{margin-top:12px}
+.kchart{background:var(--card);border-radius:14px;box-shadow:inset 0 0 0 1px var(--line);padding:8px}
+.kc-tfs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:6px}
+.kc-tfs::-webkit-scrollbar{display:none}
+.kc-tfs button{flex:none;min-width:40px;padding:7px 9px;border-radius:9px;font-size:12px;font-weight:800;color:var(--mut);background:var(--card2);box-shadow:inset 0 0 0 1px var(--line)}
+.kc-tfs button.on{background:#8B5CF6;color:#fff;box-shadow:none}
+.kc-box{position:relative;height:300px;border-radius:10px;overflow:hidden;background:#0d0d13}
+@media(min-width:900px){.kc-box{height:380px}}
+.kc-chart{position:absolute;inset:0}
+.kc-state{position:absolute;inset:0;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-align:center;font-size:12.5px;color:var(--mut);background:#0d0d13e6;padding:12px}
+.kc-iframe{width:100%;height:100%;border:0;display:block}
+.kc-note{font-size:11px;margin-top:6px;line-height:1.4}
+.kc-attr{font-size:10.5px;margin-top:2px}
+/* v7.1: ranking */
+.rk-per{display:flex;gap:6px;margin:10px 0}
+.rk-per button{padding:7px 12px;border-radius:999px;background:var(--card2);color:var(--mut);font-size:12px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line)}
+.rk-per button.on{background:#8B5CF6;color:#fff;box-shadow:none}
+.card.rk{padding:2px 8px}
+.rk-row{display:flex;align-items:center;gap:8px;padding:9px 2px;border-bottom:1px solid #ffffff08;cursor:pointer;font-size:12.5px}
+.rk-row:last-child{border-bottom:0}
+.rk-head{cursor:default;font-size:10.5px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.rk-n{width:22px;text-align:center;font-weight:800;color:var(--mut);flex:none}
+.rk-n.top1{color:#FFD54A}.rk-n.top2{color:#cfd6e4}.rk-n.top3{color:#E59866}
+.av{border-radius:50%;object-fit:cover;background:#222;flex:none}
+.avl{display:grid;place-items:center;font-size:13px;font-weight:800;color:#ddd;background:linear-gradient(135deg,#8B5CF655,#22D3EE33)}
+.rk-nm{flex:1;min-width:0}
+.rk-nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-nm small{display:block;font-size:11px;color:var(--acc2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-c{flex:none;text-align:right}
+.rk-wl{width:44px}.rk-wr{width:38px}.rk-tr{width:44px}.rk-pnl{width:78px}
+.rk-x{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--card2);color:#fff;font-size:12px;box-shadow:inset 0 0 0 1px var(--line)}
+.rk-x.off{background:none;box-shadow:none}
+@media(max-width:420px){.rk-wl{display:none}.rk-tr{width:34px}.rk-pnl{width:72px}}
+/* trader */
+.pnlcanvas{width:100%;height:auto;border-radius:12px;display:block;aspect-ratio:1/1}
+@media(min-width:900px){.pnlcanvas{max-width:420px}}
+.tr-row{display:grid;grid-template-columns:44px 1fr auto;grid-template-rows:auto auto;gap:2px 8px;padding:8px 0;border-bottom:1px solid #ffffff08;font-size:12.5px;align-items:center}
+.tr-row:last-child{border-bottom:0}
+.tr-side{grid-row:1/3;font-size:10px;font-weight:900;text-align:center;padding:3px 0;border-radius:6px;background:var(--card2)}
+.tr-coin{min-width:0;color:var(--txt)}
+.tr-coin b{margin-right:6px}
+.tr-coin small{font-size:11px}
+.tr-usd{text-align:right;font-weight:700}
+.tr-usd small{display:block;font-size:11px}
+.tr-t{grid-column:2/4;font-size:11px}
+
+/* v7.1: Ranking emphasis */
+.tb button.tb-center{position:relative;margin-top:-18px;padding:9px 4px 7px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#8B5CF6,#22D3EE);box-shadow:0 6px 18px #8B5CF655,0 0 0 3px #0a0a10}
+.tb button.tb-center span{font-size:20px}
+.tb button.tb-center.on{background:linear-gradient(135deg,#9d74ff,#3fe0f5);box-shadow:0 6px 22px #8B5CF699,0 0 0 3px #0a0a10,0 0 0 4px #ffffff44}
+.seg button.seg-rank{color:#fff;background:linear-gradient(135deg,#8B5CF6aa,#22D3EE88);box-shadow:inset 0 0 0 1px #ffffff33}
+.seg button.seg-rank.on{background:linear-gradient(135deg,#8B5CF6,#22D3EE)}
+
+/* v7.1: profile (shared own + trader) */
+.pf-head{display:flex;align-items:center;gap:12px;margin-top:2px}
+.pf-avwrap{position:relative;flex:none}
+.pf-av{border-radius:50%;object-fit:cover;display:grid;place-items:center;overflow:hidden;background:#222;flex:none}
+.pf-avl{width:60px;height:60px;font-weight:800;font-size:24px;background:linear-gradient(135deg,#8B5CF655,#22D3EE33)}
+.pf-ave{background:#1b1b24;box-shadow:inset 0 0 0 1px var(--line)}
+.pf-edit{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:grid;place-items:center;font-size:12px;box-shadow:0 0 0 2px var(--bg)}
+.pf-id{min-width:0;flex:1}
+.pf-nick b{font-size:19px}
+.pf-nick input{background:transparent;border:0;border-bottom:1px dashed #ffffff33;color:var(--txt);font:800 19px Inter,system-ui,sans-serif;width:100%;outline:none;padding:2px 0}
+.pf-handle{display:block;font-size:12.5px;margin-top:2px}
+.pf-addr{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:4px;color:var(--mut)}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.pf-picks{display:flex;flex-wrap:wrap;gap:8px}
+.pf-avpick{background:var(--card);border-radius:14px;padding:10px;margin-top:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.pf-per{display:flex;gap:6px;margin:14px 0 6px}
+.pf-per button{flex:1;padding:7px 0;border-radius:10px;background:var(--card2);color:var(--mut);font-size:12px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line)}
+.pf-per button.on{background:#ffffff14;color:#fff}
+.pf-pnl{font-size:40px;font-weight:900;letter-spacing:-1px;margin-top:6px;line-height:1.1}
+.pf-pnl.mut{color:var(--mut)}
+.pf-pnlsub{font-size:12px;margin-top:2px}
+.pf-chart{height:150px;margin:8px -4px 0;position:relative}
+.pf-chartempty{height:100%;display:grid;place-items:center;font-size:12px;border:1px dashed #ffffff14;border-radius:12px}
+.pf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.pf-stats div{background:var(--card2);border-radius:12px;padding:8px;box-shadow:inset 0 0 0 1px var(--line);min-width:0}
+.pf-stats small{display:block;color:var(--mut);font-size:10.5px}
+.pf-stats b{display:block;font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pf-btn{padding:10px 14px;border-radius:12px;background:var(--card2);font-size:13px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+.pf-btn.pf-share{background:linear-gradient(135deg,#8B5CF6,#22D3EE);color:#fff;box-shadow:none}
+.pf-tabs{display:flex;gap:18px;margin:16px 2px 6px;border-bottom:1px solid var(--line)}
+.pf-tabs button{padding:8px 0;font-size:14px;font-weight:800;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px}
+.pf-tabs button.on{color:#fff;border-color:#8B5CF6}
+.pf-list{padding:2px 10px}
+.pf-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #ffffff08;color:var(--txt);font-size:13px}
+.pf-row:last-child{border-bottom:0}
+.pf-tok{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#222;flex:none}
+.pf-row .tr-side{width:40px;flex:none}
+.pf-r1{flex:1;min-width:0;color:var(--txt)}
+.pf-r1 b{display:block}
+.pf-r1 small,.pf-r2 small{display:block;font-size:11px;margin-top:1px}
+.pf-r2{text-align:right;flex:none}
+.pf-cardwrap{margin-top:12px}
+.pf-cardwrap canvas{width:100%;height:auto;border-radius:14px;display:block}
+@media(min-width:900px){.pf-cardwrap canvas{max-width:420px}}
+.pf-foot{font-size:11px;margin:10px 2px;line-height:1.45}
+.pf-input{width:100%;margin-top:12px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font:14px ui-monospace,Menlo,monospace;outline:none}
+.pf-safe{margin-top:10px;font-size:12.5px;font-weight:700;color:#C4F5D6;background:#34E07A14;border-radius:10px;padding:8px 10px;box-shadow:inset 0 0 0 1px #34E07A33}
+.pf-prog{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);padding:8px 10px;background:var(--card);border-radius:12px;margin-bottom:8px}
+.pf-prog .spin{width:16px;height:16px;margin:0}
+@media(min-width:900px){#profilBody,#traderBody{max-width:640px;margin:0 auto}}
 </style>
 </head>
 <body>
@@ -147,6 +257,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <div class="chainsw" id="chainSwitch" aria-label="Chain"></div>
     <div class="seg" id="seg">
       <button data-view="pulse" class="on">Pulse</button>
+      <button data-view="rank" class="seg-rank">🏆 Ranking</button>
       <button data-view="hot">Hot</button>
       <button data-view="good">Good</button>
       <button data-view="new">New</button>
@@ -167,24 +278,31 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <section class="scr on" id="s-list"><div class="pulse" id="pulseDesk"></div><div class="pg pg-list" id="listBody"><div class="loading"><div class="spin"></div>Ładuję live dane…</div></div></section>
     <section class="scr" id="s-viral"><div class="pg" id="viralBody"><div class="loading"><div class="spin"></div>Ładuję Viral z X…</div></div></section>
     <section class="scr" id="s-coin"><div class="pg" id="coinBody"></div></section>
+    <section class="scr" id="s-rank"><div class="pg" id="rankBody"><div class="loading"><div class="spin"></div>Ładuję ranking…</div></div></section>
+    <section class="scr" id="s-trader"><div class="pg" id="traderBody"></div></section>
+    <section class="scr" id="s-profil"><div class="pg" id="profilBody"></div></section>
     <section class="scr" id="s-more"><div class="pg" id="moreBody"></div></section>
   </main>
 
   <div class="foot pg" id="legal">
     <div><b>To nie jest porada finansowa.</b> Kyvo pokazuje publiczne dane rynkowe i cytaty z X. Memecoiny są ekstremalnie ryzykowne — możesz stracić wszystko.</div>
-    <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal) · Solana / BSC / Robinhood. Treści X: cytaty + link do oryginału. UI oryginalne Kyvo.</div>
+    <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal) · Solana / BSC / Robinhood. Treści X: cytaty + link do oryginału. Wykresy: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> (Apache-2.0) + dane <a href="https://www.geckoterminal.com/" target="_blank" rel="noopener">GeckoTerminal</a>. UI oryginalne Kyvo.</div>
     <div style="margin-top:6px">Prywatność: brak kont, brak trackingu, nic nie zapisujemy na serwerze. Cache tylko w Twojej przeglądarce (localStorage).</div>
-    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v7</div>
+    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v7_1</div>
   </div>
 </div>
 
 <nav class="tb"><nav>
   <button data-tab="hot" class="on"><span>🔥</span>Hot</button>
   <button data-tab="viral"><span>𝕏</span>Viral</button>
+  <button data-tab="rank" class="tb-center" aria-label="Ranking traderów"><span>🏆</span>Ranking</button>
   <button data-tab="search"><span>⌕</span>Szukaj</button>
-  <button data-tab="more"><span>☰</span>Więcej</button>
+  <button data-tab="profil"><span>👤</span>Profil</button>
 </nav></nav>
 <div class="toast" id="toast"></div>
+<script src="vendor/lightweight-charts/lightweight-charts.standalone.production.js" defer></script>
+<script src="chart.js" defer></script>
+<script src="profile.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>
