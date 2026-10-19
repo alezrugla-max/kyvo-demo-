@@ -1,149 +1,897 @@
-(function(){
-// ===== DEMO DATA (example data only — not real prices, PnL or wallets) =====
-const COINS={
- Dacity:{t:'DACITY',e:'🐉',g:'#c33cff,#ff7a3c',p:'0.00378',mc:'$3.71M',ch:196.1,age:'1d',liq:'$240K',hold:'4,812',score:86,buy:['orangie','Rowdy','bystevenr'],sell:['Rowdy','jidn']},
- TORCH:{t:'TORCH',e:'💧',g:'#13d57a,#06402a',p:'0.00778',mc:'$7.78M',ch:102.5,age:'3d',liq:'$410K',hold:'9,204',score:91,buy:['orangie','Rowdy','Ansem']},
- LUKE:{t:'LUKE',e:'⚡',g:'#ff9a3c,#3c4cff',p:'0.000413',mc:'$401K',ch:11893,age:'6h',liq:'$88K',hold:'2,140',score:78,buy:['ansem','quanterty']},
- mucron:{t:'MUCRON',e:'🐭',g:'#ff6a88,#6a5cff',p:'0.000339',mc:'$322.6K',ch:8423,age:'4h',liq:'$61K',hold:'1,733',score:74,buy:['jidn','bystevenr']},
- WEFT:{t:'WEFT',e:'➶',g:'#2b2b33,#111',p:'0.000886',mc:'$844K',ch:935.7,age:'9h',liq:'$120K',hold:'2,980',score:69,buy:['tjr']},
- Gato:{t:'GATO',e:'🐱',g:'#f5d6a0,#b07a3c',p:'0.000854',mc:'$829.9K',ch:55.2,age:'2d',liq:'$140K',hold:'3,310',score:64,buy:['intentos']},
- FTR:{t:'FTR',e:'🚀',g:'#3c8cff,#ff3c5c',p:'0.00210',mc:'$2.01M',ch:-28.4,age:'1d',liq:'$190K',hold:'5,020',score:52,buy:['bystevenr','Rowdy'],sell:['bystevenr']},
- ELON:{t:'ELON',e:'👤',g:'#e8e8e8,#888',p:'0.00286',mc:'$2.85M',ch:12.0,age:'5d',liq:'$260K',hold:'6,450',score:61,buy:['Daumen']},
- CyberAxe:{t:'CAXE',e:'🪓',g:'#6a3cff,#1a0b40',p:'0.000408',mc:'$399.2K',ch:-3.7,age:'12h',liq:'$70K',hold:'1,240',score:48,buy:['Mitch']},
- CATE:{t:'CATE',e:'🪙',g:'#ffd23c,#c78a00',p:'0.0712',mc:'$68.6M',ch:-5.4,age:'40d',liq:'$2.1M',hold:'41,200',score:58,buy:['Jijo']},
- ANSEM:{t:'ANSEM',e:'🅰',g:'#ffcc00,#ff5c00',p:'0.106',mc:'$106M',ch:-8.0,age:'90d',liq:'$4.4M',hold:'88,100',score:55,buy:['orangie']},
- FROGGO:{t:'FROGGO',e:'🐸',g:'#5cff8a,#0a5c3a',p:'0.000410',mc:'$410K',ch:38.0,age:'2h',liq:'$52K',hold:'980',score:31,buy:['kuba_sol'],sell:[]},
-};
-const TRADERS={
- orangie:{c:'#ff8a3c,#ff3c7a',pnl:184320,sol:1094,wr:71,tr:412,hold:'38m',pl:[['Axiom',70],['FOMO',30]],f:'48.2K',tag:'KOL'},
- bystevenr:{c:'#9b5cff,#3c4cff',pnl:126800,sol:752,wr:68,tr:288,hold:'52m',pl:[['Photon',85],['Axiom',15]],f:'31.0K',tag:'KOL'},
- rowdy:{n:'Rowdy',c:'#3cc8ff,#1d3cff',pnl:98450,sol:584,wr:64,tr:531,hold:'21m',pl:[['GMGN',60],['Axiom',40]],f:'22.7K',tag:'Smart'},
- quanterty:{c:'#2fd67b,#0a5c3a',pnl:87210,sol:517,wr:73,tr:196,hold:'1h 12m',pl:[['Axiom',100]],f:'9.1K',tag:'Smart'},
- brezscales:{c:'#ff5a4e,#7a1d1d',pnl:64900,sol:385,wr:61,tr:344,hold:'44m',pl:[['FOMO',55],['Trojan',45]],f:'12.3K',tag:'KOL'},
- tjr:{c:'#3cc8ff,#0b5d75',pnl:52380,sol:311,wr:58,tr:227,hold:'2h 05m',pl:[['BullX',65],['Photon',35]],f:'18.8K',tag:'KOL'},
- intentos:{c:'#ff3c7a,#6a1d6a',pnl:41760,sol:248,wr:66,tr:402,hold:'17m',pl:[['Trojan',100]],f:'7.4K',tag:'Smart'},
- daumen:{n:'Daumen',c:'#ff8a3c,#7a3c1d',pnl:33140,sol:197,wr:62,tr:159,hold:'1h 31m',pl:[['GMGN',80],['BullX',20]],f:'5.2K',tag:'Smart'},
- mitch:{n:'Mitch',c:'#7c5cff,#2a1d6a',pnl:27590,sol:164,wr:57,tr:278,hold:'29m',pl:[['Axiom',50],['Photon',50]],f:'6.0K',tag:'Smart'},
- jijo:{n:'Jijo',c:'#ff6a4e,#6a1d1d',pnl:19880,sol:118,wr:55,tr:141,hold:'3h 10m',pl:[['FOMO',100]],f:'4.4K',tag:'KOL'},
- ansem:{n:'Ansem',c:'#ffcc00,#ff5c00',pnl:71200,sol:420,wr:59,tr:120,hold:'6h',pl:[['Axiom',60],['FOMO',40]],f:'610K',tag:'KOL'},
- murad:{n:'Murad',c:'#ff3c7a,#3c1d2a',pnl:15400,sol:91,wr:52,tr:38,hold:'4d',pl:[['Photon',100]],f:'540K',tag:'KOL'},
- toly:{n:'Toly',c:'#b07aff,#3c1d6a',pnl:2100,sol:12,wr:50,tr:9,hold:'2d',pl:[['FOMO',100]],f:'890K',tag:'KOL'},
- 'elon musk':{n:'Elon Musk',c:'#e8e8ee,#555',pnl:0,sol:0,wr:0,tr:0,hold:'—',pl:[],f:'—',tag:'Famous',nowallet:1},
- jidn:{c:'#ff3c7a,#7a1d3c',pnl:22800,sol:135,wr:60,tr:510,hold:'14m',pl:[['GMGN',100]],f:'3.9K',tag:'Smart'},
- kuba_sol:{c:'#888,#333',pnl:-420,sol:-2.5,wr:41,tr:63,hold:'25m',pl:[['FOMO',100]],f:'120',tag:''},
-};
+/* KYVO_MVP_LIVE_v4 — live DexScreener + Viral z X snapshot. Not financial advice. */
+(function () {
+  'use strict';
 
-Object.assign(COINS,{
- AIXBT:{t:'AIXBT',e:'🤖',g:'#3cc8ff,#1d3cff',p:'0.2140',mc:'$214M',ch:18.4,age:'210d',liq:'$6.8M',hold:'312K',score:72,buy:['orangie','quanterty']},
- GRIFFAIN:{t:'GRIFFAIN',e:'🦅',g:'#a78bfa,#1d1d6a',p:'0.0612',mc:'$61.2M',ch:9.1,age:'180d',liq:'$3.1M',hold:'98K',score:66,buy:['bystevenr']},
- ZEREBRO:{t:'ZEREBRO',e:'🧠',g:'#ff6ad5,#5c1d6a',p:'0.0388',mc:'$38.8M',ch:-4.2,age:'200d',liq:'$2.2M',hold:'71K',score:57,buy:['intentos']},
- DOGEAI:{t:'DOGEAI',e:'🐕',g:'#f5b83c,#7a4a00',p:'0.00921',mc:'$9.21M',ch:44.0,age:'20d',liq:'$640K',hold:'14K',score:76,buy:['Rowdy','tjr']},
- MARS:{t:'MARS',e:'🪐',g:'#ff7a3c,#6a1d0b',p:'0.00133',mc:'$1.33M',ch:212.0,age:'8h',liq:'$150K',hold:'2,410',score:81,buy:['orangie','Mitch']},
- MEW:{t:'MEW',e:'😺',g:'#9be15d,#1d6a3c',p:'0.00402',mc:'$402M',ch:3.3,age:'560d',liq:'$11M',hold:'190K',score:63,buy:['Jijo']},
- POPCAT:{t:'POPCAT',e:'😮',g:'#ffd6a0,#c76a3c',p:'0.311',mc:'$305M',ch:-2.1,age:'640d',liq:'$9.5M',hold:'120K',score:59,buy:['brezscales']},
- TRUMP:{t:'TRUMP',e:'🇺🇸',g:'#ff5a4e,#1d3cff',p:'8.42',mc:'$1.68B',ch:5.6,age:'270d',liq:'$80M',hold:'640K',score:62,buy:['Ansem']},
- VOTE:{t:'VOTE',e:'🗳',g:'#3c8cff,#ffffff',p:'0.000771',mc:'$771K',ch:66.0,age:'1d',liq:'$98K',hold:'1,880',score:70,buy:['Daumen']},
- MAGA:{t:'MAGA',e:'🧢',g:'#ff3c3c,#6a0b0b',p:'0.00560',mc:'$5.60M',ch:-12.0,age:'60d',liq:'$420K',hold:'22K',score:49,buy:['jidn'],sell:['jidn']},
- GIGA:{t:'GIGA',e:'🗿',g:'#d0d0d8,#3c3c48',p:'0.0244',mc:'$24.4M',ch:27.0,age:'300d',liq:'$1.4M',hold:'55K',score:68,buy:['tjr','quanterty']},
- PNUT:{t:'PNUT',e:'🐿',g:'#ffb03c,#7a3c0b',p:'0.218',mc:'$218M',ch:7.7,age:'340d',liq:'$7.2M',hold:'230K',score:61,buy:['bystevenr']},
- MOODENG:{t:'MOODENG',e:'🦛',g:'#ff9ad5,#7a3c6a',p:'0.104',mc:'$104M',ch:-6.5,age:'380d',liq:'$4.0M',hold:'88K',score:54,buy:['Mitch']},
-});
-const INFO={Dacity:['Dacity Dragon','Dragon meme · community takeover'],TORCH:['Torch Finance','Olympic-flame meme, CTO'],LUKE:['Luke Skywalker Coin','Movie meme, very new'],mucron:['Mucron Mouse','Tiny mouse meme'],WEFT:['Weft Protocol','AI agent meme'],Gato:['Gato Loco','Cat meme'],FTR:['Flying Tesla Roadster','Elon / space meme'],ELON:['Elon Mars Dog','Elon meme'],CyberAxe:['Cyber Axe','Cybertruck meme'],CATE:['Cate Coin','Cat meme · older'],ANSEM:['Ansem Coin','KOL meme'],FROGGO:['Froggo the Frog','Frog meme · high insider risk'],
- AIXBT:['aixbt by Virtuals','AI agent'],GRIFFAIN:['Griffain','AI agent'],ZEREBRO:['Zerebro','AI agent / art'],DOGEAI:['Doge AI Agent','AI × dog meme'],MARS:['Mars Mission','Space meme'],MEW:['cat in a dogs world','Cat meme'],POPCAT:['Popcat','Cat meme'],TRUMP:['Official Trump','Politics'],VOTE:['Vote Coin','Politics'],MAGA:['MAGA Hat','Politics'],GIGA:['Gigachad','Chad meme'],PNUT:['Peanut the Squirrel','Animal meme'],MOODENG:['Moo Deng','Hippo meme']};
-const B58='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-function ca(k){const r=seed('ca'+k);let a='';for(let i=0;i<40;i++)a+=B58[Math.floor(r()*58)];return a+'pump'}
-const shortCa=a=>a.slice(0,4)+'…'+a.slice(-4);
-function tokenImg(k,s=48){const C=COINS[k]||{g:'#8B5CF6,#22D3EE',t:k};const [c1,c2]=C.g.split(',');const r=seed('img'+k);const mono=(C.t||k).slice(0,C.t&&C.t.length<=4?C.t.length:2);
- const dots=[...Array(6)].map(()=>`<circle cx="${(r()*100).toFixed(0)}" cy="${(r()*100).toFixed(0)}" r="${(r()*14+4).toFixed(0)}" fill="#fff" opacity="${(r()*.12+.04).toFixed(2)}"/>`).join('');
- const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/>${dots}<text x="50" y="${C.e?44:60}" font-size="${C.e?34:30}" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji">${C.e||''}</text><text x="50" y="${C.e?80:62}" font-size="${mono.length>3?15:19}" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,Arial" letter-spacing="-.5" style="paint-order:stroke" stroke="#0006" stroke-width="2">${mono}</text></svg>`;
- return `<img src="data:image/svg+xml;utf8,${encodeURIComponent(svg)}" width="${s}" height="${s}" style="border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px #fff2,0 2px 10px #0007;display:block">`}
-const POSTS=[
- {who:'Elon Musk',h:'elonmusk',l:'21.4K',txt:'Flying Tesla Roadster to Mars 🚀',phr:'tesla roadster',coin:'FTR',m:94,mv:48},
- {who:'Ansem',h:'blknoiz06',l:'2.1K',txt:'TORCH chart looks clean ngl',phr:'TORCH',coin:'TORCH',m:100,mv:17},
- {who:'Toly',h:'aeyakovenko',l:'890',txt:'cats on solana are undefeated',phr:'cats on solana',coin:'MEW',m:71,mv:-6},
- {who:'Murad',h:'MustStopMurad',l:'4.8K',txt:'the gigachads will be rewarded',phr:'gigachads',coin:'GIGA',m:88,mv:12},
- {who:'orangie',h:'orangie',l:'1.3K',txt:'ai agents szn is not over, doge ai looking strong',phr:'doge ai',coin:'DOGEAI',m:96,mv:31},
- {who:'Elon Musk',h:'elonmusk',l:'58.2K',txt:'Mars mission update soon',phr:'mars mission',coin:'MARS',m:91,mv:84},
- {who:'Rowdy',h:'rowdy',l:'640',txt:'the hippo just won’t die lol',phr:'hippo',coin:'MOODENG',m:79,mv:-3},
- {who:'Ansem',h:'blknoiz06',l:'3.3K',txt:'squirrel season is back?',phr:'squirrel',coin:'PNUT',m:83,mv:9},
-];
-function renderPosts(){return POSTS.map(p=>{const T=TRADERS[tkey(p.who)]||genTrader(p.who);const C=COINS[p.coin];const up=p.mv>=0;const mc=p.m>=90?'#34E07A':p.m>=80?'#22D3EE':'#f5b83c';
- return `<div class="card" style="margin-bottom:9px"><div class="tr-link" data-trader="${p.who}" style="display:flex;gap:9px;align-items:center">${av(p.who,32)}<div><b style="font-size:13.5px">${p.who} <span style="color:#3cc8ff;font-size:12px">✓</span></b><div class="g" style="font-size:11.5px">@${p.h} · ♥ ${p.l}</div></div><span style="margin-left:auto;font-size:16px">𝕏</span></div>
-<div style="font-size:14px;margin:8px 0 8px;color:#ddd">“${p.txt.replace(new RegExp('('+p.phr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i'),'<mark style="background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px">$1</mark>')}”</div>
-<div class="coin-link" data-coin="${p.coin}" style="display:flex;align-items:center;gap:9px;background:#16161d;border-radius:12px;padding:8px 10px;box-shadow:inset 0 0 0 1px #ffffff0d">${tokenImg(p.coin,30)}<div style="min-width:0"><div style="display:flex;align-items:center;gap:6px"><b style="font-size:13px">$${C.t}</b><span style="font-size:10.5px;font-weight:800;color:${mc};background:${mc}1f;box-shadow:inset 0 0 0 1px ${mc}55;padding:1px 6px;border-radius:999px">${p.m}% match</span></div><div class="g" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">“${p.phr}” → ${INFO[p.coin][0]} · MC ${C.mc}</div></div><div style="margin-left:auto;text-align:right;flex:none"><b class="${up?'up':'dn'}" style="font-size:15px">${up?'+':'−'}${Math.abs(p.mv)}%</b><div class="g" style="font-size:10.5px">15 min after</div></div></div></div>`}).join('')}
-const PC={Axiom:'#e8e8ee',FOMO:'#7c5cff',Photon:'#3cc8ff',GMGN:'#2fd67b',BullX:'#f5b83c',Trojan:'#b07aff'};
-const PL=Object.keys(PC);
-const $=(q,r=document)=>[...r.querySelectorAll(q)];
-const tkey=n=>n.trim().toLowerCase();
-const isTrader=n=>tkey(n) in TRADERS;
-const coinKey=n=>Object.keys(COINS).find(k=>k.toLowerCase()===n.trim().toLowerCase()||COINS[k].t===n.trim().replace('$','').toUpperCase());
-function seed(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return()=>((h=Math.imul(h^h>>>15,2246822507),h=Math.imul(h^h>>>13,3266489909),(h^=h>>>16)>>>0)/4294967296)}
-const fmt=v=>(v<0?'−':'+')+'$'+Math.abs(v).toLocaleString('en-US');
-const pct=v=>(v<0?'▼ ':'▲ ')+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:1})+'%';
-function genCoin(n){const r=seed(n);const ch=Math.round((r()*300-60)*10)/10;return{t:n.toUpperCase(),e:'🪙',g:'#8B5CF6,#22D3EE',p:(r()*0.01).toFixed(5),mc:'$'+(r()*9+0.3).toFixed(2)+'M',ch,age:Math.ceil(r()*20)+'d',liq:'$'+Math.round(r()*400+40)+'K',hold:Math.round(r()*9000+800).toLocaleString(),score:Math.round(r()*40+50),buy:['orangie','quanterty']}}
-function genTrader(n){const r=seed(n);return{n,c:'#8B5CF6,#22D3EE',pnl:Math.round(r()*40000),sol:Math.round(r()*200),wr:Math.round(r()*30+45),tr:Math.round(r()*400+20),hold:Math.round(r()*80+10)+'m',pl:[['Axiom',60],['FOMO',40]],f:(r()*20).toFixed(1)+'K',tag:''}}
-function chart(name,up){const r=seed(name+'c');let y=up?185:60,pts=[];for(let i=0;i<=50;i++){y+=(up?-2.6:2.4)+(r()-.5)*14;y=Math.max(18,Math.min(205,y));pts.push([i*12,y])}
- const d='M'+pts.map(p=>p[0]+','+p[1].toFixed(0)).join(' L');const c=up?'#34E07A':'#FF5468';const [lx,ly]=pts[pts.length-1];
- return `<svg viewBox="0 0 600 220" width="100%" height="150" style="overflow:visible"><defs><linearGradient id="dA" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".3"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>${[55,110,165].map(v=>`<line x1="0" x2="600" y1="${v}" y2="${v}" stroke="#fff" stroke-opacity=".05" stroke-dasharray="3 5"/>`).join('')}<line x1="0" x2="600" y1="${ly.toFixed(0)}" y2="${ly.toFixed(0)}" stroke="${c}" stroke-opacity=".45" stroke-dasharray="2 4"/><path d="${d} L600,220 L0,220Z" fill="url(#dA)"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="${lx}" cy="${ly.toFixed(0)}" r="11" fill="${c}" opacity=".25"/><circle cx="${lx}" cy="${ly.toFixed(0)}" r="5" fill="${c}" stroke="#07070B" stroke-width="2"/></svg>`}
-const av=(n,s=24)=>{const T=TRADERS[tkey(n)]||genTrader(n);return `<i class="ua" style="width:${s}px;height:${s}px;font-size:${s*.45}px;background:linear-gradient(135deg,${T.c})">${(T.n||n)[0].toUpperCase()}</i>`};
-const chip=([p,v])=>`<span class="chip"><em style="background:${PC[p]||'#888'};${p==='FOMO'?'color:#fff':''}">${p[0]}</em>${p} ${v}%</span>`;
-const DEMO='<div class="dfoot">Demo · example data · not financial advice</div>';
-function renderCoin(name){const k=coinKey(name);const C=k?COINS[k]:genCoin(name);const nm=k||name;const up=C.ch>=0;
- const bars=[['Smart traders in',`${C.buy.length} top traders · 1h`,Math.min(30,8+C.buy.length*7),30],['Liquidity',C.liq,Math.round(C.score/6),20],['Holders',C.hold,Math.round(C.score/6.5),20],['Rug risk','No mint · no freeze',Math.round(C.score/7),15],['Momentum',pct(C.ch)+' 24h',Math.round(C.score/8),15]];
- const sc=C.score,col=sc>=75?'#34E07A':sc>=50?'#f5b83c':'#FF5468';
- const sell=(C.sell&&C.sell.length)?`<div class="pg" style="margin-top:9px"><div class="warn"><div class="wh"><span class="wi">⚠</span><b>Smart money selling</b><time>live</time></div><div class="wl" style="margin-top:8px">${C.sell.map(s=>`<span class="tr-link" data-trader="${s}">${av(s,18)}${s} sold ${Math.round(seed(nm+s)()*60+40)}%</span>`).join('')}</div></div></div>`:'';
- const buyers=C.buy.map(b=>{const r=seed(nm+b);const T=TRADERS[tkey(b)]||genTrader(b);return `<div class="tr tr-link" data-trader="${b}" style="display:flex;align-items:center;gap:9px;padding:7px 0;font-size:14px">${av(b,28)}<b>${T.n||b}</b><span class="g" style="font-size:12px">${Math.ceil(r()*9)} buys · $${(r()*20+1).toFixed(1)}K</span><span class="${up?'up':'dn'}" style="margin-left:auto;font-weight:700">${up?'+':''}${Math.round(C.ch*(0.4+r()*0.5))}%</span></div>`}).join('');
- const I=INFO[nm]||[nm,'Meme'];const A=ca(nm);const stt=(a,b)=>`<div class="st" style="padding:9px 11px;min-width:0"><small style="display:block;white-space:nowrap">${a}</small><b style="display:block;font-size:14.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b}</b></div>`;const vol=(()=>{const m=C.liq.match(/([\d.]+)([KMB])/);let v=parseFloat(m[1])*{K:1e3,M:1e6,B:1e9}[m[2]]*3.1;return v>=1e9?'$'+(v/1e9).toFixed(2)+'B':v>=1e6?'$'+(v/1e6).toFixed(2)+'M':'$'+(v/1e3).toFixed(0)+'K'})();
- return `<div class="pg" style="padding-top:6px;display:flex;align-items:center;gap:11px"><span class="back" style="font-size:20px">‹</span>${tokenImg(nm,46)}<div style="min-width:0"><b style="font-size:17px">${I[0]}</b><div class="g" style="font-size:12px">$${C.t} · ${C.age} old</div></div><img src="kyvo_mark.svg" width="28" height="28" style="display:block;flex:none;margin-left:auto;margin-right:8px"><span>☆</span></div>
-<div class="pg" style="margin-top:8px;display:flex;align-items:center;gap:6px"><span class="ca" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#aaa;background:#14141b;box-shadow:inset 0 0 0 1px #ffffff12;padding:5px 8px 5px 10px;border-radius:999px;font-family:ui-monospace,Menlo,monospace">CA ${shortCa(A)}<span class="copy" data-ca="${A}" style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#ffffff12"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2.4"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span></span><span class="g" style="font-size:11px">demo address</span></div>
-<div class="pg" style="margin-top:8px"><b style="font-size:26px;letter-spacing:-.5px">${C.mc}</b> <span class="g">MC</span> <span class="${up?'up':'dn'}" style="font-size:14px;font-weight:700">${pct(C.ch)}</span></div>
-<div class="pg" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">${stt('Price','$'+C.p)}${stt('Liquidity',C.liq)}${stt('Holders',C.hold)}${stt('Age',C.age)}${stt('Vol 24h',vol)}${stt('Top 10',(seed(nm)()*20+12).toFixed(1)+'%')}</div>
-<div class="pg">${chart(nm,up)}</div>${sell}
-<div class="pg" style="margin-top:9px"><div class="card" style="padding:10px 14px 4px"><h4 style="margin-bottom:2px">Smart money bought</h4>${buyers}</div></div>
-<div class="pg" style="margin-top:9px"><div class="card" style="padding:11px 14px"><h4 style="margin-bottom:6px">Info</h4><div style="font-size:13px;color:#ccc;line-height:1.45">${I[0]} ($${C.t}) — ${I[1]}. Launched ${C.age} ago on Solana.</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">${['Mint revoked','Freeze off','LP '+(C.score>55?'locked':'unlocked'),'Dev holds '+(seed(nm+'d')()*4).toFixed(1)+'%'].map(x=>`<span class="chip" style="padding:4px 9px">${x}</span>`).join('')}</div></div></div>
-<div class="pg" style="margin-top:9px"><div class="card" style="padding:11px 14px 3px"><div class="scorehd"><div class="ring2" style="background:conic-gradient(${col} 0 ${sc}%,#1d1d25 0)"><b style="color:${col}">${sc}</b></div><div><b style="font-size:15px">Signal score</b><div class="g" style="font-size:12px;margin-top:3px">${sc>=75?'Strong':sc>=50?'Medium':'Weak'} · updated 4s ago</div></div></div>${bars.map(([a,b,v,m])=>`<div class="sr"><div class="srt"><b>${a}</b><span class="g">${b}</span><em>${v}<span class="g">/${m}</span></em></div><div class="bar"><i style="width:${Math.round(v/m*100)}%;background:${v/m>=.8?'#2fd67b':'#f5b83c'}"></i></div></div>`).join('')}</div></div>
-<div class="pg" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px">${['FOMO','Axiom','Photon','GMGN'].map((p,i)=>`<div class="plat" data-p="${p}" style="background:${i?'#1d1d25':'#7c5cff'};border-radius:10px;padding:10px 0;text-align:center;font-weight:800;font-size:12.5px">${p}</div>`).join('')}</div>${DEMO}`}
-function renderTrader(name){const T=TRADERS[tkey(name)]||genTrader(name);const nm=T.n||name;const r=seed(nm);
- const trades=Object.keys(COINS).sort(()=>r()-.5).slice(0,5).map((k,i)=>{const C=COINS[k];const v=Math.round((r()*300-60));return `<div class="row coin-link" data-coin="${k}" style="padding:8px 2px"><div class="ic" style="width:34px;height:34px;font-size:16px;background:linear-gradient(135deg,${C.g})">${C.e}</div><div class="nm"><b style="font-size:14px">${k}</b><small>${['1h','4h','6h','1d','2d'][i]} ago</small></div><div class="mc"><b class="${v<0?'dn':'up'}" style="font-size:14px">${v<0?'−':'+'}${Math.abs(v)}%</b><small>${v<0?'−':''}$${(Math.abs(v)*r()*30+100).toFixed(0)}</small></div></div>`}).join('');
- const st=(k,v,c='')=>`<div class="card" style="padding:11px 12px"><div class="g" style="font-size:11.5px">${k}</div><b class="${c}" style="font-size:18px;display:block;margin-top:3px">${v}</b></div>`;
- return `<div class="pg" style="padding-top:6px;font-size:20px;display:flex;align-items:center;justify-content:space-between"><span class="back">‹</span><img src="kyvo_mark.svg" width="28" height="28" style="display:block;flex:none;"></div>
-<div class="pg" style="display:flex;align-items:center;gap:14px;margin-top:6px"><div style="width:68px;height:68px;flex:none;border-radius:50%;background:linear-gradient(135deg,${T.c});display:grid;place-items:center;font-size:30px;font-weight:800;color:#000">${nm[0].toUpperCase()}</div>
-<div><b style="font-size:22px">${nm}</b> ${T.tag?`<span class="tag" style="background:#8B5CF622;color:#C4B5FD">${T.tag}</span>`:''}<div style="margin-top:5px"><span class="tag buy">${T.nowallet?'𝕏 account · no linked wallet':'✓ Verified on-chain'}</span></div><div class="g" style="font-size:12px;margin-top:5px">@${nm.toLowerCase().replace(' ','')} · ${T.f} followers</div></div></div>
-${T.pl.length?`<div class="pg" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap"><span class="g" style="font-size:12px;align-self:center">Trades on</span>${T.pl.map(chip).join('')}</div>`:''}
-<div class="pg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">${st('Win rate',T.wr+'%',T.wr>=55?'up':'')}${st('7d PnL',fmt(T.pnl),T.pnl<0?'dn':'up')}${st('Avg hold',T.hold)}${st('Trades (7d)',T.tr.toLocaleString())}</div>
-<div class="pg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><div class="btn-f" style="background:#fff;color:#000;text-align:center;padding:12px;border-radius:12px;font-weight:800">Follow</div><div class="btn-f" style="background:#7c5cff;text-align:center;padding:12px;border-radius:12px;font-weight:800">Alerts on</div></div>
-<div class="pg" style="margin-top:16px"><b style="font-size:15px">Recent trades</b>${T.nowallet?'<div class="g" style="font-size:13px;margin-top:8px">No public wallet linked — only posts are tracked.</div>':trades}</div>${DEMO}`}
-// ===== UI =====
-const toastEl=document.getElementById('toast');let tt;
-function toast(t){toastEl.textContent=t;toastEl.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toastEl.classList.remove('on'),1800)}
-let curCoin='Dacity';
-function show(h){let [id,arg]=h.split('/');arg=arg&&decodeURIComponent(arg);
- if(id==='coin'){curCoin=arg||'Dacity';const s=document.getElementById('s-coin');s.innerHTML=renderCoin(curCoin);wire(s)}
- if(id==='trader'){const s=document.getElementById('s-trader');s.innerHTML=renderTrader(arg||'orangie');wire(s)}
- const s=document.getElementById('s-'+id)||document.getElementById('s-home');
- $('.scr').forEach(x=>x.classList.toggle('on',x===s));s.scrollTop=0;
- const tab=s.dataset.tab;$('.tb [data-tab]').forEach(d=>d.classList.toggle('on',d.dataset.tab===tab))}
-function go(h){if(location.hash==='#'+h)show(h);else location.hash=h}
-window.addEventListener('hashchange',()=>show(location.hash.slice(1)||'home'));
-function bind(el,fn){if(!el||el.dataset.b)return;el.dataset.b=1;el.classList.add('tap');el.addEventListener('click',e=>{e.stopPropagation();fn()})}
-const back=()=>history.length>1?history.back():go('home');
-function wire(sec){const id=sec.id.slice(2);
- $('.back',sec).forEach(el=>bind(el,back));
- $('[data-trader]',sec).forEach(el=>bind(el,()=>go('trader/'+encodeURIComponent(el.dataset.trader))));
- $('[data-coin]',sec).forEach(el=>bind(el,()=>go('coin/'+encodeURIComponent(el.dataset.coin))));
- $('.plat',sec).forEach(el=>bind(el,()=>toast('Demo: would open '+curCoin+' on '+el.dataset.p)));
- $('.copy',sec).forEach(el=>bind(el,()=>{try{navigator.clipboard.writeText(el.dataset.ca)}catch(e){}toast('Copied demo address '+shortCa(el.dataset.ca))}));
- $('.btn-f',sec).forEach(el=>bind(el,()=>toast('Demo only — '+el.textContent.trim()+' is not live yet')));}
-{const fb=document.getElementById('s-famousB');const box=[...fb.querySelectorAll(':scope > .pg')].find(p=>p.querySelector('.card'));if(box){box.innerHTML='<div class="g" style="font-size:12px;margin:0 2px 8px">Posts are matched to coins by name/ticker similarity</div>'+renderPosts();wire(fb)}}
-$('[data-go]').forEach(el=>bind(el,()=>go(el.dataset.go)));
-$('.scr').forEach(sec=>{const id=sec.id.slice(2);if(id==='coin'||id==='trader')return;
- $('span,div,b',sec).forEach(el=>{if(el.children.length===0&&el.textContent.trim()==='‹')bind(el,back)});
- $('a,div,span',sec).forEach(el=>{const t=el.textContent.trim();const p=PL.find(p=>t===p||t===p[0]+p);if(p&&!el.querySelector('div'))bind(el,()=>{const c=(el.closest('.card,.row,.open')||sec).textContent;const k=Object.keys(COINS).find(k=>c.includes(k));toast('Demo: would open '+(k||'this coin')+' on '+p)})});
- $('span,div',sec).forEach(el=>{const t=el.textContent.trim();if(el.children.length<=1&&/^(\+ Follow|Follow|Following|Share|Share on X|Save image|Share my rank|\+ Add|Send)$/.test(t))bind(el,()=>toast('Demo only — '+t.replace('+ ','')+' is not live yet'))});
- $('b',sec).forEach(b=>{const t=b.textContent.replace(/✓/g,'').trim();if(isTrader(t))bind(b.closest('.row,.card,tr')||b.parentElement.parentElement,()=>go('trader/'+encodeURIComponent(t)))});
- $('b,span',sec).forEach(b=>{const t=b.textContent.trim();if(b.children.length===0&&(coinKey(t)||/^[A-Z]{3,9}$/.test(t)&&sec.id==='s-narratives'))bind(b.closest('.row')||b,()=>go('coin/'+encodeURIComponent(coinKey(t)||t)))});
-});
-$('#s-alerts .card').forEach(c=>{if(c.textContent.includes('KYVO')){const k=Object.keys(COINS).find(k=>c.querySelector('b')&&c.querySelector('b').textContent.includes(k));bind(c,()=>go('coin/'+(k||'Dacity')))}});
-show(location.hash.slice(1)||'home');
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+  const DS = 'https://api.dexscreener.com';
+  const GT = 'https://api.geckoterminal.com/api/v2';
+  const CACHE_KEY = 'kyvo_coins_v4';
+  const CACHE_MS = 60_000;
+  const REFRESH_MS = 45_000;
+  const FALLBACK_IMG = 'kyvo_mark.svg';
+  const MVP_MARKER = 'KYVO_MVP_LIVE_v4';
+
+  const $ = (q, r = document) => r.querySelector(q);
+  const $$ = (q, r = document) => [...r.querySelectorAll(q)];
+  const toastEl = $('#toast');
+  let toastT;
+  function toast(t) {
+    toastEl.textContent = t;
+    toastEl.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove('on'), 1800);
+  }
+
+  function fmtUsd(n) {
+    if (n == null || !isFinite(n)) return '—';
+    const a = Math.abs(n);
+    if (a >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+    if (a >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+    if (a >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+    if (a >= 1) return '$' + n.toFixed(2);
+    if (a >= 0.0001) return '$' + n.toFixed(6);
+    return '$' + Number(n).toPrecision(4);
+  }
+  function fmtPct(n) {
+    if (n == null || !isFinite(n)) return '—';
+    const s = (n >= 0 ? '+' : '') + Number(n).toFixed(1) + '%';
+    return s;
+  }
+  function pctClass(n) {
+    if (n == null || !isFinite(n)) return 'mut';
+    return n >= 0 ? 'up' : 'dn';
+  }
+  function shortCa(a) {
+    if (!a) return '—';
+    return a.slice(0, 4) + '…' + a.slice(-4);
+  }
+  function ageFrom(ms) {
+    if (!ms) return '—';
+    const s = Math.max(0, (Date.now() - ms) / 1000);
+    if (s < 60) return Math.floor(s) + 's';
+    if (s < 3600) return Math.floor(s / 60) + 'm';
+    if (s < 86400) return Math.floor(s / 3600) + 'h';
+    if (s < 86400 * 30) return Math.floor(s / 86400) + 'd';
+    return Math.floor(s / (86400 * 30)) + 'mo';
+  }
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const t = new Date(iso).getTime();
+    if (!isFinite(t)) return '';
+    return ageFrom(t) + ' ago';
+  }
+  function fmtInt(n) {
+    if (n == null) return '—';
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+    return String(n);
+  }
+
+  /* ---- Fuzzy match (typos / similar names) ---- */
+  function norm(s) {
+    return String(s || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  }
+  function levenshtein(a, b) {
+    a = norm(a); b = norm(b);
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+    const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+    for (let i = 0; i < a.length; i++) {
+      let prev = i + 1, cur;
+      for (let j = 0; j < b.length; j++) {
+        cur = a[i] === b[j] ? row[j] : 1 + Math.min(prev, row[j], row[j + 1]);
+        row[j] = prev;
+        prev = cur;
+      }
+      row[b.length] = prev;
+    }
+    return row[b.length];
+  }
+  function fuzzyScore(query, name, symbol, address) {
+    const q = norm(query);
+    if (!q) return 0;
+    const n = norm(name), sy = norm(symbol), ad = String(address || '').toLowerCase();
+    if (ad && ad === query.trim().toLowerCase()) return 100;
+    if (ad && query.length >= 6 && ad.includes(query.trim().toLowerCase())) return 95;
+    if (sy === q || n === q) return 100;
+    if (sy.startsWith(q) || n.startsWith(q)) return 90;
+    if (sy.includes(q) || n.includes(q)) return 80;
+    const dSy = levenshtein(q, sy);
+    const dN = levenshtein(q, n.slice(0, Math.max(q.length + 2, sy.length)));
+    const maxLen = Math.max(q.length, sy.length, 1);
+    const best = Math.min(dSy, dN);
+    if (best <= 1 && q.length >= 3) return 75;
+    if (best <= 2 && q.length >= 4) return 60;
+    if (best / maxLen <= 0.34) return 50;
+    return 0;
+  }
+
+  /* ---- Platform deep links (public URL formats) ---- */
+  function platformUrls(addr, chain) {
+    const a = encodeURIComponent(addr);
+    const c = (chain || 'solana').toLowerCase();
+    return {
+      Axiom: `https://axiom.trade/t/${a}?chain=sol`,
+      FOMO: `https://fomo.family/coins/${c}/${a}`,
+      Photon: `https://photon-sol.tinyastro.io/en/lp/${a}`,
+      GMGN: `https://gmgn.ai/sol/token/${a}`,
+      DexScreener: `https://dexscreener.com/${c}/${a}`,
+    };
+  }
+
+  /* ---- State ---- */
+  let coins = []; // normalized coin objects
+  let byAddr = {};
+  let viral = null;
+  let view = 'hot'; // hot | boosted | viral | more | coin | search
+  let selectedAddr = null;
+  let lastFetch = 0;
+  let fetchErr = null;
+  let sourceLabel = '';
+
+  function saveCache() {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), coins, sourceLabel }));
+    } catch (e) {}
+  }
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return false;
+      const o = JSON.parse(raw);
+      if (!o || !Array.isArray(o.coins) || !o.coins.length) return false;
+      coins = o.coins;
+      byAddr = Object.fromEntries(coins.map((c) => [c.address, c]));
+      sourceLabel = o.sourceLabel || 'cache';
+      lastFetch = o.t || 0;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function pairToCoin(p, meta) {
+    if (!p || !p.baseToken) return null;
+    const bt = p.baseToken;
+    const liq = (p.liquidity && p.liquidity.usd) || 0;
+    const vol = p.volume || {};
+    const ch = p.priceChange || {};
+    const info = p.info || {};
+    const img =
+      info.imageUrl ||
+      (meta && meta.icon) ||
+      null;
+    return {
+      address: bt.address,
+      name: bt.name || bt.symbol || 'Unknown',
+      symbol: bt.symbol || '???',
+      chainId: p.chainId || 'solana',
+      priceUsd: p.priceUsd != null ? Number(p.priceUsd) : null,
+      mcap: p.marketCap != null ? Number(p.marketCap) : p.fdv != null ? Number(p.fdv) : null,
+      fdv: p.fdv != null ? Number(p.fdv) : null,
+      liquidity: liq,
+      volume: {
+        m5: vol.m5 != null ? Number(vol.m5) : null,
+        h1: vol.h1 != null ? Number(vol.h1) : null,
+        h6: vol.h6 != null ? Number(vol.h6) : null,
+        h24: vol.h24 != null ? Number(vol.h24) : null,
+      },
+      change: {
+        m5: ch.m5 != null ? Number(ch.m5) : null,
+        h1: ch.h1 != null ? Number(ch.h1) : null,
+        h6: ch.h6 != null ? Number(ch.h6) : null,
+        h24: ch.h24 != null ? Number(ch.h24) : null,
+      },
+      pairCreatedAt: p.pairCreatedAt || null,
+      dexId: p.dexId || '',
+      url: p.url || '',
+      image: img,
+      socials: info.socials || (meta && meta.links) || [],
+      websites: info.websites || [],
+      description: (meta && meta.description) || '',
+      boost: (meta && (meta.totalAmount || meta.amount)) || 0,
+      pairAddress: p.pairAddress || '',
+    };
+  }
+
+  async function fetchJson(url) {
+    const r = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + url);
+    return r.json();
+  }
+
+  function pickBestPairs(pairs) {
+    const best = {};
+    for (const p of pairs || []) {
+      if (!p || p.chainId !== 'solana' || !p.baseToken) continue;
+      const a = p.baseToken.address;
+      const liq = (p.liquidity && p.liquidity.usd) || 0;
+      if (!best[a] || liq > ((best[a].liquidity && best[a].liquidity.usd) || 0)) best[a] = p;
+    }
+    return best;
+  }
+
+  async function loadLiveCoins() {
+    fetchErr = null;
+    try {
+      const [profiles, boosts] = await Promise.all([
+        fetchJson(DS + '/token-profiles/latest/v1'),
+        fetchJson(DS + '/token-boosts/top/v1'),
+      ]);
+      const metaByAddr = {};
+      const addrs = [];
+      for (const x of [].concat(boosts || [], profiles || [])) {
+        if (!x || x.chainId !== 'solana' || !x.tokenAddress) continue;
+        const a = x.tokenAddress;
+        if (!metaByAddr[a]) {
+          metaByAddr[a] = x;
+          addrs.push(a);
+        } else {
+          metaByAddr[a] = Object.assign({}, metaByAddr[a], x);
+        }
+      }
+      const unique = addrs.slice(0, 30);
+      if (!unique.length) throw new Error('No Solana tokens from DexScreener');
+
+      const tok = await fetchJson(DS + '/latest/dex/tokens/' + unique.join(','));
+      const best = pickBestPairs(tok.pairs || []);
+      const list = [];
+      for (const a of unique) {
+        const p = best[a];
+        if (!p) continue;
+        const c = pairToCoin(p, metaByAddr[a]);
+        if (c) list.push(c);
+      }
+      // Sort: boosted first by boost amount, then by 24h vol
+      list.sort((a, b) => (b.boost || 0) - (a.boost || 0) || (b.volume.h24 || 0) - (a.volume.h24 || 0));
+      coins = list;
+      byAddr = Object.fromEntries(coins.map((c) => [c.address, c]));
+      lastFetch = Date.now();
+      sourceLabel = 'DexScreener';
+      saveCache();
+      return true;
+    } catch (e1) {
+      console.warn('DexScreener primary failed', e1);
+      try {
+        const g = await fetchJson(GT + '/networks/solana/trending_pools?page=1');
+        const list = [];
+        for (const row of g.data || []) {
+          const atr = row.attributes || {};
+          const name = (atr.name || '').split(' / ')[0] || 'Token';
+          const addr =
+            (row.relationships &&
+              row.relationships.base_token &&
+              row.relationships.base_token.data &&
+              row.relationships.base_token.data.id &&
+              String(row.relationships.base_token.data.id).replace(/^solana_/, '')) ||
+            atr.address ||
+            '';
+          // Gecko pool address ≠ mint; keep pool id for display only if mint missing
+          list.push({
+            address: addr || atr.address || row.id,
+            name,
+            symbol: name.slice(0, 8).toUpperCase(),
+            chainId: 'solana',
+            priceUsd: atr.base_token_price_usd != null ? Number(atr.base_token_price_usd) : null,
+            mcap: atr.fdv_usd != null ? Number(atr.fdv_usd) : null,
+            fdv: atr.fdv_usd != null ? Number(atr.fdv_usd) : null,
+            liquidity: atr.reserve_in_usd != null ? Number(atr.reserve_in_usd) : 0,
+            volume: {
+              m5: null,
+              h1: atr.volume_usd && atr.volume_usd.h1 != null ? Number(atr.volume_usd.h1) : null,
+              h6: atr.volume_usd && atr.volume_usd.h6 != null ? Number(atr.volume_usd.h6) : null,
+              h24: atr.volume_usd && atr.volume_usd.h24 != null ? Number(atr.volume_usd.h24) : null,
+            },
+            change: {
+              m5: atr.price_change_percentage && atr.price_change_percentage.m5 != null ? Number(atr.price_change_percentage.m5) : null,
+              h1: atr.price_change_percentage && atr.price_change_percentage.h1 != null ? Number(atr.price_change_percentage.h1) : null,
+              h6: atr.price_change_percentage && atr.price_change_percentage.h6 != null ? Number(atr.price_change_percentage.h6) : null,
+              h24: atr.price_change_percentage && atr.price_change_percentage.h24 != null ? Number(atr.price_change_percentage.h24) : null,
+            },
+            pairCreatedAt: atr.pool_created_at ? Date.parse(atr.pool_created_at) : null,
+            dexId: 'geckoterminal',
+            url: atr.address ? 'https://www.geckoterminal.com/solana/pools/' + atr.address : '',
+            image: atr.image_url || null,
+            socials: [],
+            websites: [],
+            description: '',
+            boost: 0,
+            pairAddress: atr.address || '',
+            _gecko: true,
+          });
+        }
+        // Enrich mints via DexScreener search for top names
+        coins = list.slice(0, 24);
+        byAddr = Object.fromEntries(coins.map((c) => [c.address, c]));
+        lastFetch = Date.now();
+        sourceLabel = 'GeckoTerminal (fallback)';
+        saveCache();
+        return true;
+      } catch (e2) {
+        console.warn('Gecko fallback failed', e2);
+        fetchErr = (e1 && e1.message) || 'Fetch failed';
+        if (!coins.length && loadCache()) {
+          fetchErr = 'Offline — showing cached data';
+          return true;
+        }
+        return false;
+      }
+    }
+  }
+
+  function typoVariants(q) {
+    const out = new Set();
+    const s = q.trim();
+    if (!s) return [];
+    out.add(s);
+    // drop last char (bonkk → bonk)
+    if (s.length >= 4) out.add(s.slice(0, -1));
+    // collapse double letters (pepee → pepe)
+    out.add(s.replace(/(.)\1+/g, '$1'));
+    // swap last two
+    if (s.length >= 3) out.add(s.slice(0, -2) + s.slice(-1) + s.slice(-2, -1));
+    // common meme tickers if close
+    for (const t of ['BONK','WIF','PEPE','POPCAT','PNUT','MOODENG','TRUMP','DOGE','SPX','FARTCOIN']) {
+      if (fuzzyScore(s, t, t, '') >= 60) out.add(t);
+    }
+    return [...out].filter(Boolean);
+  }
+
+  async function searchDex(q) {
+    const query = q.trim();
+    if (!query) return [];
+    const variants = typoVariants(query);
+    try {
+      const seen = new Set();
+      let list = [];
+      for (const v of variants.slice(0, 4)) {
+        const d = await fetchJson(DS + '/latest/dex/search?q=' + encodeURIComponent(v));
+        const best = pickBestPairs(d.pairs || []);
+        for (const p of Object.values(best)) {
+          const c = pairToCoin(p, null);
+          if (!c || seen.has(c.address)) continue;
+          seen.add(c.address);
+          list.push(c);
+        }
+        if (list.length >= 12) break;
+      }
+      // Fuzzy re-rank against original query
+      list = list
+        .map((c) => ({ c, s: Math.max(fuzzyScore(query, c.name, c.symbol, c.address), ...variants.map(v => fuzzyScore(v, c.name, c.symbol, c.address))) }))
+        .filter((x) => x.s > 0 || norm(query).length >= 32)
+        .sort((a, b) => b.s - a.s || (b.c.liquidity || 0) - (a.c.liquidity || 0) || (b.c.volume.h24 || 0) - (a.c.volume.h24 || 0))
+        .map((x) => x.c);
+      if (!list.length) {
+        // local fuzzy over cached hot list
+        list = coins
+          .map((c) => ({ c, s: fuzzyScore(query, c.name, c.symbol, c.address) }))
+          .filter((x) => x.s >= 50)
+          .sort((a, b) => b.s - a.s)
+          .map((x) => x.c);
+      }
+      return list.slice(0, 40);
+    } catch (e) {
+      console.warn('search failed', e);
+      return coins
+        .map((c) => ({ c, s: fuzzyScore(query, c.name, c.symbol, c.address) }))
+        .filter((x) => x.s >= 50)
+        .sort((a, b) => b.s - a.s)
+        .map((x) => x.c);
+    }
+  }
+
+  async function loadViral() {
+    try {
+      const d = await fetchJson('data/x_viral.json?v=4');
+      viral = d;
+      return d;
+    } catch (e) {
+      console.warn('viral snapshot failed', e);
+      viral = { posts: [], topics: [], updated_at: null, note: 'Snapshot unavailable' };
+      return viral;
+    }
+  }
+
+  /* ---- Match X topic → live coins ---- */
+  async function matchTopicToCoins(topic) {
+    const q = topic.query || topic.label || '';
+    const hints = topic.hints || [];
+    let found = await searchDex(q);
+    // Also try hints
+    for (const h of hints.slice(0, 2)) {
+      if (found.length >= 6) break;
+      const more = await searchDex(h);
+      const seen = new Set(found.map((c) => c.address));
+      for (const c of more) if (!seen.has(c.address)) found.push(c);
+    }
+    // Fuzzy score against topic label+hints
+    const bag = [topic.label].concat(hints).join(' ');
+    return found
+      .map((c) => ({
+        c,
+        s: Math.max(
+          fuzzyScore(topic.label, c.name, c.symbol, c.address),
+          ...hints.map((h) => fuzzyScore(h, c.name, c.symbol, c.address)),
+          fuzzyScore(bag, c.name, c.symbol, c.address)
+        ),
+      }))
+      .filter((x) => x.s >= 50 || found.length <= 3)
+      .sort((a, b) => b.s - a.s || (b.c.liquidity || 0) - (a.c.liquidity || 0) || (b.c.volume.h24 || 0) - (a.c.volume.h24 || 0))
+      .filter((x, i, arr) => (x.c.liquidity || 0) >= 1000 || i < 2 || arr.every(y => (y.c.liquidity || 0) < 1000))
+      .slice(0, 5);
+  }
+
+  /* ---- Render helpers ---- */
+  function imgTag(src, cls, size) {
+    const s = size || 42;
+    const safe = src || FALLBACK_IMG;
+    return `<img class="${cls || 'tok'}" src="${esc(safe)}" width="${s}" height="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">`;
+  }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function coinRow(c) {
+    const ch = c.change.h24;
+    return `<div class="row" data-addr="${esc(c.address)}" role="button" tabindex="0">
+      ${imgTag(c.image)}
+      <div class="nm"><b>${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
+        <small>MC ${fmtUsd(c.mcap)} · Liq ${fmtUsd(c.liquidity)} · ${ageFrom(c.pairCreatedAt)}</small></div>
+      <div class="rt"><b class="${pctClass(ch)}">${fmtPct(ch)}</b>
+        <small class="mut">Vol ${fmtUsd(c.volume.h24)}</small></div>
+    </div>`;
+  }
+
+  function renderList(list, title, sub) {
+    const body = $('#listBody');
+    if (fetchErr && !list.length) {
+      body.innerHTML = `<div class="err">${esc(fetchErr)}<div style="margin-top:8px"><button class="pill" id="retryBtn">Spróbuj ponownie</button></div></div>`;
+      $('#retryBtn') && $('#retryBtn').addEventListener('click', () => refresh(true));
+      return;
+    }
+    if (!list.length) {
+      body.innerHTML = `<div class="empty">Brak coinów. ${fetchErr ? esc(fetchErr) : ''}</div>`;
+      return;
+    }
+    body.innerHTML = `
+      <div class="h">${esc(title)} <span class="badge live">LIVE</span></div>
+      <div class="sub">${esc(sub || '')} · źródło: ${esc(sourceLabel || 'DexScreener')} · odświeżanie co ~45s</div>
+      <div class="card" style="padding:4px 10px">${list.map(coinRow).join('')}</div>
+      <div class="foot">Dane: DexScreener · ${MVP_MARKER}</div>`;
+    wireRows(body);
+  }
+
+  function wireRows(root) {
+    $$('[data-addr]', root).forEach((el) => {
+      const go = () => goCoin(el.getAttribute('data-addr'));
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
+      });
+    });
+  }
+
+  function openCoin(addr) {
+    selectedAddr = addr;
+    const c = byAddr[addr];
+    if (c) {
+      show('coin');
+      renderCoin(c);
+      // refresh this token in background
+      enrichCoin(addr).then((nc) => {
+        if (nc && selectedAddr === addr) {
+          byAddr[addr] = nc;
+          const i = coins.findIndex((x) => x.address === addr);
+          if (i >= 0) coins[i] = nc;
+          renderCoin(nc);
+        }
+      });
+      return;
+    }
+    show('coin');
+    $('#coinBody').innerHTML = `<div class="loading"><div class="spin"></div>Ładuję coin…</div>`;
+    enrichCoin(addr).then((nc) => {
+      if (!nc) {
+        $('#coinBody').innerHTML = `<div class="err">Nie znaleziono coina.<div class="back" style="margin-top:12px" id="backFail">‹ Wróć</div></div>`;
+        $('#backFail') && $('#backFail').addEventListener('click', () => history.back());
+        return;
+      }
+      byAddr[addr] = nc;
+      renderCoin(nc);
+    });
+  }
+
+  async function enrichCoin(addr) {
+    try {
+      const d = await fetchJson(DS + '/latest/dex/tokens/' + encodeURIComponent(addr));
+      const best = pickBestPairs(d.pairs || []);
+      const p = best[addr] || (d.pairs || []).find((x) => x.chainId === 'solana');
+      if (!p) return null;
+      const c = pairToCoin(p, null);
+      return c;
+    } catch (e) {
+      return byAddr[addr] || null;
+    }
+  }
+
+  function renderCoin(c) {
+    const urls = platformUrls(c.address, c.chainId);
+    const socials = (c.socials || [])
+      .map((s) => {
+        const u = s.url || s;
+        const t = s.type || 'link';
+        if (!u) return '';
+        return `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>`;
+      })
+      .filter(Boolean)
+      .join('');
+    const webs = (c.websites || [])
+      .map((w) => {
+        const u = w.url || w;
+        return u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(w.label || 'web')}</a>` : '';
+      })
+      .filter(Boolean)
+      .join('');
+
+    $('#coinBody').innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="back" id="coinBack" role="button" tabindex="0">‹</span>
+        ${imgTag(c.image, 'tok', 46)}
+        <div style="min-width:0;flex:1">
+          <b style="font-size:17px">${esc(c.name)}</b>
+          <div class="mut" style="font-size:12px">$${esc(c.symbol)} · ${ageFrom(c.pairCreatedAt)} · ${esc(c.dexId || '')}</div>
+        </div>
+        <img src="kyvo_mark.svg" width="28" height="28" alt="">
+      </div>
+      <div style="margin-top:10px">
+        <span class="ca">CA ${esc(shortCa(c.address))}
+          <button class="copybtn" id="copyCa" title="Copy" type="button" aria-label="Copy contract">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2.4"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          </button>
+        </span>
+        <span class="badge live" style="margin-left:6px">LIVE</span>
+      </div>
+      <div style="margin-top:10px;font-size:12px;word-break:break-all" class="mut" id="fullCa">${esc(c.address)}</div>
+      <div style="margin-top:12px">
+        <b style="font-size:26px;letter-spacing:-.4px">${fmtUsd(c.mcap)}</b>
+        <span class="mut"> MC</span>
+        <span class="${pctClass(c.change.h24)}" style="font-weight:700;margin-left:6px">${fmtPct(c.change.h24)} 24h</span>
+      </div>
+      <div class="statg">
+        <div class="st"><small>Price</small><b>${fmtUsd(c.priceUsd)}</b></div>
+        <div class="st"><small>Liquidity</small><b>${fmtUsd(c.liquidity)}</b></div>
+        <div class="st"><small>FDV</small><b>${fmtUsd(c.fdv)}</b></div>
+        <div class="st"><small>Vol 5m</small><b>${fmtUsd(c.volume.m5)}</b></div>
+        <div class="st"><small>Vol 1h</small><b>${fmtUsd(c.volume.h1)}</b></div>
+        <div class="st"><small>Vol 24h</small><b>${fmtUsd(c.volume.h24)}</b></div>
+        <div class="st"><small>Δ 5m</small><b class="${pctClass(c.change.m5)}">${fmtPct(c.change.m5)}</b></div>
+        <div class="st"><small>Δ 1h</small><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b></div>
+        <div class="st"><small>Δ 6h</small><b class="${pctClass(c.change.h6)}">${fmtPct(c.change.h6)}</b></div>
+      </div>
+      ${c.description ? `<div class="card" style="margin-top:10px;font-size:13px;color:#ccc">${esc(c.description)}</div>` : ''}
+      <div class="card" style="margin-top:10px">
+        <div class="h" style="font-size:13px;margin:0 0 6px">Socials</div>
+        <div class="socials">${socials || '<span class="mut">Brak</span>'} ${webs}</div>
+      </div>
+      <div class="plats">
+        <a class="plat p0" href="${esc(urls.FOMO)}" target="_blank" rel="noopener noreferrer">FOMO</a>
+        <a class="plat" href="${esc(urls.Axiom)}" target="_blank" rel="noopener noreferrer">Axiom</a>
+        <a class="plat" href="${esc(urls.Photon)}" target="_blank" rel="noopener noreferrer">Photon</a>
+        <a class="plat" href="${esc(urls.GMGN)}" target="_blank" rel="noopener noreferrer">GMGN</a>
+      </div>
+      <div style="margin-top:8px;text-align:center">
+        <a href="${esc(urls.DexScreener)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Otwórz na DexScreener ↗</a>
+      </div>
+      <div class="foot">To nie jest porada finansowa · Dane: DexScreener · ${MVP_MARKER}</div>`;
+
+    $('#coinBack').addEventListener('click', () => {
+      if (history.length > 1) history.back();
+      else setView('hot');
+    });
+    $('#copyCa').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(c.address);
+        toast('Skopiowano CA ' + shortCa(c.address));
+      } catch (e) {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = c.address;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          toast('Skopiowano CA ' + shortCa(c.address));
+        } catch (e2) {
+          toast('Nie udało się skopiować');
+        }
+        ta.remove();
+      }
+    });
+  }
+
+  /* ---- Viral z X ---- */
+  async function renderViral() {
+    const body = $('#viralBody');
+    if (!viral) {
+      body.innerHTML = `<div class="loading"><div class="spin"></div>Ładuję Viral z X…</div>`;
+      await loadViral();
+    }
+    const posts = (viral.posts || []).slice().sort((a, b) => (b.metrics?.likes || 0) - (a.metrics?.likes || 0));
+    const topics = viral.topics || [];
+    const updated = viral.updated_at_warsaw || viral.updated_at || '—';
+
+    body.innerHTML = `
+      <div class="h">Viral z X <span class="badge live">snapshot</span></div>
+      <div class="sub">Prawdziwe posty z X (cytat + link). Tematy matchowane live do coinów przez DexScreener (fuzzy). Snapshot: ${esc(updated)} (Europe/Warsaw)</div>
+      <div class="card">
+        <div class="h" style="font-size:13px">Tematy → coiny</div>
+        <div id="topicList"><div class="loading"><div class="spin"></div>Matchuję tematy do live coinów…</div></div>
+      </div>
+      <div class="h">Ważne posty</div>
+      <div id="postList"></div>
+      <div class="foot">Treści © ich autorzy · link do oryginału na X · odświeżenie snapshotu: tools/update_x_viral.md · ${MVP_MARKER}</div>`;
+
+    const postList = $('#postList');
+    postList.innerHTML = posts
+      .map((p) => {
+        const m = p.metrics || {};
+        const av = p.avatar || FALLBACK_IMG;
+        const hints = (p.topic_hints || []).slice(0, 4).map((h) => `<span class="chip">${esc(h)}</span>`).join('');
+        return `<div class="card post">
+          <div class="meta">
+            ${imgTag(av, 'av', 36)}
+            <div style="min-width:0;flex:1">
+              <b style="font-size:13.5px">${esc(p.author_name)} <span class="mut" style="font-weight:600">@${esc(p.handle)}</span></b>
+              <div class="mut" style="font-size:11px">${esc(timeAgo(p.created_at))}</div>
+            </div>
+            <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="font-size:16px" title="Otwórz na X">𝕏</a>
+          </div>
+          <div class="txt">“${esc(p.text)}”</div>
+          <div class="eng">♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)} · 💬 ${fmtInt(m.replies)}${m.impressions != null ? ' · 👁 ' + fmtInt(m.impressions) : ''}</div>
+          ${hints ? `<div style="margin-top:8px">${hints}</div>` : ''}
+          <div style="margin-top:8px"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Zobacz oryginał na X ↗</a></div>
+        </div>`;
+      })
+      .join('');
+
+    // Match topics asynchronously (limit concurrency)
+    const topicList = $('#topicList');
+    const blocks = [];
+    for (const t of topics) {
+      blocks.push({ t, matches: null });
+    }
+    // sequential to respect DexScreener rate
+    (async () => {
+      const htmlParts = [];
+      for (const b of blocks) {
+        let matches = [];
+        try {
+          matches = await matchTopicToCoins(b.t);
+        } catch (e) {
+          matches = [];
+        }
+        const coinsHtml = matches.length
+          ? matches
+              .map(
+                ({ c, s }) =>
+                  `<div class="row" data-addr="${esc(c.address)}" style="padding:6px 0">
+                    ${imgTag(c.image, 'tok', 28)}
+                    <div class="nm"><b style="font-size:12.5px">$${esc(c.symbol)} · ${esc(c.name)}</b>
+                      <small>MC ${fmtUsd(c.mcap)} · ${fmtPct(c.change.h24)}</small></div>
+                    <span class="match">${Math.round(s)}%</span>
+                  </div>`
+              )
+              .join('')
+          : `<div class="mut" style="font-size:12px;padding:6px 0">Brak mocnego matcha na DexScreener dla „${esc(b.t.query || b.t.label)}”</div>`;
+        htmlParts.push(`<div class="topic-block" style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #ffffff0a">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+            <div>
+              <b style="font-size:13.5px">${esc(b.t.label)}</b>
+              <div class="mut" style="font-size:11.5px;margin-top:2px">${esc(b.t.why || '')}</div>
+            </div>
+            ${b.t.source_post ? `<a href="${esc(b.t.source_post)}" target="_blank" rel="noopener noreferrer" style="font-size:11px;flex:none">Źródło 𝕏</a>` : ''}
+          </div>
+          ${coinsHtml}
+        </div>`);
+        topicList.innerHTML = htmlParts.join('') || '<div class="mut">Brak tematów</div>';
+        wireRows(topicList);
+      }
+      if (!htmlParts.length) topicList.innerHTML = '<div class="mut">Brak tematów w snapshocie</div>';
+    })();
+  }
+
+  function renderMore() {
+    $('#moreBody').innerHTML = `
+      <div class="h">Więcej</div>
+      <div class="card">
+        <div class="h" style="font-size:13px">Leaderboard <span class="badge demo">Przykładowe dane</span></div>
+        <div class="mut" style="font-size:13px;line-height:1.45">Ranking PnL traderów nie jest jeszcze podpięty do prawdziwego on-chain. Tu nic nie zmyślamy — sekcja pojawi się, gdy będą realne dane.</div>
+      </div>
+      <div class="card">
+        <div class="h" style="font-size:13px">Insider / fresh wallets <span class="badge demo">Przykładowe dane</span></div>
+        <div class="mut" style="font-size:13px">Wykrywanie insiderów wymaga własnego indeksu transakcji. Na razie niedostępne.</div>
+      </div>
+      <div class="card">
+        <div class="h" style="font-size:13px">Famous wallets <span class="badge demo">Przykładowe dane</span></div>
+        <div class="mut" style="font-size:13px">Śledzenie portfeli celebrytów — w planie. Viral z X już pokazuje prawdziwe posty kluczowych kont.</div>
+      </div>
+      <div class="card">
+        <div class="h" style="font-size:13px">O Kyvo</div>
+        <div style="font-size:13px;color:#ccc;line-height:1.45">
+          Kyvo to curated feed memecoinów Solana na publicznych danych.
+          Nie trzymamy Twoich środków. Zarobek: referral + Pro (w przyszłości).<br><br>
+          <b>LIVE teraz:</b> Hot / Boosted coiny (DexScreener), search z fuzzy, szczegóły coina, przyciski FOMO/Axiom/Photon/GMGN, Viral z X (snapshot).<br>
+          <b>Demo / wkrótce:</b> leaderboard PnL, insiderzy, famous wallets.
+        </div>
+      </div>
+      <div class="foot">To nie jest porada finansowa · ${MVP_MARKER}</div>`;
+  }
+
+  /* ---- Navigation ---- */
+  function show(which) {
+    $$('.scr').forEach((s) => s.classList.remove('on'));
+    const map = { hot: 's-list', boosted: 's-list', search: 's-list', viral: 's-viral', more: 's-more', coin: 's-coin' };
+    const id = map[which] || 's-list';
+    $('#' + id).classList.add('on');
+    // tabs
+    const tab = which === 'coin' ? view : which === 'boosted' || which === 'search' ? 'hot' : which;
+    $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tab === 'hot' || tab === 'boosted' || tab === 'search' ? (which === 'search' ? 'search' : 'hot') : tab)));
+    if (which === 'search') $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === 'search'));
+    $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'search' ? 'hot' : which === 'coin' ? view : which)));
+  }
+
+  function setView(v) {
+    view = v;
+    if (v === 'viral') {
+      show('viral');
+      renderViral();
+      location.hash = 'viral';
+      return;
+    }
+    if (v === 'more') {
+      show('more');
+      renderMore();
+      location.hash = 'more';
+      return;
+    }
+    if (v === 'boosted') {
+      show('boosted');
+      const boosted = coins.filter((c) => c.boost > 0).sort((a, b) => b.boost - a.boost);
+      renderList(boosted.length ? boosted : coins, 'Boosted', 'Top boosty na DexScreener (Solana)');
+      location.hash = 'boosted';
+      return;
+    }
+    // hot
+    show('hot');
+    const hot = coins.slice().sort((a, b) => (b.volume.h24 || 0) - (a.volume.h24 || 0));
+    renderList(hot, 'Hot Solana', 'Profile + boosty, posortowane po wolumenie 24h');
+    location.hash = 'hot';
+  }
+
+  async function runSearch(q) {
+    view = 'search';
+    show('search');
+    const body = $('#listBody');
+    body.innerHTML = `<div class="loading"><div class="spin"></div>Szukam „${esc(q)}”…</div>`;
+    location.hash = 'search/' + encodeURIComponent(q);
+    const list = await searchDex(q);
+    // merge into byAddr
+    for (const c of list) byAddr[c.address] = c;
+    if (!list.length) {
+      body.innerHTML = `<div class="empty">Nic nie znaleziono dla „${esc(q)}”. Spróbuj innej nazwy / tickera / CA.</div>`;
+      return;
+    }
+    body.innerHTML = `
+      <div class="h">Wyniki <span class="badge live">LIVE</span></div>
+      <div class="sub">Fuzzy match dla „${esc(q)}” · DexScreener</div>
+      <div class="card" style="padding:4px 10px">${list.map(coinRow).join('')}</div>`;
+    wireRows(body);
+  }
+
+  function routeFromHash() {
+    const h = (location.hash || '#hot').slice(1);
+    const [a, b] = h.split('/');
+    if (a === 'coin' && b) {
+      openCoin(decodeURIComponent(b));
+      return;
+    }
+    if (a === 'search' && b) {
+      const q = decodeURIComponent(b);
+      $('#q').value = q;
+      runSearch(q);
+      return;
+    }
+    if (a === 'viral' || a === 'more' || a === 'boosted' || a === 'hot') {
+      setView(a);
+      return;
+    }
+    setView('hot');
+  }
+
+  /* ---- Refresh / clock ---- */
+  async function refresh(force) {
+    $('#livePill').textContent = '…';
+    const ok = await loadLiveCoins();
+    $('#livePill').textContent = ok ? 'LIVE' : 'ERR';
+    $('#livePill').style.background = ok ? '' : '#FF546822';
+    $('#livePill').style.color = ok ? '' : '#FF5468';
+    if (view === 'hot' || view === 'boosted') setView(view);
+    else if (view === 'coin' && selectedAddr && byAddr[selectedAddr]) renderCoin(byAddr[selectedAddr]);
+    updateClock();
+  }
+  function updateClock() {
+    const el = $('#clock');
+    if (!lastFetch) {
+      el.textContent = '—';
+      return;
+    }
+    const sec = Math.round((Date.now() - lastFetch) / 1000);
+    el.textContent = sec < 5 ? 'teraz' : sec + 's temu';
+  }
+
+  /* ---- Wire UI ---- */
+  $$('#seg button').forEach((b) =>
+    b.addEventListener('click', () => {
+      setView(b.dataset.view);
+    })
+  );
+  $$('.tb button').forEach((b) =>
+    b.addEventListener('click', () => {
+      const t = b.dataset.tab;
+      if (t === 'search') {
+        $('#q').focus();
+        return;
+      }
+      setView(t === 'hot' ? 'hot' : t);
+    })
+  );
+  let searchT;
+  $('#q').addEventListener('input', () => {
+    clearTimeout(searchT);
+    const v = $('#q').value.trim();
+    if (!v) {
+      setView('hot');
+      return;
+    }
+    searchT = setTimeout(() => runSearch(v), 380);
+  });
+  $('#q').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      clearTimeout(searchT);
+      const v = $('#q').value.trim();
+      if (v) runSearch(v);
+    }
+  });
+  window.addEventListener('hashchange', routeFromHash);
+
+  // Navigate to coin via hash (single render path through routeFromHash)
+  function goCoin(addr) {
+    const h = 'coin/' + encodeURIComponent(addr);
+    if (location.hash === '#' + h) openCoin(addr);
+    else location.hash = h;
+  };
+
+  /* ---- Boot ---- */
+  loadCache();
+  Promise.all([loadViral(), refresh(true)]).then(() => {
+    routeFromHash();
+  });
+  setInterval(() => refresh(false), REFRESH_MS);
+  setInterval(updateClock, 1000);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  // Expose for QA
+  window.__KYVO__ = { MVP_MARKER, platformUrls, fuzzyScore, refresh, getCoins: () => coins, getViral: () => viral };
 })();
