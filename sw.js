@@ -1,5 +1,5 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-const C = 'kyvo-mvp-v5-1';
+const C = 'kyvo-mvp-v6';
 const A = [
   './', 'index.html', 'app.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg',
@@ -15,14 +15,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  // Network-first for APIs and our own data snapshot
   const isApi = /dexscreener\.com|geckoterminal\.com/.test(u.hostname)
     || u.pathname.endsWith('x_viral.json');
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
   }
-  // Stale-while-revalidate for app shell
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then(cached => {
       const net = fetch(e.request).then(r => {

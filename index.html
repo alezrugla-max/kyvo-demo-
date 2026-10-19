@@ -8,11 +8,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
-<meta name="description" content="Kyvo — live Solana memecoins + Viral z X. To nie jest porada finansowa.">
+<meta name="description" content="Kyvo — live Solana / BSC / Robinhood memecoins + Viral z X. To nie jest porada finansowa.">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>Kyvo · live v5</title>
+<title>Kyvo · live v6</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -117,6 +117,15 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .swipe button.on{background:#22D3EE22;color:#22D3EE;box-shadow:inset 0 0 0 1px #22D3EE55}
 .est{font-size:10px;color:var(--warn);font-weight:700}
 
+.chainsw{display:flex;gap:5px;margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chainsw::-webkit-scrollbar{display:none}
+.chainsw button{flex:none;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;background:#16161d;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
+.chainsw button.on{background:#22D3EE22;color:#22D3EE;box-shadow:inset 0 0 0 1px #22D3EE55}
+.cbadge{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:5px;vertical-align:middle;letter-spacing:.2px}
+.cbadge.c-solana{background:#9945FF33;color:#c4b5fd}
+.cbadge.c-bsc{background:#F0B90B33;color:#F0B90B}
+.cbadge.c-robinhood{background:#22D3EE33;color:#67e8f9}
+
 </style>
 </head>
 <body>
@@ -130,6 +139,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <div class="search">
       <input id="q" type="search" placeholder="Szukaj coina (nazwa / ticker / CA)…" autocomplete="off" enterkeyhint="search">
     </div>
+    <div class="chainsw" id="chainSwitch" aria-label="Chain"></div>
     <div class="seg" id="seg">
       <button data-view="pulse" class="on">Pulse</button>
       <button data-view="hot">Hot</button>
@@ -157,9 +167,9 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 
   <div class="foot pg" id="legal">
     <div><b>To nie jest porada finansowa.</b> Kyvo pokazuje publiczne dane rynkowe i cytaty z X. Memecoiny są ekstremalnie ryzykowne — możesz stracić wszystko.</div>
-    <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal). Treści X: cytaty + link do oryginału. UI oryginalne Kyvo — inspiracja stylem terminali Solana, bez kopiowania cudzych assetów.</div>
+    <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal) · Solana / BSC / Robinhood. Treści X: cytaty + link do oryginału. UI oryginalne Kyvo.</div>
     <div style="margin-top:6px">Prywatność: brak kont, brak trackingu, nic nie zapisujemy na serwerze. Cache tylko w Twojej przeglądarce (localStorage).</div>
-    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v5 · KYVO_MVP_LIVE_v5_1</div>
+    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v6</div>
   </div>
 </div>
 
