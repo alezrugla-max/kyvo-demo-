@@ -1,5 +1,5 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-const C = 'kyvo-mvp-v5';
+const C = 'kyvo-mvp-v5-1';
 const A = [
   './', 'index.html', 'app.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg',

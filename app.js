@@ -9,6 +9,7 @@
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
   const MVP_MARKER = 'KYVO_MVP_LIVE_v5';
+  const MVP_MARKER_PATCH = 'KYVO_MVP_LIVE_v5_1';
   /** Pump.fun graduation is commonly ~$69k MC on the bonding curve. Used only as an estimate. */
   const PUMP_GRAD_MCAP = 69000;
   const MIG_DEX = new Set(['pumpswap', 'raydium', 'meteora', 'orca', 'moonshot', 'fluxbeam']);
@@ -25,14 +26,23 @@
   }
 
   function fmtUsd(n) {
-    if (n == null || !isFinite(n)) return '—';
+    if (n == null || !isFinite(n) || Number(n) === 0) return '—';
     const a = Math.abs(n);
     if (a >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
     if (a >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
     if (a >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
     if (a >= 1) return '$' + n.toFixed(2);
     if (a >= 0.0001) return '$' + n.toFixed(6);
-    return '$' + Number(n).toPrecision(4);
+    // avoid "$0.000" / ugly precision for dust
+    if (a < 1e-10) return '—';
+    const s = '$' + Number(n).toExponential(2);
+    return s;
+  }
+  function fmtLiq(c) {
+    const liq = c && c.liquidity;
+    if (c && c.onCurve && (liq == null || !isFinite(liq) || liq <= 0)) return 'krzywa';
+    if (liq == null || !isFinite(liq) || liq <= 0) return '—';
+    return fmtUsd(liq);
   }
   function fmtPct(n) {
     if (n == null || !isFinite(n)) return '—';
@@ -594,7 +604,7 @@
     return `<div class="row" data-addr="${esc(c.address)}" role="button" tabindex="0">
       ${imgTag(c.image)}
       <div class="nm"><b>${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
-        <small>MC ${fmtUsd(c.mcap)} · Liq ${fmtUsd(c.liquidity)} · ${ageFrom(c.pairCreatedAt)}${extra ? ' · ' + extra : ''}</small></div>
+        <small>MC ${fmtUsd(c.mcap)} · ${fmtLiq(c) === 'krzywa' ? 'Liq: krzywa' : 'Liq ' + fmtLiq(c)} · ${ageFrom(c.pairCreatedAt)}${extra ? ' · ' + extra : ''}</small></div>
       <div class="rt"><b class="${pctClass(ch)}">${fmtPct(ch)}</b>
         <small class="mut">Vol ${fmtUsd(c.volume.h24)}</small></div>
     </div>`;
@@ -702,7 +712,7 @@
           : `<div class="empty">Brak coinów dla tych filtrów.</div>`
       }
       ${opts.footnote || ''}
-      <div class="foot">Dane: DexScreener · ${MVP_MARKER}</div>`;
+      <div class="foot">Dane: DexScreener · ${MVP_MARKER} · ${MVP_MARKER_PATCH}</div>`;
     wireRows(body);
     if (opts.swipeTabs) {
       $$('#pulseSwipe [data-ptab]').forEach((b) =>
@@ -735,7 +745,7 @@
       col('New Pairs', news, 'Najnowsze Solana, filtr MC≥$10k (domyślnie)', { showDex: true }) +
       col('Final Stretch', stretch, 'pump.fun on-curve · est. ≥55% (MC/~$69k), inaczej top ≥50%*', { showCurve: true }) +
       col('Migrated', migr, 'Niedawno na PumpSwap / Raydium / Meteora…', { showDex: true }) +
-      `<div class="foot" style="grid-column:1/-1">* Estymacja krzywej z MC vs ~$69k graduation — nie oficjalny bonding %. Dane publiczne DexScreener/Gecko. · ${MVP_MARKER}</div>`;
+      `<div class="foot" style="grid-column:1/-1">* Estymacja krzywej z MC vs ~$69k graduation — nie oficjalny bonding %. Dane publiczne DexScreener/Gecko. · ${MVP_MARKER} · ${MVP_MARKER_PATCH}</div>`;
     wireRows(desk);
   }
 
@@ -855,7 +865,7 @@
       ${curveLine}
       <div class="statg">
         <div class="st"><small>Price</small><b>${fmtUsd(c.priceUsd)}</b></div>
-        <div class="st"><small>Liquidity</small><b>${fmtUsd(c.liquidity)}</b></div>
+        <div class="st"><small>Liquidity</small><b>${fmtLiq(c)}</b></div>
         <div class="st"><small>FDV</small><b>${fmtUsd(c.fdv)}</b></div>
         <div class="st"><small>Vol 5m</small><b>${fmtUsd(c.volume.m5)}</b></div>
         <div class="st"><small>Vol 1h</small><b>${fmtUsd(c.volume.h1)}</b></div>
@@ -872,7 +882,7 @@
         <a class="plat" href="${esc(urls.GMGN)}" target="_blank" rel="noopener noreferrer">GMGN</a>
       </div>
       <div style="margin-top:8px;text-align:center"><a href="${esc(urls.DexScreener)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">DexScreener ↗</a></div>
-      <div class="foot">To nie jest porada finansowa · ${MVP_MARKER}</div>`;
+      <div class="foot">To nie jest porada finansowa · ${MVP_MARKER} · ${MVP_MARKER_PATCH}</div>`;
     $('#coinBack').onclick = () => (history.length > 1 ? history.back() : setView('pulse'));
     $('#copyCa').onclick = async () => {
       try {
@@ -899,7 +909,7 @@
       <div class="sub">Prawdziwe posty · snapshot ${esc(updated)} (Europe/Warsaw)</div>
       <div class="card"><div class="h" style="font-size:13px">Tematy → coiny</div><div id="topicList"><div class="loading"><div class="spin"></div>Matchuję…</div></div></div>
       <div class="h">Ważne posty</div><div id="postList"></div>
-      <div class="foot">${MVP_MARKER}</div>`;
+      <div class="foot">${MVP_MARKER} · ${MVP_MARKER_PATCH}</div>`;
     $('#postList').innerHTML = posts
       .map((p) => {
         const m = p.metrics || {};
@@ -955,7 +965,7 @@
           Final Stretch = dexId pumpfun + est. krzywej z MC/~$69k ≥55%+.<br>
           Migrated = pumpswap / raydium / meteora / orca (publiczne dexId z DexScreener).
         </div></div>
-      <div class="foot">${MVP_MARKER}</div>`;
+      <div class="foot">${MVP_MARKER} · ${MVP_MARKER_PATCH}</div>`;
   }
 
   function show(which) {
@@ -1139,6 +1149,9 @@
 
   window.__KYVO__ = {
     MVP_MARKER,
+    MVP_MARKER_PATCH,
+    fmtUsd,
+    fmtLiq,
     platformUrls,
     fuzzyScore,
     refresh,
