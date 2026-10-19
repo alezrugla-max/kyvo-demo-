@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble or validate data/x_viral.json. Does not call X itself (use MCP / API separately)."""
+"""Assemble / validate / stamp data/x_viral.json. Does not call X (use MCP — see update_x_viral.md)."""
 from __future__ import annotations
 import argparse, json, sys
 from datetime import datetime, timezone, timedelta
@@ -27,13 +27,13 @@ def validate(doc: dict) -> list[str]:
 
 def stamp(doc: dict) -> dict:
     now = datetime.now(timezone.utc)
-    warsaw = now.astimezone(timezone(timedelta(hours=2)))  # CEST; adjust for CET if needed
+    warsaw = now.astimezone(timezone(timedelta(hours=2)))
     doc["updated_at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     doc["updated_at_warsaw"] = warsaw.strftime("%Y-%m-%dT%H:%M:%S+02:00")
     return doc
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Validate/stamp/import Viral z X snapshot")
     ap.add_argument("--from-raw", type=Path, help="Merge a raw JSON dump with posts/topics")
     ap.add_argument("--validate-only", action="store_true")
     ap.add_argument("--stamp", action="store_true", help="Refresh updated_at timestamps")
@@ -41,7 +41,7 @@ def main():
     if args.from_raw:
         raw = json.loads(args.from_raw.read_text())
         doc = stamp(raw if "posts" in raw else {"posts": raw, "topics": [], "us_trends": [], "key_accounts": []})
-        doc.setdefault("source", "manual raw import")
+        doc.setdefault("source", "manual raw import (x MCP / X API)")
         doc.setdefault("note", "Static snapshot. Not financial advice.")
     else:
         if not OUT.exists():
@@ -52,10 +52,10 @@ def main():
     if errs:
         print("INVALID:\n- " + "\n- ".join(errs), file=sys.stderr); sys.exit(2)
     if args.validate_only:
-        print("OK", len(doc["posts"]), "posts"); return
+        print("OK", len(doc["posts"]), "posts · updated", doc.get("updated_at")); return
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n")
-    print("Wrote", OUT, "posts=", len(doc["posts"]))
+    print("Wrote", OUT, "posts=", len(doc["posts"]), "updated_at=", doc.get("updated_at"))
 
 if __name__ == "__main__":
     main()

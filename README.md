@@ -1,18 +1,42 @@
-# Kyvo v5
+# Kyvo v7
 
-Live Solana memecoin Pulse (Axiom-style columns) + filters + Viral z X.
+Live multi-chain memecoin Pulse (Solana / BSC / Robinhood) + **smart money snapshot** + **trader leaderboard** + Viral z X.
 
-## Tabs
-- **Pulse** — desktop: New / Final Stretch / Migrated side-by-side; iPhone: swipeable
-- **New Pairs** — newest Solana pairs, default **MC ≥ $10k**
-- **Final Stretch** — `dexId=pumpfun` still on bonding curve; curve% estimated as `MC / ~$69k` (labeled estimate). Default shows ≥55%, fallback top ≥50%
-- **Migrated** — `pumpswap` / `raydium` / `meteora` / `orca` (DexScreener dexId)
-- **Good Coins** — stricter quality filters (liq/MC/vol/socials/buy ratio)
-- **Hot / Boosted** — DexScreener profiles & boosts
-- **Viral z X** — static snapshot `data/x_viral.json`
+**Not financial advice.** Public data only. No keys in the repo.
 
-Filters per tab persist in `localStorage` (`kyvo_filters_v5`). Reset restores defaults.
+## What's real
 
-Marker: `KYVO_MVP_LIVE_v5` · SW cache: `kyvo-mvp-v5`
+| Feature | Status |
+|--------|--------|
+| Pulse / Hot / Good / Boosted / search | Live DexScreener + GeckoTerminal |
+| Chain switcher | Solana · BSC · Robin · Wszystkie (`localStorage`) |
+| BSC Final Stretch / Migrated | `fourmeme` / `pancakeswap` |
+| Robinhood Stretch/Migrated | Hidden (no public bonding graduation dexId) |
+| Smart money badges | Snapshot `data/smart_money.json` (public Solana RPC) |
+| Leaderboard | Snapshot `data/leaderboard.json` (approx FIFO PnL; `—` when unreliable) |
+| Viral z X | Snapshot `data/x_viral.json` |
+| Insider / fresh wallets | Still demo-labelled |
 
-Not financial advice. Public data only (DexScreener, GeckoTerminal new pools).
+Marker: `KYVO_MVP_LIVE_v7` · SW: `kyvo-mvp-v7`
+
+## Refresh (box / CI)
+
+```bash
+# Smart money + leaderboard (~3–6 min, public RPC, no keys)
+python3 tools/build_snapshots.py
+
+# Viral z X — see tools/update_x_viral.md (x MCP / X API, ~20–40 reads)
+# Then stamp or import:
+python3 tools/update_x_viral.py --stamp
+# or: python3 tools/update_x_viral.py --from-raw /path/to/mcp_dump.json
+```
+
+One-liner after X dump is ready:
+
+```bash
+python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
+```
+
+## Legal
+
+Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.

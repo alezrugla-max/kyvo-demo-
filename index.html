@@ -8,11 +8,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
-<meta name="description" content="Kyvo — live Solana / BSC / Robinhood memecoins + Viral z X. To nie jest porada finansowa.">
+<meta name="description" content="Kyvo — live Solana / BSC / Robinhood + smart money snapshot + Viral z X. To nie jest porada finansowa.">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>Kyvo · live v6</title>
+<title>Kyvo · live v7</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -126,6 +126,11 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .cbadge.c-bsc{background:#F0B90B33;color:#F0B90B}
 .cbadge.c-robinhood{background:#22D3EE33;color:#67e8f9}
 
+
+.smbadge{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:#34E07A22;color:var(--up);box-shadow:inset 0 0 0 1px #34E07A55}
+.swipe button:disabled{opacity:.35;cursor:not-allowed}
+.empty code{font-size:11px;color:#ccc}
+.av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222;flex:none}
 </style>
 </head>
 <body>
@@ -169,7 +174,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <div><b>To nie jest porada finansowa.</b> Kyvo pokazuje publiczne dane rynkowe i cytaty z X. Memecoiny są ekstremalnie ryzykowne — możesz stracić wszystko.</div>
     <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal) · Solana / BSC / Robinhood. Treści X: cytaty + link do oryginału. UI oryginalne Kyvo.</div>
     <div style="margin-top:6px">Prywatność: brak kont, brak trackingu, nic nie zapisujemy na serwerze. Cache tylko w Twojej przeglądarce (localStorage).</div>
-    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v6</div>
+    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v7</div>
   </div>
 </div>
 

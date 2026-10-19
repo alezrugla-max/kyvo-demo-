@@ -1,15 +1,15 @@
-/* KYVO_MVP_LIVE_v6 — multi-chain Pulse (Solana / BSC / Robinhood) + filters + Viral z X. Not financial advice. */
+/* KYVO_MVP_LIVE_v7 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
 (function () {
   'use strict';
 
   const DS = 'https://api.dexscreener.com';
   const GT = 'https://api.geckoterminal.com/api/v2';
-  const CACHE_KEY = 'kyvo_coins_v6';
-  const FILT_KEY = 'kyvo_filters_v6';
-  const CHAIN_KEY = 'kyvo_chain_v6';
+  const CACHE_KEY = 'kyvo_coins_v7';
+  const FILT_KEY = 'kyvo_filters_v7';
+  const CHAIN_KEY = 'kyvo_chain_v7';
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
-  const MVP_MARKER = 'KYVO_MVP_LIVE_v6';
+  const MVP_MARKER = 'KYVO_MVP_LIVE_v7';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -40,6 +40,7 @@
 
   function fmtUsd(n) {
     if (n == null || !isFinite(n) || Number(n) === 0) return '—';
+    if (n < 0) { const r = fmtUsd(-n); return r === '—' ? r : '-' + r; }
     const a = Math.abs(n);
     if (a >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
     if (a >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
@@ -112,6 +113,43 @@
     const id = c.chainId || 'solana';
     return CHAIN_BADGE[id] || id.slice(0, 3).toUpperCase();
   }
+
+  function agoLabel(isoOrSec) {
+    let t;
+    if (typeof isoOrSec === 'number') t = isoOrSec * 1000;
+    else t = new Date(isoOrSec).getTime();
+    if (!isFinite(t)) return '—';
+    const sec = Math.max(0, Math.round((Date.now() - t) / 1000));
+    if (sec < 60) return sec + 's temu';
+    if (sec < 3600) return Math.floor(sec / 60) + ' min temu';
+    if (sec < 86400) return Math.floor(sec / 3600) + 'h temu';
+    return Math.floor(sec / 86400) + 'd temu';
+  }
+  function smartBuysForMint(mint) {
+    if (!smartMoney || !smartMoney.by_mint) return [];
+    return smartMoney.by_mint[mint] || [];
+  }
+  function fmtSize(b) {
+    if (b && b.usd_size != null && isFinite(b.usd_size) && b.usd_size > 0) return b.usd_size < 1 ? '<$1' : '~' + fmtUsd(b.usd_size);
+    if (b && b.sol_size != null && isFinite(b.sol_size) && b.sol_size > 0) return '~' + Number(b.sol_size).toFixed(2) + ' SOL';
+    return '—';
+  }
+  async function loadSmartMoney() {
+    try {
+      smartMoney = await fetchJson('data/smart_money.json?v=7');
+    } catch (e) {
+      smartMoney = { by_mint: {}, activity: [], updated_at: null };
+    }
+  }
+  async function loadLeaderboard() {
+    try {
+      leaderboard = await fetchJson('data/leaderboard.json?v=7');
+    } catch (e) {
+      leaderboard = { leaders: [], updated_at: null };
+    }
+  }
+
+
 
   /* ---- Fuzzy ---- */
   function norm(s) {
@@ -335,6 +373,10 @@
   let fetchErr = null;
   let sourceLabel = '';
   let filtOpen = false;
+  let smartMoney = null; // data/smart_money.json
+  let leaderboard = null; // data/leaderboard.json
+  let goodSortSmart = false;
+
 
   function saveCache() {
     try {
@@ -482,8 +524,9 @@
 
   async function loadNewPoolsNetwork(net, intoMap) {
     const addrs = [];
-    const prefix = net + '_';
-    for (const page of [1, 2]) {
+    // page=1 only: some Gecko networks (e.g. robinhood) 400/fail on page>1 and spam console
+    const pages = net === 'robinhood' ? [1] : [1, 2];
+    for (const page of pages) {
       try {
         const g = await fetchJson(GT + '/networks/' + net + '/new_pools?page=' + page);
         for (const row of g.data || []) {
@@ -495,7 +538,7 @@
           if (id) addrs.push(String(id).replace(new RegExp('^' + net + '_'), ''));
         }
       } catch (e) {
-        console.warn('new_pools', net, page, e);
+        /* network may not support pagination — skip quietly */
       }
     }
     await fetchTokenBatch(addrs, null, intoMap);
@@ -638,7 +681,7 @@
 
   async function loadViral() {
     try {
-      viral = await fetchJson('data/x_viral.json?v=6');
+      viral = await fetchJson('data/x_viral.json?v=7');
       return viral;
     } catch (e) {
       viral = { posts: [], topics: [], updated_at: null };
@@ -707,7 +750,15 @@
   }
   function listGood() {
     let list = applyFilters(allUniverse(), 'good');
-    list.sort((a, b) => (b.liquidity || 0) - (a.liquidity || 0) || (b.volume.h24 || 0) - (a.volume.h24 || 0));
+    if (goodSortSmart) {
+      list.sort((a, b) => {
+        const sa = smartBuysForMint(a.address).length;
+        const sb = smartBuysForMint(b.address).length;
+        return sb - sa || (b.liquidity || 0) - (a.liquidity || 0);
+      });
+    } else {
+      list.sort((a, b) => (b.liquidity || 0) - (a.liquidity || 0) || (b.volume.h24 || 0) - (a.volume.h24 || 0));
+    }
     return list;
   }
   function listHot() {
@@ -737,6 +788,11 @@
     }
     if (opts.showDex) {
       extra += (extra ? ' · ' : '') + `<span class="mut">${esc(c.dexId)}</span>`;
+    }
+    const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
+    if (smBuys.length) {
+      const names = smBuys.slice(0, 2).map((b) => b.wallet_name).join(', ');
+      extra += (extra ? ' · ' : '') + `<span class="smbadge" title="Smart money (snapshot)">SM: ${esc(names)}</span>`;
     }
     const badge = `<span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span>`;
     return `<div class="row" data-key="${esc(keyOf(c))}" role="button" tabindex="0">
@@ -1015,6 +1071,23 @@
   }
 
   function renderCoin(c) {
+
+    const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
+    const smHtml = smBuys.length
+      ? `<div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Smart money <span class="badge live">snapshot</span></div>
+          <div class="mut" style="font-size:11px;margin-bottom:6px">Publiczne KOL/smart wallets · ${esc(agoLabel(smartMoney && smartMoney.updated_at))} · nie porada finansowa</div>
+          ${smBuys.slice(0, 8).map((b) =>
+            `<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff08;font-size:12.5px">
+              <span><b>${esc(b.wallet_name)}</b> ${b.handle ? `<a href="https://x.com/${esc(b.handle)}" target="_blank" rel="noopener">@${esc(b.handle)}</a>` : ''}
+              <span class="mut">${b.block_time ? agoLabel(b.block_time) : '—'}</span></span>
+              <span>${esc(fmtSize(b))} <a href="${esc(b.tx_url)}" target="_blank" rel="noopener" style="font-size:11px">tx</a></span>
+            </div>`
+          ).join('')}
+        </div>`
+      : (c.chainId === 'solana' || !c.chainId
+          ? `<div class="card mut" style="margin-top:10px;font-size:12.5px"><span class="mut">Brak trafień smart money w ostatnim snapshocie dla tego mintu.</span></div>`
+          : '');
+
     const urls = platformUrls(c.address, c.chainId);
     const socials = (c.socials || [])
       .map((s) => {
@@ -1077,6 +1150,7 @@
         <div class="st"><small>Δ 1h</small><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b></div>
         <div class="st"><small>Buy 1h</small><b>${c.buyRatioH1 != null ? Math.round(c.buyRatioH1 * 100) + '%' : '—'}</b></div>
       </div>
+      ${smHtml}
       <div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Socials</div><div class="socials">${socials || '<span class="mut">Brak</span>'} ${webs}</div></div>
       ${platButtonsHtml(urls)}
       <div style="margin-top:8px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
@@ -1107,7 +1181,7 @@
     const updated = viral.updated_at_warsaw || viral.updated_at || '—';
     body.innerHTML = `
       <div class="h">Viral z X <span class="badge live">snapshot</span></div>
-      <div class="sub">Prawdziwe posty · snapshot ${esc(updated)} (Europe/Warsaw)</div>
+      <div class="sub">Prawdziwe posty · zaktualizowano ${esc(agoLabel(viral.updated_at || updated))} · ${esc(updated)} (Europe/Warsaw)</div>
       <div class="card"><div class="h" style="font-size:13px">Tematy → coiny</div><div id="topicList"><div class="loading"><div class="spin"></div>Matchuję…</div></div></div>
       <div class="h">Ważne posty</div><div id="postList"></div>
       <div class="foot">${MVP_MARKER}</div>`;
@@ -1154,19 +1228,51 @@
 
   function renderMore() {
     document.body.classList.remove('pulse-on');
+    const leaders = (leaderboard && leaderboard.leaders) || [];
+    const lbUp = leaderboard && leaderboard.updated_at ? agoLabel(leaderboard.updated_at) : '—';
+    const rows = leaders.length
+      ? leaders.map((L) => {
+          const s7 = (L.stats && L.stats['7d']) || {};
+          const s1 = (L.stats && L.stats['1d']) || {};
+          const s30 = (L.stats && L.stats['30d']) || {};
+          const av = L.avatar
+            ? `<img class="av" src="${esc(L.avatar)}" width="36" height="36" alt="" loading="lazy" onerror="this.style.display='none'">`
+            : `<div class="av" style="display:grid;place-items:center;background:#222;font-size:11px;font-weight:800">${esc((L.name || '?')[0])}</div>`;
+          const tip = esc(s7.note || 'Przybliżone z publicznych sygnatur RPC');
+          const pnl = (v) => (v == null || !isFinite(v) ? '—' : fmtUsd(v));
+          const wr = (v) => (v == null ? '—' : Math.round(v * 100) + '%');
+          return `<div class="card" style="padding:10px">
+            <div style="display:flex;gap:10px;align-items:center">
+              ${av}
+              <div style="flex:1;min-width:0">
+                <b style="font-size:14px">${esc(L.name)}</b>
+                ${L.handle ? ` <a href="${esc(L.x_url || ('https://x.com/' + L.handle))}" target="_blank" rel="noopener">@${esc(L.handle)}</a>` : ''}
+                <div class="mut" style="font-size:11px;font-family:ui-monospace,Menlo,monospace">${esc(shortCa(L.address))} · <a href="https://solscan.io/account/${esc(L.address)}" target="_blank" rel="noopener">solscan</a></div>
+              </div>
+            </div>
+            <div class="statg" style="margin-top:8px">
+              <div class="st" title="${tip}"><small>PnL 1d</small><b>${pnl(s1.realized_pnl_usd)}</b></div>
+              <div class="st" title="${tip}"><small>PnL 7d</small><b>${pnl(s7.realized_pnl_usd)}</b></div>
+              <div class="st" title="${tip}"><small>PnL 30d</small><b>${pnl(s30.realized_pnl_usd)}</b></div>
+              <div class="st" title="${tip}"><small>Trades 7d</small><b>${s7.trades != null ? s7.trades : '—'}</b></div>
+              <div class="st" title="${tip}"><small>Win 7d</small><b>${wr(s7.win_rate)}</b></div>
+              <div class="st"><small>Buys 1d</small><b>${L.recent_buys_1d != null ? L.recent_buys_1d : '—'}</b></div>
+            </div>
+            <div class="mut" style="font-size:10.5px;margin-top:6px" title="${tip}">Źródło: ${esc((L.source_note || '').slice(0, 120))}</div>
+          </div>`;
+        }).join('')
+      : `<div class="empty">Brak leaderboardu — uruchom <code>python3 tools/build_snapshots.py</code></div>`;
+
     $('#moreBody').innerHTML = `
-      <div class="h">Więcej</div>
-      <div class="card"><div class="h" style="font-size:13px">Leaderboard <span class="badge demo">Przykładowe dane</span></div>
-        <div class="mut" style="font-size:13px">PnL traderów — jeszcze nie podpięte do real on-chain.</div></div>
+      <div class="h">Leaderboard <span class="badge live">snapshot</span></div>
+      <div class="sub">Real z publicznych sygnatur RPC · zaktualizowano ${esc(lbUp)} · PnL przybliżone (— gdy niewiarygodne)</div>
+      ${rows}
       <div class="card"><div class="h" style="font-size:13px">Insider / fresh wallets <span class="badge demo">Przykładowe dane</span></div>
-        <div class="mut" style="font-size:13px">Wymaga własnego indeksu — niedostępne.</div></div>
-      <div class="card"><div class="h" style="font-size:13px">O Kyvo v6</div>
+        <div class="mut" style="font-size:13px">Wymaga własnego indeksu — niedostępne tanio z publicznych RPC.</div></div>
+      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7</div>
         <div style="font-size:13px;color:#ccc;line-height:1.45">
-          <b>LIVE multi-chain:</b> Solana · BSC · Robinhood (+ Wszystkie).<br>
-          Chain switcher w localStorage · badge · explorer · trade tylko gdzie zweryfikowane URL.<br>
-          <b>Solana:</b> New / Final Stretch (pump.fun) / Migrated (PumpSwap…). FOMO·Axiom·Photon·GMGN·Solscan.<br>
-          <b>BSC:</b> New MC≥$10k / Final Stretch (four.meme) / Migrated (PancakeSwap). FOMO·GMGN·PancakeSwap·BscScan.<br>
-          <b>Robinhood:</b> New + Hot/Boosted/search (uniswap na DexScreener). Stretch/Migrated ukryte — brak publicznego bonding dexId. FOMO·HoodExplorer.
+          Multi-chain Pulse · Smart money badge (Solana) · Leaderboard z <code>data/leaderboard.json</code>.<br>
+          Odświeżanie: <code>python3 tools/build_snapshots.py</code> + Viral: patrz <code>tools/update_x_viral.md</code>.
         </div></div>
       <div class="foot">${MVP_MARKER}</div>`;
   }
@@ -1209,7 +1315,14 @@
       return;
     }
     if (v === 'good') {
-      renderList(listGood(), 'Good Coins', 'Curated quality — liq/MC/vol/socials/buy ratio', { filtTab: 'good' });
+      const smNote = goodSortSmart ? 'sort: Smart money hits' : 'sort: liq/vol';
+      renderList(listGood(), 'Good Coins', 'Curated quality — ' + smNote, {
+        filtTab: 'good',
+        footnote: `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">Smart money</button>
+          <span class="mut" style="font-size:11px">Badge SM = KOL z data/smart_money.json (publiczny snapshot)</span></div>`,
+      });
+      const btn = $('#goodSmartSort');
+      if (btn) btn.onclick = () => { goodSortSmart = !goodSortSmart; setView('good'); };
       location.hash = 'good';
       return;
     }
@@ -1357,7 +1470,7 @@
   });
 
   loadCache();
-  Promise.all([loadViral(), refresh()]).then(() => routeFromHash());
+  Promise.all([loadViral(), loadSmartMoney(), loadLeaderboard(), refresh()]).then(() => routeFromHash());
   setInterval(() => refresh(), REFRESH_MS);
   setInterval(updateClock, 1000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -1377,6 +1490,9 @@
     listStretch,
     listMigrated,
     listGood,
+    smartBuysForMint,
+    getSmartMoney: () => smartMoney,
+    getLeaderboard: () => leaderboard,
     applyFilters,
     filters,
     DEFAULT_FILTERS,

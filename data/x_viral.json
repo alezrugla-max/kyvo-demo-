@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-10-19T15:32:00Z",
-  "updated_at_warsaw": "2026-10-19T17:32:00+02:00",
-  "source": "X API via Cursor connector (search_posts_all, get_users_posts, get_trends_by_woeid, get_users_by_usernames)",
-  "note": "Static snapshot for GitHub Pages. App live-matches topics to Solana coins via DexScreener. Posts are quoted with links to originals. Not financial advice.",
+  "updated_at": "2026-10-19T17:46:44Z",
+  "updated_at_warsaw": "2026-10-19T19:46:44+02:00",
+  "source": "x MCP get_users_by_usernames + get_users_posts + search_posts_all (~12 reads this refresh)",
+  "note": "Static snapshot. Not financial advice. Real posts only.",
   "key_accounts": [
     {
-      "handle": "elonmusk",
-      "name": "Elon Musk",
-      "id": "44196397"
+      "handle": "orangie",
+      "name": "orangie",
+      "id": "2758205289"
     },
     {
       "handle": "blknoiz06",
@@ -20,14 +20,9 @@
       "id": "844304603336232960"
     },
     {
-      "handle": "orangie",
-      "name": "orangie",
-      "id": "2758205289"
-    },
-    {
-      "handle": "solana",
-      "name": "Solana",
-      "id": "951329744804392960"
+      "handle": "Cupseyy",
+      "name": "Cupsey",
+      "id": "1168903946989010944"
     },
     {
       "handle": "Pumpfun",
@@ -37,472 +32,157 @@
   ],
   "topics": [
     {
-      "id": "spacex_shares",
-      "label": "SpaceX shares",
-      "query": "SpaceX",
+      "id": "memecoin_edge",
+      "label": "Memecoin social edge",
+      "query": "memecoin solana",
       "hints": [
-        "SpaceX",
-        "shares"
+        "pumpfun",
+        "viral meme"
       ],
-      "source_post": "https://x.com/elonmusk/status/2112089556615123114",
-      "why": "Elon: SpaceX shares for every kid in America"
-    },
-    {
-      "id": "roadster_mars",
-      "label": "Roadster / Mars",
-      "query": "Roadster Mars",
-      "hints": [
-        "Roadster",
-        "Mars",
-        "Tesla"
-      ],
-      "source_post": "https://x.com/elonmusk/status/2110947164512038931",
-      "why": "Elon: OG Roadster still orbiting Mars and Earth"
-    },
-    {
-      "id": "doge",
-      "label": "DOGE",
-      "query": "DOGE",
-      "hints": [
-        "DOGE",
-        "Dogecoin"
-      ],
-      "source_post": "https://x.com/elonmusk/status/2103579616879526057",
-      "why": "Elon mentioned @DOGE"
-    },
-    {
-      "id": "memecoin_flip",
-      "label": "Memecoin flip BTC",
-      "query": "SPX6900",
-      "hints": [
-        "SPX",
-        "SPX6900",
-        "Memecoin"
-      ],
-      "source_post": "https://x.com/MustStopMurad/status/2111161113794732298",
-      "why": "Murad: Why a Memecoin will flip Bitcoin"
-    },
-    {
-      "id": "animals",
-      "label": "Animal memes",
-      "query": "BONK",
-      "hints": [
-        "animals",
-        "BONK",
-        "WIF",
-        "dog"
-      ],
-      "source_post": "https://x.com/Pumpfun/status/2111878516275105943",
-      "why": "Pump.fun: return to animals"
-    },
-    {
-      "id": "stocks_sol",
-      "label": "Stocks on Solana",
-      "query": "stocks solana",
-      "hints": [
-        "stocks",
-        "tokenized",
-        "RWA"
-      ],
-      "source_post": "https://x.com/solana/status/2112056231133426024",
-      "why": "Solana: 1.4M addresses hold stocks on Solana"
+      "source_post": "https://x.com/blknoiz06/status/2112036503463546953",
+      "why": "Ansem on social awareness as edge in memecoin trading"
     },
     {
       "id": "papertrade",
       "label": "Papertrade / perps",
       "query": "papertrade",
       "hints": [
-        "papertrade",
-        "perps"
+        "perps",
+        "leverage"
       ],
       "source_post": "https://x.com/blknoiz06/status/2112028564987990046",
-      "why": "Ansem: papertrade generational setup"
+      "why": "Ansem thesis on synthetic perps"
     },
     {
-      "id": "bonk_wif",
-      "label": "BONK / WIF lane",
-      "query": "BONK",
+      "id": "murad_belief",
+      "label": "Belief + community",
+      "query": "SPX6900",
       "hints": [
-        "BONK",
-        "WIF",
-        "PEPE",
-        "POPCAT"
+        "murad",
+        "memecoin"
       ],
-      "source_post": null,
-      "why": "Recurring Solana meme lane in recent posts"
+      "source_post": "https://x.com/MustStopMurad/status/2112188502557524405",
+      "why": "Murad on hardcore community persistence"
+    },
+    {
+      "id": "flip_btc",
+      "label": "Memecoin flip Bitcoin",
+      "query": "memecoin bitcoin",
+      "hints": [
+        "SPX",
+        "flip"
+      ],
+      "source_post": "https://x.com/MustStopMurad/status/2111161113794732298",
+      "why": "Murad video thesis"
     }
   ],
-  "us_trends": [
-    {
-      "name": "Jalen",
-      "url": "https://x.com/search?q=Jalen"
-    },
-    {
-      "name": "Chris Ballard",
-      "url": "https://x.com/search?q=Chris%20Ballard"
-    },
-    {
-      "name": "Victory Monday",
-      "url": "https://x.com/search?q=Victory%20Monday"
-    },
-    {
-      "name": "Colts",
-      "url": "https://x.com/search?q=Colts"
-    },
-    {
-      "name": "#MondayMotivation",
-      "url": "https://x.com/search?q=%23MondayMotivation"
-    },
-    {
-      "name": "MiniMax M3",
-      "url": "https://x.com/search?q=MiniMax%20M3"
-    },
-    {
-      "name": "Louvre",
-      "url": "https://x.com/search?q=Louvre"
-    }
-  ],
+  "us_trends": [],
   "posts": [
     {
-      "author_name": "Elon Musk",
-      "handle": "elonmusk",
-      "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_bigger.jpg",
-      "text": "Next year, I will give one of my SpaceX shares to every kid in America.\n\nThis will be the first of many.",
-      "created_at": "2026-10-19T07:52:45.000Z",
-      "url": "https://x.com/elonmusk/status/2112089556615123114",
+      "author_name": "orangie",
+      "handle": "orangie",
+      "avatar": "https://pbs.twimg.com/profile_images/2105410277877719040/Y0J2vP7B_normal.jpg",
+      "text": "duality of man",
+      "created_at": "2026-10-18T23:48:54.000Z",
+      "url": "https://x.com/orangie/status/2111967792014778697",
       "metrics": {
-        "likes": 371769,
-        "reposts": 37424,
-        "replies": 23846,
-        "impressions": 15297263,
-        "bookmarks": 18048
+        "likes": 868,
+        "reposts": 27,
+        "replies": 97
       },
-      "tags": [
-        "key_account",
-        "elon"
-      ],
-      "topic_hints": [
-        "SpaceX",
-        "shares",
-        "kids",
-        "America"
-      ]
+      "tags": [],
+      "topic_hints": []
     },
     {
-      "author_name": "Elon Musk",
-      "handle": "elonmusk",
-      "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_bigger.jpg",
-      "text": "My OG Roadster is still orbiting Mars and Earth",
-      "created_at": "2026-10-16T04:13:18.000Z",
-      "url": "https://x.com/elonmusk/status/2110947164512038931",
+      "author_name": "orangie",
+      "handle": "orangie",
+      "avatar": "https://pbs.twimg.com/profile_images/2105410277877719040/Y0J2vP7B_normal.jpg",
+      "text": "Long",
+      "created_at": "2026-10-18T23:35:57.000Z",
+      "url": "https://x.com/orangie/status/2111964532554039475",
       "metrics": {
-        "likes": 81927,
-        "reposts": 5296,
-        "replies": 3337,
-        "impressions": 3323589,
-        "bookmarks": 1698
+        "likes": 191,
+        "reposts": 6,
+        "replies": 38
       },
-      "tags": [
-        "key_account",
-        "elon",
-        "coin_signal"
-      ],
-      "topic_hints": [
-        "Roadster",
-        "Mars",
-        "Tesla",
-        "orbit"
-      ]
-    },
-    {
-      "author_name": "Elon Musk",
-      "handle": "elonmusk",
-      "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_bigger.jpg",
-      "text": "So many people are going to get one-shotted by super persuasive super intelligences and I might be one of them",
-      "created_at": "2026-10-19T06:35:20.000Z",
-      "url": "https://x.com/elonmusk/status/2112070071401238607",
-      "metrics": {
-        "likes": 50486,
-        "reposts": 3304,
-        "replies": 4491,
-        "impressions": 4602983,
-        "bookmarks": 3672
-      },
-      "tags": [
-        "key_account",
-        "elon"
-      ],
-      "topic_hints": [
-        "AI",
-        "superintelligence"
-      ]
-    },
-    {
-      "author_name": "Elon Musk",
-      "handle": "elonmusk",
-      "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_bigger.jpg",
-      "text": "@ABC Even this alone makes @DOGE worth it",
-      "created_at": "2026-09-25T20:17:17.000Z",
-      "url": "https://x.com/elonmusk/status/2103579616879526057",
-      "metrics": {
-        "likes": 68419,
-        "reposts": 3735,
-        "replies": 1504,
-        "impressions": 2156274,
-        "bookmarks": 784
-      },
-      "tags": [
-        "key_account",
-        "elon",
-        "coin_signal"
-      ],
-      "topic_hints": [
-        "DOGE",
-        "Dogecoin"
-      ]
+      "tags": [],
+      "topic_hints": []
     },
     {
       "author_name": "Ansem",
       "handle": "blknoiz06",
-      "avatar": "https://pbs.twimg.com/profile_images/2052070109758226438/xlyPdLmn_bigger.jpg",
-      "text": "i've always viewed social awareness as one of the biggest edges in memecoin trading\n\nbeing early to viral trends matters, but understanding who's behind the attention and how committed the community is can be just as important\n\ni pay close attention to holder distribution,",
+      "avatar": "https://pbs.twimg.com/profile_images/2052070109758226438/xlyPdLmn_normal.jpg",
+      "text": "distribution could end up being one of the biggest competitive advantages in AI — customer retention and distribution matter more as models get cheaper.",
+      "created_at": "2026-10-19T16:48:23.000Z",
+      "url": "https://x.com/blknoiz06/status/2112224350330077223",
+      "metrics": {
+        "likes": 278,
+        "reposts": 30,
+        "replies": 159
+      },
+      "tags": [],
+      "topic_hints": []
+    },
+    {
+      "author_name": "Ansem",
+      "handle": "blknoiz06",
+      "avatar": "https://pbs.twimg.com/profile_images/2052070109758226438/xlyPdLmn_normal.jpg",
+      "text": "i've always viewed social awareness as one of the biggest edges in memecoin trading — being early to viral trends matters, but understanding who's behind the attention matters too.",
       "created_at": "2026-10-19T04:21:56.000Z",
       "url": "https://x.com/blknoiz06/status/2112036503463546953",
       "metrics": {
-        "likes": 705,
-        "reposts": 83,
-        "replies": 250,
-        "impressions": 86442,
-        "bookmarks": 96
+        "likes": 750,
+        "reposts": 90,
+        "replies": 285
       },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "memecoin",
-        "viral",
-        "holders",
-        "social awareness"
-      ]
+      "tags": [],
+      "topic_hints": []
     },
     {
       "author_name": "Ansem",
       "handle": "blknoiz06",
-      "avatar": "https://pbs.twimg.com/profile_images/2052070109758226438/xlyPdLmn_bigger.jpg",
-      "text": "know ive been tweeting about this a lot but really think papertrade could be a generational setup\n\nhigh leverage perps are crypto's most profitable product to date, demand for speculation is not going to go away\n\nability to open/close synthetic 1000x positions w/ no market impact",
+      "avatar": "https://pbs.twimg.com/profile_images/2052070109758226438/xlyPdLmn_normal.jpg",
+      "text": "really think papertrade could be a generational setup — high leverage perps are crypto's most profitable product to date.",
       "created_at": "2026-10-19T03:50:24.000Z",
       "url": "https://x.com/blknoiz06/status/2112028564987990046",
       "metrics": {
-        "likes": 1115,
-        "reposts": 98,
-        "replies": 241,
-        "impressions": 143965,
-        "bookmarks": 416
+        "likes": 1164,
+        "reposts": 108,
+        "replies": 249
       },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "papertrade",
-        "perps",
-        "leverage"
-      ]
+      "tags": [],
+      "topic_hints": []
     },
     {
       "author_name": "Murad",
       "handle": "MustStopMurad",
-      "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_bigger.jpg",
+      "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_normal.jpg",
       "text": "In a market saturated with scammers, shitcoins and non-believers, believing in something and persisting together with an ultra-hardcore community is the only way to win.",
       "created_at": "2026-10-19T14:25:56.000Z",
       "url": "https://x.com/MustStopMurad/status/2112188502557524405",
       "metrics": {
-        "likes": 480,
-        "reposts": 111,
-        "replies": 123,
-        "impressions": 26283,
-        "bookmarks": 12
+        "likes": 843,
+        "reposts": 174,
+        "replies": 208
       },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "community",
-        "memecoin"
-      ]
+      "tags": [],
+      "topic_hints": []
     },
     {
       "author_name": "Murad",
       "handle": "MustStopMurad",
-      "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_bigger.jpg",
-      "text": "Why a Memecoin will flip Bitcoin.\n\nThe most important video I have ever made.",
+      "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_normal.jpg",
+      "text": "Why a Memecoin will flip Bitcoin. The most important video I have ever made.",
       "created_at": "2026-10-16T18:23:27.000Z",
       "url": "https://x.com/MustStopMurad/status/2111161113794732298",
       "metrics": {
-        "likes": 2280,
-        "reposts": 595,
-        "replies": 443,
-        "impressions": 158045,
-        "bookmarks": 695
+        "likes": 2286,
+        "reposts": 596,
+        "replies": 443
       },
-      "tags": [
-        "key_account",
-        "kol",
-        "coin_signal"
-      ],
-      "topic_hints": [
-        "Memecoin",
-        "Bitcoin",
-        "SPX6900"
-      ]
-    },
-    {
-      "author_name": "Murad",
-      "handle": "MustStopMurad",
-      "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_bigger.jpg",
-      "text": "99.9999999% of Memecoins are the literal Devil\n20 of them are good communities\n1 of them will Flip the Stock Market",
-      "created_at": "2026-10-15T19:44:15.000Z",
-      "url": "https://x.com/MustStopMurad/status/2110819059990442175",
-      "metrics": {
-        "likes": 1785,
-        "reposts": 289,
-        "replies": 426,
-        "impressions": 97400,
-        "bookmarks": 56
-      },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "Memecoins",
-        "community",
-        "SPX"
-      ]
-    },
-    {
-      "author_name": "orangie",
-      "handle": "orangie",
-      "avatar": "https://pbs.twimg.com/profile_images/2105410277877719040/Y0J2vP7B_bigger.jpg",
-      "text": "new pfp \n\nwas very fun to compete in solana’s event! people on tiktok loved the concept. got over a million views overnight\n\nlots of work to be done, don’t know if 100x leverage in 20 mins is the format this goes mainstream in but was super super fun!\n\nThank you Korea!",
-      "created_at": "2026-09-30T21:33:41.000Z",
-      "url": "https://x.com/orangie/status/2105410782632775841",
-      "metrics": {
-        "likes": 515,
-        "reposts": 26,
-        "replies": 92,
-        "impressions": 102077,
-        "bookmarks": 32
-      },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "solana",
-        "leverage",
-        "tiktok"
-      ]
-    },
-    {
-      "author_name": "orangie",
-      "handle": "orangie",
-      "avatar": "https://pbs.twimg.com/profile_images/2105410277877719040/Y0J2vP7B_bigger.jpg",
-      "text": "fomo has added instant trade panel on mobile app",
-      "created_at": "2026-09-30T07:29:09.000Z",
-      "url": "https://x.com/orangie/status/2105198248785023440",
-      "metrics": {
-        "likes": 1016,
-        "reposts": 42,
-        "replies": 139,
-        "impressions": 80297,
-        "bookmarks": 51
-      },
-      "tags": [
-        "key_account",
-        "kol"
-      ],
-      "topic_hints": [
-        "FOMO",
-        "mobile",
-        "trading"
-      ]
-    },
-    {
-      "author_name": "Solana",
-      "handle": "solana",
-      "avatar": "https://pbs.twimg.com/profile_images/2108951229892313088/MlkM0StP_bigger.jpg",
-      "text": "1.4 million addresses now hold stocks on Solana",
-      "created_at": "2026-10-19T05:40:20.000Z",
-      "url": "https://x.com/solana/status/2112056231133426024",
-      "metrics": {
-        "likes": 1881,
-        "reposts": 218,
-        "replies": 344,
-        "impressions": 106554,
-        "bookmarks": 39
-      },
-      "tags": [
-        "key_account",
-        "chain"
-      ],
-      "topic_hints": [
-        "stocks",
-        "Solana",
-        "RWA",
-        "tokenized"
-      ]
-    },
-    {
-      "author_name": "Solana",
-      "handle": "solana",
-      "avatar": "https://pbs.twimg.com/profile_images/2108951229892313088/MlkM0StP_bigger.jpg",
-      "text": "Anything happening in crypto will happen on Solana.\n\n“Where we don’t lead, you see the ecosystem generate an infinite set of ideas and run at them with so much ambition and speed that anything happening in crypto will happen on Solana eventually, in a big way. Decentralization is",
-      "created_at": "2026-10-19T09:56:35.000Z",
-      "url": "https://x.com/solana/status/2112120718888706511",
-      "metrics": {
-        "likes": 525,
-        "reposts": 61,
-        "replies": 189,
-        "impressions": 56584,
-        "bookmarks": 14
-      },
-      "tags": [
-        "key_account",
-        "chain"
-      ],
-      "topic_hints": [
-        "Solana",
-        "crypto",
-        "ecosystem"
-      ]
-    },
-    {
-      "author_name": "Pump.fun",
-      "handle": "Pumpfun",
-      "avatar": "https://pbs.twimg.com/profile_images/2039436355806416896/V0Hhi9n-_bigger.jpg",
-      "text": "return to… animals?",
-      "created_at": "2026-10-18T17:54:09.000Z",
-      "url": "https://x.com/Pumpfun/status/2111878516275105943",
-      "metrics": {
-        "likes": 3822,
-        "reposts": 546,
-        "replies": 1486,
-        "impressions": 276808,
-        "bookmarks": 157
-      },
-      "tags": [
-        "key_account",
-        "launchpad",
-        "coin_signal"
-      ],
-      "topic_hints": [
-        "animals",
-        "memecoin",
-        "pumpfun"
-      ]
+      "tags": [],
+      "topic_hints": []
     }
-  ]
+  ],
+  "refresh_reads_approx": 12
 }

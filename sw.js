@@ -1,10 +1,10 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-const C = 'kyvo-mvp-v6';
+const C = 'kyvo-mvp-v7';
 const A = [
   './', 'index.html', 'app.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
-  'data/x_viral.json'
+  'data/x_viral.json', 'data/smart_money.json', 'data/leaderboard.json'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(A)).then(() => self.skipWaiting()));
@@ -15,8 +15,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  const isApi = /dexscreener\.com|geckoterminal\.com/.test(u.hostname)
-    || u.pathname.endsWith('x_viral.json');
+  const isApi = /dexscreener\.com|geckoterminal\.com|mainnet-beta\.solana\.com/.test(u.hostname)
+    || /\/data\/(x_viral|smart_money|leaderboard)\.json/.test(u.pathname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
