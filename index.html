@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>Kyvo · live</title>
+<title>Kyvo · live v5</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -83,6 +83,40 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sub{font-size:12px;color:var(--mut);margin:-4px 0 12px}
 .socials a{margin-right:8px;font-size:12px}
 mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
+
+.filtbar{display:flex;align-items:center;gap:8px;margin-top:8px}
+.filtbar .fbtn{flex:none;padding:7px 11px;border-radius:10px;background:var(--card2);font-size:12px;font-weight:700;box-shadow:inset 0 0 0 1px var(--line);color:var(--mut)}
+.filtbar .fbtn.on{color:#fff;background:#8B5CF633;box-shadow:inset 0 0 0 1px #8B5CF688}
+.filtbar .fcnt{font-size:11px;color:var(--mut);margin-left:auto}
+.fpanel{display:none;margin-top:8px;background:var(--card);border-radius:14px;padding:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.fpanel.open{display:block}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ffield{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ffield label{font-size:10.5px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.ffield input,.ffield select{background:#0e0e14;border:1px solid var(--line);border-radius:9px;padding:8px 9px;color:var(--txt);font-size:13px;outline:none;width:100%}
+.ffield.full{grid-column:1/-1}
+.factions{display:flex;gap:8px;margin-top:10px}
+.factions button{flex:1;padding:9px;border-radius:10px;font-weight:800;font-size:12.5px}
+.factions .apply{background:#8B5CF6;color:#fff}
+.factions .reset{background:#1d1d25;color:#ccc;box-shadow:inset 0 0 0 1px var(--line)}
+.fcheck{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 0}
+.fcheck input{width:16px;height:16px;accent-color:#8B5CF6}
+
+.pulse{display:none}
+@media(min-width:900px){
+  .pulse{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 14px}
+  .pulse .pcol{background:var(--card);border-radius:16px;padding:10px;box-shadow:inset 0 0 0 1px var(--line);min-height:420px;max-height:calc(100vh - 220px);overflow:auto}
+  .pulse .pcol h3{font-size:13px;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+  body.pulse-on #s-list .pg-list{display:none}
+  body.pulse-on .pulse{display:grid}
+  body.pulse-on #filtBar, body.pulse-on #filtPanel{display:none}
+}
+.swipe{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:4px}
+.swipe::-webkit-scrollbar{display:none}
+.swipe button{flex:none;padding:6px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:#16161d;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
+.swipe button.on{background:#22D3EE22;color:#22D3EE;box-shadow:inset 0 0 0 1px #22D3EE55}
+.est{font-size:10px;color:var(--warn);font-weight:700}
+
 </style>
 </head>
 <body>
@@ -97,15 +131,25 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
       <input id="q" type="search" placeholder="Szukaj coina (nazwa / ticker / CA)…" autocomplete="off" enterkeyhint="search">
     </div>
     <div class="seg" id="seg">
-      <button data-view="hot" class="on">Hot</button>
+      <button data-view="pulse" class="on">Pulse</button>
+      <button data-view="hot">Hot</button>
+      <button data-view="good">Good</button>
+      <button data-view="new">New</button>
+      <button data-view="stretch">Final Stretch</button>
+      <button data-view="migrated">Migrated</button>
       <button data-view="boosted">Boosted</button>
       <button data-view="viral">Viral z X</button>
       <button data-view="more">Więcej</button>
     </div>
+    <div class="filtbar" id="filtBar">
+      <button type="button" class="fbtn" id="filtToggle">Filtry</button>
+      <span class="fcnt" id="filtSummary">—</span>
+    </div>
+    <div class="fpanel" id="filtPanel"></div>
   </header>
 
   <main>
-    <section class="scr on" id="s-list"><div class="pg" id="listBody"><div class="loading"><div class="spin"></div>Ładuję live dane…</div></div></section>
+    <section class="scr on" id="s-list"><div class="pulse" id="pulseDesk"></div><div class="pg pg-list" id="listBody"><div class="loading"><div class="spin"></div>Ładuję live dane…</div></div></section>
     <section class="scr" id="s-viral"><div class="pg" id="viralBody"><div class="loading"><div class="spin"></div>Ładuję Viral z X…</div></div></section>
     <section class="scr" id="s-coin"><div class="pg" id="coinBody"></div></section>
     <section class="scr" id="s-more"><div class="pg" id="moreBody"></div></section>
@@ -115,7 +159,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <div><b>To nie jest porada finansowa.</b> Kyvo pokazuje publiczne dane rynkowe i cytaty z X. Memecoiny są ekstremalnie ryzykowne — możesz stracić wszystko.</div>
     <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal). Treści X: cytaty + link do oryginału. UI oryginalne Kyvo — inspiracja stylem terminali Solana, bez kopiowania cudzych assetów.</div>
     <div style="margin-top:6px">Prywatność: brak kont, brak trackingu, nic nie zapisujemy na serwerze. Cache tylko w Twojej przeglądarce (localStorage).</div>
-    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v4</div>
+    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v5</div>
   </div>
 </div>
 
