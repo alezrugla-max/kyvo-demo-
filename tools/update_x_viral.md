@@ -1,26 +1,41 @@
-# Refreshing `data/x_viral.json` (~20–40 X reads)
+# Refreshing `data/x_viral.json` (~12–25 X reads, ~3×/day)
 
-GitHub Pages cannot call X with a secret from the browser. Ship a **static snapshot**.
+GitHub Pages cannot hold an X secret, so Kyvo ships a **static snapshot** built with the `x` MCP connector.
+Only real posts; a coin is shown only if it resolves on DexScreener.
 
-## Single scheduled procedure (~3×/day)
+## 1. Read X (save every MCP result to a file, e.g. `/tmp/x_raw/*.txt`)
 
-1. **Resolve accounts** (1 read): `x` MCP `get_users_by_usernames` for  
-   `orangie,Cupseyy,blknoiz06,MustStopMurad,Pumpfun,a1lon9,solana` (+ optional KOLs).
-2. **Pull posts** (~7–14 reads): `get_users_posts` per id, `max_results` 5–10, exclude retweets/replies.
-3. **Search** (~2–5 reads): `search_posts_all` for `memecoin solana`, `pumpfun`, etc.
-4. **Optional trends** (1 read): `get_trends_by_woeid` (`23424977`) — keep only crypto-relevant.
-5. Write real fields only into JSON (never invent metrics).
-6. Validate + stamp:
+Accounts live in `tools/x_accounts.json` (trader = wallet publicly attributed in `wallets_public.json`; kol = well-known public account, no wallet attribution).
+
+1. **Tweety traderów** (3–4 reads) — `search_posts_all`, `max_results` 100, `start_time` = now − 7 days,
+   `post.fields=created_at,public_metrics,entities,author_id,note_tweet,in_reply_to_user_id`, `expansions=author_id`,
+   `user.fields=username,name,profile_image_url`:
+   - `(from:orangie OR from:Quanterty OR from:Cupseyy OR from:Ga__ke OR from:Cented7 OR from:notthreadguy OR from:frankdegods OR from:jijo_exe OR from:MarcellxMarcell OR from:Dior100x OR from:kreo444 OR from:traderpow) has:cashtags -is:retweet`
+   - `(from:blknoiz06 OR from:MustStopMurad OR from:CryptoKaleo OR from:a1lon9 OR from:Pumpfun) has:cashtags -is:retweet`
+   - `(<same lists>) (pump OR CA OR dexscreener OR ticker OR aped OR bought) -is:retweet -is:reply`
+   - optional: `get_users_posts` (exclude=retweets) for orangie / Quanterty / Cupseyy (ids in `x_accounts.json`).
+2. **Important posts / topics** (2–4 reads): `search_posts_all` `from:elonmusk -is:retweet -is:reply` (relevancy, last 3 days);
+   `search_news` `memecoin viral solana pump.fun` (max_age_hours 72); optionally `(memecoin OR pumpfun) has:cashtags -is:retweet lang:en`.
+3. (Optional, 1 read) `get_users_by_usernames` when adding a new account to `x_accounts.json`.
+
+## 2. Write topics + key posts
+
+Make `raw_doc.json` with `posts` (real fields: author_name, handle, avatar, text, created_at, url, metrics{likes,reposts,replies}, optional `topic_id`)
+and `topics` (`id`, `label`, `query`, `hints`, `source_post`, `why` — Polish). Never invent metrics.
+
+## 3. Build + validate
 
 ```bash
-python3 tools/update_x_viral.py --from-raw /tmp/x_viral_raw.json
-# or after manual edit:
-python3 tools/update_x_viral.py --stamp
+python3 tools/update_x_viral.py --from-raw raw_doc.json --trader-raw /tmp/x_raw/*.txt --resolve-topics
 python3 tools/update_x_viral.py --validate-only
 ```
 
-7. Commit + push `data/x_viral.json`.
+- `--trader-raw`: extracts contract addresses (Solana base58 / pump, 0x), `$CASHTAGS` and "ticker is X" from posts of tracked accounts (last 14 days),
+  resolves via DexScreener (`/latest/dex/tokens`, `/latest/dex/search`). Tickers: Kyvo chains only, ≥ $10k liquidity, ≥ $50k 24h volume,
+  and ≥ 3× the volume of any other token with the same ticker — otherwise dropped (no guessing). Majors/stocks ($BTC, $HOOD…) are skipped.
+- `--resolve-topics`: fills `topics[].coins` (Kyvo chains, real volume, liquidity not implausibly larger than volume).
+- Max 2 tweets per author+coin.
 
-**Budget:** Cursor X connector ~30 reads/min, ~1000/day. A full refresh fits in **~20–40 reads**.
+## 4. Commit + push `data/x_viral.json` (deploy via cloud agent).
 
-UI shows **„zaktualizowano X min temu”** from `updated_at`.
+**Budget:** this refresh used 12 reads. UI shows „zaktualizowano X min temu” from `updated_at`; MC / 24h are refreshed live in the browser.

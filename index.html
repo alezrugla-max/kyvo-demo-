@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>Kyvo · live v7.1</title>
+<title>Kyvo · live v7.2</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -132,6 +132,50 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .empty code{font-size:11px;color:#ccc}
 .av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222;flex:none}
 
+/* v7.2: multi-chain wallets */
+.pf-wallets{display:flex;gap:6px;margin:12px 0 2px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.pf-wallets::-webkit-scrollbar{display:none}
+.pf-wallets button{flex:none;display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border-radius:999px;background:var(--card2);color:var(--txt);font-size:12px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap;font-family:inherit}
+.pf-wallets button.on{background:#8B5CF62e;box-shadow:inset 0 0 0 1.5px #8B5CF6}
+.pf-wallets .pf-wadd{color:var(--acc2);box-shadow:inset 0 0 0 1px #22D3EE55;background:#22D3EE10}
+.pf-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc2);animation:pfp 1s ease-in-out infinite}
+@keyframes pfp{50%{opacity:.25}}
+.pf-chains{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:6px;margin-top:8px}
+.pf-ch{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:var(--card2);border-radius:12px;padding:8px 9px;box-shadow:inset 0 0 0 1px var(--line);min-width:0;font-family:inherit;color:var(--txt)}
+.pf-ch-h{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pf-ch b{font-size:15px}
+.pf-ch small{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pf-chpick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.pf-chpick button{padding:9px 4px;border-radius:12px;background:var(--card2);color:var(--mut);font-size:12px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);font-family:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-chpick button.on{color:#fff;background:#8B5CF62e;box-shadow:inset 0 0 0 1.5px #8B5CF6}
+.pf-both{display:flex;gap:8px;align-items:center;font-size:12.5px;margin-top:8px;color:var(--txt)}
+.pf-both[hidden]{display:none}
+.pf-err{margin-top:8px;font-size:12.5px;font-weight:700;color:#FFB4BE;background:#FF546814;border-radius:10px;padding:8px 10px;box-shadow:inset 0 0 0 1px #FF546833}
+.pf-tokl{display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--mut)}
+.pf-addf{margin-top:10px}
+/* v7.2: Viral z X — tematy → coiny, tweety traderów */
+.vtabs{display:flex;gap:6px;margin:10px 0 10px;overflow-x:auto;scrollbar-width:none}
+.vtabs::-webkit-scrollbar{display:none}
+.vtabs button{flex:none;padding:8px 12px;border-radius:999px;background:var(--card2);color:var(--mut);font-size:12.5px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.vtabs button.on{background:linear-gradient(135deg,#8B5CF6,#22D3EE);color:#fff;box-shadow:none}
+.vcount{display:inline-block;min-width:16px;padding:0 5px;margin-left:3px;border-radius:999px;background:#0004;font-size:10.5px}
+.vtopic-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.vtopic-h b{font-size:14.5px}
+.vx{font-size:12px;font-weight:700;white-space:nowrap}
+.vwhy{font-size:12px;margin:3px 0 6px;line-height:1.4}
+.vcoins{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.vcoin{display:flex;align-items:center;gap:8px;background:var(--card2);border-radius:12px;padding:7px 8px;box-shadow:inset 0 0 0 1px var(--line)}
+.vcoin-main{display:flex;align-items:center;gap:9px;min-width:0;flex:1;color:var(--txt)}
+.vcoin-main .nm b{font-size:13px}
+.vcoin-act{display:flex;gap:6px;flex:none}
+.vbtn{display:inline-block;padding:6px 9px;border-radius:9px;background:#ffffff0d;color:var(--txt);font-size:11.5px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.vbtn-pri{background:#8B5CF6;color:#fff;box-shadow:none}
+.vtag{color:var(--acc2);font-weight:800}
+.vq{border-left:3px solid #8B5CF655;padding-left:10px;margin:8px 0 6px;max-height:9.2em;overflow:hidden}
+.vq.long{-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.vfoot{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:8px;font-size:12px}
+.vsub{font-size:11px;color:var(--mut);margin-top:8px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+@media (max-width:380px){.vcoin-act .vbtn-pri{display:none}}
 /* v7.1: row time */
 .tm{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
 .agepill{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:#22D3EE1f;color:#7DE8F7;box-shadow:inset 0 0 0 1px #22D3EE44;white-space:nowrap}
@@ -288,7 +332,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
     <div><b>To nie jest porada finansowa.</b> Kyvo pokazuje publiczne dane rynkowe i cytaty z X. Memecoiny są ekstremalnie ryzykowne — możesz stracić wszystko.</div>
     <div style="margin-top:6px">Dane coinów: <a href="https://dexscreener.com" target="_blank" rel="noopener">DexScreener</a> (fallback: GeckoTerminal) · Solana / BSC / Robinhood. Treści X: cytaty + link do oryginału. Wykresy: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> (Apache-2.0) + dane <a href="https://www.geckoterminal.com/" target="_blank" rel="noopener">GeckoTerminal</a>. UI oryginalne Kyvo.</div>
     <div style="margin-top:6px">Prywatność: brak kont, brak trackingu, nic nie zapisujemy na serwerze. Cache tylko w Twojej przeglądarce (localStorage).</div>
-    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v7_1</div>
+    <div style="margin-top:6px" id="mvpMarker">KYVO_MVP_LIVE_v7_2</div>
   </div>
 </div>
 
@@ -302,6 +346,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 <div class="toast" id="toast"></div>
 <script src="vendor/lightweight-charts/lightweight-charts.standalone.production.js" defer></script>
 <script src="chart.js" defer></script>
+<script src="evm.js" defer></script>
 <script src="profile.js" defer></script>
 <script src="app.js" defer></script>
 </body>

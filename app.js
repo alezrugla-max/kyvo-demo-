@@ -1,4 +1,4 @@
-/* KYVO_MVP_LIVE_v7_1 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
+/* KYVO_MVP_LIVE_v7_2 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
   const CHAIN_KEY = 'kyvo_chain_v7';
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
-  const MVP_MARKER = 'KYVO_MVP_LIVE_v7_1';
+  const MVP_MARKER = 'KYVO_MVP_LIVE_v7_2';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -83,7 +83,7 @@
   function timeAgo(iso) {
     if (!iso) return '';
     const t = new Date(iso).getTime();
-    return isFinite(t) ? ageFrom(t) + ' ago' : '';
+    return isFinite(t) ? agoLabel(iso) : '';
   }
   function fmtInt(n) {
     if (n == null) return '—';
@@ -682,7 +682,7 @@
 
   async function loadViral() {
     try {
-      viral = await fetchJson('data/x_viral.json?v=7.1');
+      viral = await fetchJson('data/x_viral.json?v=7.2');
       return viral;
     } catch (e) {
       viral = { posts: [], topics: [], updated_at: null };
@@ -1213,6 +1213,62 @@
     };
   }
 
+  /* ---------------- Viral z X: tematy → coiny, tweety traderów, ważne posty ---------------- */
+  let viralTab = localStorage.getItem('kyvo_viral_tab') || 'topics';
+  const liveCoin = {}; // chain:addr -> {mcap, change24, image}
+  function snapCoinKey(c) { return coinKey(c.chain, c.address); }
+  function vCoinHtml(c, opts) {
+    opts = opts || {};
+    const k = snapCoinKey(c);
+    const L = liveCoin[k] || {};
+    const mc = L.mcap != null ? L.mcap : c.mcap;
+    const ch = L.change24 != null ? L.change24 : c.change_h24;
+    const img = L.image || c.image;
+    const href = c.kyvo !== false ? '#coin/' + encodeURIComponent(k) : null;
+    const ds = c.dexscreener || `https://dexscreener.com/${c.chain}/${c.address}`;
+    return `<div class="vcoin" data-vk="${esc(k)}">
+      ${href ? `<a class="vcoin-main" href="${esc(href)}">` : '<span class="vcoin-main">'}
+        ${imgTag(img, 'tok', opts.size || 34)}
+        <span class="nm"><b><span class="cbadge c-${esc(c.chain)}">${esc(CHAIN_BADGE[c.chain] || String(c.chain || '').toUpperCase())}</span> $${esc(c.symbol)} <span class="mut" style="font-weight:600">· ${esc(c.name || '')}</span></b>
+        <small><span data-mc>MC ${fmtUsd(mc)}</span> · <span data-ch class="${pctClass(ch)}">${fmtPct(ch)} 24h</span>${c.mention ? ` · <span class="mut">z tweeta: ${esc(c.mention.length > 16 ? shortCa(c.mention) : c.mention)}</span>` : ''}</small></span>
+      ${href ? '</a>' : '</span>'}
+      <span class="vcoin-act">${href ? `<a class="vbtn vbtn-pri" href="${esc(href)}">Otwórz</a>` : ''}<a class="vbtn" href="${esc(ds)}" target="_blank" rel="noopener noreferrer">DEX ↗</a></span>
+    </div>`;
+  }
+  async function refreshViralCoins(root) {
+    const all = [];
+    for (const t of viral.topics || []) for (const c of t.coins || []) all.push(c);
+    for (const t of viral.trader_tweets || []) for (const c of t.coins || []) all.push(c);
+    const addrs = [...new Set(all.map((c) => c.address))];
+    for (let i = 0; i < addrs.length; i += 30) {
+      try {
+        const d = await fetchJson(DS + '/latest/dex/tokens/' + addrs.slice(i, i + 30).join(','));
+        const best = {};
+        for (const p of d.pairs || []) {
+          const k = coinKey(p.chainId, p.baseToken && p.baseToken.address);
+          const liq = (p.liquidity && p.liquidity.usd) || 0;
+          if (!best[k] || liq > best[k].liq) best[k] = { liq, mcap: p.marketCap || p.fdv, change24: p.priceChange && p.priceChange.h24, image: p.info && p.info.imageUrl };
+        }
+        Object.assign(liveCoin, best);
+      } catch (e) { /* snapshot values stay */ }
+    }
+    if (!root || !root.isConnected) return;
+    root.querySelectorAll('.vcoin[data-vk]').forEach((el) => {
+      const L = liveCoin[el.dataset.vk];
+      if (!L) return;
+      const mc = el.querySelector('[data-mc]'); if (mc && L.mcap != null) mc.textContent = 'MC ' + fmtUsd(L.mcap);
+      const ch = el.querySelector('[data-ch]'); if (ch && L.change24 != null) { ch.textContent = fmtPct(L.change24) + ' 24h'; ch.className = pctClass(L.change24); }
+    });
+  }
+  function tweetText(t) {
+    // strip trailing t.co links; highlight cashtags / addresses that resolved
+    let s = esc(String(t || '').replace(/&amp;/g, '&').replace(/\s*https:\/\/t\.co\/\w+/g, '').trim());
+    s = s.replace(/(\$[A-Za-z][A-Za-z0-9]{0,14})\b/g, '<b class="vtag">$1</b>');
+    return s;
+  }
+  function roleBadge(r) {
+    return r === 'trader' ? '<span class="badge live" title="Portfel publicznie przypisany — jest w Rankingu">trader</span>' : '<span class="badge demo">KOL</span>';
+  }
   async function renderViral() {
     document.body.classList.remove('pulse-on');
     const body = $('#viralBody');
@@ -1222,52 +1278,78 @@
     }
     const posts = (viral.posts || []).slice().sort((a, b) => (b.metrics?.likes || 0) - (a.metrics?.likes || 0));
     const topics = viral.topics || [];
-    const updated = viral.updated_at_warsaw || viral.updated_at || '—';
+    const tweets = (viral.trader_tweets || []).slice().sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+    const topicById = Object.fromEntries(topics.map((t) => [t.id, t]));
+    const tabs = [['topics', 'Tematy → coiny', topics.length], ['traders', 'Tweety traderów', tweets.length], ['posts', 'Ważne posty', posts.length]];
+    if (!tabs.some((t) => t[0] === viralTab)) viralTab = 'topics';
     body.innerHTML = `
       <div class="h">Viral z X <span class="badge live">snapshot</span></div>
-      <div class="sub">Prawdziwe posty · zaktualizowano ${esc(agoLabel(viral.updated_at || updated))} · ${esc(updated)} (Europe/Warsaw)</div>
-      <div class="card"><div class="h" style="font-size:13px">Tematy → coiny</div><div id="topicList"><div class="loading"><div class="spin"></div>Matchuję…</div></div></div>
-      <div class="h">Ważne posty</div><div id="postList"></div>
+      <div class="sub">Prawdziwe posty z X · zaktualizowano ${esc(agoLabel(viral.updated_at))} · coiny dopasowane przez DexScreener, ceny na żywo</div>
+      <div class="vtabs" role="tablist">${tabs.map(([id, lb, n]) => `<button type="button" role="tab" data-vt="${id}" class="${id === viralTab ? 'on' : ''}">${lb} <span class="vcount">${n}</span></button>`).join('')}</div>
+      <div id="vPane"></div>
+      <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45">Pokazujemy tylko coiny, które naprawdę istnieją na DexScreener (adres z tweeta albo jednoznaczny $ticker z płynnością i wolumenem). Ten sam ticker może mieć kopie — zawsze sprawdź adres. To nie jest porada finansowa.</div>
       <div class="foot">${MVP_MARKER}</div>`;
-    $('#postList').innerHTML = posts
-      .map((p) => {
-        const m = p.metrics || {};
-        return `<div class="card post">
-          <div class="meta">${imgTag(p.avatar, 'av', 36)}
-            <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(p.author_name)} <span class="mut">@${esc(p.handle)}</span></b>
-            <div class="mut" style="font-size:11px">${esc(timeAgo(p.created_at))}</div></div>
-            <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">𝕏</a></div>
-          <div class="txt">“${esc(p.text)}”</div>
-          <div class="eng">♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)} · 💬 ${fmtInt(m.replies)}</div>
-          <div style="margin-top:8px"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Oryginał na X ↗</a></div>
-        </div>`;
-      })
-      .join('');
-    const topicList = $('#topicList');
-    (async () => {
-      const parts = [];
-      for (const t of topics) {
-        let matches = [];
-        try {
-          matches = await matchTopicToCoins(t);
-        } catch (e) {}
-        const coinsHtml = matches.length
-          ? matches
-              .map(
-                ({ c, s }) =>
-                  `<div class="row" data-key="${esc(keyOf(c))}" style="padding:6px 0">${imgTag(c.image, 'tok', 28)}
-                  <div class="nm"><b style="font-size:12.5px"><span class="cbadge c-${esc(c.chainId)}">${esc(chainBadge(c))}</span> $${esc(c.symbol)} · ${esc(c.name)}</b><small>MC ${fmtUsd(c.mcap)}</small></div>
-                  <span class="match">${Math.round(s)}%</span></div>`
-              )
-              .join('')
-          : `<div class="mut" style="font-size:12px;padding:6px 0">Brak matcha</div>`;
-        parts.push(`<div class="topic-block" style="margin-bottom:12px;border-bottom:1px solid #ffffff0a;padding-bottom:8px">
-          <b style="font-size:13.5px">${esc(t.label)}</b>
-          <div class="mut" style="font-size:11.5px">${esc(t.why || '')}</div>${coinsHtml}</div>`);
-        topicList.innerHTML = parts.join('');
-        wireRows(topicList);
+    const pane = $('#vPane');
+    const draw = () => {
+      if (viralTab === 'topics') {
+        pane.innerHTML = topics.length ? topics.map((t) => {
+          const coins = t.coins || [];
+          return `<div class="card vtopic" data-topic="${esc(t.id)}">
+            <div class="vtopic-h"><b>${esc(t.label)}</b>${t.source_post ? `<a href="${esc(t.source_post)}" target="_blank" rel="noopener noreferrer" class="vx">𝕏 źródło ↗</a>` : ''}</div>
+            <div class="mut vwhy">${esc(t.why || '')}</div>
+            <div class="vcoins">${coins.length ? coins.map((c) => vCoinHtml(c)).join('') : '<div class="mut vlive" style="font-size:12px;padding:6px 0">Szukam coinów na żywo…</div>'}</div>
+          </div>`;
+        }).join('') : '<div class="empty">Brak tematów w tym snapshocie.</div>';
+        // topics without snapshot coins: live fuzzy match (existing engine)
+        topics.filter((t) => !(t.coins || []).length).forEach(async (t) => {
+          let m = [];
+          try { m = await matchTopicToCoins(t); } catch (e) {}
+          const box = pane.querySelector(`.vtopic[data-topic="${CSS.escape(t.id)}"] .vcoins`);
+          if (!box) return;
+          box.innerHTML = m.length
+            ? m.slice(0, 4).map(({ c }) => vCoinHtml({ chain: c.chainId, address: c.address, symbol: c.symbol, name: c.name, image: c.image, mcap: c.mcap, change_h24: c.change && c.change.h24, kyvo: true })).join('')
+            : '<div class="mut" style="font-size:12px;padding:6px 0">Brak pasującego coina z płynnością</div>';
+        });
+      } else if (viralTab === 'traders') {
+        pane.innerHTML = tweets.length ? tweets.map((t) => {
+          const m = t.metrics || {};
+          const prof = t.wallet_id ? `<a class="vbtn" href="#trader/${encodeURIComponent(t.wallet_id)}">Profil w Rankingu</a>` : '';
+          return `<div class="card post vtweet">
+            <div class="meta">${imgTag(t.avatar, 'av', 36)}
+              <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(t.author_name)} <span class="mut">@${esc(t.handle)}</span> ${roleBadge(t.role)}</b>
+              <div class="mut" style="font-size:11px">${esc(timeAgo(t.created_at))}${t.is_reply ? ' · odpowiedź' : ''} · ♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)}</div></div>
+              <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="vx" aria-label="Otwórz na X">𝕏</a></div>
+            <div class="txt vq${String(t.text || '').length > 190 ? ' long' : ''}">${tweetText(t.text)}</div>
+            <div class="vcoins vcoins-t">${(t.coins || []).map((c) => vCoinHtml(c)).join('')}</div>
+            <div class="vfoot"><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">Tweet na X ↗</a>${prof}</div>
+          </div>`;
+        }).join('') : '<div class="empty">W tym snapshocie nikt ze śledzonych traderów nie wspomniał coina, który da się jednoznacznie znaleźć.</div>';
+        pane.insertAdjacentHTML('afterbegin', `<div class="mut" style="font-size:11.5px;margin:0 2px 8px">Śledzimy ${esc(String((viral.tracked_accounts || []).length || 17))} publicznych kont (traderzy z Rankingu + znani KOL-e). Z tweeta wyciągamy adres kontraktu albo $ticker i od razu pokazujemy coin.</div>`);
+      } else {
+        pane.innerHTML = posts.map((p) => {
+          const m = p.metrics || {};
+          const t = p.topic_id && topicById[p.topic_id];
+          const coins = (t && t.coins) || [];
+          return `<div class="card post">
+            <div class="meta">${imgTag(p.avatar, 'av', 36)}
+              <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(p.author_name)} <span class="mut">@${esc(p.handle)}</span></b>
+              <div class="mut" style="font-size:11px">${esc(timeAgo(p.created_at))}</div></div>
+              <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="vx">𝕏</a></div>
+            <div class="txt">${tweetText(p.text)}</div>
+            <div class="eng">♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)} · 💬 ${fmtInt(m.replies)}</div>
+            ${coins.length ? `<div class="vsub">Coiny do tematu „${esc(t.label)}”</div><div class="vcoins">${coins.slice(0, 2).map((c) => vCoinHtml(c, { size: 28 })).join('')}</div>` : ''}
+            <div style="margin-top:8px"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Oryginał na X ↗</a></div>
+          </div>`;
+        }).join('');
       }
-    })();
+    };
+    body.querySelectorAll('.vtabs [data-vt]').forEach((b) => (b.onclick = () => {
+      viralTab = b.dataset.vt; localStorage.setItem('kyvo_viral_tab', viralTab);
+      body.querySelectorAll('.vtabs [data-vt]').forEach((x) => x.classList.toggle('on', x === b));
+      draw(); refreshViralCoins(pane);
+    }));
+    draw();
+    refreshViralCoins(pane);
   }
 
   /* ---------------- Ranking (Kolscan-style) + trader profile ---------------- */
@@ -1372,9 +1454,9 @@
         <div class="mut" style="font-size:12.5px;margin-top:4px">PnL, win rate i ostatnie trade'y publicznych portfeli KOL.</div></div>
       <div class="card"><div class="h" style="font-size:13px">Insider / fresh wallets <span class="badge demo">Przykładowe dane</span></div>
         <div class="mut" style="font-size:13px">Wkrótce — ta funkcja jest jeszcze w przygotowaniu.</div></div>
-      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7.1</div>
+      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7.2</div>
         <div style="font-size:13px;color:#ccc;line-height:1.45">
-          Live Pulse dla Solana, BSC i Robinhood · wykresy świecowe na stronie coina · smart money (Solana) · ranking traderów on-chain · Viral z X.<br>
+          Live Pulse dla Solana, BSC i Robinhood · wykresy świecowe na stronie coina · smart money (Solana) · ranking traderów on-chain · Viral z X z coinami do tematów i tweetami traderów · Profil z portfelami Solana, BSC i Robinhood Chain (tylko publiczne adresy).<br>
           Ranking i smart money odświeżamy kilka razy dziennie z publicznych danych blockchain. Viral z X — kilka razy dziennie.
         </div></div>
       <div class="foot">${MVP_MARKER}</div>`;

@@ -1,4 +1,4 @@
-# Kyvo v7.1
+# Kyvo v7.2
 
 Live multi-chain memecoin Pulse (Solana / BSC / Robinhood) + **smart money snapshot** + **trader leaderboard** + Viral z X.
 
@@ -18,10 +18,11 @@ Live multi-chain memecoin Pulse (Solana / BSC / Robinhood) + **smart money snaps
 | Row times | Coin age plus "na liście od X", which tracks first-seen per tab and chain in localStorage |
 | Ranking | Its own tab (center button in the bottom bar). Kolscan-style table with 1d/7d/30d toggle, opening trader profiles |
 | Profil | No login. The user pastes a public Solana address (stored in localStorage only). Swaps are fetched in the browser from publicnode only, throttled and cached in localStorage. api.mainnet-beta returns 403 to browser requests that carry an Origin header, so in-browser history covers about the last 24h and grows with every refresh on the same device and run through the same FIFO engine (`profile.js`). Shows a cumulative PnL chart, Pozycje (unrealized PnL at current DexScreener price), Aktywność, and a shareable PnL card (canvas PNG / iOS share sheet) |
-| Viral z X | Snapshot `data/x_viral.json` |
+| Profil (v7.2, many wallets) | Up to 8 public addresses on Solana, BSC and Robinhood Chain (base58 for SOL, one 0x address can be added on both EVM chains). Per-wallet and combined PnL / positions / activity in the same layout. Seed-phrase / private-key paste is detected and refused. Sources, all keyless and verified to work from a browser (CORS): **Solana** publicnode RPC (~24h, grows per device). **BSC** ERC-20 `Transfer` logs via topic-filtered `eth_getLogs` on `bsc.rpc.blxrbdn.com` (fallback `rpc-bsc.48.club`; 5000-block chunks, last ~24h, "Starsze BSC (+24h)" up to 7 days) plus tx/receipt/blocks from `bsc-dataseed.bnbchain.org`; BNB leg from `tx.value`, WBNB unwrap or four.meme `TokenSale` events; holdings = BNB + tokens seen in the window (`balanceOf`). **Robinhood Chain** public Blockscout (`robinhoodchain.blockscout.com`, Etherscan-style `tokentx/txlist/txlistinternal`, last ~150 transfers; full token holdings from `/api/v2/addresses/{a}/tokens`), ETH leg from internal txs or a recent-block balance delta on `rpc.mainnet.chain.robinhood.com`. Native USD = Binance hourly klines; token prices = DexScreener. BscScan/Etherscan v2 free tier does not cover BSC, so there is no full keyless BSC history. New EVM chains: add an entry to `CHAINS` in `evm.js` |
+| Viral z X | Snapshot `data/x_viral.json`: topics with pre-resolved coins (`topics[].coins`, Kyvo chains only, real volume), **Tweety traderów** (`trader_tweets`: posts from `tools/x_accounts.json` that mention a contract address or an unambiguous `$TICKER`, resolved on DexScreener; unresolved/ambiguous are dropped), and key posts. Live MC/24h refreshed from DexScreener in the browser |
 | Insider / fresh wallets | Still demo-labelled |
 
-Marker: `KYVO_MVP_LIVE_v7_1` · SW: `kyvo-mvp-v7-1`
+Marker: `KYVO_MVP_LIVE_v7_2` · SW: `kyvo-mvp-v7-2`
 
 ## Refresh (box / CI)
 
@@ -38,10 +39,10 @@ How it works:
 
 ```bash
 
-# Viral z X — see tools/update_x_viral.md (x MCP / X API, ~20–40 reads)
-# Then stamp or import:
-python3 tools/update_x_viral.py --stamp
-# or: python3 tools/update_x_viral.py --from-raw /path/to/mcp_dump.json
+# Viral z X — see tools/update_x_viral.md (x MCP, ~12–25 reads)
+python3 tools/update_x_viral.py --from-raw raw_doc.json --trader-raw /tmp/x_raw/*.txt --resolve-topics
+# or just refresh timestamps / coin matches:
+python3 tools/update_x_viral.py --resolve-topics --stamp
 ```
 
 One-liner after X dump is ready:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Kyvo v7.1 snapshot builder: data/smart_money.json + data/leaderboard.json.
+"""Kyvo v7.2 snapshot builder: data/smart_money.json + data/leaderboard.json.
 
 Public data only, no API keys:
   - Solana public RPC: getSignaturesForAddress (paginated) + getTransaction (jsonParsed)
