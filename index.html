@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_0">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_1">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -17,15 +17,15 @@
 <meta property="og:site_name" content="Kyvo">
 <meta property="og:locale" content="pl_PL">
 <meta property="og:url" content="https://alezrugla-max.github.io/kyvo-demo-/">
-<meta property="og:title" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu">
-<meta property="og:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta.">
+<meta property="og:title" content="Kyvo — smart money i viralowe memecoiny · smart money &amp; viral memecoins">
+<meta property="og:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta. | EN: Live Pulse for Solana, BSC &amp; Robinhood Chain · trader leaderboard · Viral from X · your PnL. Free, no account.">
 <meta property="og:image" content="https://alezrugla-max.github.io/kyvo-demo-/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Kyvo — duszek z wykresem i hasło: Smart money i viralowe memecoiny w jednym miejscu">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu">
-<meta name="twitter:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta.">
+<meta name="twitter:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta. | EN: Live Pulse for Solana, BSC &amp; Robinhood Chain · trader leaderboard · Viral from X · your PnL. Free, no account.">
 <meta name="twitter:image" content="https://alezrugla-max.github.io/kyvo-demo-/og-image.png">
 <meta name="twitter:image:alt" content="Kyvo — smart money i viralowe memecoiny">
 <link rel="manifest" href="manifest.json">
@@ -318,6 +318,41 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .pf-prog .spin{width:16px;height:16px;margin:0}
 @media(min-width:900px){#profilBody,#traderBody,#profilTop{max-width:640px;margin:0 auto}}
 
+/* v8.1: language switch */
+.lang-sw{display:inline-flex;gap:2px;padding:2px;border-radius:999px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);vertical-align:middle}
+.lang-sw button{font-size:11px;font-weight:900;padding:4px 9px;border-radius:999px;color:var(--mut);background:none;border:0;cursor:pointer}
+.lang-sw button.on{background:#8B5CF633;color:#fff;box-shadow:inset 0 0 0 1px #8B5CF688}
+.lang-big button{font-size:14px;padding:8px 18px}
+.hdr-lang{display:none}@media(min-width:900px){.hdr-lang{display:inline-flex}}
+.ob-lang{margin-left:auto;margin-right:8px}
+/* v8.1: Kyvo Check, Dlaczego tu, watchlista + alerty, cena od tweeta */
+.kcheck .kc-top{display:flex;gap:12px;align-items:center}
+.kc-ring{--p:50;flex:none;width:62px;height:62px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:conic-gradient(var(--kc) calc(var(--p)*1%),#ffffff12 0);position:relative}
+.kc-ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--card)}
+.kc-ring b,.kc-ring small{position:relative;line-height:1}.kc-ring b{font-size:19px}.kc-ring small{font-size:9.5px;color:var(--mut)}
+.kc-g{--kc:var(--up);color:var(--up)}.kc-y{--kc:var(--warn);color:var(--warn)}.kc-r{--kc:var(--dn);color:var(--dn)}
+.kc-ring b{color:inherit}.kc-grade{font-weight:800;font-size:13px;margin:2px 0}
+.kc-list{list-style:none;margin:10px 0 0;padding:0;font-size:12.5px;line-height:1.4}
+.kc-list li{display:flex;gap:8px;padding:5px 0;border-top:1px solid #ffffff08}.kc-list li>span:first-child{flex:none;width:18px;text-align:center}
+.kc-bad>span:last-child{color:#ffb3bc}.kc-load{color:var(--acc2)}
+.kc-foot{font-size:10.5px;margin-top:8px;line-height:1.45}
+.why-l{margin:0;padding-left:18px;font-size:12.5px;line-height:1.5;color:#ddd}.why-l li{margin:3px 0}
+.gloss{margin-top:8px;font-size:12.5px}.gloss summary{cursor:pointer;font-weight:700;color:#C4B5FD}
+.gloss dl{margin:8px 0 0}.gloss dt{font-weight:800;margin-top:6px}.gloss dd{margin:2px 0 0;color:#bbb;line-height:1.45}
+.wbtn{flex:none;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;background:var(--card2);color:#ddd;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;white-space:nowrap}
+.wbtn.on{background:#f5b83c22;color:var(--warn);box-shadow:inset 0 0 0 1px #f5b83c66}
+.wstar{color:var(--warn)}.wcount{font-size:10px;background:var(--warn);color:#111;border-radius:999px;padding:0 5px;margin-left:3px}
+.clonebadge{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:#FF546822;color:#ff9aa6;box-shadow:inset 0 0 0 1px #FF546855}
+.wrow{padding:8px 0;border-bottom:1px solid #ffffff0a}.wrow:last-child{border-bottom:0}
+.wmain{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.wmain .nm{flex:1;min-width:0}.wmain .nm b,.wmain .nm small{display:block}.wmain .nm small{color:var(--mut);font-size:11.5px;margin-top:2px}
+.wmain .rt{text-align:right}.wmain .rt b,.wmain .rt small{display:block}
+.walerts{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.achip{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);color:#ddd}
+.achip button{background:none;border:0;color:var(--mut);font-size:13px;cursor:pointer;padding:0 0 0 4px}
+.achip.fired{color:var(--warn);box-shadow:inset 0 0 0 1px #f5b83c66}.achip.add{color:#C4B5FD;cursor:pointer}.achip.rm{color:var(--mut);cursor:pointer}
+.aform{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.aform select,.aform input{flex:1;min-width:120px;background:var(--card2);color:#fff;border:0;border-radius:10px;padding:9px 10px;font-size:14px;box-shadow:inset 0 0 0 1px var(--line)}
+.aform[hidden]{display:none}
+.vsince{font-size:12px;margin:2px 0 6px 44px}
 /* v8.0: launch — onboarding, help, legal, login, premium, contact */
 html.ob-lock,html.ob-lock body{overflow:hidden}
 .ob{position:fixed;inset:0;z-index:100;background:radial-gradient(120% 70% at 50% 18%,#2a1b55 0%,#0b0b14 55%,#07070B 100%);display:flex;flex-direction:column;padding:max(14px,env(safe-area-inset-top)) 0 max(16px,env(safe-area-inset-bottom));transition:opacity .2s}
@@ -435,6 +470,7 @@ body.chrome-off .app{padding-bottom:0}
       <div class="brand"><img src="kyvo_mark.svg" alt="Kyvo" width="28" height="28"><span>Kyvo</span></div>
       <span class="pill" id="livePill">LIVE</span>
       <a class="prem-chip" href="#premium" aria-label="Kyvo Premium">✦ Premium</a>
+      <span class="hdr-lang" translate="no"><span class="lang-sw" role="group" aria-label="Język / Language"><button type="button" data-lang="pl">PL</button><button type="button" data-lang="en">EN</button></span></span>
       <span class="mut" style="font-size:11px" id="clock">—</span>
     </div>
     <div class="search">
@@ -444,6 +480,7 @@ body.chrome-off .app{padding-bottom:0}
     <div class="seg" id="seg">
       <button data-view="pulse" class="on">Pulse</button>
       <button data-view="rank" class="seg-rank">🏆 Ranking</button>
+      <button data-view="watch">⭐ Watchlista <span class="wcount" data-watch-count style="display:none"></span></button>
       <button data-view="hot">Hot</button>
       <button data-view="good">Good</button>
       <button data-view="new">New</button>
@@ -472,6 +509,7 @@ body.chrome-off .app{padding-bottom:0}
     <section class="scr" id="s-login"><div class="pg" id="loginBody"></div></section>
     <section class="scr" id="s-premium"><div class="pg" id="premiumBody"></div></section>
     <section class="scr" id="s-kontakt"><div class="pg" id="kontaktBody"></div></section>
+    <section class="scr" id="s-watch"><div class="pg" id="watchBody"></div></section>
     <section class="scr" id="s-more"><div class="pg" id="moreBody"></div></section>
   </main>
 
@@ -479,7 +517,7 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.0 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_0" style="display:none">KYVO_LIVE_v8_0</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.1 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_1" style="display:none">KYVO_LIVE_v8_1</span></div>
   </div>
 </div>
 
@@ -491,6 +529,7 @@ body.chrome-off .app{padding-bottom:0}
   <button data-tab="profil"><span>👤</span>Profil</button>
 </nav></nav>
 <div class="toast" id="toast"></div>
+<script src="i18n.js" defer></script>
 <script src="auth-config.js" defer></script>
 <script src="premium-config.js" defer></script>
 <script src="contact-config.js" defer></script>
@@ -501,6 +540,7 @@ body.chrome-off .app{padding-bottom:0}
 <script src="profile.js" defer></script>
 <script src="launch.js" defer></script>
 <script src="auth.js" defer></script>
+<script src="insights.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>

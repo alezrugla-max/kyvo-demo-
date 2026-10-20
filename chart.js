@@ -56,7 +56,7 @@
 
   function fmtPrice(p) {
     if (p == null || !isFinite(p)) return '—';
-    if (p === 0) return '0';
+    if (p <= 0) return p === 0 ? '0' : ''; // v8.1: no '-0' labels below zero (volume area under candles)
     if (p >= 1000) return p.toFixed(0);
     if (p >= 1) return p.toFixed(3);
     const z = Math.floor(-Math.log10(p));
@@ -66,8 +66,8 @@
     const d = new Date(t * 1000);
     const o = { hour: '2-digit', minute: '2-digit' };
     if (sec < 60) o.second = '2-digit';
-    if (sec >= 14400) return d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('pl-PL', o);
-    return d.toLocaleTimeString('pl-PL', o);
+    if (sec >= 14400) return d.toLocaleDateString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), o);
+    return d.toLocaleTimeString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), o);
   }
 
   let cur = null; // current mounted chart
@@ -131,7 +131,7 @@
       rightPriceScale: { borderColor: '#ffffff14', scaleMargins: { top: 0.08, bottom: 0.26 } },
       timeScale: { borderColor: '#ffffff14', timeVisible: true, secondsVisible: false, rightOffset: 3,
         tickMarkFormatter: (t) => fmtTime(t, me.tf.sec) },
-      localization: { locale: 'pl-PL', priceFormatter: fmtPrice, timeFormatter: (t) => fmtTime(t, Math.min(me.tf.sec, 59)) },
+      localization: { locale: (window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), priceFormatter: fmtPrice, timeFormatter: (t) => fmtTime(t, Math.min(me.tf.sec, 59)) },
       crosshair: { mode: 0 },
       handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },

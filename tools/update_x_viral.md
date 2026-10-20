@@ -21,7 +21,7 @@ Accounts live in `tools/x_accounts.json` (trader = wallet publicly attributed in
 ## 2. Write topics + key posts
 
 Make `raw_doc.json` with `posts` (real fields: author_name, handle, avatar, text, created_at, url, metrics{likes,reposts,replies}, optional `topic_id`)
-and `topics` (`id`, `label`, `query`, `hints`, `source_post`, `why` — Polish). Never invent metrics.
+and `topics` (`id`, `label`, `query`, `hints`, `source_post`, `why` — Polish; plus `label_en` and `why_en` — the same in English for the EN version of the app). Never invent metrics.
 
 ## 3. Build + validate
 

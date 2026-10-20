@@ -2,6 +2,7 @@
    Own profile = public Solana address only (localStorage), swaps fetched client-side from public RPC,
    the same FIFO PnL engine as tools/build_snapshots.py. Not financial advice. */
 (function () {
+  const T = (x) => (window.KyvoI18n ? window.KyvoI18n.t(x) : x);
   'use strict';
   const MAINNET = 'https://api.mainnet-beta.solana.com';
   const RECENT = 'https://solana-rpc.publicnode.com';
@@ -441,7 +442,7 @@
           const pct = u != null && p.cost_usd ? (u / p.cost_usd) * 100 : null;
           const sym = p.native ? p.symbol : m.symbol || p.symbol;
           const img = m.image || p.image;
-          const sub = p.native ? `saldo ${p.tok.toLocaleString('pl-PL', { maximumFractionDigits: 4 })} ${H.esc(p.symbol)}` : p.quote ? 'saldo' : p.cost_usd != null ? 'koszt ' + H.fmtUsd(p.cost_usd) : 'koszt nieznany (kupione przed oknem)';
+          const sub = p.native ? `saldo ${p.tok.toLocaleString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), { maximumFractionDigits: 4 })} ${H.esc(p.symbol)}` : p.quote ? 'saldo' : p.cost_usd != null ? 'koszt ' + H.fmtUsd(p.cost_usd) : 'koszt nieznany (kupione przed oknem)';
           const inner = `${img ? `<img src="${H.esc(img)}" class="pf-tok" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : `<span class="pf-tok pf-tokl">${H.esc((sym || '?').slice(0, 1))}</span>`}
             <span class="pf-r1"><b>${cb(p.chain)}${H.esc(sym ? (p.native ? sym : '$' + sym) : H.shortCa(p.mint))}</b><small class="mut">${sub}</small></span>
             <span class="pf-r2"><b>${val != null ? H.fmtUsd(val) : '—'}</b><small class="${u == null ? 'mut' : u >= 0 ? 'up' : 'dn'}" title="Niezrealizowany PnL (bieżąca cena)">${p.native ? 'gaz / zapas' : u == null ? (price == null ? 'brak ceny' : 'wartość teraz') : money(u, true) + (pct != null ? ' · ' + (pct >= 0 ? '+' : '') + pct.toFixed(0) + '%' : '')}</small></span>`;
@@ -510,7 +511,7 @@
     g.fillStyle = glow; g.fillRect(0, 0, W, Hh);
     const F = (w, s) => `${w} ${s}px Inter, system-ui, -apple-system, sans-serif`;
     g.fillStyle = '#f2f2f7'; g.font = F(800, 56); g.fillText('Kyvo', 90, 130);
-    g.fillStyle = '#8b8b9a'; g.font = F(600, 34); g.fillText('PnL · ' + PERIODS.find((p) => p[0] === per)[1], 90, 188);
+    g.fillStyle = '#8b8b9a'; g.font = F(600, 34); g.fillText('PnL · ' + T(PERIODS.find((p) => p[0] === per)[1]), 90, 188);
     const rest = () => {
       g.fillStyle = '#f2f2f7'; g.font = F(800, 62); g.fillText(String(opts.title || 'Trader').slice(0, 18), 270, 340);
       g.fillStyle = '#22D3EE'; g.font = F(600, 36); g.fillText(opts.handle ? '@' + opts.handle : opts.cardSub || H.shortCa(opts.address), 270, 396);
@@ -529,10 +530,10 @@
       }
       g.font = F(600, 38); g.fillStyle = '#c9c9d6';
       const wr = ps.win_rate == null ? '—' : Math.round(ps.win_rate * 100) + '%';
-      g.fillText(`Win rate ${wr}  ·  Trade'y ${ps.trades}  ·  Najlepszy ${ps.best ? money(ps.best.p, true) : '—'}`, 90, 1000);
+      g.fillText(`Win rate ${wr}  ·  ${T("Trade'y")} ${ps.trades}  ·  ${T('Najlepszy')} ${ps.best ? money(ps.best.p, true) : '—'}`, 90, 1000);
       g.fillStyle = '#8b8b9a'; g.font = F(500, 30);
-      g.fillText('Zrealizowany PnL on-chain (' + (opts.chainsLabel || 'Solana') + ') · ' + new Date().toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' }), 90, 1200);
-      g.fillText('kyvo · to nie jest porada finansowa', 90, 1250);
+      g.fillText(T('Zrealizowany PnL on-chain') + ' (' + (opts.chainsLabel || 'Solana') + ') · ' + new Date().toLocaleString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), { dateStyle: 'short', timeStyle: 'short' }), 90, 1200);
+      g.fillText(T('kyvo · to nie jest porada finansowa'), 90, 1250);
     };
     // avatar
     const cx = 90 + 75, cy = 340 - 20, r = 75;

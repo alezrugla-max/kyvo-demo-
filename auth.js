@@ -1,4 +1,4 @@
-/* Kyvo v8.0 — sign-in. Wallet sign-in = the user SIGNS a readable text message (never a transaction),
+/* Kyvo v8.1 — sign-in. Wallet sign-in = the user SIGNS a readable text message (never a transaction),
    verified locally (ed25519 / secp256k1 ecrecover via vendor/kyvo-crypto). Session lives only in localStorage.
    Google sign-in (Firebase Auth) is wired but off until auth-config.js has a real config + enabled:true. */
 (function () {
@@ -184,7 +184,7 @@
       if (emailReady() && mod.isSignInWithEmailLink(auth, location.href)) {
         let email = '';
         try { email = localStorage.getItem(EMAIL_KEY) || ''; } catch (e) {}
-        if (!email) email = prompt('Podaj e-mail, na który wysłaliśmy link logowania:') || '';
+        if (!email) email = prompt(window.KyvoI18n ? window.KyvoI18n.t('Podaj e-mail, na który wysłaliśmy link logowania:') : 'Podaj e-mail, na który wysłaliśmy link logowania:') || '';
         if (email) {
           const r = await mod.signInWithEmailLink(auth, email.trim(), location.href);
           try { localStorage.removeItem(EMAIL_KEY); } catch (e) {}
@@ -213,7 +213,7 @@
   async function deleteGoogleAccount() {
     const s = session();
     if (!s || (s.method !== 'google' && s.method !== 'email')) return;
-    if (!confirm('Usunąć konto Kyvo? Tej operacji nie da się cofnąć.')) return;
+    if (!confirm(window.KyvoI18n ? window.KyvoI18n.t('Usunąć konto Kyvo? Tej operacji nie da się cofnąć.') : 'Usunąć konto Kyvo? Tej operacji nie da się cofnąć.')) return;
     try { const { auth } = await fbInit(); if (auth.currentUser) await auth.currentUser.delete(); save(null); toast('Konto usunięte'); }
     catch (e) { toast('Zaloguj się ponownie i spróbuj jeszcze raz (wymóg bezpieczeństwa).'); }
   }

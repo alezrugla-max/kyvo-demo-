@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_0 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_1 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
   const CHAIN_KEY = 'kyvo_chain_v7';
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
-  const MVP_MARKER = 'KYVO_LIVE_v8_0';
+  const MVP_MARKER = 'KYVO_LIVE_v8_1';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -131,8 +131,8 @@
     const t = iso ? new Date(iso).getTime() : NaN;
     if (!isFinite(t)) return 'brak danych';
     const d = new Date(t);
-    const hm = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-    const day = d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' });
+    const hm = d.toLocaleTimeString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), { hour: '2-digit', minute: '2-digit' });
+    const day = d.toLocaleDateString((window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), { day: '2-digit', month: '2-digit' });
     const today = new Date().toDateString() === d.toDateString();
     return (today ? 'dziś ' : day + ', ') + hm + ' (' + agoLabel(iso) + ')';
   }
@@ -146,6 +146,25 @@
     if (!smartMoney || !smartMoney.by_mint) return [];
     return smartMoney.by_mint[mint] || [];
   }
+  /* smart-money consensus: unique buyers (72h) and who of them already sold */
+  let consCache = null;
+  function smConsensus(mint) {
+    if (!smartMoney) return { buyers: [], sellers: [] };
+    if (!consCache) {
+      consCache = {};
+      const sells = {};
+      for (const a of smartMoney.activity || []) if (a.side === 'sell') (sells[a.mint] = sells[a.mint] || new Set()).add(a.wallet_name || a.wallet_id);
+      for (const [m, arr] of Object.entries(smartMoney.by_mint || {})) {
+        const b = [...new Set(arr.map((x) => x.wallet_name || x.wallet_id))];
+        const sl = sells[m] ? [...sells[m]].filter((n) => b.includes(n)) : [];
+        consCache[m] = { buyers: b, sellers: sl };
+      }
+    }
+    return consCache[mint] || { buyers: [], sellers: [] };
+  }
+  function consensusOf(c) {
+    return (c.chainId === 'solana' || !c.chainId) ? smConsensus(c.address) : { buyers: [], sellers: [] };
+  }
   function fmtSize(b) {
     if (b && b.usd_size != null && isFinite(b.usd_size) && b.usd_size > 0) return b.usd_size < 1 ? '<$1' : '~' + fmtUsd(b.usd_size);
     if (b && b.sol_size != null && isFinite(b.sol_size) && b.sol_size > 0) return '~' + Number(b.sol_size).toFixed(2) + ' SOL';
@@ -153,14 +172,15 @@
   }
   async function loadSmartMoney() {
     try {
-      smartMoney = await fetchJson('data/smart_money.json?v=8.0');
+      smartMoney = await fetchJson('data/smart_money.json?v=8.1');
+      consCache = null;
     } catch (e) {
       smartMoney = { by_mint: {}, activity: [], updated_at: null };
     }
   }
   async function loadLeaderboard() {
     try {
-      leaderboard = await fetchJson('data/leaderboard.json?v=8.0');
+      leaderboard = await fetchJson('data/leaderboard.json?v=8.1');
     } catch (e) {
       leaderboard = { leaders: [], updated_at: null };
     }
@@ -699,7 +719,7 @@
 
   async function loadViral() {
     try {
-      viral = await fetchJson('data/x_viral.json?v=8.0');
+      viral = await fetchJson('data/x_viral.json?v=8.1');
       return viral;
     } catch (e) {
       viral = { posts: [], topics: [], updated_at: null };
@@ -770,8 +790,9 @@
     let list = applyFilters(allUniverse(), 'good');
     if (goodSortSmart) {
       list.sort((a, b) => {
-        const sa = smartBuysForMint(a.address).length;
-        const sb = smartBuysForMint(b.address).length;
+        const ca = consensusOf(a), cb = consensusOf(b);
+        const sa = ca.buyers.length * 2 - ca.sellers.length;
+        const sb = cb.buyers.length * 2 - cb.sellers.length;
         return sb - sa || (b.liquidity || 0) - (a.liquidity || 0);
       });
     } else {
@@ -842,15 +863,18 @@
     if (opts.showDex) {
       extra += (extra ? ' · ' : '') + `<span class="mut">${esc(c.dexId)}</span>`;
     }
-    const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
-    if (smBuys.length) {
-      const names = smBuys.slice(0, 2).map((b) => b.wallet_name).join(', ');
-      extra += (extra ? ' · ' : '') + `<span class="smbadge" title="Smart money — zakupy publicznie znanych portfeli">SM: ${esc(names)}</span>`;
+    const cons = consensusOf(c);
+    if (cons.buyers.length) {
+      const names = cons.buyers.slice(0, 2).join(', ');
+      extra += (extra ? ' · ' : '') + `<span class="smbadge" title="Konsensus smart money (72h): ${cons.buyers.length} kupiło${cons.sellers.length ? ', ' + cons.sellers.length + ' już sprzedało' : ''}">🧠 ${cons.buyers.length} SM${cons.sellers.length ? ' · ' + cons.sellers.length + ' sprz.' : ''} · ${esc(names)}</span>`;
     }
+    const cl = window.KyvoInsights ? window.KyvoInsights.cloneCheck(c) : null;
+    if (cl && cl.bigger) extra += (extra ? ' · ' : '') + `<span class="clonebadge" title="Jest większy coin o tym samym tickerze — sprawdź adres (CA)">⚠ możliwa kopia</span>`;
+    const star = window.KyvoInsights && window.KyvoInsights.isWatched(keyOf(c)) ? '<span class="wstar" title="Na Twojej watchliście">★</span> ' : '';
     const badge = `<span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span>`;
     return `<div class="row" data-key="${esc(keyOf(c))}" role="button" tabindex="0">
       ${imgTag(c.image)}
-      <div class="nm"><b>${badge} ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
+      <div class="nm"><b>${star}${badge} ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
         <small>MC ${fmtUsd(c.mcap)} · ${fmtLiq(c) === 'krzywa' ? 'Liq: krzywa' : 'Liq ' + fmtLiq(c)}${extra ? ' · ' + extra : ''}</small>
         ${rowTimeHtml(c, opts.listId)}</div>
       <div class="rt"><b class="${pctClass(ch)}">${fmtPct(ch)}</b>
@@ -1068,6 +1092,7 @@
 
   function openCoin(key) {
     selectedKey = key;
+    view = 'coin';
     let c = byKey[key];
     // legacy: bare address
     if (!c && key && key.indexOf(':') < 0) {
@@ -1128,7 +1153,7 @@
 
     const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
     const smHtml = smBuys.length
-      ? `<div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Smart money <span class="badge live">on-chain</span></div>
+      ? `<div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Smart money <span class="badge live">on-chain</span> <span class="smbadge">🧠 ${consensusOf(c).buyers.length} kupiło${consensusOf(c).sellers.length ? ' · ' + consensusOf(c).sellers.length + ' już sprzedało' : ''}</span></div>
           <div class="mut" style="font-size:11px;margin-bottom:6px">Publiczne portfele KOL / traderów · dane z ${esc(stampLabel(smartMoney && smartMoney.updated_at))} · to nie porada finansowa</div>
           ${smBuys.slice(0, 8).map((b) =>
             `<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff08;font-size:12.5px">
@@ -1174,7 +1199,7 @@
           <b style="font-size:17px">${esc(c.name)}</b>
           <div class="mut" style="font-size:12px">$${esc(c.symbol)} · ${ageFrom(c.pairCreatedAt)} · ${esc(c.dexId)}</div>
         </div>
-        <img src="kyvo_mark.svg" width="28" height="28" alt="">
+        ${window.KyvoInsights ? window.KyvoInsights.watchButtonHtml(c) : '<img src="kyvo_mark.svg" width="28" height="28" alt="">'}
       </div>
       <div style="margin-top:10px">
         <span class="ca">CA ${esc(shortCa(c.address))}
@@ -1193,6 +1218,7 @@
         <span class="${pctClass(c.change.h24)}" style="font-weight:700;margin-left:6px">${fmtPct(c.change.h24)} 24h</span>
       </div>
       <div id="chartSlot" class="chartslot"></div>
+      <div id="kcheckSlot" class="card" style="margin-top:10px"></div>
       ${curveLine}
       <div class="statg">
         <div class="st"><small>Cena</small><b>${fmtUsd(c.priceUsd)}</b></div>
@@ -1206,6 +1232,7 @@
         <div class="st"><small>Buy 1h</small><b>${c.buyRatioH1 != null ? Math.round(c.buyRatioH1 * 100) + '%' : '—'}</b></div>
       </div>
       ${smHtml}
+      ${window.KyvoInsights ? window.KyvoInsights.whyHtml(c) : ''}
       <div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Socials</div><div class="socials">${socials || '<span class="mut">Brak</span>'} ${webs}</div></div>
       ${platButtonsHtml(urls)}
       <div style="margin-top:8px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
@@ -1218,6 +1245,10 @@
         key: keyOf(c), network: GECKO_NET[c.chainId || 'solana'], pool: c.pairAddress || null, token: c.address,
         dsChain: c.chainId || 'solana', pair: c.pairAddress || '', smBuys,
       });
+    }
+    if (window.KyvoInsights) {
+      window.KyvoInsights.wireWatchButton(c);
+      window.KyvoInsights.mountCheck($('#kcheckSlot'), c);
     }
     $('#coinBack').onclick = () => (history.length > 1 ? history.back() : setView('pulse'));
     $('#copyCa').onclick = async () => {
@@ -1264,7 +1295,7 @@
         for (const p of d.pairs || []) {
           const k = coinKey(p.chainId, p.baseToken && p.baseToken.address);
           const liq = (p.liquidity && p.liquidity.usd) || 0;
-          if (!best[k] || liq > best[k].liq) best[k] = { liq, mcap: p.marketCap || p.fdv, change24: p.priceChange && p.priceChange.h24, image: p.info && p.info.imageUrl };
+          if (!best[k] || liq > best[k].liq) best[k] = { liq, price: p.priceUsd != null ? +p.priceUsd : null, mcap: p.marketCap || p.fdv, change24: p.priceChange && p.priceChange.h24, image: p.info && p.info.imageUrl };
         }
         Object.assign(liveCoin, best);
       } catch (e) { /* snapshot values stay */ }
@@ -1277,6 +1308,7 @@
       const ch = el.querySelector('[data-ch]'); if (ch && L.change24 != null) { ch.textContent = fmtPct(L.change24) + ' 24h'; ch.className = pctClass(L.change24); }
     });
   }
+  const vl = (t, f) => (window.KyvoI18n && window.KyvoI18n.isEn() && t && t[f + '_en'] ? t[f + '_en'] : t ? t[f] : '');
   function tweetText(t) {
     // strip trailing t.co links; highlight cashtags / addresses that resolved
     let s = esc(String(t || '').replace(/&amp;/g, '&').replace(/\s*https:\/\/t\.co\/\w+/g, '').trim());
@@ -1312,8 +1344,8 @@
         pane.innerHTML = topics.length ? topics.map((t) => {
           const coins = t.coins || [];
           return `<div class="card vtopic" data-topic="${esc(t.id)}">
-            <div class="vtopic-h"><b>${esc(t.label)}</b>${t.source_post ? `<a href="${esc(t.source_post)}" target="_blank" rel="noopener noreferrer" class="vx">𝕏 źródło ↗</a>` : ''}</div>
-            <div class="mut vwhy">${esc(t.why || '')}</div>
+            <div class="vtopic-h"><b>${esc(vl(t, 'label'))}</b>${t.source_post ? `<a href="${esc(t.source_post)}" target="_blank" rel="noopener noreferrer" class="vx">𝕏 źródło ↗</a>` : ''}</div>
+            <div class="mut vwhy">${esc(vl(t, 'why') || '')}</div>
             <div class="vcoins">${coins.length ? coins.map((c) => vCoinHtml(c)).join('') : '<div class="mut vlive" style="font-size:12px;padding:6px 0">Szukam coinów na żywo…</div>'}</div>
           </div>`;
         }).join('') : '<div class="empty">Brak tematów w ostatniej aktualizacji.</div>';
@@ -1328,7 +1360,7 @@
             : '<div class="mut" style="font-size:12px;padding:6px 0">Brak pasującego coina z płynnością</div>';
         });
       } else if (viralTab === 'traders') {
-        pane.innerHTML = tweets.length ? tweets.map((t) => {
+        pane.innerHTML = tweets.length ? tweets.map((t, ti) => {
           const m = t.metrics || {};
           const prof = t.wallet_id ? `<a class="vbtn" href="#trader/${encodeURIComponent(t.wallet_id)}">Profil w Rankingu</a>` : '';
           return `<div class="card post vtweet">
@@ -1337,7 +1369,7 @@
               <div class="mut" style="font-size:11px">${esc(timeAgo(t.created_at))}${t.is_reply ? ' · odpowiedź' : ''} · ♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)}</div></div>
               <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="vx" aria-label="Otwórz na X">𝕏</a></div>
             <div class="txt vq${String(t.text || '').length > 190 ? ' long' : ''}">${tweetText(t.text)}</div>
-            <div class="vcoins vcoins-t">${(t.coins || []).map((c) => vCoinHtml(c)).join('')}</div>
+            <div class="vcoins vcoins-t">${(t.coins || []).map((c, ci) => vCoinHtml(c) + `<div class="vsince" data-since="${ti}:${ci}"><span class="mut">Od tweeta: liczę…</span></div>`).join('')}</div>
             <div class="vfoot"><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">Tweet na X ↗</a>${prof}</div>
           </div>`;
         }).join('') : '<div class="empty">W tym snapshocie nikt ze śledzonych traderów nie wspomniał coina, który da się jednoznacznie znaleźć.</div>';
@@ -1354,7 +1386,7 @@
               <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="vx">𝕏</a></div>
             <div class="txt">${tweetText(p.text)}</div>
             <div class="eng">♥ ${fmtInt(m.likes)} · ↻ ${fmtInt(m.reposts)} · 💬 ${fmtInt(m.replies)}</div>
-            ${coins.length ? `<div class="vsub">Coiny do tematu „${esc(t.label)}”</div><div class="vcoins">${coins.slice(0, 2).map((c) => vCoinHtml(c, { size: 28 })).join('')}</div>` : ''}
+            ${coins.length ? `<div class="vsub">Coiny do tematu „${esc(vl(t, 'label'))}”</div><div class="vcoins">${coins.slice(0, 2).map((c) => vCoinHtml(c, { size: 28 })).join('')}</div>` : ''}
             <div style="margin-top:8px"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Oryginał na X ↗</a></div>
           </div>`;
         }).join('');
@@ -1363,10 +1395,11 @@
     body.querySelectorAll('.vtabs [data-vt]').forEach((b) => (b.onclick = () => {
       viralTab = b.dataset.vt; localStorage.setItem('kyvo_viral_tab', viralTab);
       body.querySelectorAll('.vtabs [data-vt]').forEach((x) => x.classList.toggle('on', x === b));
-      draw(); refreshViralCoins(pane);
+      draw(); refreshViralCoins(pane).then(sinceFill);
     }));
+    const sinceFill = () => { if (viralTab === 'traders' && window.KyvoInsights) window.KyvoInsights.fillTweetSince(pane, tweets, liveCoin); };
     draw();
-    refreshViralCoins(pane);
+    refreshViralCoins(pane).then(sinceFill);
   }
 
   /* ---------------- Ranking (Kolscan-style) + trader profile ---------------- */
@@ -1467,7 +1500,8 @@
         <a class="more-tile" href="#help"><b>❓ Jak korzystać</b><small>FAQ i wprowadzenie</small></a>
         <a class="more-tile" href="#more"><b>⋯ Więcej</b><small>Ustawienia, regulamin, prywatność</small></a>
         <a class="more-tile" href="#kontakt"><b>💬 Kontakt</b><small>Discord</small></a>
-      </div>`;
+      </div>
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px"><b style="font-size:13px">Język / Language</b>${window.KyvoI18n ? window.KyvoI18n.toggleHtml() : ''}</div>`;
   }
   window.__kyvoRerenderProfil = () => { if (view === 'profil') renderProfil(); };
   window.__kyvoToast = toast;
@@ -1482,6 +1516,7 @@
         ${tile('#premium', '✦ Kyvo Premium', 'Cena startowa · zobacz, co planujemy', true)}
         ${tile('#login', S ? '👤 Konto' : '🔑 Zaloguj się', S ? 'Jesteś zalogowany' : 'Portfel, Google, e-mail — albo bez logowania')}
         ${tile('#help', '❓ Jak korzystać', 'Zakładki, filtry, PnL, FAQ')}
+        ${tile('#watch', '⭐ Watchlista i alerty', 'Obserwowane coiny, alerty MC i % (gdy Kyvo jest otwarte)')}
         ${tile('#rank', '🏆 Ranking traderów', 'PnL i win rate publicznych portfeli')}
         ${tile('#kontakt', '💬 Kontakt', 'Discord — pogadaj, pomóż, współpracuj')}
         ${tile('#legal/ryzyko', '⚠️ Ryzyko', 'Przeczytaj, zanim cokolwiek kupisz')}
@@ -1490,6 +1525,10 @@
         <div class="lg-links" style="margin:10px 0">
           <a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Polityka prywatności</a><a href="#legal/zrodla">Źródła danych i licencje</a>
         </div>
+      </div>
+      <div class="card">
+        <div class="h" style="font-size:13px;margin:0 0 6px">Język / Language</div>
+        ${window.KyvoI18n ? window.KyvoI18n.toggleHtml('lang-big') : ''}
       </div>
       <div class="card">
         <div class="h" style="font-size:13px;margin:0 0 6px">Ustawienia</div>
@@ -1526,13 +1565,13 @@
     const map = {
       pulse: 's-list', hot: 's-list', good: 's-list', new: 's-list', stretch: 's-list',
       migrated: 's-list', boosted: 's-list', search: 's-list', viral: 's-viral', more: 's-more', coin: 's-coin',
-      rank: 's-rank', trader: 's-trader', profil: 's-profil',
+      rank: 's-rank', trader: 's-trader', profil: 's-profil', watch: 's-watch',
       help: 's-help', legal: 's-legal', login: 's-login', premium: 's-premium', kontakt: 's-kontakt',
     };
     if (which !== 'login') document.body.classList.remove('chrome-off');
     $('#' + (map[which] || 's-list')).classList.add('on');
     $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' ? 'rank' : which === 'search' ? 'hot' : which)));
-    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
+    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
@@ -1568,6 +1607,13 @@
       location.hash = 'rank';
       return;
     }
+    if (v === 'watch') {
+      show('watch');
+      renderFilterPanel('more');
+      if (window.KyvoInsights) window.KyvoInsights.renderWatch($('#watchBody'));
+      location.hash = 'watch';
+      return;
+    }
     if (v === 'more') {
       show('more');
       renderFilterPanel('more');
@@ -1585,11 +1631,11 @@
       return;
     }
     if (v === 'good') {
-      const smNote = goodSortSmart ? 'sortowanie: smart money' : 'sortowanie: płynność / wolumen';
+      const smNote = goodSortSmart ? 'sortowanie: konsensus smart money' : 'sortowanie: płynność / wolumen';
       renderList(listGood(), 'Good Coins', 'Wyselekcjonowane coiny · ' + smNote, {
         filtTab: 'good',
-        footnote: `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">Smart money</button>
-          <span class="mut" style="font-size:11px">SM = zakupy publicznie znanych portfeli (odświeżane kilka razy dziennie)</span></div>`,
+        footnote: `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">🧠 Konsensus SM</button>
+          <span class="mut" style="font-size:11px">Ile publicznie znanych portfeli kupiło w 72h (i ilu już sprzedało) · odświeżane kilka razy dziennie</span></div>`,
       });
       const btn = $('#goodSmartSort');
       if (btn) btn.onclick = () => { goodSortSmart = !goodSortSmart; setView('good'); };
@@ -1676,7 +1722,7 @@
       runSearch(decodeURIComponent(b));
       return;
     }
-    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'viral', 'more', 'rank', 'profil'].includes(a)) {
+    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'viral', 'more', 'rank', 'profil', 'watch'].includes(a)) {
       setView(a);
       return;
     }
@@ -1752,6 +1798,27 @@
     if (view === 'pulse') setView('pulse');
   });
 
+  function tabsFor(c) {
+    const k = keyOf(c), out = [];
+    const has = (l) => l.some((x) => keyOf(x) === k);
+    try {
+      if (has(listGood())) out.push('good');
+      if (has(listNew('new'))) out.push('new');
+      if (has(listStretch('stretch'))) out.push('stretch');
+      if (has(listMigrated('migrated'))) out.push('migrated');
+      if (has(listHot())) out.push('hot');
+    } catch (e) {}
+    return out;
+  }
+  function tweetsFor(c) {
+    if (!viral) return [];
+    return (viral.trader_tweets || []).filter((t) => (t.coins || []).some((x) => x.address === c.address));
+  }
+  function topicFor(c) {
+    if (!viral) return null;
+    return (viral.topics || []).find((t) => (t.coins || []).some((x) => x.address === c.address)) || null;
+  }
+  if (window.KyvoInsights) window.KyvoInsights.init({ vl, esc, fmtUsd, fmtPct, pctClass, toast, keyOf, getUniverse: allUniverse, consensus: consensusOf, tabsFor, tweetsFor, topicFor });
   if (window.KyvoProfile) window.KyvoProfile.init({ esc, fmtUsd, agoLabel, shortCa, toast });
   loadCache();
   // Ranking / trader / profil don't need live coins — route them as soon as the snapshot is in
@@ -1787,6 +1854,8 @@
     listMigrated,
     listGood,
     smartBuysForMint,
+    smConsensus,
+    tabsFor,
     getSmartMoney: () => smartMoney,
     getLeaderboard: () => leaderboard,
     applyFilters,
