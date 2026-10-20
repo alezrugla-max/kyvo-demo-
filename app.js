@@ -1,4 +1,4 @@
-/* KYVO_MVP_LIVE_v7_2 — multi-chain + smart money snapshot + real leaderboard + Viral z X. Not financial advice. */
+/* KYVO_LIVE_v8_0 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
   const CHAIN_KEY = 'kyvo_chain_v7';
   const REFRESH_MS = 45_000;
   const FALLBACK_IMG = 'kyvo_mark.svg';
-  const MVP_MARKER = 'KYVO_MVP_LIVE_v7_2';
+  const MVP_MARKER = 'KYVO_LIVE_v8_0';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -54,6 +54,7 @@
     const liq = c && c.liquidity;
     if (c && c.onCurve && (liq == null || !isFinite(liq) || liq <= 0)) return 'krzywa';
     if (liq == null || !isFinite(liq) || liq <= 0) return '—';
+    if (liq < 1) return '<$1';
     return fmtUsd(liq);
   }
   function fmtPct(n) {
@@ -125,6 +126,22 @@
     if (sec < 86400) return Math.floor(sec / 3600) + 'h temu';
     return Math.floor(sec / 86400) + 'd temu';
   }
+  /* honest timestamp: "20.10, 08:43 (3h temu)" in the user's local time */
+  function stampLabel(iso) {
+    const t = iso ? new Date(iso).getTime() : NaN;
+    if (!isFinite(t)) return 'brak danych';
+    const d = new Date(t);
+    const hm = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    const day = d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' });
+    const today = new Date().toDateString() === d.toDateString();
+    return (today ? 'dziś ' : day + ', ') + hm + ' (' + agoLabel(iso) + ')';
+  }
+  function staleHtml(iso, hours, what) {
+    const t = iso ? new Date(iso).getTime() : NaN;
+    if (!isFinite(t)) return `<div class="card" style="font-size:12.5px;color:var(--warn)">Brak informacji o aktualizacji ${esc(what)}.</div>`;
+    const h = (Date.now() - t) / 3600000;
+    return h > hours ? `<div class="card" style="font-size:12.5px;color:var(--warn)">Uwaga: ${esc(what)} mają już ${Math.floor(h)} h — mogą być nieaktualne.</div>` : '';
+  }
   function smartBuysForMint(mint) {
     if (!smartMoney || !smartMoney.by_mint) return [];
     return smartMoney.by_mint[mint] || [];
@@ -136,14 +153,14 @@
   }
   async function loadSmartMoney() {
     try {
-      smartMoney = await fetchJson('data/smart_money.json?v=7.1');
+      smartMoney = await fetchJson('data/smart_money.json?v=8.0');
     } catch (e) {
       smartMoney = { by_mint: {}, activity: [], updated_at: null };
     }
   }
   async function loadLeaderboard() {
     try {
-      leaderboard = await fetchJson('data/leaderboard.json?v=7.1');
+      leaderboard = await fetchJson('data/leaderboard.json?v=8.0');
     } catch (e) {
       leaderboard = { leaders: [], updated_at: null };
     }
@@ -276,15 +293,15 @@
   }
   function chainNote(ch) {
     if (ch === 'robinhood') {
-      return 'Robinhood Chain: publiczne dane DexScreener/Gecko (uniswap). Brak publicznego bonding-curve dexId jak pump.fun/four.meme — Final Stretch i Migrated ukryte.';
+      return 'Robinhood Chain nie ma publicznej bonding curve jak pump.fun czy four.meme, więc Final Stretch i Migrated są tu niedostępne. New Pairs, Good i Hot działają.';
     }
     if (ch === 'bsc') {
-      return 'BSC: New = najnowsze MC≥$10k · Final Stretch = four.meme (dexId fourmeme) · Migrated = PancakeSwap.';
+      return 'BSC: Final Stretch = four.meme · Migrated = PancakeSwap.';
     }
     if (ch === 'all') {
-      return 'Wszystkie: Solana + BSC + Robinhood. Stretch/Migrated tylko tam, gdzie istnieją publiczne dexId.';
+      return 'Wszystkie sieci: Solana + BSC + Robinhood Chain.';
     }
-    return 'Solana: New · Final Stretch (pump.fun) · Migrated (PumpSwap/Raydium/…).';
+    return 'Solana: Final Stretch = pump.fun · Migrated = PumpSwap / Raydium / Meteora.';
   }
 
   /* ---- Filters ---- */
@@ -390,7 +407,7 @@
       coins = o.coins;
       newPoolCoins = o.newPoolCoins || [];
       indexAll();
-      sourceLabel = o.sourceLabel || 'cache';
+      sourceLabel = 'z pamięci, odświeżam…';
       lastFetch = o.t || 0;
       return true;
     } catch (e) {
@@ -601,14 +618,14 @@
       newPoolCoins.sort((a, b) => (b.pairCreatedAt || 0) - (a.pairCreatedAt || 0));
       indexAll();
       lastFetch = Date.now();
-      sourceLabel = 'DexScreener + Gecko (SOL/BSC/RH)';
+      sourceLabel = 'na żywo';
       saveCache();
       return true;
     } catch (e1) {
       console.warn('primary load failed', e1);
-      fetchErr = e1.message || 'Fetch failed';
+      fetchErr = 'Nie udało się pobrać danych na żywo (sprawdź internet albo spróbuj za chwilę).';
       if (!coins.length && loadCache()) {
-        fetchErr = 'Offline — cached data';
+        fetchErr = 'Brak połączenia — pokazuję ostatnie zapisane dane.';
         return true;
       }
       return false;
@@ -682,7 +699,7 @@
 
   async function loadViral() {
     try {
-      viral = await fetchJson('data/x_viral.json?v=7.2');
+      viral = await fetchJson('data/x_viral.json?v=8.0');
       return viral;
     } catch (e) {
       viral = { posts: [], topics: [], updated_at: null };
@@ -820,7 +837,7 @@
     const ch = c.change.h1 != null ? c.change.h1 : c.change.h24;
     let extra = '';
     if (opts.showCurve && c.curveEst != null) {
-      extra = `<span class="est">~${c.curveEst.toFixed(0)}% curve*</span>`;
+      extra = `<span class="est">~${c.curveEst.toFixed(0)}% krzywej*</span>`;
     }
     if (opts.showDex) {
       extra += (extra ? ' · ' : '') + `<span class="mut">${esc(c.dexId)}</span>`;
@@ -828,7 +845,7 @@
     const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
     if (smBuys.length) {
       const names = smBuys.slice(0, 2).map((b) => b.wallet_name).join(', ');
-      extra += (extra ? ' · ' : '') + `<span class="smbadge" title="Smart money (snapshot)">SM: ${esc(names)}</span>`;
+      extra += (extra ? ' · ' : '') + `<span class="smbadge" title="Smart money — zakupy publicznie znanych portfeli">SM: ${esc(names)}</span>`;
     }
     const badge = `<span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span>`;
     return `<div class="row" data-key="${esc(keyOf(c))}" role="button" tabindex="0">
@@ -882,13 +899,13 @@
         <div class="ffield"><label>Δ 5m min (%)</label><input data-k="chg5mMin" type="number" inputmode="decimal" value="${esc(f.chg5mMin)}" placeholder="—"></div>
         <div class="ffield"><label>Δ 1h min (%)</label><input data-k="chg1hMin" type="number" inputmode="decimal" value="${esc(f.chg1hMin)}" placeholder="—"></div>
         <div class="ffield"><label>Buy ratio 1h min (0–1)</label><input data-k="buyRatioMin" type="number" step="0.05" min="0" max="1" value="${esc(f.buyRatioMin)}" placeholder="np. 0.4"></div>
-        <div class="ffield full"><label class="fcheck"><input data-k="hasSocials" type="checkbox" ${f.hasSocials ? 'checked' : ''}> Wymagaj socials / website</label></div>
+        <div class="ffield full"><label class="fcheck"><input data-k="hasSocials" type="checkbox" ${f.hasSocials ? 'checked' : ''}> Wymagaj socials / strony WWW</label></div>
       </div>
       <div class="factions">
         <button type="button" class="reset" id="filtReset">Reset</button>
         <button type="button" class="apply" id="filtApply">Zastosuj</button>
       </div>
-      <div class="mut" style="font-size:11px;margin-top:8px">Chain: przełącznik u góry (localStorage). New MC≥$10k. Stretch: pump.fun / four.meme · est. MC/~$69k ≥55%+.</div>`;
+      <div class="mut" style="font-size:11px;margin-top:8px">Sieć wybierasz przełącznikiem u góry. Filtry zapisują się w tej przeglądarce. Buy ratio = udział transakcji kupna w ostatniej godzinie.</div>`;
     $('#filtApply').onclick = () => {
       const next = Object.assign({}, filters[tab]);
       panel.querySelectorAll('[data-k]').forEach((el) => {
@@ -941,7 +958,7 @@
             : `<div class="empty">Brak coinów dla tych filtrów.</div>`
       }
       ${opts.footnote || ''}
-      <div class="foot">Dane: DexScreener · ${MVP_MARKER}</div>`;
+      <div class="foot">Dane: DexScreener / GeckoTerminal · to nie jest porada finansowa</div>`;
     wireRows(body);
     if (opts.swipeTabs) {
       $$('#pulseSwipe [data-ptab]').forEach((b) =>
@@ -955,18 +972,18 @@
   }
 
   function stretchTip() {
-    if (activeChain === 'bsc') return 'four.meme on-curve · est. ≥55% (MC/~$69k)*';
-    if (activeChain === 'all') return 'pump.fun + four.meme · est. ≥55% (MC/~$69k)*';
-    return 'pump.fun on-curve · est. ≥55% (MC/~$69k), inaczej top ≥50%*';
+    if (activeChain === 'bsc') return 'four.meme na krzywej · ≥55% krzywej (estymacja)*';
+    if (activeChain === 'all') return 'pump.fun + four.meme · ≥55% krzywej (estymacja)*';
+    return 'pump.fun na krzywej · ≥55% krzywej (estymacja)*';
   }
   function migrTip() {
-    if (activeChain === 'bsc') return 'Niedawno na PancakeSwap (dexId pancakeswap)';
-    if (activeChain === 'all') return 'PumpSwap/Raydium/… · PancakeSwap';
+    if (activeChain === 'bsc') return 'Niedawno przeszły na PancakeSwap';
+    if (activeChain === 'all') return 'Niedawno przeszły na DEX (PumpSwap, Raydium, PancakeSwap…)';
     return 'Niedawno na PumpSwap / Raydium / Meteora…';
   }
   function newTip() {
     const ch = CHAIN_LABEL[activeChain] || activeChain;
-    return `Najnowsze ${ch}, filtr MC≥$10k (domyślnie)`;
+    return 'Najnowsze pary';
   }
 
   function renderPulseDesktop() {
@@ -985,7 +1002,7 @@
         ${
           list.length
             ? list.map((c) => coinRow(c, Object.assign({ listId: listKey + ':' + activeChain }, rowOpts))).join('')
-            : `<div class="empty" style="padding:16px 4px">${esc(emptyNote || 'Brak — zmień filtry lub poczekaj na refresh')}</div>`
+            : `<div class="empty" style="padding:16px 4px">${esc(emptyNote || 'Brak coinów — zmień filtry albo poczekaj chwilę na odświeżenie')}</div>`
         }
       </div>`;
     let html = col('New Pairs', news, newTip(), { showDex: true });
@@ -999,7 +1016,7 @@
     } else {
       html += col('Migrated', [], 'Niedostępne', {}, chainNote(activeChain));
     }
-    html += `<div class="foot" style="grid-column:1/-1">* Estymacja krzywej z MC vs ~$69k — nie oficjalny bonding %. · ${chainNote(activeChain)} · ${MVP_MARKER}</div>`;
+    html += `<div class="foot" style="grid-column:1/-1">* Procent krzywej to estymacja (MC / ~$69k), nie oficjalna wartość. · ${chainNote(activeChain)}</div>`;
     desk.innerHTML = html;
     wireRows(desk);
   }
@@ -1111,8 +1128,8 @@
 
     const smBuys = (c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : [];
     const smHtml = smBuys.length
-      ? `<div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Smart money <span class="badge live">snapshot</span></div>
-          <div class="mut" style="font-size:11px;margin-bottom:6px">Publiczne KOL/smart wallets · ${esc(agoLabel(smartMoney && smartMoney.updated_at))} · nie porada finansowa</div>
+      ? `<div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Smart money <span class="badge live">on-chain</span></div>
+          <div class="mut" style="font-size:11px;margin-bottom:6px">Publiczne portfele KOL / traderów · dane z ${esc(stampLabel(smartMoney && smartMoney.updated_at))} · to nie porada finansowa</div>
           ${smBuys.slice(0, 8).map((b) =>
             `<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff08;font-size:12.5px">
               <span><b>${esc(b.wallet_name)}</b> ${b.handle ? `<a href="https://x.com/${esc(b.handle)}" target="_blank" rel="noopener">@${esc(b.handle)}</a>` : ''}
@@ -1122,7 +1139,7 @@
           ).join('')}
         </div>`
       : (c.chainId === 'solana' || !c.chainId
-          ? `<div class="card mut" style="margin-top:10px;font-size:12.5px"><span class="mut">Brak trafień smart money w ostatnim snapshocie dla tego mintu.</span></div>`
+          ? `<div class="card mut" style="margin-top:10px;font-size:12.5px"><span class="mut">Żaden ze śledzonych portfeli smart money nie kupował ostatnio tego coina.</span></div>`
           : '');
 
     const urls = platformUrls(c.address, c.chainId);
@@ -1140,7 +1157,7 @@
     const gradLabel = c.gradMcap ? '~$' + Math.round(c.gradMcap / 1000) + 'k' : '~$69k';
     const curveLine =
       c.curveEst != null
-        ? `<div class="card" style="margin-top:10px;font-size:13px">Est. bonding curve: <b>~${c.curveEst.toFixed(1)}%</b> <span class="est">(MC ${fmtUsd(c.mcap)} / ${gradLabel})*</span></div>`
+        ? `<div class="card" style="margin-top:10px;font-size:13px">Krzywa (estymacja): <b>~${c.curveEst.toFixed(1)}%</b> <span class="est">(MC ${fmtUsd(c.mcap)} / ${gradLabel})*</span></div>`
         : '';
     const curveBadge =
       c.dexId === 'pumpfun'
@@ -1161,7 +1178,7 @@
       </div>
       <div style="margin-top:10px">
         <span class="ca">CA ${esc(shortCa(c.address))}
-          <button class="copybtn" id="copyCa" type="button" aria-label="Copy">
+          <button class="copybtn" id="copyCa" type="button" aria-label="Kopiuj adres">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2.4"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           </button>
         </span>
@@ -1178,8 +1195,8 @@
       <div id="chartSlot" class="chartslot"></div>
       ${curveLine}
       <div class="statg">
-        <div class="st"><small>Price</small><b>${fmtUsd(c.priceUsd)}</b></div>
-        <div class="st"><small>Liquidity</small><b>${fmtLiq(c)}</b></div>
+        <div class="st"><small>Cena</small><b>${fmtUsd(c.priceUsd)}</b></div>
+        <div class="st"><small>Płynność</small><b>${fmtLiq(c)}</b></div>
         <div class="st"><small>FDV</small><b>${fmtUsd(c.fdv)}</b></div>
         <div class="st"><small>Vol 5m</small><b>${fmtUsd(c.volume.m5)}</b></div>
         <div class="st"><small>Vol 1h</small><b>${fmtUsd(c.volume.h1)}</b></div>
@@ -1195,7 +1212,7 @@
         <a href="${esc(urls.DexScreener)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">DexScreener ↗</a>
         ${urls.Explorer ? `<a href="${esc(urls.Explorer)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Explorer ↗</a>` : ''}
       </div>
-      <div class="foot">To nie jest porada finansowa · ${MVP_MARKER}</div>`;
+      <div class="foot">To nie jest porada finansowa · DYOR · zawsze sprawdzaj adres (CA)</div>`;
     if (window.KyvoChart) {
       window.KyvoChart.mount($('#chartSlot'), {
         key: keyOf(c), network: GECKO_NET[c.chainId || 'solana'], pool: c.pairAddress || null, token: c.address,
@@ -1283,12 +1300,12 @@
     const tabs = [['topics', 'Tematy → coiny', topics.length], ['traders', 'Tweety traderów', tweets.length], ['posts', 'Ważne posty', posts.length]];
     if (!tabs.some((t) => t[0] === viralTab)) viralTab = 'topics';
     body.innerHTML = `
-      <div class="h">Viral z X <span class="badge live">snapshot</span></div>
-      <div class="sub">Prawdziwe posty z X · zaktualizowano ${esc(agoLabel(viral.updated_at))} · coiny dopasowane przez DexScreener, ceny na żywo</div>
+      <div class="h">Viral z X <span class="badge live" id="viralStamp">aktualizacja: ${esc(stampLabel(viral.updated_at))}</span></div>
+      <div class="sub">Prawdziwe posty z X, odświeżane kilka razy dziennie (nie na żywo) · ceny coinów na żywo z DexScreener</div>
+      ${staleHtml(viral.updated_at, 12, 'dane z X')}
       <div class="vtabs" role="tablist">${tabs.map(([id, lb, n]) => `<button type="button" role="tab" data-vt="${id}" class="${id === viralTab ? 'on' : ''}">${lb} <span class="vcount">${n}</span></button>`).join('')}</div>
       <div id="vPane"></div>
-      <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45">Pokazujemy tylko coiny, które naprawdę istnieją na DexScreener (adres z tweeta albo jednoznaczny $ticker z płynnością i wolumenem). Ten sam ticker może mieć kopie — zawsze sprawdź adres. To nie jest porada finansowa.</div>
-      <div class="foot">${MVP_MARKER}</div>`;
+      <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45">Pokazujemy tylko coiny, które naprawdę istnieją na DexScreener (adres z tweeta albo jednoznaczny $ticker z płynnością i wolumenem). Ten sam ticker może mieć kopie — zawsze sprawdź adres. To nie jest porada finansowa.</div>`;
     const pane = $('#vPane');
     const draw = () => {
       if (viralTab === 'topics') {
@@ -1299,7 +1316,7 @@
             <div class="mut vwhy">${esc(t.why || '')}</div>
             <div class="vcoins">${coins.length ? coins.map((c) => vCoinHtml(c)).join('') : '<div class="mut vlive" style="font-size:12px;padding:6px 0">Szukam coinów na żywo…</div>'}</div>
           </div>`;
-        }).join('') : '<div class="empty">Brak tematów w tym snapshocie.</div>';
+        }).join('') : '<div class="empty">Brak tematów w ostatniej aktualizacji.</div>';
         // topics without snapshot coins: live fuzzy match (existing engine)
         topics.filter((t) => !(t.coins || []).length).forEach(async (t) => {
           let m = [];
@@ -1406,14 +1423,14 @@
     }).join('');
     body.innerHTML = `
       <div class="h">Ranking traderów <span class="badge live">on-chain</span></div>
-      <div class="sub">Zrealizowany PnL z publicznych transakcji Solana · zaktualizowano ${esc(agoLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} portfeli w tym okresie</div>
+      <div class="sub">Zrealizowany PnL z publicznych transakcji Solany · aktualizacja: ${esc(stampLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} portfeli w tym okresie</div>
+      ${staleHtml(leaderboard.updated_at, 36, 'dane rankingu')}
       <div class="rk-per" id="rankPer">${['1d', '7d', '30d'].map((p) => `<button type="button" data-per="${p}" class="${p === per ? 'on' : ''}">${p === '1d' ? 'Dzień' : p === '7d' ? 'Tydzień' : 'Miesiąc'}</button>`).join('')}</div>
       <div class="card rk">
         <div class="rk-row rk-head"><div class="rk-n">#</div><div style="width:34px"></div><div class="rk-nm">Trader</div><div class="rk-c rk-wl">W/L</div><div class="rk-c rk-wr">Win</div><div class="rk-c rk-tr">Trade'y</div><div class="rk-c rk-pnl">PnL</div><span class="rk-x off"></span></div>
         ${rows}
       </div>
-      <div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">„—” = brak sprzedaży z dopasowanym zakupem w tym okresie (np. kupił wcześniej niż obejmuje nasze okno). Kwoty w SOL przeliczane po historycznym kursie SOL/USD. Wyniki przybliżone · to nie jest porada finansowa.</div>
-      <div class="foot">${MVP_MARKER}</div>`;
+      <div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">„—” = brak sprzedaży z dopasowanym zakupem w tym okresie (np. kupił wcześniej niż obejmuje nasze okno). Kwoty w SOL przeliczane po historycznym kursie SOL/USD. Wyniki przybliżone · to nie jest porada finansowa.</div>`;
     $$('#rankPer [data-per]').forEach((b) => b.addEventListener('click', () => {
       rankPeriod = b.dataset.per;
       localStorage.setItem('kyvo_rank_period', rankPeriod);
@@ -1443,24 +1460,65 @@
 
   function renderProfil() {
     document.body.classList.remove('pulse-on');
+    if (window.KyvoAuth) window.KyvoAuth.renderBar($('#profilTop'));
     window.KyvoProfile.renderOwn($('#profilBody'));
+    $('#profilLinks').innerHTML = `<div class="more-grid" style="margin-top:6px">
+        <a class="more-tile hl" href="#premium"><b>✦ Kyvo Premium</b><small>Cena startowa · wkrótce</small></a>
+        <a class="more-tile" href="#help"><b>❓ Jak korzystać</b><small>FAQ i wprowadzenie</small></a>
+        <a class="more-tile" href="#more"><b>⋯ Więcej</b><small>Ustawienia, regulamin, prywatność</small></a>
+        <a class="more-tile" href="#kontakt"><b>💬 Kontakt</b><small>Discord</small></a>
+      </div>`;
   }
+  window.__kyvoRerenderProfil = () => { if (view === 'profil') renderProfil(); };
+  window.__kyvoToast = toast;
 
   function renderMore() {
     document.body.classList.remove('pulse-on');
+    const S = window.KyvoAuth && window.KyvoAuth.session();
+    const tile = (href, t, d, hl) => `<a class="more-tile${hl ? ' hl' : ''}" href="${href}"><b>${t}</b><small>${d}</small></a>`;
     $('#moreBody').innerHTML = `
       <div class="h">Więcej</div>
-      <div class="card" role="button" id="moreRank" style="cursor:pointer"><div class="h" style="font-size:13px;margin:0">🏆 Ranking traderów →</div>
-        <div class="mut" style="font-size:12.5px;margin-top:4px">PnL, win rate i ostatnie trade'y publicznych portfeli KOL.</div></div>
-      <div class="card"><div class="h" style="font-size:13px">Insider / fresh wallets <span class="badge demo">Przykładowe dane</span></div>
-        <div class="mut" style="font-size:13px">Wkrótce — ta funkcja jest jeszcze w przygotowaniu.</div></div>
-      <div class="card"><div class="h" style="font-size:13px">O Kyvo v7.2</div>
-        <div style="font-size:13px;color:#ccc;line-height:1.45">
-          Live Pulse dla Solana, BSC i Robinhood · wykresy świecowe na stronie coina · smart money (Solana) · ranking traderów on-chain · Viral z X z coinami do tematów i tweetami traderów · Profil z portfelami Solana, BSC i Robinhood Chain (tylko publiczne adresy).<br>
-          Ranking i smart money odświeżamy kilka razy dziennie z publicznych danych blockchain. Viral z X — kilka razy dziennie.
-        </div></div>
-      <div class="foot">${MVP_MARKER}</div>`;
-    $('#moreRank').onclick = () => setView('rank');
+      <div class="more-grid">
+        ${tile('#premium', '✦ Kyvo Premium', 'Cena startowa · zobacz, co planujemy', true)}
+        ${tile('#login', S ? '👤 Konto' : '🔑 Zaloguj się', S ? 'Jesteś zalogowany' : 'Portfel, Google, e-mail — albo bez logowania')}
+        ${tile('#help', '❓ Jak korzystać', 'Zakładki, filtry, PnL, FAQ')}
+        ${tile('#rank', '🏆 Ranking traderów', 'PnL i win rate publicznych portfeli')}
+        ${tile('#kontakt', '💬 Kontakt', 'Discord — pogadaj, pomóż, współpracuj')}
+        ${tile('#legal/ryzyko', '⚠️ Ryzyko', 'Przeczytaj, zanim cokolwiek kupisz')}
+      </div>
+      <div class="card" style="padding:4px 12px">
+        <div class="lg-links" style="margin:10px 0">
+          <a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Polityka prywatności</a><a href="#legal/zrodla">Źródła danych i licencje</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="h" style="font-size:13px;margin:0 0 6px">Ustawienia</div>
+        <div class="pf-actions" style="margin-top:0">
+          <button type="button" class="pf-btn" id="moreTour">▶ Pokaż wprowadzenie</button>
+          <button type="button" class="pf-btn" id="moreClear">🗑 Wyczyść dane Kyvo</button>
+        </div>
+        <div class="mut" style="font-size:11.5px;margin-top:8px;line-height:1.45">Wszystkie Twoje dane (portfele, nick, filtry, sesja) są tylko w tej przeglądarce. „Wyczyść dane Kyvo” usuwa je całkowicie.</div>
+      </div>
+      <div class="card"><div class="h" style="font-size:13px;margin:0 0 4px">O Kyvo</div>
+        <div style="font-size:13px;color:#ccc;line-height:1.5">Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse dla Solany, BSC i Robinhood Chain, wykresy od 1s, ranking traderów on-chain, Viral z X i Twój Profil z PnL. Ranking i smart money odświeżamy kilka razy dziennie z publicznych danych blockchain, Viral z X — kilka razy dziennie.</div></div>`;
+    $('#moreTour').onclick = () => window.KyvoLaunch && window.KyvoLaunch.openOnboard();
+    $('#moreClear').onclick = async () => { if (window.KyvoLaunch && (await window.KyvoLaunch.clearData())) { toast('Dane Kyvo usunięte'); setTimeout(() => location.reload(), 600); } };
+  }
+
+  function renderPage(kind, arg) {
+    document.body.classList.remove('pulse-on');
+    const L = window.KyvoLaunch, A = window.KyvoAuth;
+    const ctx = { home: () => setView('pulse') };
+    document.body.classList.toggle('chrome-off', kind === 'login');
+    if (kind === 'help') L.renderHelp($('#helpBody'), ctx);
+    else if (kind === 'legal') L.renderLegal($('#legalBody'), arg, ctx);
+    else if (kind === 'premium') L.renderPremium($('#premiumBody'), ctx);
+    else if (kind === 'kontakt') L.renderContact($('#kontaktBody'), ctx);
+    else if (kind === 'login') A.renderLogin($('#loginBody'), {
+      onDone: () => setView('profil'),
+      onGuest: () => { document.body.classList.remove('chrome-off'); setView('pulse'); },
+    });
+    window.scrollTo(0, 0);
   }
 
   function show(which) {
@@ -1469,14 +1527,25 @@
       pulse: 's-list', hot: 's-list', good: 's-list', new: 's-list', stretch: 's-list',
       migrated: 's-list', boosted: 's-list', search: 's-list', viral: 's-viral', more: 's-more', coin: 's-coin',
       rank: 's-rank', trader: 's-trader', profil: 's-profil',
+      help: 's-help', legal: 's-legal', login: 's-login', premium: 's-premium', kontakt: 's-kontakt',
     };
+    if (which !== 'login') document.body.classList.remove('chrome-off');
     $('#' + (map[which] || 's-list')).classList.add('on');
     $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' ? 'rank' : which === 'search' ? 'hot' : which)));
-    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil' };
+    const tabMap = { pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
-  function setView(v) {
+  function setView(v, arg) {
+    if (['help', 'legal', 'login', 'premium', 'kontakt'].includes(v)) {
+      view = v;
+      show(v);
+      renderFilterPanel('more');
+      renderPage(v, arg);
+      const h = v === 'legal' ? 'legal/' + (arg || 'regulamin') : v;
+      if (location.hash !== '#' + h) history.replaceState(null, '', '#' + h);
+      return;
+    }
     view = v;
     if (v === 'viral') {
       show('viral');
@@ -1516,11 +1585,11 @@
       return;
     }
     if (v === 'good') {
-      const smNote = goodSortSmart ? 'sort: Smart money hits' : 'sort: liq/vol';
-      renderList(listGood(), 'Good Coins', 'Curated quality — ' + smNote, {
+      const smNote = goodSortSmart ? 'sortowanie: smart money' : 'sortowanie: płynność / wolumen';
+      renderList(listGood(), 'Good Coins', 'Wyselekcjonowane coiny · ' + smNote, {
         filtTab: 'good',
         footnote: `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">Smart money</button>
-          <span class="mut" style="font-size:11px">Badge SM = zakupy publicznych portfeli KOL (odświeżane kilka razy dziennie)</span></div>`,
+          <span class="mut" style="font-size:11px">SM = zakupy publicznie znanych portfeli (odświeżane kilka razy dziennie)</span></div>`,
       });
       const btn = $('#goodSmartSort');
       if (btn) btn.onclick = () => { goodSortSmart = !goodSortSmart; setView('good'); };
@@ -1539,7 +1608,7 @@
         renderList(listStretch('stretch'), 'Final Stretch', stretchTip(), {
           filtTab: 'stretch',
           rowOpts: { showCurve: true },
-          footnote: '<div class="mut" style="font-size:11px;margin:6px 2px">* Estymacja: MC / ~$69k graduation</div>',
+          footnote: '<div class="mut" style="font-size:11px;margin:6px 2px">* Procent krzywej to estymacja: MC / ~$69k</div>',
         });
       }
       location.hash = 'stretch';
@@ -1555,11 +1624,11 @@
       return;
     }
     if (v === 'boosted') {
-      renderList(listBoosted(), 'Boosted', 'Top boosty DexScreener', { filtTab: 'boosted' });
+      renderList(listBoosted(), 'Boosted', 'Płatne boosty na DexScreener (reklama, nie sygnał jakości)', { filtTab: 'boosted' });
       location.hash = 'boosted';
       return;
     }
-    renderList(listHot(), 'Hot · ' + (CHAIN_LABEL[activeChain] || ''), 'Profile + boosty · vol 24h', { filtTab: 'hot' });
+    renderList(listHot(), 'Hot · ' + (CHAIN_LABEL[activeChain] || ''), 'Nowe profile i boosty DexScreener · sortowanie po wolumenie 24h', { filtTab: 'hot' });
     location.hash = 'hot';
   }
 
@@ -1576,7 +1645,7 @@
     for (const c of list) byKey[keyOf(c)] = c;
     body.innerHTML = list.length
       ? `<div class="h">Wyniki <span class="badge live">LIVE</span> · ${esc(CHAIN_LABEL[activeChain])}</div>
-         <div class="sub">Fuzzy „${esc(q)}”</div>
+         <div class="sub">Wyniki dla „${esc(q)}” (także literówki)</div>
          <div class="card" style="padding:4px 10px">${list.map((c) => coinRow(c)).join('')}</div>`
       : `<div class="empty">Nic nie znaleziono dla „${esc(q)}” (${esc(CHAIN_LABEL[activeChain])})</div>`;
     wireRows(body);
@@ -1596,6 +1665,10 @@
       renderFilterPanel('more');
       renderTrader(decodeURIComponent(b));
       window.scrollTo(0, 0);
+      return;
+    }
+    if (['help', 'legal', 'login', 'premium', 'kontakt'].includes(a)) {
+      setView(a, b ? decodeURIComponent(b) : undefined);
       return;
     }
     if (a === 'search' && b) {
@@ -1691,6 +1764,12 @@
   setInterval(() => refresh(), REFRESH_MS);
   setInterval(updateClock, 1000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if (window.KyvoAuth) window.KyvoAuth.onChange(() => { if (view === 'profil') renderProfil(); else if (view === 'more') renderMore(); });
+  // first launch: onboarding cards → login screen (skippable: "Kontynuuj bez logowania")
+  if (window.KyvoLaunch) {
+    const offerLogin = () => { if (window.KyvoAuth && window.KyvoAuth.shouldOfferLogin()) setView('login'); };
+    window.KyvoLaunch.maybeOnboard(offerLogin);
+  }
 
   window.__KYVO__ = {
     MVP_MARKER,

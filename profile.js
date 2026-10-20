@@ -819,5 +819,5 @@
     draw().then(() => syncAll(false));
   }
 
-  window.KyvoProfile = { init: (h) => (H = h), renderTrader, renderOwn, buildModel, parseLegs, own, saveOwn };
+  window.KyvoProfile = { init: (h) => (H = h), renderTrader, renderOwn, buildModel, parseLegs, own, saveOwn, avatarSpec, MAX_WALLETS };
 })();
