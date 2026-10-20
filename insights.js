@@ -181,6 +181,14 @@
     </div>`;
   }
   const remCache = {};
+  async function fullScore(c) {
+    const local = localChecks(c);
+    const ck = (c.chainId || 'solana') + ':' + c.address, hit = remCache[ck];
+    let rem = { checks: [], srcs: [] };
+    if (hit && Date.now() - hit.t < 5 * 60e3) rem = hit.v;
+    else { try { rem = await remoteChecks(c); if (rem.srcs.length) remCache[ck] = { t: Date.now(), v: rem }; } catch (e) {} }
+    return scoreOf(local.concat(rem.checks));
+  }
   async function mountCheck(slot, c) {
     if (!slot) return;
     const local = localChecks(c);
@@ -335,9 +343,10 @@
       ${perm === 'denied' ? '<div class="mut" style="margin-top:6px">Powiadomienia są zablokowane w ustawieniach przeglądarki — zostają komunikaty w apce.</div>' : ''}
       ${perm === 'unsupported' ? `<div class="mut" style="margin-top:6px">Ta przeglądarka nie obsługuje powiadomień${/iPhone|iPad/.test(navigator.userAgent) && !isStandalone ? ' (na iPhonie działają tylko po dodaniu Kyvo do ekranu głównego, iOS 16.4+)' : ''} — zostają komunikaty w apce.</div>` : ''}
     </div>`;
+    const nset = window.KyvoNotify ? window.KyvoNotify.settingsHtml() : '';
     if (!keys.length) {
       root.innerHTML = `<div class="h">⭐ Watchlista</div><div class="sub">Twoje obserwowane coiny i alerty — zapisane tylko w tej przeglądarce</div>
-        <div class="empty">Pusto. Otwórz dowolny coin i kliknij <b>☆ Obserwuj</b>.</div>${notifCard}`;
+        <div class="empty">Pusto. Otwórz dowolny coin i kliknij <b>☆ Obserwuj</b>.</div>${notifCard}${nset}`;
       wireNotif(root);
       return;
     }
@@ -363,7 +372,7 @@
             <button type="button" class="pf-btn" data-asave>Zapisz</button>
           </div>
         </div>`;
-      }).join('')}</div>${notifCard}
+      }).join('')}</div>${notifCard}${nset}
       <div class="foot">Alerty działają lokalnie, gdy Kyvo jest otwarte · to nie jest porada finansowa</div>`;
     root.querySelectorAll('.wrow').forEach((row) => {
       const k = row.dataset.wk, w = watch[k];
@@ -384,6 +393,7 @@
   function wireNotif(root) {
     const b = root.querySelector('#notifBtn');
     if (b) b.onclick = async () => { try { await Notification.requestPermission(); } catch (e) {} renderWatch(root); };
+    if (window.KyvoNotify) window.KyvoNotify.wireSettings(root, () => renderWatch(root));
   }
 
   /* ---------------- Cena od tweeta ---------------- */
@@ -416,19 +426,23 @@
     const els = [...root.querySelectorAll('[data-since]')];
     for (const el of els) {
       if (!el.isConnected) return;
-      const [ti, ci] = el.dataset.since.split(':').map(Number);
-      const t = tweets[ti], c = t && t.coins && t.coins[ci];
-      if (!c) continue;
+      let c, at, spec = false;
+      if (typeof tweets === 'function') { const r = tweets(el); if (!r) continue; c = r.c; at = r.at; spec = r.spec; }
+      else { const [ti, ci] = el.dataset.since.split(':').map(Number); const t = tweets[ti]; c = t && t.coins && t.coins[ci]; at = t && t.created_at; }
+      if (!c || !at) continue;
       let v = null;
-      try { v = await priceAtTweet(c, t.created_at); } catch (e) { v = null; }
+      try { v = await priceAtTweet(c, at); } catch (e) { v = null; }
       const L = liveMap[c.chain + ':' + c.address] || {};
       const now = L.price != null ? L.price : c.price_usd;
+      const mcNow = L.mcap != null ? L.mcap : c.mcap;
       if (!el.isConnected) return;
-      if (v && v.preLaunch) { el.innerHTML = '<span class="mut">Tweet był przed startem tej puli</span>'; continue; }
+      if (v && v.preLaunch) { el.innerHTML = `<span class="mut">Tweet był przed startem tej puli${spec ? ' — coin powstał po tweecie (typowe dla spekulacji)' : ''}</span>`; continue; }
       if (!v || !v.px || !now) { el.innerHTML = '<span class="mut">Cena od tweeta: brak danych</span>'; continue; }
       const ch = (now / v.px - 1) * 100;
-      el.innerHTML = `Od tweeta: <b class="${D.pctClass(ch)}">${D.fmtPct(ch)}</b> <span class="mut">(${fmtPx(v.px)} → ${fmtPx(now)})</span>`;
-      el.title = 'Cena z 5-min/1h świecy GeckoTerminal z momentu tweeta vs cena teraz. Nie uwzględnia opłat i poślizgu.';
+      const mcThen = mcNow ? mcNow * (v.px / now) : null;
+      const hint = ch >= 300 ? '🔥 już bardzo mocno urósł od tweeta — wejście teraz jest późne i ryzykowne' : ch >= 100 ? '⚠️ już sporo urósł od tweeta' : ch <= -50 ? '📉 mocno spadł od tweeta' : ch < 20 ? 'jeszcze mały ruch od tweeta' : '';
+      el.innerHTML = `Od tweeta: <b class="${D.pctClass(ch)}">${D.fmtPct(ch)}</b>${mcThen ? ` <span class="mut">· MC ${D.fmtUsd(mcThen)} → ${D.fmtUsd(mcNow)}</span>` : ` <span class="mut">(${fmtPx(v.px)} → ${fmtPx(now)})</span>`}${hint ? `<div class="vhint">${hint}</div>` : ''}`;
+      el.title = 'Cena z 5-min/1h świecy GeckoTerminal z momentu tweeta vs cena teraz (' + fmtPx(v.px) + ' → ' + fmtPx(now) + '). MC wtedy = MC teraz × cena wtedy / cena teraz. Nie uwzględnia opłat i poślizgu.';
     }
   }
   function fmtPx(p) {
@@ -442,6 +456,6 @@
     init(deps) { D = deps; updateBadge(); ensurePoll(); },
     mountCheck, localChecks, scoreOf, cloneCheck, whyHtml,
     watchButtonHtml, wireWatchButton, renderWatch, isWatched, toggleWatch, getWatch: () => watch, checkAlerts, _live: live,
-    fillTweetSince, priceAtTweet,
+    fillTweetSince, priceAtTweet, fullScore,
   };
 })();

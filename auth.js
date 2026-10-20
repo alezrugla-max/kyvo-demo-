@@ -1,4 +1,4 @@
-/* Kyvo v8.1 — sign-in. Wallet sign-in = the user SIGNS a readable text message (never a transaction),
+/* Kyvo v8.2 — sign-in. Wallet sign-in = the user SIGNS a readable text message (never a transaction),
    verified locally (ed25519 / secp256k1 ecrecover via vendor/kyvo-crypto). Session lives only in localStorage.
    Google sign-in (Firebase Auth) is wired but off until auth-config.js has a real config + enabled:true. */
 (function () {
@@ -190,13 +190,13 @@
           try { localStorage.removeItem(EMAIL_KEY); } catch (e) {}
           history.replaceState(null, '', location.pathname + '#profil');
           save(fromUser(r.user, 'email'));
-          toast('Zalogowano e-mailem');
+          toast('Zalogowano e-mailem'); setTimeout(() => window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(), 900);
         }
         return;
       }
       if (googleReady()) {
         const r = await mod.getRedirectResult(auth);
-        if (r && r.user) { save(fromUser(r.user)); toast('Zalogowano przez Google'); }
+        if (r && r.user) { save(fromUser(r.user)); toast('Zalogowano przez Google'); setTimeout(() => window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(), 900); }
       }
     } catch (e) { toast('Logowanie nie powiodło się — link mógł wygasnąć. Spróbuj ponownie.'); }
   }
@@ -264,7 +264,8 @@
         <div class="lgn-legal">Logując się akceptujesz <a href="#legal/regulamin">Regulamin</a> i <a href="#legal/prywatnosc">Politykę prywatności</a>.</div>
       </div>`;
     statusEl = root.querySelector('#lgnStatus');
-    const done = (sess) => { if (sess) { toast('Zalogowano · ' + (sess.method === 'google' ? sess.name || 'Google' : short(sess.address))); (opts.onDone || (() => (location.hash = 'profil')))(sess); } };
+    const pmPop = () => setTimeout(() => window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(), 700); // v8.2
+    const done = (sess) => { if (sess) { toast('Zalogowano · ' + (sess.method === 'google' ? sess.name || 'Google' : short(sess.address))); (opts.onDone || (() => (location.hash = 'profil')))(sess); pmPop(); } };
     root.querySelectorAll('[data-l]').forEach((b) => (b.onclick = async () => {
       if (b.classList.contains('busy')) return;
       const k = b.dataset.l;
@@ -285,6 +286,7 @@
     root.querySelector('#lgnGuest').onclick = () => {
       try { localStorage.setItem(SEEN, '1'); } catch (e) {}
       (opts.onGuest || (() => (location.hash = 'pulse')))();
+      pmPop();
     };
   }
   /* compact bar for Profil: avatar/nick + address + Wyloguj, or "Zaloguj się" */

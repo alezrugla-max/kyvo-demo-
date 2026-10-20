@@ -1,7 +1,10 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-const C = 'kyvo-v8-1';
+/* v8.2 background push (DISABLED until push_plan.md is done). For OneSignal, uncomment the next line so OneSignal shares this SW:
+importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+*/
+const C = 'kyvo-v8-2';
 const A = [
-  './', 'index.html', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js',
+  './', 'index.html', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
@@ -18,7 +21,7 @@ self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   const isApi = /dexscreener\.com|geckoterminal\.com|solana\.com|publicnode\.com|binance|blxrbdn\.com|48\.club|bnbchain\.org|blockscout\.com|robinhood\.com|rugcheck\.xyz|gopluslabs\.io/.test(u.hostname)
     || /\/data\/(x_viral|smart_money|leaderboard)\.json/.test(u.pathname)
-    || /(auth|premium|contact)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
+    || /(auth|premium|contact|push)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
@@ -42,5 +45,16 @@ self.addEventListener('notificationclick', e => {
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
     for (const c of cs) { if ('focus' in c) { c.navigate && c.navigate(url).catch(() => {}); return c.focus(); } }
     return self.clients.openWindow ? self.clients.openWindow(url) : null;
+  }));
+});
+
+/* v8.2: generic Web Push (FCM / VAPID) — only fires if a push subscription exists (none until KYVO_PUSH_CONFIG.enabled). */
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: e.data ? e.data.text() : '' }; }
+  const n = d.notification || d;
+  e.waitUntil(self.registration.showNotification(n.title || 'Kyvo', {
+    body: n.body || '', icon: 'icons/icon-192.png', badge: 'icons/icon-96.png', tag: n.tag || 'kyvo-push',
+    data: { url: n.url || (d.data && d.data.url) || './' },
   }));
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Kyvo v7.2 — assemble / validate / stamp data/x_viral.json.
+"""Kyvo v8.2 — assemble / validate / stamp / enrich data/x_viral.json.
 
 Does NOT call X itself (GitHub Pages can't hold an X secret). Feed it the raw JSON
 the `x` MCP connector returns (see update_x_viral.md). Everything it adds is real:
@@ -7,6 +7,10 @@ the `x` MCP connector returns (see update_x_viral.md). Everything it adds is rea
     (contract address / pump address / 0x / $CASHTAG / "ticker is X"), each resolved
     against DexScreener. Posts whose coin does not resolve are dropped.
   * topics[].coins: each topic's query/hints resolved to live DexScreener coins.
+  * v8.2 enrich (--enrich-raw): for every post / trader tweet stores posted_at, full public metrics
+    (views, likes, reposts, replies, quotes, bookmarks) + metrics_at, author_followers, and
+    coin_match = "named" (the tweet itself gives a CA or an unambiguous $TICKER) or "speculative"
+    (keyword match only: spec_coins ranked by match score, then newest + liquidity) or "none".
 Only public data. Not financial advice.
 """
 from __future__ import annotations
@@ -171,6 +175,71 @@ def resolve_topics(doc: dict) -> None:
         t["coins"] = coins[:4]
         t["coins_resolved_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+def raw_index(files: list[Path]) -> tuple[dict, dict, str | None]:
+    """All posts (id -> post) and users (id / lower(username) -> user) found in x MCP outputs + newest file time."""
+    posts, users, newest = {}, {}, 0.0
+    for f in files:
+        try: d = load_mcp(f)
+        except Exception: continue
+        newest = max(newest, f.stat().st_mtime)
+        rows = d.get("data") if isinstance(d.get("data"), list) else []
+        for u in (d.get("includes") or {}).get("users", []) + [r for r in rows if "username" in r]:
+            for k in (u.get("id"), (u.get("username") or "").lower()):
+                if k and (k not in users or "public_metrics" in u): users[k] = u
+        for p in rows:
+            if "text" in p and "public_metrics" in p: posts[p["id"]] = p
+    at = datetime.fromtimestamp(newest, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if newest else None
+    return posts, users, at
+
+def full_metrics(m: dict) -> dict:
+    out = {"likes": int(m.get("like_count", 0)), "reposts": int(m.get("retweet_count", 0)), "replies": int(m.get("reply_count", 0)),
+           "quotes": int(m.get("quote_count", 0)), "bookmarks": int(m.get("bookmark_count", 0))}
+    if m.get("impression_count") is not None: out["views"] = int(m["impression_count"])
+    return out
+
+def spec_rank(c: dict) -> float:
+    """Speculative candidates: stronger name match first, then newer pair and more liquidity."""
+    import math
+    age_d = max(0.0, (time.time() * 1000 - (c.get("pair_created_at") or 0)) / 86_400_000) if c.get("pair_created_at") else 365
+    return (c.get("score") or 0) * 10 + math.log10(max(1.0, c.get("liquidity") or 1)) * 4 - min(age_d, 60) / 6
+
+def enrich(doc: dict, files: list[Path]) -> None:
+    posts, users, metrics_at = raw_index(files)
+    topics = {t.get("id"): t for t in doc.get("topics", [])}
+    def tid(item): return str(item.get("id") or (item.get("url") or "").rstrip("/").split("/")[-1])
+    def apply(item):
+        p = posts.get(tid(item))
+        item["posted_at"] = item.get("created_at")
+        if p:
+            item["metrics"] = full_metrics(p.get("public_metrics") or {})
+            item["metrics_at"] = metrics_at
+            u = users.get(p.get("author_id")) or users.get((item.get("handle") or "").lower())
+        else:
+            u = users.get((item.get("handle") or "").lower())
+        f = ((u or {}).get("public_metrics") or {}).get("followers_count")
+        if f is not None: item["author_followers"] = int(f)
+    for t in doc.get("trader_tweets", []):
+        apply(t); t["coin_match"] = "named" if t.get("coins") else "none"
+    for p in doc.get("posts", []):
+        apply(p)
+        named = []
+        for kind, v in extract_mentions(p.get("text") or ""):
+            c = resolve_address(v) if kind == "addr" else resolve_ticker(v)
+            if c and not any(x["address"] == c["address"] for x in named):
+                c["mention"] = v if kind == "addr" else "$" + v; named.append(c)
+        if named:
+            p["coin_match"] = "named"; p["coins"] = named[:3]; p.pop("spec_coins", None)
+        else:
+            t = topics.get(p.get("topic_id"))
+            cands = sorted((t or {}).get("coins") or [], key=spec_rank, reverse=True)
+            p["coin_match"] = "speculative" if cands else "none"
+            p["spec_coins"] = [dict(c, match="speculative") for c in cands[:3]]
+            if t: p["spec_keywords"] = [x for x in [t.get("query")] + list(t.get("hints") or []) if x][:4]
+    for t in doc.get("topics", []):
+        t["coins"] = [dict(c, match="speculative") for c in sorted(t.get("coins") or [], key=spec_rank, reverse=True)]
+        src = posts.get(str(t.get("source_post") or "").rstrip("/").split("/")[-1])
+        if src: t["source_posted_at"] = src.get("created_at")
+
 def validate(doc: dict) -> list[str]:
     errs = []
     if "updated_at" not in doc: errs.append("missing updated_at")
@@ -182,6 +251,9 @@ def validate(doc: dict) -> list[str]:
             if not (p.get("url") or "").startswith("https://x.com/"): errs.append(f"post[{i}] url must be https://x.com/...")
             for k in ("likes", "reposts", "replies"):
                 if not isinstance((p.get("metrics") or {}).get(k), int): errs.append(f"post[{i}].metrics.{k} must be int")
+            # v8.2 optional: views / quotes / bookmarks (int), metrics_at, author_followers (int), coin_match
+            if p.get("coin_match") not in (None, "named", "speculative", "none"): errs.append(f"post[{i}] bad coin_match")
+            if "author_followers" in p and not isinstance(p["author_followers"], int): errs.append(f"post[{i}].author_followers must be int")
     for i, t in enumerate(doc.get("trader_tweets", [])):
         if not t.get("coins"): errs.append(f"trader_tweets[{i}] has no resolved coin")
         if not (t.get("url") or "").startswith("https://x.com/"): errs.append(f"trader_tweets[{i}] bad url")
@@ -203,6 +275,7 @@ def main():
     ap.add_argument("--from-raw", type=Path, help="Replace posts/topics from a hand-assembled raw JSON")
     ap.add_argument("--trader-raw", type=Path, nargs="*", help="x MCP outputs (search_posts_all / get_users_posts) -> trader_tweets")
     ap.add_argument("--resolve-topics", action="store_true", help="Resolve topics[].coins via DexScreener")
+    ap.add_argument("--enrich-raw", type=Path, nargs="*", help="x MCP outputs -> posted_at, full metrics (views...), followers, named/speculative coins")
     ap.add_argument("--validate-only", action="store_true")
     ap.add_argument("--stamp", action="store_true")
     args = ap.parse_args()
@@ -222,6 +295,11 @@ def main():
     if args.resolve_topics:
         resolve_topics(doc)
         print("topics resolved:", [(t.get("label"), len(t.get("coins") or [])) for t in doc.get("topics", [])])
+    if args.enrich_raw is not None:
+        files = list(args.enrich_raw) + list(args.trader_raw or [])
+        enrich(doc, files)
+        print("enriched:", sum(1 for p in doc.get("posts", []) if "views" in (p.get("metrics") or {})), "posts with views ·",
+              {k: sum(1 for p in doc.get("posts", []) if p.get("coin_match") == k) for k in ("named", "speculative", "none")})
     errs = validate(doc)
     if errs: print("INVALID:\n- " + "\n- ".join(errs), file=sys.stderr); sys.exit(2)
     if args.validate_only:

@@ -1,0 +1,65 @@
+# Kyvo auto-calls + YouTube alerts -> Discord. Runs on GitHub's servers (never on the trading VPS).
+# Secrets: DISCORD_WEBHOOK_SOL, DISCORD_WEBHOOK_BSC, optional DISCORD_WEBHOOK_NEWS, DISCORD_WEBHOOK_YT, DISCORD_WEBHOOK_ANNOUNCE
+# (repo Settings -> Secrets and variables -> Actions). Missing secrets = the job does nothing.
+name: kyvo-calls
+on:
+  schedule:
+    - cron: "*/15 * * * *"        # GitHub may delay scheduled runs by a few minutes
+  workflow_dispatch:
+    inputs:
+      news:
+        description: "Changelog text to post to DISCORD_WEBHOOK_NEWS (leave empty to run a normal scan)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry run (print embeds in the log, post nothing)"
+        type: boolean
+        default: false
+permissions:
+  contents: read                  # no commits: dedupe state is kept in actions/cache
+concurrency:
+  group: kyvo-calls
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore dedupe state
+        uses: actions/cache/restore@v4
+        with:
+          path: .kyvo_calls
+          key: kyvo-calls-${{ github.run_id }}
+          restore-keys: kyvo-calls-
+      - run: mkdir -p .kyvo_calls
+      - name: Changelog post (manual)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.news != '' }}
+        env:
+          DISCORD_WEBHOOK_NEWS: ${{ secrets.DISCORD_WEBHOOK_NEWS }}
+          NEWS: ${{ github.event.inputs.news }}
+        run: python3 tools/discord_calls.py --news "$NEWS" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Scan and post strong coins
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.news == '' }}
+        env:
+          DISCORD_WEBHOOK_SOL: ${{ secrets.DISCORD_WEBHOOK_SOL }}
+          DISCORD_WEBHOOK_BSC: ${{ secrets.DISCORD_WEBHOOK_BSC }}
+        run: python3 tools/discord_calls.py ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: YouTube new videos / live (public RSS, @calytonnx)
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.news == '' }}
+        env:
+          DISCORD_WEBHOOK_YT: ${{ secrets.DISCORD_WEBHOOK_YT }}
+          DISCORD_WEBHOOK_ANNOUNCE: ${{ secrets.DISCORD_WEBHOOK_ANNOUNCE }}
+          YT_CHANNEL_IDS: UCOVnFqOFnZu9U3xEdIU3MpA
+        run: python3 tools/youtube_alerts.py ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Save dedupe state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .kyvo_calls
+          key: kyvo-calls-${{ github.run_id }}

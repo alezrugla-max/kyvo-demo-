@@ -13,5 +13,6 @@ window.KYVO_PREMIUM_CONFIG = {
   trialDays: 3,
   stripePaymentLinkPromo: '',           // e.g. https://buy.stripe.com/xxxx  (only used when enabled:true)
   stripePaymentLinkRegular: '',         // e.g. https://buy.stripe.com/yyyy
-  manageUrl: '',                        // Stripe customer portal link (cancel / change card)
+  manageUrl: '',
+  popupAfterLogin: true,                // v8.2: show the Premium pop-up after login / "continue without login" (max once per session and per day)                        // Stripe customer portal link (cancel / change card)
 };

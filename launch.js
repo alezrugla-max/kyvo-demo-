@@ -1,4 +1,4 @@
-/* Kyvo v8.1 — onboarding, "Jak korzystać", legal pages (Polish). Static, no tracking, no network calls. */
+/* Kyvo v8.2 — onboarding, "Jak korzystać", legal pages (Polish). Static, no tracking, no network calls. */
 (function () {
   'use strict';
   const OB_KEY = 'kyvo_onboard_v8';
@@ -108,8 +108,90 @@
     try { seen = localStorage.getItem(OB_KEY); } catch (e) {}
     const h = (location.hash || '').slice(1);
     if (seen || /^(legal|help|login|kontakt|premium)/.test(h) || /[?&]noonboard/.test(location.search)) return false;
+    let lang = null;
+    try { lang = localStorage.getItem('kyvo_lang'); } catch (e) {}
+    if (!lang && !/[?&]lang=/.test(location.search)) { openLangPicker(); return true; } // v8.2: language first, then onboarding (after reload)
     onboardDone = after || null;
     openOnboard();
+    return true;
+  }
+
+  /* ---------------- v8.2: first-launch language picker ---------------- */
+  function openLangPicker() {
+    if (document.getElementById('kyvoLang')) return;
+    const cur = window.KyvoI18n ? window.KyvoI18n.lang : 'pl';
+    const el = document.createElement('div');
+    el.id = 'kyvoLang';
+    el.className = 'ob langpick';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-label', 'Język / Language');
+    el.setAttribute('translate', 'no');
+    el.innerHTML = `
+      <div class="lp-in">
+        <img src="icons/icon-192.png" width="88" height="88" alt="" class="lp-logo">
+        <h2>Wybierz język<br><span>Choose your language</span></h2>
+        <button type="button" class="lp-btn${cur === 'pl' ? ' sug' : ''}" data-pick="pl"><span class="lp-flag">🇵🇱</span><span><b>Polski</b><small>Kontynuuj po polsku</small></span></button>
+        <button type="button" class="lp-btn${cur === 'en' ? ' sug' : ''}" data-pick="en"><span class="lp-flag">🇬🇧</span><span><b>English</b><small>Continue in English</small></span></button>
+        <p class="lp-note">Zmienisz to później w Więcej → Język.<br>You can change it later in More → Language.</p>
+      </div>`;
+    document.body.appendChild(el);
+    document.documentElement.classList.add('ob-lock');
+    el.querySelectorAll('[data-pick]').forEach((b) => (b.onclick = () => {
+      const l = b.dataset.pick;
+      try { localStorage.setItem('kyvo_lang', l); } catch (e) {}
+      if (window.KyvoI18n) window.KyvoI18n.set(l); else location.reload();
+    }));
+    setTimeout(() => { const b = el.querySelector('.lp-btn.sug') || el.querySelector('.lp-btn'); if (b) b.focus({ preventScroll: true }); }, 50);
+  }
+
+  /* ---------------- v8.2: Premium pop-up after login / "continue without login" (max once per session and per day) ---------------- */
+  function maybePremiumPopup(force) {
+    const C = Object.assign({ enabled: false, regularPrice: '$9.99', promoPrice: '$3.99', promoActive: true, period: 'mies.', trialDays: 3, popupAfterLogin: true }, window.KYVO_PREMIUM_CONFIG || {});
+    if (!force && C.popupAfterLogin === false) return false;
+    const day = new Date().toISOString().slice(0, 10);
+    try {
+      if (!force && (sessionStorage.getItem('kyvo_pm_pop') || localStorage.getItem('kyvo_pm_pop_day') === day)) return false;
+      sessionStorage.setItem('kyvo_pm_pop', '1');
+      localStorage.setItem('kyvo_pm_pop_day', day);
+    } catch (e) {}
+    if (document.getElementById('kyvoPmPop')) return false;
+    const L = (pl, en) => (EN ? en : pl);
+    const per = EN ? 'mo' : C.period;
+    const live = !!(C.enabled && /^https:\/\//.test((C.promoActive ? C.stripePaymentLinkPromo : C.stripePaymentLinkRegular) || ''));
+    const el = document.createElement('div');
+    el.id = 'kyvoPmPop';
+    el.className = 'pmpop';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-label', 'Kyvo Premium');
+    el.innerHTML = `
+      <div class="pmpop-card">
+        <button type="button" class="pmpop-x" data-pmclose aria-label="${L('Zamknij', 'Close')}">✕</button>
+        <img src="icons/icon-192.png" width="56" height="56" alt="">
+        <div class="pm-badge">${L('✦ PREMIUM · WKRÓTCE', '✦ PREMIUM · COMING SOON')}</div>
+        <h2>${L('Więcej sygnałów, mniej szumu', 'More signals, less noise')}</h2>
+        <div class="pm-price">${C.promoActive ? `<span class="pm-old">${esc(C.regularPrice)}</span><b>${esc(C.promoPrice)}</b>` : `<b>${esc(C.regularPrice)}</b>`}<span>/ ${esc(per)}</span></div>
+        ${C.promoActive ? `<div class="pm-promo">${L('Cena startowa dla pierwszych użytkowników', 'Launch price for early users')} · ${L('potem', 'later')} ${esc(C.regularPrice)} / ${esc(per)}</div>` : ''}
+        <div class="pm-trial">${L(esc(C.trialDays) + ' dni za darmo na start', esc(C.trialDays) + '-day free trial')} · ${L('anulujesz kiedy chcesz', 'cancel anytime')}</div>
+        <ul class="pmpop-li">
+          <li>${L('🔔 Alerty push, także gdy apka jest zamknięta', '🔔 Push alerts, even when the app is closed')}</li>
+          <li>${L('🧠 Więcej portfeli smart money i szybsze odświeżanie', '🧠 More smart money wallets and faster refresh')}</li>
+          <li>${L('𝕏 Viral z X częściej niż 3× dziennie', '𝕏 Viral from X more often than 3× a day')}</li>
+        </ul>
+        <button type="button" class="pm-cta" data-pmgo>${live ? L('Rozpocznij okres próbny', 'Start free trial') : L('Wkrótce — zapisz się przez Kontakt', 'Coming soon — join via Contact')}</button>
+        <a href="#premium" class="pmpop-more" data-pmclose>${L('Zobacz szczegóły i tabelę funkcji', 'See details and the feature table')}</a>
+        <div class="pmpop-note">${live ? '' : L('Płatności jeszcze nie działają — nic nie sprzedajemy i niczego nie pobieramy.', 'Payments aren\'t live yet — we don\'t sell or charge anything.')} ${L('Premium to nie porada finansowa.', 'Premium is not financial advice.')}</div>
+      </div>`;
+    el.setAttribute('translate', 'no');
+    document.body.appendChild(el);
+    const close = () => { el.classList.add('out'); setTimeout(() => el.remove(), 180); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey);
+    el.addEventListener('click', (e) => { if (e.target === el) close(); });
+    el.querySelectorAll('[data-pmclose]').forEach((b) => b.addEventListener('click', close));
+    el.querySelector('[data-pmgo]').onclick = () => { close(); location.hash = live ? 'premium' : 'kontakt'; };
+    setTimeout(() => el.querySelector('.pmpop-x').focus({ preventScroll: true }), 50);
     return true;
   }
 
@@ -518,5 +600,5 @@
     return true;
   }
 
-  window.KyvoLaunch = { renderPremium, renderContact, openOnboard, maybeOnboard, closeOnboard, renderHelp, renderLegal, legalLinks, clearData, isIOS, standalone };
+  window.KyvoLaunch = { maybePremiumPopup, openLangPicker, renderPremium, renderContact, openOnboard, maybeOnboard, closeOnboard, renderHelp, renderLegal, legalLinks, clearData, isIOS, standalone };
 })();

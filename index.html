@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_1">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_2">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -318,6 +318,34 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .pf-prog .spin{width:16px;height:16px;margin:0}
 @media(min-width:900px){#profilBody,#traderBody,#profilTop{max-width:640px;margin:0 auto}}
 
+/* v8.2: language picker, Premium pop-up, tweet facts/momentum, notification settings */
+.langpick{display:flex;align-items:center;justify-content:center;padding:24px}
+.lp-in{width:100%;max-width:400px;text-align:center}
+.lp-logo{border-radius:22px;box-shadow:0 10px 40px rgba(139,92,246,.35);margin-bottom:18px}
+.langpick h2{font-size:26px;margin:0 0 22px;line-height:1.2}.langpick h2 span{display:block;font-size:17px;color:#a1a1aa;font-weight:600;margin-top:4px}
+.lp-btn{display:flex;align-items:center;gap:16px;width:100%;padding:18px 20px;margin:0 0 12px;border-radius:18px;border:1px solid #2a2a35;background:#15151d;color:#fff;font:inherit;text-align:left;cursor:pointer;min-height:76px}
+.lp-btn.sug{border-color:#8b5cf6;background:linear-gradient(135deg,rgba(139,92,246,.22),rgba(34,211,238,.12))}
+.lp-btn:active{transform:scale(.98)}.lp-flag{font-size:34px;line-height:1}.lp-btn b{display:block;font-size:20px}.lp-btn small{display:block;color:#a1a1aa;font-size:13px;margin-top:2px}
+.lp-note{color:#8b8b9a;font-size:12.5px;line-height:1.5;margin-top:14px}
+.pmpop{position:fixed;inset:0;z-index:9998;background:rgba(5,5,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;animation:pmIn .18s ease}
+.pmpop.out{opacity:0;transition:opacity .18s}@keyframes pmIn{from{opacity:0}to{opacity:1}}
+.pmpop-card{position:relative;width:100%;max-width:400px;max-height:92vh;overflow:auto;background:radial-gradient(120% 80% at 50% 0,#2a1d55 0,#14141c 60%);border:1px solid #3b2d6e;border-radius:24px;padding:26px 20px 18px;text-align:center}
+.pmpop-card>img{display:block;margin:0 auto 8px;border-radius:14px}
+.pmpop-card h2{font-size:22px;margin:10px 0 6px}.pmpop-card .pm-price{justify-content:center}
+.pmpop-x{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:1px solid #3a3a48;background:#1d1d27;color:#fff;font-size:18px;cursor:pointer;line-height:1}
+.pmpop-x:hover{background:#2a2a38}.pmpop-li{list-style:none;padding:0;margin:12px 0;text-align:left;font-size:13.5px;line-height:1.5}.pmpop-li li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.pmpop-more{display:block;margin:10px 0 4px;font-size:13px}.pmpop-note{font-size:11.5px;color:#9a9aab;line-height:1.45;margin-top:8px}
+.tmeta{margin:6px 0 8px;font-size:12px;line-height:1.5;color:#c9c9d4}.tm-row{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.tm-eng span{white-space:nowrap}.tm-src{font-size:12.5px;font-weight:700;margin-top:6px}
+.tm-mom{margin-top:4px;padding:5px 8px;border-radius:9px;background:rgba(255,255,255,.04);font-size:11.5px}
+.mom-early{border-left:3px solid #4ade80}.mom-mid{border-left:3px solid #facc15}.mom-late{border-left:3px solid #fb923c}.mom-old{border-left:3px solid #f87171}
+.mchip{display:inline-block;margin:6px 0 4px;padding:4px 9px;border-radius:999px;font-size:11.5px;font-weight:700}
+.mchip.named{background:rgba(74,222,128,.14);color:#86efac;border:1px solid rgba(74,222,128,.35)}
+.mchip.spec{background:rgba(250,204,21,.12);color:#fde68a;border:1px solid rgba(250,204,21,.35)}
+.mdisc{font-size:11px;line-height:1.45;margin:0 0 6px}.vhint{font-size:11px;color:#b9b9c6;margin-top:2px}.momhelp{margin:0 0 10px}
+.nset .nrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.nset .nrow input{width:20px;height:20px;margin-top:2px;accent-color:#8b5cf6;flex:none}.nset .nrow b{display:block;font-size:13px}.nset .nrow small{display:block;color:#9a9aab;font-size:11.5px}
+.nset .nnote{font-size:11.5px;line-height:1.45;margin:8px 0}.nset .nok{color:#86efac;font-size:12px;margin:8px 0 6px}
 /* v8.1: language switch */
 .lang-sw{display:inline-flex;gap:2px;padding:2px;border-radius:999px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);vertical-align:middle}
 .lang-sw button{font-size:11px;font-weight:900;padding:4px 9px;border-radius:999px;color:var(--mut);background:none;border:0;cursor:pointer}
@@ -517,7 +545,7 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.1 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_1" style="display:none">KYVO_LIVE_v8_1</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.2 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_2" style="display:none">KYVO_LIVE_v8_2</span></div>
   </div>
 </div>
 
@@ -533,6 +561,7 @@ body.chrome-off .app{padding-bottom:0}
 <script src="auth-config.js" defer></script>
 <script src="premium-config.js" defer></script>
 <script src="contact-config.js" defer></script>
+<script src="push-config.js" defer></script>
 <script src="vendor/kyvo-crypto/kyvo-crypto.min.js" defer></script>
 <script src="vendor/lightweight-charts/lightweight-charts.standalone.production.js" defer></script>
 <script src="chart.js" defer></script>
@@ -541,6 +570,7 @@ body.chrome-off .app{padding-bottom:0}
 <script src="launch.js" defer></script>
 <script src="auth.js" defer></script>
 <script src="insights.js" defer></script>
+<script src="notify.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>
