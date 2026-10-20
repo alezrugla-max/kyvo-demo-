@@ -1,10 +1,10 @@
-/* Kyvo v8.2 — in-app + system notifications while Kyvo is open (also in a background tab).
+/* Kyvo v8.3 (v8.2 + 🏃 Runner type) — in-app + system notifications while Kyvo is open (also in a background tab).
    Types: "good" = a new coin enters Good Coins with a high Kyvo Check score; "tweets" = a new important tweet with a coin in the X snapshot.
    No server: everything runs in this browser. Background push with the app CLOSED needs a server → KyvoPush hooks (disabled by config). */
 (function () {
   'use strict';
   const SKEY = 'kyvo_notif_v1', GKEY = 'kyvo_seen_good_v1', TKEY = 'kyvo_seen_tw_v1';
-  const DEF = { good: true, tweets: true, minScore: 75 };
+  const DEF = { good: true, tweets: true, runner: true, minScore: 75 };
   let D = null;
   const T = (x) => (window.KyvoI18n ? window.KyvoI18n.t(x) : x);
   const EN = () => !!(window.KyvoI18n && window.KyvoI18n.isEn());
@@ -69,6 +69,41 @@
     } finally { goodBusy = false; }
   }
 
+  /* ---- 3) 🏃 Runner (v8.3): new coin runner or super-important tweet — deduped, max 3 per refresh ---- */
+  const RKEY = 'kyvo_seen_runner_v1';
+  function onRunner(items) {
+    if (!D || !items) return;
+    const st = load(RKEY, { at: 0, keys: {} });
+    const now = Date.now();
+    const all = (items.coins || []).concat(items.tweets || []);
+    const fresh = now - (st.at || 0) > 30 * 60e3; // first run / long pause: seed silently, no flood
+    const added = fresh ? [] : all.filter((x) => !st.keys[x.key]);
+    for (const x of all) st.keys[x.key] = st.keys[x.key] || now;
+    for (const k of Object.keys(st.keys)) if (now - st.keys[k] > 7 * 864e5) delete st.keys[k]; // per coin: max 1 first-pump alert (key chain:addr) + max 1 second-leg alert (key leg2:chain:addr) per 7 days
+    st.at = now;
+    save(RKEY, st);
+    if (S.runner === false || !added.length) return;
+    for (const x of added.slice(0, 3)) {
+      if (x.kind === 'coin' && x.leg2) {
+        const c = x.c;
+        send(`🔁 ${L('Kolejna fala', 'Second leg')}: $${c.symbol}${c.mcap ? ' @ ' + D.fmtUsd(c.mcap) + ' MC' : ''}`, x.why.slice(0, 3).join(', ').replace(/<[^>]+>/g, '') + '…', '#coin/' + encodeURIComponent(x.key.replace(/^leg2:/, '')), 'kyvo-leg2-' + x.key);
+      } else if (x.kind === 'coin') {
+        const c = x.c;
+        const ch = c.change && c.change.h1 != null ? (c.change.h1 >= 0 ? '+' : '') + Math.round(c.change.h1) + '%' : '';
+        const reason = x.why.slice(1, 3).join(', ');
+        const st = window.__kyvoStageOf ? window.__kyvoStageOf(c.mcap) : null;
+        if (x.early) {
+          send(`🏃 Runner${st ? ' ' + L('etap', 'stage') + ' ' + st.n : ''}: $${c.symbol} ${L('zaczyna pompować', 'starting to pump')}${c.mcap ? ' @ ' + D.fmtUsd(c.mcap) + ' MC' : ''}`, `vol 5m ↑, ${L('kupujący', 'buyers')} ↑ — ${x.why.slice(0, 3).join(', ').replace(/<[^>]+>/g, '')}`, '#coin/' + encodeURIComponent(x.key), 'kyvo-runner-' + x.key);
+          continue;
+        }
+        send(`🏃 Runner${st ? ' ' + L('etap', 'stage') + ' ' + st.n : ''}: $${c.symbol}${c.mcap ? ' @ ' + D.fmtUsd(c.mcap) + ' MC' : ''}`, `vol 1h ${D.fmtUsd(c.volume && c.volume.h1)}, ${ch}${reason ? ', ' + reason.replace(/<[^>]+>/g, '') : ''}`, '#coin/' + encodeURIComponent(x.key), 'kyvo-runner-' + x.key);
+      } else {
+        const sym = x.coin && x.coin.symbol ? '$' + x.coin.symbol : '';
+        send(`🏃 Runner: ${sym} — @${x.t.handle}`, `${x.views ? Math.round(x.views / 1000) + 'k views' : ''}${x.named ? '' : ', ' + L('spekulacja', 'speculative')}`, '#coin/' + encodeURIComponent((x.coin.chain || 'solana') + ':' + x.coin.address), 'kyvo-runner-' + x.key);
+      }
+    }
+  }
+
   /* ---- 2) new important tweet with a coin in the X snapshot ---- */
   function tweetItems(doc) {
     const out = [];
@@ -106,6 +141,7 @@
     const P = window.KYVO_PUSH_CONFIG || {};
     return `<div class="card nset" data-nset>
       <div class="h" style="font-size:14px;margin:0 0 6px">🔔 ${L('Powiadomienia', 'Notifications')}</div>
+      <label class="nrow"><input type="checkbox" data-nt="runner" ${S.runner !== false ? 'checked' : ''}><span><b>🏃 Runner</b><small>${L('najmocniejsze sygnały: ogromny rosnący wolumen, tysiące transakcji, super-ważne tweety (kilka–kilkanaście dziennie)', 'strongest signals: huge rising volume, thousands of txns, super-important tweets (a handful to ~20 a day)')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')} (≥ ${esc(S.minScore || 75)}/100)</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('z aktualizacji Viral z X (ok. 3× dziennie)', 'from the Viral from X update (about 3× a day)')}</small></span></label>
       <div class="mut nnote">${L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
@@ -130,7 +166,7 @@
     if (t) t.onclick = () => system('Kyvo', L('Test powiadomienia ✓', 'Test notification ✓'), location.href.split('#')[0] + '#more', 'kyvo-test');
   }
 
-  window.KyvoNotify = { init(deps) { D = deps; }, onGood, onViral, settingsHtml, wireSettings, settings: () => S, log: () => log, _send: send };
+  window.KyvoNotify = { init(deps) { D = deps; }, onGood, onViral, onRunner, settingsHtml, wireSettings, settings: () => S, log: () => log, _send: send };
 })();
 
 /* ---- KyvoPush: hooks for REAL background push (app closed). Disabled unless KYVO_PUSH_CONFIG.enabled. ---- */
@@ -152,7 +188,7 @@
         window.OneSignalDeferred.push(async (OneSignal) => {
           await OneSignal.init({ appId: C.onesignalAppId, serviceWorkerPath: 'sw.js', serviceWorkerParam: { scope: './' } });
           await OneSignal.User.PushSubscription.optIn();
-          OneSignal.User.addTags({ good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' });
+          OneSignal.User.addTags({ good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' });
         });
         return true;
       }

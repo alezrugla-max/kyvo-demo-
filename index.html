@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_2">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_3">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -318,6 +318,64 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .pf-prog .spin{width:16px;height:16px;margin:0}
 @media(min-width:900px){#profilBody,#traderBody,#profilTop{max-width:640px;margin:0 auto}}
 
+/* v8.3: real token logos, upside (speculative), why it's here, room to run */
+.tok.mono{box-shadow:none}
+img.tok,img.av{color:transparent}
+.upl{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin-top:5px;font-size:11.5px;line-height:1.35;padding:4px 7px;border-radius:9px;background:#ffffff08;box-shadow:inset 0 0 0 1px #ffffff10;cursor:pointer;max-width:100%}
+.upl:hover{background:#ffffff0d}.upl.open .upl-x{transform:rotate(180deg)}
+.upl-x{margin-left:auto;opacity:.6;transition:transform .15s}
+.ups-v{font-weight:800}.ups-v.ups-high{color:var(--up)}.ups-v.ups-med{color:var(--acc2)}.ups-v.ups-low{color:#c9c9d6}
+.ups-s{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;text-transform:uppercase;letter-spacing:.3px}
+.ups-s.ups-high{background:#34E07A1f;color:var(--up)}.ups-s.ups-med{background:#22D3EE1a;color:var(--acc2)}.ups-s.ups-low{background:#ffffff12;color:#bbb}
+.ups-r{color:var(--dn);font-weight:800}.ups-n{color:var(--mut);font-weight:700}
+.verd{font-weight:700;white-space:nowrap}.verd-up{color:var(--up)}.verd-neutral{color:#c9c9d6}.verd-late{color:var(--warn)}.verd-risk{color:var(--dn)}
+.upx{margin-top:6px;padding:8px 10px;border-radius:10px;background:#0d0d13;box-shadow:inset 0 0 0 1px #ffffff12;font-size:12px;cursor:default}
+.upx-h{font-weight:800;font-size:12.5px;margin:6px 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.upx-f{margin-top:8px;font-size:11px;color:var(--mut);line-height:1.4}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.pc ul{margin:2px 0 0;padding-left:16px;line-height:1.45}.pc .up{color:var(--up)}.pc .dn{color:var(--dn)}
+@media(max-width:520px){.pc{grid-template-columns:1fr}}
+.upcard .why-l{font-size:12.5px}
+.upbig{display:flex;flex-wrap:wrap;align-items:center;gap:6px;width:100%;text-align:left;font:inherit;font-size:15px;color:inherit;background:#ffffff08;border:0;box-shadow:inset 0 0 0 1px #ffffff14;border-radius:12px;padding:10px 12px;cursor:pointer}
+.upsheet{position:fixed;inset:0;z-index:9999;background:#000a;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s}
+.upsheet.on{opacity:1;pointer-events:auto}
+.upsheet-b{width:100%;max-width:560px;max-height:86vh;overflow:auto;background:var(--card);border-radius:18px 18px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom));font-size:13px;line-height:1.5;box-shadow:0 -8px 40px #0008;transform:translateY(20px);transition:transform .18s}
+.upsheet.on .upsheet-b{transform:none}
+.upsheet-b ol{padding-left:18px;margin:6px 0}.upsheet-b li{margin:5px 0}
+.upsheet-g{width:40px;height:4px;border-radius:4px;background:#fff3;margin:2px auto 10px}
+.upsheet-d{margin-top:10px;padding:8px 10px;border-radius:10px;background:#FF546814;color:#ffb3bd;font-weight:700}
+@media(min-width:900px){.upsheet{align-items:center}.upsheet-b{border-radius:18px}}
+.hz{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:2px}
+.hz th{font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:var(--mut);text-align:left;font-weight:700;padding:2px 4px}
+.hz td{padding:4px;border-top:1px solid #ffffff0d;white-space:nowrap}
+.hz-c{display:inline-block;width:34px;height:5px;border-radius:3px;background:#ffffff14;vertical-align:middle;overflow:hidden}.hz-c i{display:block;height:100%;background:var(--acc2)}
+@media(max-width:420px){.hz .mut{display:none}.hz-c{width:24px}}
+.pcol .upl{font-size:10.5px}
+.gpass{margin-top:4px;font-size:11px;color:var(--up);font-weight:700}
+.gates{display:grid;gap:4px;margin:2px 0 8px}.gate{font-size:11.5px;line-height:1.4;padding:5px 8px;border-radius:9px;background:#ffffff06}.gate.ok{box-shadow:inset 3px 0 0 var(--up)}.gate.no{box-shadow:inset 3px 0 0 var(--dn)}
+.rwhy{margin-top:4px;font-size:11.5px;font-weight:700;color:#ffb86b;line-height:1.4}
+.row.runner{box-shadow:inset 3px 0 0 #ff8a3d}
+.runner-tw{margin-top:8px;font-size:12.5px}.rtw-h{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.rtw-t{margin:6px 0;line-height:1.45;color:#ddd}
+.seg-runner{color:#ffb86b}
+/* v8.3 runner stages + track record */
+.rstage{margin-top:3px;font-size:11.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rstage b{color:#ffb86b}
+.stbar{display:inline-flex;gap:2px;vertical-align:middle}
+.stbar i{width:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}
+.stbar i.on{background:linear-gradient(90deg,#3ddc97,#ffb86b)}
+.rstage.st1 .stbar i.on{background:#3ddc97}.rstage.st2 .stbar i.on{background:#8be36b}.rstage.st3 .stbar i.on{background:#e8d45a}.rstage.st4 .stbar i.on{background:#ffb86b}.rstage.st5 .stbar i.on{background:#ff8a3d}
+.rmc{font-size:12px;margin-top:2px}
+.rstages{flex-wrap:wrap;gap:6px}.rstages .fbtn[disabled]{opacity:.4}
+.trk-g{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;margin-top:3px}
+.trk-sum{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center;padding:10px 6px}
+.trk-sum b{display:block;font-size:16px}.trk-sum small{font-size:10.5px;color:var(--mut,#9aa)}
+@media (max-width:520px){.trk-sum{grid-template-columns:repeat(3,1fr)}}
+.seg-track{color:#7fd1ff}
+.leg2b{font-size:10.5px;font-weight:800;color:#7fd1ff;background:rgba(127,209,255,.12);border-radius:6px;padding:1px 6px;margin-left:4px;white-space:nowrap}
+.row.runner.leg2{box-shadow:inset 3px 0 0 #7fd1ff}
+.leg2b.early{color:#3ddc97;background:rgba(61,220,151,.12)}
+.qhide{font-size:11.5px;margin:6px 2px}
+.hotb{display:inline-block;margin-top:5px;font-size:11px;font-weight:800;color:#ffb86b;background:#ff8a3d1a;box-shadow:inset 0 0 0 1px #ff8a3d40;padding:2px 8px;border-radius:999px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g8{margin-top:5px;font-size:13px;line-height:1.3}.g8 .up{color:var(--up)}.g8 .dn{color:var(--dn)}
 /* v8.2: language picker, Premium pop-up, tweet facts/momentum, notification settings */
 .langpick{display:flex;align-items:center;justify-content:center;padding:24px}
 .lp-in{width:100%;max-width:400px;text-align:center}
@@ -507,6 +565,8 @@ body.chrome-off .app{padding-bottom:0}
     <div class="chainsw" id="chainSwitch" aria-label="Chain"></div>
     <div class="seg" id="seg">
       <button data-view="pulse" class="on">Pulse</button>
+      <button data-view="runner" class="seg-runner" translate="no">🏃 Runner <span class="wcount" data-runner-count style="display:none"></span></button>
+      <button data-view="track" class="seg-track">📊 Wyniki</button>
       <button data-view="rank" class="seg-rank">🏆 Ranking</button>
       <button data-view="watch">⭐ Watchlista <span class="wcount" data-watch-count style="display:none"></span></button>
       <button data-view="hot">Hot</button>
@@ -545,7 +605,7 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.2 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_2" style="display:none">KYVO_LIVE_v8_2</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.3 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_3" style="display:none">KYVO_LIVE_v8_3</span></div>
   </div>
 </div>
 

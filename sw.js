@@ -2,7 +2,7 @@
 /* v8.2 background push (DISABLED until push_plan.md is done). For OneSignal, uncomment the next line so OneSignal shares this SW:
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 */
-const C = 'kyvo-v8-2';
+const C = 'kyvo-v8-3';
 const A = [
   './', 'index.html', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
@@ -20,7 +20,7 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
   const isApi = /dexscreener\.com|geckoterminal\.com|solana\.com|publicnode\.com|binance|blxrbdn\.com|48\.club|bnbchain\.org|blockscout\.com|robinhood\.com|rugcheck\.xyz|gopluslabs\.io/.test(u.hostname)
-    || /\/data\/(x_viral|smart_money|leaderboard)\.json/.test(u.pathname)
+    || /\/data\/(x_viral|smart_money|leaderboard|track_record)\.json/.test(u.pathname)
     || /(auth|premium|contact|push)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));

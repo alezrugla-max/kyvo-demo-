@@ -16,7 +16,7 @@ on:
         type: boolean
         default: false
 permissions:
-  contents: read                  # no commits: dedupe state is kept in actions/cache
+  contents: write                 # v8.3: only to commit data/track_record.json (at most ~hourly); dedupe state stays in actions/cache
 concurrency:
   group: kyvo-calls
   cancel-in-progress: false
@@ -27,10 +27,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools
+          sparse-checkout: |
+            tools
+            data
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4     # v8.3: Good Coins rule = tools/upside_estimate.js (same code as the app)
+        with:
+          node-version: "20"
       - name: Restore dedupe state
         uses: actions/cache/restore@v4
         with:
@@ -49,7 +54,26 @@ jobs:
         env:
           DISCORD_WEBHOOK_SOL: ${{ secrets.DISCORD_WEBHOOK_SOL }}
           DISCORD_WEBHOOK_BSC: ${{ secrets.DISCORD_WEBHOOK_BSC }}
-        run: python3 tools/discord_calls.py ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+        run: python3 tools/discord_calls.py --flags-out .kyvo_calls/flags.json ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Track record (Wyniki) - log flagged coins + performance since flag
+        id: track
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.news == '' }}
+        run: python3 tools/track_record.py --flags .kyvo_calls/flags.json --out data/track_record.json
+      - name: Commit track record when data/track_record.json changed
+        if: ${{ steps.track.outputs.commit == 'true' && github.event.inputs.dry_run != 'true' }}
+        run: |
+          git config user.name "kyvo-track-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/track_record.json
+          # Commit only when the file bytes actually changed.
+          if git diff --cached --quiet; then
+            echo "data/track_record.json unchanged"
+            exit 0
+          fi
+          # [skip ci] applies only to Actions workflows triggered by push or pull_request.
+          # This repo's Pages source is the main branch (pages-build-deployment, event: dynamic), so that deploy still runs.
+          git commit -m "track record: update [skip ci]"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
       - name: YouTube new videos / live (public RSS, @calytonnx)
         if: ${{ github.event_name == 'schedule' || github.event.inputs.news == '' }}
         env:
