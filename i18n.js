@@ -16,6 +16,16 @@
   }
   const lang = detect();
   const DICT = {
+"Brak połączenia z danymi rankingu — pokazuję ostatnio zapisany ranking.": "Can't reach the ranking data — showing the last saved ranking.",
+"Najświeższe migracje": "Freshest migrations",
+"Momentum teraz": "Momentum now",
+"Świeżo po migracji na": "Freshly migrated to",
+"⏱ = czas od migracji": "⏱ = time since migration",
+"Czas od migracji (nowa pula na DEX)": "Time since migration (new DEX pool)",
+"Udział kupujących": "Buyer share",
+"Transakcje w 5 min": "Transactions in 5 min",
+"Zmiana ceny 5 min": "Price change 5 min",
+"migr.": "migr.",
 "Twoje filtry": "Your filters",
 "filtry Kyvo": "Kyvo filters",
 "blisko ukończenia krzywej": "close to completing the curve",

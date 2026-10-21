@@ -2,42 +2,54 @@
 /* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
    Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
 const PUSH = !!self.KYVO_ONESIGNAL;
-const C = 'kyvo-v8-4';
+const C = 'kyvo-v8-5';
 const A = [
-  './', 'index.html', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
+  './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
   'data/x_viral.json', 'data/smart_money.json', 'data/leaderboard.json'
 ];
+// v8.5: precache with cache:'reload' — v8.4 and older used addAll(), which could take 10-min-old files from the HTTP cache
+// and then serve them cache-first until the NEXT release (that is how desktop browsers kept showing an old Kyvo).
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(C).then(c => c.addAll(A)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(C).then(c => Promise.all(A.map(u => fetch(new Request(u, { cache: 'reload' })).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+    // pages still running an OLD app version reload once onto the new one
+    .then(() => self.clients.matchAll({ type: 'window' })).then(cs => Promise.all(cs.map(c => { try { return c.navigate(c.url); } catch (err) { return null; } }))).catch(() => {}));
 });
+self.addEventListener('message', e => { if (e.data === 'kyvo-skip-waiting') self.skipWaiting(); });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
   const isApi = /dexscreener\.com|geckoterminal\.com|solana\.com|publicnode\.com|binance|blxrbdn\.com|48\.club|bnbchain\.org|blockscout\.com|robinhood\.com|rugcheck\.xyz|gopluslabs\.io/.test(u.hostname)
-    || /\/data\/(x_viral|smart_money|leaderboard|track_record)\.json/.test(u.pathname)
+    || /\/data\/(x_viral|smart_money|leaderboard|track_record)\.json/.test(u.pathname) || /version\.json$/.test(u.pathname)
     || /(auth|premium|contact|push)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
   }
-  e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then(cached => {
-      const net = fetch(e.request).then(r => {
-        if (r && r.ok && u.origin === self.location.origin) {
-          const cp = r.clone();
-          caches.open(C).then(c => c.put(e.request, cp));
-        }
+  // v8.5: app shell = NETWORK-FIRST with revalidation (ETag → tiny 304), cache only as offline fallback.
+  if (u.origin === self.location.origin) {
+    e.respondWith((async () => {
+      const cache = await caches.open(C);
+      try {
+        const ctl = new AbortController();
+        const t = setTimeout(() => ctl.abort(), 5000);
+        const r = await fetch(e.request, { cache: 'no-cache', signal: ctl.signal });
+        clearTimeout(t);
+        if (r && r.ok) cache.put(e.request, r.clone());
         return r;
-      }).catch(() => cached || caches.match('index.html'));
-      return cached || net;
-    })
-  );
+      } catch (err) {
+        return (await cache.match(e.request, { ignoreSearch: true })) || (e.request.mode === 'navigate' ? cache.match('index.html') : Response.error());
+      }
+    })());
+    return;
+  }
+  e.respondWith(caches.match(e.request).then(c => c || fetch(e.request)));
 });
 self.addEventListener('notificationclick', e => {
   if (PUSH && !(e.notification.data && e.notification.data.kyvo)) return; // OneSignal handles its own clicks

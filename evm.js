@@ -5,6 +5,7 @@
    To add another EVM chain later: add an entry to CHAINS with mode 'logs' (RPC with topic getLogs) or 'blockscout'. */
 (function () {
   'use strict';
+  const BIG0 = typeof BigInt === 'function' ? BigInt(0) : 0; // v8.5: no 0n literal (older Safari can't parse it)
   const TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
   const WITHDRAWAL = '0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65';
   const CHAINS = {
@@ -31,9 +32,9 @@
   const lc = (s) => String(s || '').toLowerCase();
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const pad32 = (a) => '0x' + '0'.repeat(24) + lc(a).slice(2);
-  const big = (h) => { try { return BigInt(h && h !== '0x' ? h : '0x0'); } catch (e) { return 0n; } };
+  const big = (h) => { try { return BigInt(h && h !== '0x' ? h : '0x0'); } catch (e) { return BIG0; } };
   const toNum = (raw, dec) => { // BigInt -> float with decimals, precision-safe enough for UI
-    const neg = raw < 0n; let v = neg ? -raw : raw;
+    const neg = raw < BIG0; let v = neg ? -raw : raw;
     const d = BigInt(10) ** BigInt(dec || 0);
     const n = Number(v / d) + Number(v % d) / Number(d);
     return neg ? -n : n;
@@ -189,7 +190,7 @@
       t.from = lc(tx.from);
       t.ok = rc.status === '0x1';
       t.v = t.from === me ? big(tx.value).toString() : '0';
-      let wd = 0n, fm = 0n;
+      let wd = BIG0, fm = BIG0;
       for (const L of rc.logs || []) {
         const a = lc(L.address), t0 = L.topics && L.topics[0];
         if (a === ch.wrapped && t0 === WITHDRAWAL) wd += big(L.data);
@@ -209,7 +210,7 @@
     calls2.push(q('eth_getBalance', [me, 'latest']));
     const hr = await batched(ch, calls2, 25, 2);
     cache.holdings = hl.map((t, i) => ({ mint: t, raw: (hr[i] && hr[i].result) || '0x0', dec: cache.dec[t] || 18 }))
-      .filter((h) => big(h.raw) > 0n).map((h) => ({ mint: h.mint, tok: toNum(big(h.raw), h.dec) }));
+      .filter((h) => big(h.raw) > BIG0).map((h) => ({ mint: h.mint, tok: toNum(big(h.raw), h.dec) }));
     const nb = hr[hl.length] && hr[hl.length].result;
     cache.nativeBal = nb ? toNum(big(nb), 18) : null;
     cache.windowNote = `ok. ostatnie ${Math.max(1, Math.round(((bn - cache.fromBlock) * ch.blockSec) / 3600))}h`;
@@ -249,7 +250,7 @@
     for (const x of (il && Array.isArray(il.result) ? il.result : [])) {
       const h = lc(x.hash || x.transactionHash);
       const v = big('0x' + BigInt(x.value || '0').toString(16));
-      internal[h] = (internal[h] || 0n) + (lc(x.to) === me ? v : lc(x.from) === me ? -v : 0n);
+      internal[h] = (internal[h] || BIG0) + (lc(x.to) === me ? v : lc(x.from) === me ? -v : BIG0);
     }
     const seen = new Set();
     const touched = new Set();
@@ -277,7 +278,7 @@
       t.e = 1;
       const toks = Object.entries(t.d || {}).filter(([k]) => k !== ch.wrapped && !ch.stables.includes(k));
       const quoteSeen = Object.keys(t.d || {}).some((k) => k === ch.wrapped || ch.stables.includes(k));
-      if (toks.length === 1 && BigInt(toks[0][1]) < 0n && !quoteSeen && t.in == null) needBal.push(h); // sell for native ETH, no internal tx indexed
+      if (toks.length === 1 && BigInt(toks[0][1]) < BIG0 && !quoteSeen && t.in == null) needBal.push(h); // sell for native ETH, no internal tx indexed
     }
     // native ETH received in a sell: balance(b) - balance(b-1) (+fee) from the public RPC (recent blocks only)
     if (needBal.length) {

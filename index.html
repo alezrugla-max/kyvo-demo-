@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_4">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_5">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -93,7 +93,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1c1c24;color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:50;box-shadow:0 8px 30px #000a,inset 0 0 0 1px #fff2;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .tb{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;background:#0a0a10ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 8px max(8px,env(safe-area-inset-bottom))}
-.tb nav{width:100%;max-width:520px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.tb nav{width:100%;max-width:560px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
 .tb button{padding:8px 4px;border-radius:12px;color:var(--mut);font-size:11px;font-weight:700}
 .tb button.on{color:#fff;background:#ffffff0d}
 .tb button span{display:block;font-size:16px;margin-bottom:2px}
@@ -235,6 +235,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .rk-row:last-child{border-bottom:0}
 .rk-head{cursor:default;font-size:10.5px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
 .rk-n{width:22px;text-align:center;font-weight:800;color:var(--mut);flex:none}
+.sigpill{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.06);margin-left:6px;color:var(--mut)}.sigpill.up{color:var(--up,#2ecc71)}.sigpill.dn{color:var(--dn,#ff5d5d)}.migsort{margin:0 0 8px}
 .rk-mv{font-size:9px;font-weight:800;width:22px;margin-left:-4px;flex:none;text-align:center}.rk-mv.up{color:var(--up,#2ecc71)}.rk-mv.dn{color:var(--dn,#ff5d5d)}.rk-mv.new{color:#7aa7ff}
 .rk-n.top1{color:#FFD54A}.rk-n.top2{color:#cfd6e4}.rk-n.top3{color:#E59866}
 .av{border-radius:50%;object-fit:cover;background:#222;flex:none}
@@ -356,7 +357,10 @@ img.tok,img.av{color:transparent}
 .rwhy{margin-top:4px;font-size:11.5px;font-weight:700;color:#ffb86b;line-height:1.4}
 .row.runner{box-shadow:inset 3px 0 0 #ff8a3d}
 .runner-tw{margin-top:8px;font-size:12.5px}.rtw-h{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.rtw-t{margin:6px 0;line-height:1.45;color:#ddd}
-.seg-runner{color:#ffb86b}
+.seg button.seg-runner{color:#fff;background:linear-gradient(135deg,#f97316bb,#facc1588);box-shadow:inset 0 0 0 1px #ffffff33;font-weight:800}
+.seg button.seg-runner.on{background:linear-gradient(135deg,#f97316,#facc15);color:#111}
+.tb button.tb-runner span{filter:drop-shadow(0 0 4px #f97316)}
+.tb button.tb-runner.on{color:#facc15}
 /* v8.3 runner stages + track record */
 .rstage{margin-top:3px;font-size:11.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .rstage b{color:#ffb86b}
@@ -606,18 +610,20 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.4 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_4" style="display:none">KYVO_LIVE_v8_4</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.5 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_5" style="display:none">KYVO_LIVE_v8_5</span></div>
   </div>
 </div>
 
 <nav class="tb"><nav>
   <button data-tab="hot" class="on"><span>⚡</span>Pulse</button>
+  <button data-tab="runner" class="tb-runner" translate="no"><span>🏃</span>Runner</button>
   <button data-tab="viral"><span>𝕏</span>Viral</button>
   <button data-tab="rank" class="tb-center" aria-label="Ranking traderów"><span>🏆</span>Ranking</button>
   <button data-tab="search"><span>⌕</span>Szukaj</button>
   <button data-tab="profil"><span>👤</span>Profil</button>
 </nav></nav>
 <div class="toast" id="toast"></div>
+<script src="compat.js"></script>
 <script src="i18n.js" defer></script>
 <script src="auth-config.js" defer></script>
 <script src="premium-config.js" defer></script>

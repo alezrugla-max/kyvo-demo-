@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_4 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_5 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -7,8 +7,9 @@
   const CACHE_KEY = 'kyvo_coins_v7';
   const FILT_KEY = 'kyvo_filters_v7';
   const CHAIN_KEY = 'kyvo_chain_v7';
-  const REFRESH_MS = 45_000;
-  const FALLBACK_IMG = 'kyvo_mark.svg';
+  const REFRESH_MS = 45000;
+  // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
+  const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
   const MVP_MARKER = 'KYVO_LIVE_v8_3';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
@@ -181,8 +182,13 @@
   async function loadLeaderboard() {
     try {
       leaderboard = await fetchJson('data/leaderboard.json?d=' + Math.floor(Date.now() / 3600000));
+      if (!leaderboard || !Array.isArray(leaderboard.leaders)) throw new Error('bad leaderboard');
+      try { localStorage.setItem('kyvo_lb_last', JSON.stringify(leaderboard)); } catch (e) {}
     } catch (e) {
-      leaderboard = { leaders: [], updated_at: null };
+      // v8.5: show the last ranking this browser saw instead of an empty screen
+      let last = null;
+      try { last = JSON.parse(localStorage.getItem('kyvo_lb_last') || 'null'); } catch (e2) { last = null; }
+      leaderboard = last && Array.isArray(last.leaders) ? Object.assign(last, { _offline: true }) : { leaders: [], updated_at: null, _failed: true };
     }
   }
 
@@ -471,9 +477,10 @@
     if (!/pump$/i.test(addr) && dexId !== 'pumpfun' && dexId !== 'pumpswap') return null;
     return 'https://images.pump.fun/coin-image/' + encodeURIComponent(addr) + '?variant=86x86';
   }
+  let MONO_STRIP = null; try { MONO_STRIP = new RegExp('[^\\p{L}\\p{N}]', 'gu'); } catch (e) { MONO_STRIP = null; } // old Safari: no \p{} → ASCII fallback
   const MONO_COL = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#ef4444', '#84cc16', '#6366f1', '#f97316'];
   function monogram(sym, addr) {
-    const t = String(sym || '?').replace(/[^\p{L}\p{N}]/gu, '').slice(0, 2).toUpperCase() || '?';
+    const t = Array.from(String(sym || '?').replace(MONO_STRIP || /[\s$!-\/:-@\[-`{-~]/g, '')).slice(0, 2).join('').toUpperCase() || '?';
     let h = 0; for (const ch of String(addr || sym || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
     const col = MONO_COL[h % MONO_COL.length];
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="${col}"/><text x="32" y="41" font-family="Arial,Helvetica,sans-serif" font-size="${t.length > 1 ? 24 : 30}" font-weight="700" text-anchor="middle" fill="#fff">${t.replace(/[<&>"]/g, '')}</text></svg>`;
@@ -931,6 +938,9 @@
     tight.sort((a, b) => (b.curveEst || 0) - (a.curveEst || 0) || (b.mcap || 0) - (a.mcap || 0));
     return qualityFilter(tight, 'stretch');
   }
+  let migSort = localStorage.getItem('kyvo_mig_sort') === 'mom' ? 'mom' : 'fresh';
+  document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-migsort]'); if (!b) return; migSort = b.getAttribute('data-migsort'); localStorage.setItem('kyvo_mig_sort', migSort); setView(view); });
+  function migSortHtml() { return `<div class="rk-per migsort">${[['fresh', 'Najświeższe migracje'], ['mom', 'Momentum teraz']].map(([k, t]) => `<button type="button" data-migsort="${k}" class="${migSort === k ? 'on' : ''}">${t}</button>`).join('')}</div>`; }
   function listMigrated(baseFiltTab) {
     if (!chainSupportsMigrated(activeChain)) return [];
     const tab = baseFiltTab || 'migrated';
@@ -941,7 +951,11 @@
       return c.migrated;
     });
     list = applyFilters(list, tab);
-    list.sort((a, b) => (b.pairCreatedAt || 0) - (a.pairCreatedAt || 0));
+    if (migSort === 'mom') {
+      const mo = (c) => { const b = c.buysM5 || 0, se = c.sellsM5 || 0, v5 = (c.volume && c.volume.m5) || 0, m5 = (c.change && c.change.m5) || 0;
+        return Math.log10(1 + v5) * (0.5 + (b + se ? b / (b + se) : 0.5)) + Math.max(-1, Math.min(1, m5 / 20)); };
+      list.sort((a, b) => mo(b) - mo(a));
+    } else list.sort((a, b) => (b.pairCreatedAt || 0) - (a.pairCreatedAt || 0));
     return qualityFilter(list, 'migrated');
   }
   let goodPending = 0;
@@ -1268,10 +1282,27 @@
     if (m < 1440) return 'na liście od ' + Math.floor(m / 60) + ' h';
     return 'na liście od ' + Math.floor(m / 1440) + ' d';
   }
+  /* v8.5: compact, useful signal instead of "⏱ 1m · na liście od <1 min" (both said the same thing on fresh lists):
+     age (or time since migration) + buyer share + 5-min activity + short-term momentum. */
   function rowTimeHtml(c, listId) {
     const age = ageFrom(c.pairCreatedAt);
-    const fs = seenSince(listId, keyOf(c));
-    return `<span class="tm"><span class="agepill" title="Wiek pary (od utworzenia)">⏱ ${esc(age)}</span>${fs ? `<span class="onlist" title="Od kiedy coin jest w tej zakładce (zapamiętane w tej przeglądarce)">${onListLabel(fs)}</span>` : ''}</span>`;
+    const mig = /^migrated:/.test(listId || '');
+    const b5 = c.buysM5, s5 = c.sellsM5, bh = c.buysH1, sh = c.sellsH1;
+    const useM5 = b5 != null && s5 != null && b5 + s5 >= 5;
+    const B = useM5 ? b5 : bh, S = useM5 ? s5 : sh;
+    let flow = '';
+    if (B != null && S != null && B + S > 0) {
+      const share = Math.round((B / (B + S)) * 100);
+      flow = `<span class="sigpill ${share >= 60 ? 'up' : share <= 40 ? 'dn' : ''}" title="Udział kupujących (${useM5 ? '5 min' : '1 h'})">${share >= 50 ? '🟢' : '🔴'} ${share}% ${useM5 ? '5m' : '1h'}</span>`;
+    }
+    const tx = useM5 ? b5 + s5 : null;
+    const act = tx != null ? `<span class="sigpill" title="Transakcje w 5 min">⚡ ${tx} tx</span>` : '';
+    const m5 = c.change && c.change.m5;
+    const mom = m5 != null && isFinite(m5) && Math.abs(m5) >= 1 ? `<span class="sigpill ${m5 > 0 ? 'up' : 'dn'}" title="Zmiana ceny 5 min">${m5 > 0 ? '↗' : '↘'} ${m5 > 0 ? '+' : ''}${Math.round(m5)}% 5m</span>` : '';
+    // "na liście od" only where it adds information (lists that are not sorted by age, after ≥ 10 min)
+    const fs = /^(new|migrated|stretch|pulse):/.test(listId || '') ? null : seenSince(listId, keyOf(c));
+    const onl = fs && Date.now() - fs >= 10 * 60e3 ? `<span class="onlist" title="Od kiedy coin jest w tej zakładce">${onListLabel(fs)}</span>` : '';
+    return `<span class="tm"><span class="agepill" title="${mig ? 'Czas od migracji (nowa pula na DEX)' : 'Wiek pary (od utworzenia)'}">⏱ ${mig ? 'migr. ' : ''}${esc(age)}</span>${flow}${act}${mom}${onl}</span>`;
   }
 
   function coinRow(c, opts) {
@@ -1399,6 +1430,7 @@
       ${swipe}
       <div class="h">${esc(title)} <span class="badge live">LIVE</span> <span class="mut" style="font-weight:600;font-size:12px">${list.length}</span></div>
       <div class="sub">${esc(sub || '')} · ${esc(filtSummary(opts.filtTab || view))} · ${esc(sourceLabel || 'DexScreener')}</div>
+      ${opts.topHtml || ''}
       ${opts.hideNote ? `<div class="card" style="font-size:12.5px;color:var(--warn)">${esc(opts.hideNote)}</div>` : ''}
       ${
         list.length
@@ -1427,9 +1459,9 @@
     return 'pump.fun · blisko ukończenia krzywej';
   }
   function migrTip() {
-    if (activeChain === 'bsc') return 'Niedawno przeszły na PancakeSwap';
-    if (activeChain === 'all') return 'Niedawno przeszły na DEX (PumpSwap, Raydium, PancakeSwap…)';
-    return 'Niedawno na PumpSwap / Raydium / Meteora…';
+    if (activeChain === 'bsc') return 'Świeżo po migracji na PancakeSwap · ⏱ = czas od migracji';
+    if (activeChain === 'all') return 'Świeżo po migracji na DEX · ⏱ = czas od migracji';
+    return 'Świeżo po migracji na PumpSwap / Raydium / Meteora · ⏱ = czas od migracji';
   }
   function newTip() {
     const ch = CHAIN_LABEL[activeChain] || activeChain;
@@ -1449,6 +1481,7 @@
       <div class="pcol">
         <h3>${esc(title)} <span class="badge live">${list.length}</span></h3>
         <div class="mut" style="font-size:11px;margin-bottom:8px">${esc(tip)}</div>
+        ${listKey === 'migrated' && list.length ? migSortHtml() : ''}
         ${qualityNote(listKey)}
         ${
           list.length
@@ -1502,6 +1535,7 @@
       renderList(listMigrated('migrated'), 'Migrated', migrTip(), {
         filtTab: 'migrated',
         swipeTabs: true,
+        topHtml: migSortHtml(),
         rowOpts: { showDex: true },
         footnote: qualityNote('migrated'),
       });
@@ -1815,7 +1849,7 @@
       const ok = ageHof(at) <= 72 && (kind === 'named' ? !dumped(coins, at) : kind === 'speculative' ? views >= 300000 && !dumped(coins, at) : views >= 1000000);
       if (!ok) qDrop.posts++;
       return ok;
-    }).sort((a, b) => (postCoins(b).kind === 'named') - (postCoins(a).kind === 'named') || (b.metrics?.views || b.metrics?.likes || 0) - (a.metrics?.views || a.metrics?.likes || 0));
+    }).sort((a, b) => (postCoins(b).kind === 'named') - (postCoins(a).kind === 'named') || ((b.metrics && (b.metrics.views || b.metrics.likes)) || 0) - ((a.metrics && (a.metrics.views || a.metrics.likes)) || 0));
     const tweets = (viral.trader_tweets || []).filter((t) => { const at = t.posted_at || t.created_at; const ok = ageHof(at) <= 7 * 24 && !dumped(t.coins || [], at); if (!ok) qDrop.traders++; return ok; })
       .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
     const qNote = (n) => (n ? `<div class="qhide mut" translate="no">✨ ${window.KyvoI18n && window.KyvoI18n.isEn() ? `Hidden ${n} low-signal items (no coin and low reach, too old, or the coin already dumped).` : `Ukryto ${n} słabych pozycji (bez coina i mały zasięg, za stare albo coin już spadł).`}</div>` : '');
@@ -1925,7 +1959,7 @@
     const leaders = ((leaderboard && leaderboard.leaders) || []).slice();
     leaders.sort((a, b) => {
       const pa = pnlOf(a, per), pb = pnlOf(b, per);
-      if (pa == null && pb == null) return (pnlOf(b, '30d') ?? -1e18) - (pnlOf(a, '30d') ?? -1e18);
+      if (pa == null && pb == null) { const b30 = pnlOf(b, '30d'), a30 = pnlOf(a, '30d'); return (b30 == null ? -1e18 : b30) - (a30 == null ? -1e18 : a30); }
       if (pa == null) return 1;
       if (pb == null) return -1;
       return pb - pa;
@@ -1944,7 +1978,8 @@
     document.body.classList.remove('pulse-on');
     const body = $('#rankBody');
     if (!leaderboard || !(leaderboard.leaders || []).length) {
-      body.innerHTML = `<div class="h">Ranking</div><div class="empty">Ranking jest chwilowo niedostępny — spróbuj za kilka minut.</div>`;
+      body.innerHTML = `<div class="h">Ranking</div><div class="empty">Ranking jest chwilowo niedostępny — spróbuj za kilka minut.<div style="margin-top:8px"><button class="pill" id="rankRetry">Spróbuj ponownie</button></div></div>`;
+      const rb = $('#rankRetry'); if (rb) rb.onclick = () => loadLeaderboard().then(renderRank);
       return;
     }
     const per = rankPeriod;
@@ -1976,6 +2011,7 @@
       ${leaderboard.version >= 2
         ? `<div class="sub"><span>Zaktualizowano:</span> <b>${esc(new Date(leaderboard.updated_at).toLocaleString(document.documentElement.lang === 'en' ? 'en-GB' : 'pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</b> · <span>Odświeżane automatycznie co 6 godzin</span> · <span>Solana, źródło:</span> <a href="${esc(leaderboard.source_url || 'https://kolscan.io/leaderboard')}" target="_blank" rel="noopener">kolscan.io</a></div>`
         : `<div class="sub">Zrealizowany PnL z publicznych transakcji Solany · aktualizacja: ${esc(stampLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} aktywnych portfeli w tym okresie</div>`}
+      ${leaderboard._offline ? '<div class="card" style="font-size:12px;color:var(--warn)">Brak połączenia z danymi rankingu — pokazuję ostatnio zapisany ranking.</div>' : ''}
       ${staleHtml(leaderboard.updated_at, 36, 'dane rankingu')}
       <div class="rk-per" id="rankPer">${['1d', '7d', '30d'].map((p) => `<button type="button" data-per="${p}" class="${p === per ? 'on' : ''}">${p === '1d' ? 'Dzień' : p === '7d' ? 'Tydzień' : 'Miesiąc'}</button>`).join('')}</div>
       <div class="card rk">
@@ -2095,7 +2131,7 @@
     if (which !== 'login') document.body.classList.remove('chrome-off');
     $('#' + (map[which] || 's-list')).classList.add('on');
     $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' ? 'rank' : which === 'search' ? 'hot' : which)));
-    const tabMap = { runner: 'hot', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
+    const tabMap = { runner: 'runner', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
@@ -2202,7 +2238,7 @@
       if (!chainSupportsMigrated(activeChain)) {
         renderList([], 'Migrated', 'Niedostępne', { filtTab: 'migrated', hideNote: chainNote(activeChain) });
       } else {
-        renderList(listMigrated('migrated'), 'Migrated', migrTip(), { filtTab: 'migrated', rowOpts: { showDex: true }, footnote: qualityNote('migrated') });
+        renderList(listMigrated('migrated'), 'Migrated', migrTip(), { filtTab: 'migrated', topHtml: migSortHtml(), rowOpts: { showDex: true }, footnote: qualityNote('migrated') });
       }
       location.hash = 'migrated';
       return;
@@ -2405,6 +2441,7 @@
   });
   Promise.all([loadViral(), loadSmartMoney(), pLb, refresh()]).then(() => { if (location.hash !== earlyRouted) routeFromHash(); try { updateRunnerBadge(); } catch (e) {} });
   setInterval(() => refresh(), REFRESH_MS);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && navigator.serviceWorker && navigator.serviceWorker.getRegistration) navigator.serviceWorker.getRegistration().then((r) => r && r.update()).catch(() => {}); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden && lastFetch && ['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'runner'].includes(view)) keepUi(() => setView(view)); });
   // v8.2: re-check the X snapshot every 10 min while Kyvo is open -> "new important tweet" notification
   setInterval(async () => {
@@ -2425,6 +2462,7 @@
     const pushOn = !!(window.KYVO_PUSH_CONFIG && window.KYVO_PUSH_CONFIG.enabled);
     navigator.serviceWorker.getRegistration().then((r) => {
       const cur = r && (r.active || r.waiting || r.installing);
+      if (r) { try { r.update(); } catch (e) {} } // v8.5: check for a new release on every start (browsers may wait up to 24 h)
       if (pushOn && cur && /OneSignalSDK(Updater)?Worker\.js/.test(cur.scriptURL)) return; // OneSignal's registration (may carry ?appId=…)
       if (!pushOn && cur && /OneSignalSDK/.test(cur.scriptURL)) { r.unregister().then(() => navigator.serviceWorker.register('sw.js')); return; }
       return navigator.serviceWorker.register(pushOn ? 'OneSignalSDKWorker.js' : 'sw.js');
