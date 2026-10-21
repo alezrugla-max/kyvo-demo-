@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_3 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_4 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -180,7 +180,7 @@
   }
   async function loadLeaderboard() {
     try {
-      leaderboard = await fetchJson('data/leaderboard.json?v=8.2');
+      leaderboard = await fetchJson('data/leaderboard.json?d=' + Math.floor(Date.now() / 3600000));
     } catch (e) {
       leaderboard = { leaders: [], updated_at: null };
     }
@@ -387,17 +387,11 @@
   }
 
   function filtSummary(tab) {
-    const f = filters[tab] || {};
-    const bits = [CHAIN_LABEL[activeChain] || activeChain];
-    if (f.mcapMin) bits.push('MC≥' + fmtUsd(Number(f.mcapMin)));
-    if (f.mcapMax) bits.push('MC≤' + fmtUsd(Number(f.mcapMax)));
-    if (f.liqMin) bits.push('Liq≥' + fmtUsd(Number(f.liqMin)));
-    if (f.volMin) bits.push('Vol≥' + fmtUsd(Number(f.volMin)));
-    if (f.ageMaxH) bits.push('<' + f.ageMaxH + 'h');
-    if (f.ageMinH) bits.push('>' + f.ageMinH + 'h');
-    if (f.hasSocials) bits.push('socials');
-    if (f.buyRatioMin) bits.push('buy≥' + Math.round(Number(f.buyRatioMin) * 100) + '%');
-    return bits.join(' · ');
+    // v8.4: never print Kyvo's filter thresholds; only say whether the user's own filters are on
+    const f = filters[tab] || {}, d = (DEFAULT_FILTERS && DEFAULT_FILTERS[tab]) || {};
+    const keys = ['mcapMin', 'mcapMax', 'liqMin', 'volMin', 'ageMaxH', 'ageMinH', 'hasSocials', 'buyRatioMin'];
+    const custom = keys.some((k) => String(f[k] == null ? '' : f[k]) !== String(d[k] == null ? '' : d[k]));
+    return (CHAIN_LABEL[activeChain] || activeChain) + ' · ' + (custom ? 'Twoje filtry' : 'filtry Kyvo');
   }
 
   /* ---- State ---- */
@@ -447,7 +441,8 @@
             3) Pump.fun image CDN (Solana mints from pump.fun, tried in <img> onerror chain)
             4) monogram placeholder (symbol initials, colour from address) — never a fake logo.
      Resolved URLs are cached in memory + localStorage (kyvo_img_v1, max 1500, 3 days). */
-  const IMG_KEY = 'kyvo_img_v1';
+  const IMG_KEY = 'kyvo_img_v2'; // v8.4: v1 could hold pump.fun placeholder (Pepe) URLs → dropped
+  try { localStorage.removeItem('kyvo_img_v1'); } catch (e) {}
   let imgCache = {};
   try { imgCache = JSON.parse(localStorage.getItem(IMG_KEY) || '{}') || {}; } catch (e) { imgCache = {}; }
   let imgDirty = false;
@@ -503,9 +498,26 @@
     el.src = el.getAttribute('data-mono') || FALLBACK_IMG;
     el.classList.add('mono');
   };
+  /* v8.4: images.pump.fun answers unknown mints with a 302 to a generic placeholder (Pepe) — that is NOT the coin's
+     logo. Verify once per URL with a no-redirect HEAD (CDN sends CORS *); a redirect = placeholder → next candidate. */
+  const pumpOk = {}; // url -> true | false | Promise
+  function checkPump(u) {
+    if (pumpOk[u] !== undefined) return Promise.resolve(pumpOk[u]);
+    return (pumpOk[u] = fetch(u, { method: 'HEAD', redirect: 'manual', mode: 'cors', cache: 'force-cache' })
+      .then((r) => r.type !== 'opaqueredirect' && r.status === 200).catch(() => null)
+      .then((v) => { if (v === null) { delete pumpOk[u]; return true; } pumpOk[u] = v; return v; }));
+  }
   window.__kyvoImgOk = function (el) {
     const k = el.getAttribute('data-ik');
-    if (k && !/^data:/.test(el.currentSrc || el.src) && !el.classList.contains('mono')) {
+    const src = el.currentSrc || el.src;
+    if (/images\.pump\.fun\/coin-image\//.test(src) && pumpOk[src] !== true) {
+      checkPump(src).then((ok) => {
+        if (!ok) { if ((el.currentSrc || el.src) === src) window.__kyvoImgErr(el); return; }
+        if (k) { const [ch, ...rest] = k.split(':'); rememberImg(ch, rest.join(':'), src); }
+      });
+      return;
+    }
+    if (k && !/^data:/.test(src) && !el.classList.contains('mono')) {
       const [ch, ...rest] = k.split(':');
       rememberImg(ch, rest.join(':'), el.currentSrc || el.src);
     }
@@ -521,7 +533,7 @@
         if (!c || !c.address) continue;
         const ch = c.chainId || 'solana', k = coinKey(ch, c.address);
         if (goodImg(c.image) || cachedImg(ch, c.address) || (imgMiss[k] && Date.now() - imgMiss[k] < 30 * 60e3)) continue;
-        if (pumpImg(ch, c.address, c.dexId)) continue; // pump CDN covers it
+        // v8.4: pump CDN is only a last resort (placeholder for unknown mints) → still ask GeckoTerminal
         (byNet[ch] = byNet[ch] || []).push(c.address);
       }
       let changed = false;
@@ -933,7 +945,7 @@
     return qualityFilter(list, 'migrated');
   }
   let goodPending = 0;
-  function goodContractsDone() { if (view === 'good' || view === 'runner') setView(view); }
+  function goodContractsDone() { if ((view === 'good' || view === 'runner') && !document.hidden) keepUi(() => setView(view)); }
   function listGood() {
     // v8.3: safety filters (DEFAULT_FILTERS.good) + positive outlook (KyvoInsights.goodOutlook): Kyvo Check ≥ 75, no ⛔,
     // popular right now (P ≥ 0.30) + base estimate > 0 for 1h/3h/8h, buys > sells (1h), healthy volume, not "po ruchu"/fading,
@@ -1223,7 +1235,8 @@
       const first = list[0] || mono;
       return `<img class="${cls || 'tok'}${list.length ? '' : ' mono'}" src="${esc(first)}" width="${s}" height="${s}" alt="" loading="lazy" decoding="async" data-ik="${esc(ik)}"${list.length ? '' : ' data-noimg="1"'} data-fb="${esc(list.slice(1).join('|'))}" data-mono="${esc(mono)}" onload="__kyvoImgOk(this)" onerror="__kyvoImgErr(this)">`;
     }
-    return `<img class="${cls || 'tok'}" src="${esc(src || FALLBACK_IMG)}" width="${s}" height="${s}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">`;
+    const mono = monogram('?', String(src || ''));
+    return `<img class="${cls || 'tok'}" src="${esc(src || mono)}" width="${s}" height="${s}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.getAttribute('data-mono')" data-mono="${esc(mono)}">`;
   }
 
   /* first-seen per list (localStorage) → "na liście od X" */
@@ -1306,6 +1319,10 @@
 
   function renderFilterPanel(tab) {
     const f = filters[tab] || DEFAULT_FILTERS.hot;
+    // v8.4: Kyvo's default thresholds are not shown — an empty field = "auto (Kyvo)"
+    const dflt = DEFAULT_FILTERS[tab] || {};
+    const fv = (k) => (f[k] != null && String(f[k]) !== '' && String(f[k]) === String(dflt[k] == null ? '' : dflt[k]) ? '' : f[k]);
+    const fph = (k, ph) => (dflt[k] != null && String(dflt[k]) !== '' ? 'auto (Kyvo)' : ph.replace(/^np\. [0-9.]+$/, '—'));
     const panel = $('#filtPanel');
     const bar = $('#filtBar');
     const show = FILTER_TABS.includes(tab) && tab !== 'viral' && tab !== 'more' && tab !== 'coin' && tab !== 'search';
@@ -1323,15 +1340,15 @@
     }
     panel.innerHTML = `
       <div class="fgrid">
-        <div class="ffield"><label>MC min ($)</label><input data-k="mcapMin" type="number" inputmode="decimal" value="${esc(f.mcapMin)}" placeholder="np. 10000"></div>
-        <div class="ffield"><label>MC max ($)</label><input data-k="mcapMax" type="number" inputmode="decimal" value="${esc(f.mcapMax)}" placeholder="—"></div>
-        <div class="ffield"><label>Liq min ($)</label><input data-k="liqMin" type="number" inputmode="decimal" value="${esc(f.liqMin)}" placeholder="—"></div>
-        <div class="ffield"><label>Vol 24h min ($)</label><input data-k="volMin" type="number" inputmode="decimal" value="${esc(f.volMin)}" placeholder="—"></div>
-        <div class="ffield"><label>Wiek max (h)</label><input data-k="ageMaxH" type="number" inputmode="decimal" value="${esc(f.ageMaxH)}" placeholder="—"></div>
-        <div class="ffield"><label>Wiek min (h)</label><input data-k="ageMinH" type="number" inputmode="decimal" value="${esc(f.ageMinH)}" placeholder="—"></div>
-        <div class="ffield"><label>Δ 5m min (%)</label><input data-k="chg5mMin" type="number" inputmode="decimal" value="${esc(f.chg5mMin)}" placeholder="—"></div>
-        <div class="ffield"><label>Δ 1h min (%)</label><input data-k="chg1hMin" type="number" inputmode="decimal" value="${esc(f.chg1hMin)}" placeholder="—"></div>
-        <div class="ffield"><label>Buy ratio 1h min (0–1)</label><input data-k="buyRatioMin" type="number" step="0.05" min="0" max="1" value="${esc(f.buyRatioMin)}" placeholder="np. 0.4"></div>
+        <div class="ffield"><label>MC min ($)</label><input data-k="mcapMin" type="number" inputmode="decimal" value="${esc(fv('mcapMin'))}" placeholder="${esc(fph('mcapMin', 'np. 10000'))}"></div>
+        <div class="ffield"><label>MC max ($)</label><input data-k="mcapMax" type="number" inputmode="decimal" value="${esc(fv('mcapMax'))}" placeholder="${esc(fph('mcapMax', '—'))}"></div>
+        <div class="ffield"><label>Liq min ($)</label><input data-k="liqMin" type="number" inputmode="decimal" value="${esc(fv('liqMin'))}" placeholder="${esc(fph('liqMin', '—'))}"></div>
+        <div class="ffield"><label>Vol 24h min ($)</label><input data-k="volMin" type="number" inputmode="decimal" value="${esc(fv('volMin'))}" placeholder="${esc(fph('volMin', '—'))}"></div>
+        <div class="ffield"><label>Wiek max (h)</label><input data-k="ageMaxH" type="number" inputmode="decimal" value="${esc(fv('ageMaxH'))}" placeholder="${esc(fph('ageMaxH', '—'))}"></div>
+        <div class="ffield"><label>Wiek min (h)</label><input data-k="ageMinH" type="number" inputmode="decimal" value="${esc(fv('ageMinH'))}" placeholder="${esc(fph('ageMinH', '—'))}"></div>
+        <div class="ffield"><label>Δ 5m min (%)</label><input data-k="chg5mMin" type="number" inputmode="decimal" value="${esc(fv('chg5mMin'))}" placeholder="${esc(fph('chg5mMin', '—'))}"></div>
+        <div class="ffield"><label>Δ 1h min (%)</label><input data-k="chg1hMin" type="number" inputmode="decimal" value="${esc(fv('chg1hMin'))}" placeholder="${esc(fph('chg1hMin', '—'))}"></div>
+        <div class="ffield"><label>Buy ratio 1h min (0–1)</label><input data-k="buyRatioMin" type="number" step="0.05" min="0" max="1" value="${esc(fv('buyRatioMin'))}" placeholder="${esc(fph('buyRatioMin', 'np. 0.4'))}"></div>
         <div class="ffield full"><label class="fcheck"><input data-k="hasSocials" type="checkbox" ${f.hasSocials ? 'checked' : ''}> Wymagaj socials / strony WWW</label></div>
       </div>
       <div class="factions">
@@ -1344,7 +1361,7 @@
       panel.querySelectorAll('[data-k]').forEach((el) => {
         const k = el.getAttribute('data-k');
         if (el.type === 'checkbox') next[k] = el.checked;
-        else next[k] = el.value;
+        else next[k] = el.value === '' && DEFAULT_FILTERS[tab] && DEFAULT_FILTERS[tab][k] != null ? DEFAULT_FILTERS[tab][k] : el.value;
       });
       next.chain = activeChain;
       filters[tab] = next;
@@ -1405,9 +1422,9 @@
   }
 
   function stretchTip() {
-    if (activeChain === 'bsc') return 'four.meme na krzywej · ≥55% krzywej (estymacja)*';
-    if (activeChain === 'all') return 'pump.fun + four.meme · ≥55% krzywej (estymacja)*';
-    return 'pump.fun na krzywej · ≥55% krzywej (estymacja)*';
+    if (activeChain === 'bsc') return 'four.meme · blisko ukończenia krzywej';
+    if (activeChain === 'all') return 'pump.fun + four.meme · blisko ukończenia krzywej';
+    return 'pump.fun · blisko ukończenia krzywej';
   }
   function migrTip() {
     if (activeChain === 'bsc') return 'Niedawno przeszły na PancakeSwap';
@@ -1915,6 +1932,14 @@
     });
     return leaders;
   }
+  function mvHtml(x, per) {
+    // v8.4: rank change vs the previous daily refresh (▲ up / ▼ down / NEW)
+    const r = x.rank && x.rank[per], p = x.rank_prev && x.rank_prev[per];
+    if (!r || !leaderboard.prev_at) return '';
+    if (!p) return '<span class="rk-mv new" title="Nowy w top 50">NEW</span>';
+    if (p === r) return '';
+    return p > r ? `<span class="rk-mv up" title="Awans">▲${p - r}</span>` : `<span class="rk-mv dn" title="Spadek">▼${r - p}</span>`;
+  }
   function renderRank() {
     document.body.classList.remove('pulse-on');
     const body = $('#rankBody');
@@ -1925,7 +1950,7 @@
     const per = rankPeriod;
     // v8.3 quality pass: traders without a trade in the last 7 days go to a collapsed "inactive" section
     const lastT = (x) => Math.max(0, ...((x.recent_trades || []).map((t) => +t.t || 0)));
-    const isActive = (x) => Date.now() / 1000 - lastT(x) < 7 * 86400;
+    const isActive = (x) => x.active === true || (x.active !== false && Date.now() / 1000 - lastT(x) < 7 * 86400);
     const ALL = sortedLeaders(per);
     const L = ALL.filter(isActive), INACT = ALL.filter((x) => !isActive(x));
     const withPnl = L.filter((x) => pnlOf(x, per) != null).length;
@@ -1934,7 +1959,7 @@
       const wr = st.win_rate == null ? '—' : Math.round(st.win_rate * 100) + '%';
       const wl = st.trades ? `<span class="up">${st.wins}</span>/<span class="dn">${st.trades - st.wins}</span>` : '<span class="mut">—</span>';
       return `<div class="rk-row" data-trader="${esc(x.id)}" role="button" tabindex="0">
-        <div class="rk-n ${i < 3 && pnlOf(x, per) != null ? 'top' + (i + 1) : ''}">${i + 1}</div>
+        <div class="rk-n ${i < 3 && pnlOf(x, per) != null ? 'top' + (i + 1) : ''}">${i + 1}</div>${mvHtml(x, per)}
         ${avatarHtml(x, 34)}
         <div class="rk-nm"><b>${esc(x.name)}</b>${x.handle ? `<small>@${esc(x.handle)}</small>` : `<small class="mut">${esc(shortCa(x.address))}</small>`}</div>
         <div class="rk-c rk-wl" title="Wygrane / przegrane (zamknięte pozycje)">${wl}</div>
@@ -1948,7 +1973,9 @@
     const inactHtml = INACT.length ? `<details class="card rk" style="margin-top:8px"><summary class="mut" style="font-size:12px;padding:6px 4px;cursor:pointer">Nieaktywni (brak transakcji od 7 dni): ${INACT.length}</summary>${INACT.map((x, i) => rowOf(x, L.length + i)).join('')}</details>` : '';
     body.innerHTML = `
       <div class="h">Ranking traderów <span class="badge live">on-chain</span></div>
-      <div class="sub">Zrealizowany PnL z publicznych transakcji Solany · aktualizacja: ${esc(stampLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} aktywnych portfeli w tym okresie</div>
+      ${leaderboard.version >= 2
+        ? `<div class="sub"><span>Zaktualizowano:</span> <b>${esc(new Date(leaderboard.updated_at).toLocaleString(document.documentElement.lang === 'en' ? 'en-GB' : 'pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</b> · <span>Odświeżane automatycznie co 6 godzin</span> · <span>Solana, źródło:</span> <a href="${esc(leaderboard.source_url || 'https://kolscan.io/leaderboard')}" target="_blank" rel="noopener">kolscan.io</a></div>`
+        : `<div class="sub">Zrealizowany PnL z publicznych transakcji Solany · aktualizacja: ${esc(stampLabel(leaderboard.updated_at))} · PnL dla ${withPnl}/${L.length} aktywnych portfeli w tym okresie</div>`}
       ${staleHtml(leaderboard.updated_at, 36, 'dane rankingu')}
       <div class="rk-per" id="rankPer">${['1d', '7d', '30d'].map((p) => `<button type="button" data-per="${p}" class="${p === per ? 'on' : ''}">${p === '1d' ? 'Dzień' : p === '7d' ? 'Tydzień' : 'Miesiąc'}</button>`).join('')}</div>
       <div class="card rk">
@@ -1956,7 +1983,9 @@
         ${rows}
       </div>
       ${inactHtml}
-      <div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">„—” = brak sprzedaży z dopasowanym zakupem w tym okresie (np. kupił wcześniej niż obejmuje nasze okno). Kwoty w SOL przeliczane po historycznym kursie SOL/USD. Wyniki przybliżone · to nie jest porada finansowa.</div>`;
+      ${leaderboard.version >= 2
+        ? `<div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">Top 50 traderów Solany w każdym okresie (Dzień / Tydzień / Miesiąc) z publicznego rankingu. „—” = poza top 50 w tym okresie. Zysk w SOL przeliczony na $ po bieżącym kursie. BSC i Robinhood Chain: brak darmowego publicznego rankingu, dodamy gdy będzie źródło. Wyniki przybliżone · to nie jest porada finansowa.</div>`
+        : '<div class="mut" style="font-size:11px;margin:6px 2px;line-height:1.45">„—” = brak sprzedaży z dopasowanym zakupem w tym okresie (np. kupił wcześniej niż obejmuje nasze okno). Kwoty w SOL przeliczane po historycznym kursie SOL/USD. Wyniki przybliżone · to nie jest porada finansowa.</div>'}`;
     $$('#rankPer [data-per]').forEach((b) => b.addEventListener('click', () => {
       rankPeriod = b.dataset.per;
       localStorage.setItem('kyvo_rank_period', rankPeriod);
@@ -2163,7 +2192,7 @@
         renderList(listStretch('stretch'), 'Final Stretch', stretchTip(), {
           filtTab: 'stretch',
           rowOpts: { showCurve: true },
-          footnote: qualityNote('stretch') + '<div class="mut" style="font-size:11px;margin:6px 2px">* Procent krzywej to estymacja: MC / ~$69k</div>',
+          footnote: qualityNote('stretch') + '<div class="mut" style="font-size:11px;margin:6px 2px">* Procent krzywej to estymacja Kyvo</div>',
         });
       }
       location.hash = 'stretch';
@@ -2239,16 +2268,40 @@
   }
 
   let lastImgFill = 0;
-  async function refresh() {
-    $('#livePill').textContent = '…';
-    const ok = await loadLiveCoins();
+  /* v8.4 anti-glitch: one refresh at a time; a failed refresh keeps the last good data (no error box / ERR flash
+     when coins are already on screen); auto re-render keeps scroll position and opened ▾ panels. */
+  let refreshBusy = false, refreshFails = 0;
+  function keepUi(fn) {
+    const y = window.scrollY;
+    const open = new Set();
+    document.querySelectorAll('#listBody details[open], #pulseDesk details[open]').forEach((d) => {
+      const row = d.closest('[data-key]'); open.add((row ? row.getAttribute('data-key') : '') + '|' + (d.className || ''));
+    });
+    fn();
+    if (open.size) document.querySelectorAll('#listBody details, #pulseDesk details').forEach((d) => {
+      const row = d.closest('[data-key]'); if (open.has((row ? row.getAttribute('data-key') : '') + '|' + (d.className || ''))) d.open = true;
+    });
+    if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
+  }
+  async function refresh(manual) {
+    if (refreshBusy) return;
+    refreshBusy = true;
+    try { await refreshInner(manual); } catch (e) { console.warn('refresh', e); } finally { refreshBusy = false; }
+  }
+  async function refreshInner(manual) {
+    const hadData = coins.length > 0;
+    if (!hadData || manual) $('#livePill').textContent = '…';
+    let ok = await loadLiveCoins();
+    if (!ok && hadData) { refreshFails++; fetchErr = null; $('#livePill').textContent = refreshFails >= 3 ? 'ERR' : 'LIVE'; return; }
+    if (ok) refreshFails = 0;
     $('#livePill').textContent = ok ? 'LIVE' : 'ERR';
     if (ok && window.KyvoNotify) { try { window.KyvoNotify.onGood(listGood()); } catch (e) {} }
     // v8.3: Runner notifications (all chains) + tab badge + track-record log
     if (ok && window.KyvoNotify && window.KyvoInsights) { try { window.KyvoNotify.onRunner(window.KyvoInsights.runnerList()); } catch (e) {} }
     if (ok) { try { updateRunnerBadge(); } catch (e) {} trackUpdate(); }
-    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'runner'].includes(view)) setView(view);
-    else if (view === 'coin' && selectedKey && byKey[selectedKey]) renderCoin(byKey[selectedKey]);
+    if (['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'runner'].includes(view)) {
+      if (!document.hidden) keepUi(() => setView(view));
+    } else if (view === 'coin' && selectedKey && byKey[selectedKey] && !document.hidden) keepUi(() => renderCoin(byKey[selectedKey]));
     updateClock();
     // v8.3: GeckoTerminal logo lookup for coins still without an image — at most every 2 min (shared GT rate limit)
     if (ok && Date.now() - lastImgFill > 120000) {
@@ -2352,6 +2405,7 @@
   });
   Promise.all([loadViral(), loadSmartMoney(), pLb, refresh()]).then(() => { if (location.hash !== earlyRouted) routeFromHash(); try { updateRunnerBadge(); } catch (e) {} });
   setInterval(() => refresh(), REFRESH_MS);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && lastFetch && ['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'runner'].includes(view)) keepUi(() => setView(view)); });
   // v8.2: re-check the X snapshot every 10 min while Kyvo is open -> "new important tweet" notification
   setInterval(async () => {
     try {
@@ -2366,7 +2420,16 @@
   if (window.KyvoNotify) window.KyvoNotify.init({ toast, keyOf, fmtUsd });
   if (window.KyvoPush) window.KyvoPush.init();
   setInterval(updateClock, 1000);
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator) {
+    // v8.4: when push is enabled, keep OneSignal's registration (sw.js?push=1) instead of swapping back to plain sw.js
+    const pushOn = !!(window.KYVO_PUSH_CONFIG && window.KYVO_PUSH_CONFIG.enabled);
+    navigator.serviceWorker.getRegistration().then((r) => {
+      const cur = r && (r.active || r.waiting || r.installing);
+      if (pushOn && cur && /OneSignalSDK(Updater)?Worker\.js/.test(cur.scriptURL)) return; // OneSignal's registration (may carry ?appId=…)
+      if (!pushOn && cur && /OneSignalSDK/.test(cur.scriptURL)) { r.unregister().then(() => navigator.serviceWorker.register('sw.js')); return; }
+      return navigator.serviceWorker.register(pushOn ? 'OneSignalSDKWorker.js' : 'sw.js');
+    }).catch(() => {});
+  }
   if (window.KyvoAuth) window.KyvoAuth.onChange(() => { if (view === 'profil') renderProfil(); else if (view === 'more') renderMore(); });
   // first launch: onboarding cards → login screen (skippable: "Kontynuuj bez logowania")
   if (window.KyvoLaunch) {

@@ -964,15 +964,17 @@
     if (r.pending && onContract) queueContract(c, onContract);
     return { ok: r.ok, pending: r.pending, why: r.failed, rank: r.rank, P: r.P, pop: r.pop, gates: r.gates, a };
   }
+  // v8.4: no exact thresholds in the UI (Kyvo's rules stay private) — only what is checked
   const GATE_TXT = {
-    kc: ['Kyvo Check ≥ 75, bez ⛔', 'Kyvo Check ≥ 75, no ⛔'], liq: ['płynność ≥ $25k', 'liquidity ≥ $25k'], liqMc: ['płynność ≥ 8% MC', 'liquidity ≥ 8% of MC'],
-    age: ['wiek ≥ 15 min', 'age ≥ 15 min'], mintFreeze: ['mint i freeze wyłączone', 'mint & freeze revoked'], lp: ['LP spalone/zablokowane', 'LP burned/locked'],
-    top10: ['top 10 holderów ≤ 30%', 'top 10 holders ≤ 30%'], dev: ['dev ≤ 10%', 'dev ≤ 10%'], honeypot: ['nie honeypot', 'not a honeypot'],
-    tax: ['podatek ≤ 5%', 'tax ≤ 5%'], owner: ['owner zrzeczony / brak groźnych funkcji', 'owner renounced / no dangerous functions'],
-    vol: ['wolumen 1h ≥ $50k (lub przyspiesza)', 'vol 1h ≥ $50k (or accelerating)'], tx: ['≥ 300 transakcji w 1h', '≥ 300 txns in 1h'], volMc: ['wolumen 1h ≥ 2% MC', 'vol 1h ≥ 2% of MC'],
-    pop: ['popularność ≥ 30/100', 'popularity ≥ 30/100'], buys: ['kupna ≥ 55% (1h)', 'buys ≥ 55% (1h)'], mom: ['cena 1h rośnie, bez paraboli', 'price up in 1h, not parabolic'],
-    notLate: ['nie „po ruchu” i nie spada', 'not late and not dumping'], base: ['szacunek bazowy > 0 na 1h, 3h i 8h', 'base estimate > 0 for 1h, 3h and 8h'], scanner: ['skaner kontraktu', 'contract scanner'], contract: ['kontrakt sprawdzony', 'contract checked'],
+    kc: ['wysoki Kyvo Check, bez ⛔', 'high Kyvo Check, no ⛔'], liq: ['wystarczająca płynność', 'enough liquidity'], liqMc: ['płynność adekwatna do MC', 'liquidity fits the MC'],
+    age: ['nie jest świeżynką z ostatnich minut', 'not minutes old'], mintFreeze: ['mint i freeze wyłączone', 'mint & freeze revoked'], lp: ['LP spalone/zablokowane', 'LP burned/locked'],
+    top10: ['holderzy nie są skoncentrowani', 'holders not concentrated'], dev: ['dev nie trzyma dużo', 'dev holds little'], honeypot: ['nie honeypot', 'not a honeypot'],
+    tax: ['niski podatek', 'low tax'], owner: ['owner zrzeczony / brak groźnych funkcji', 'owner renounced / no dangerous functions'],
+    vol: ['duży wolumen teraz', 'strong volume now'], tx: ['dużo transakcji', 'lots of transactions'], volMc: ['wolumen mocny względem MC', 'volume strong vs MC'],
+    pop: ['popularny teraz', 'popular right now'], buys: ['przewaga kupujących', 'buyers dominate'], mom: ['cena rośnie, bez paraboli', 'price rising, not parabolic'],
+    notLate: ['nie „po ruchu” i nie spada', 'not late and not dumping'], base: ['dodatni szacunek bazowy', 'positive base estimate'], scanner: ['skaner kontraktu', 'contract scanner'], contract: ['kontrakt sprawdzony', 'contract checked'],
   };
+
   function gatesHtml(o) {
     if (!o || !o.gates) return '';
     const G3 = [['safety', '🛡️', L('Bezpieczeństwo', 'Safety')], ['hot', '🔥', L('Popularne teraz', 'Hot now')], ['upside', '📈', L('Potencjał 8h', '8h upside')]];
@@ -1203,14 +1205,13 @@
     el.innerHTML = `<div class="upsheet-b" role="dialog" aria-modal="true" aria-label="${E(L('Jak liczony jest potencjał', 'How the upside is calculated'))}">
       <div class="upsheet-g"></div>
       <div class="h" style="font-size:16px;margin:0 0 8px">${L('Jak liczony jest „Potencjał (spekulacja)”', 'How “Upside (speculative)” is calculated')}</div>
-      <p>${L('To prosty, jawny wzór na publicznych danych z DexScreener, GeckoTerminal, RugCheck/GoPlus, śledzonych portfeli i X. Nikt tu nie wie, co zrobi cena.', 'A simple, open formula on public data from DexScreener, GeckoTerminal, RugCheck/GoPlus, tracked wallets and X. Nobody here knows what the price will do.')}</p>
+      <p>${L('Szacunek Kyvo łączy publiczne dane z DexScreener, GeckoTerminal, RugCheck/GoPlus, śledzonych portfeli i X. Nikt tu nie wie, co zrobi cena.', 'Kyvo\'s estimate combines public data from DexScreener, GeckoTerminal, RugCheck/GoPlus, tracked wallets and X. Nobody here knows what the price will do.')}</p>
       <ol>
-        <li>${L('<b>Bramka bezpieczeństwa:</b> Kyvo Check poniżej 50 albo jakakolwiek czerwona flaga (honeypot, mint/freeze, płynność < $5k, −40% w 1h, możliwa kopia) → „wysokie ryzyko, brak szacunku”.', '<b>Safety gate:</b> Kyvo Check under 50 or any red flag (honeypot, mint/freeze, liquidity < $5k, −40% in 1h, likely clone) → “high risk, no estimate”.')}</li>
-        <li>${L('<b>Siła sygnału (0–100):</b> momentum 5m/1h/6h 25% · kupna vs sprzedaże 15% · wolumen vs MC i skok wolumenu 15% · smart money 15% · tweet na X 10% · Kyvo Check 10% · płynność vs MC 10%. Korekta za wiek; minus za koncentrację holderów, za „już po ruchu” (np. +300% od tweeta) i za spadek.', '<b>Signal strength (0–100):</b> 5m/1h/6h momentum 25% · buys vs sells 15% · volume vs MC and volume spike 15% · smart money 15% · X tweet 10% · Kyvo Check 10% · liquidity vs MC 10%. Age adjustment; minus for holder concentration, for “already ran” (e.g. +300% since tweet) and for dumping.')}</li>
-        <li>${L('<b>Zakres:</b> im mniejszy MC, tym większy możliwy ruch (od ~+40% dla dużych do ~+300% dla bardzo małych), skalowany siłą sygnału. Dolna granica = ¼ górnej. Okno czasu z wieku coina i aktywności.', '<b>Range:</b> the smaller the MC, the bigger the possible move (from ~+40% for large caps to ~+300% for micro caps), scaled by signal strength. Low end = ¼ of the high end. Time window from coin age and activity.')}</li>
-        <li>${L('<b>Scenariusz:</b> niski < 30 · średni 30–55 · wysoki ≥ 55 siły sygnału.', '<b>Scenario:</b> low < 30 · medium 30–55 · high ≥ 55 signal strength.')}</li>
-        <li>${L('<b>Horyzonty 30 min / 1 h / 3 h / 6 h / 8 h:</b> część pełnego zakresu rośnie mniej więcej z pierwiastkiem z czasu (szybciej przy dużej aktywności). Sygnał słabnie z czasem, więc scenariusz może spaść, a pewność maleje dla dłuższych horyzontów i przy brakujących danych. Liczone od nowa przy każdym odświeżeniu (co 45 s).', '<b>Horizons 30 min / 1 h / 3 h / 6 h / 8 h:</b> the share of the full range grows roughly with the square root of time (faster for very active coins). The signal fades with time, so the scenario can drop, and confidence shrinks for longer horizons and when data is missing. Recomputed on every refresh (every 45 s).')}</li>
-        <li>${L('<b>Może iść w górę?</b> „Raczej po ruchu” gdy coin już mocno urósł, spada albo przeważają sprzedający; „Możliwy dalszy wzrost” gdy sygnał ≥ 50 i są min. 2 argumenty za; inaczej „Neutralnie”.', '<b>Room to run?</b> “Likely late” when the coin already ran hard, is dropping or sellers dominate; “Room to run” when signal ≥ 50 with at least 2 points for; otherwise “Neutral”.')}</li>
+        <li>${L('<b>Bezpieczeństwo:</b> coiny z czerwonymi flagami (np. honeypot, mint/freeze, bardzo mała płynność, gwałtowny zrzut, możliwa kopia) nie dostają szacunku.', '<b>Safety:</b> coins with red flags (e.g. honeypot, mint/freeze, very thin liquidity, a sharp dump, a likely clone) get no estimate.')}</li>
+        <li>${L('<b>Siła sygnału (0–100):</b> łączy momentum, przewagę kupujących, wolumen, smart money, tweety na X, Kyvo Check i płynność. Minus za koncentrację holderów, „już po ruchu” i spadek.', '<b>Signal strength (0–100):</b> combines momentum, buyer pressure, volume, smart money, X tweets, Kyvo Check and liquidity. Minus for holder concentration, “already ran” and dumping.')}</li>
+        <li>${L('<b>Zakres:</b> mniejsze coiny mogą ruszyć się mocniej, większe spokojniej; zakres skaluje siła sygnału.', '<b>Range:</b> smaller coins can move more, bigger ones less; the range scales with signal strength.')}</li>
+        <li>${L('<b>Horyzonty 30 min – 8 h:</b> pewność maleje dla dłuższych horyzontów i przy brakujących danych. Liczone od nowa przy każdym odświeżeniu.', '<b>Horizons 30 min – 8 h:</b> confidence shrinks for longer horizons and when data is missing. Recomputed on every refresh.')}</li>
+        <li>${L('<b>Może iść w górę?</b> „Raczej po ruchu”, „Neutralnie” albo „Możliwy dalszy wzrost” — wg siły sygnału i argumentów za/przeciw pokazanych przy coinie.', '<b>Room to run?</b> “Likely late”, “Neutral” or “Room to run” — from signal strength and the pros/cons shown on the coin.')}</li>
       </ol>
       <p class="mut">${L('Na listach liczymy z danych rynkowych; na stronie coina dochodzą RugCheck/GoPlus (holderzy) i cena od tweeta. Zakres pokazuje, jaki ruch takie setupy <i>czasem</i> robią — większość memecoinów i tak spada. Ryzyko spadku zawsze do −100%.', 'Lists use market data only; the coin page adds RugCheck/GoPlus (holders) and price since the tweet. The range shows the move such setups <i>sometimes</i> make — most memecoins still fall. Downside is always up to −100%.')}</p>
       <div class="upsheet-d">⚠️ ${DISC()}</div>

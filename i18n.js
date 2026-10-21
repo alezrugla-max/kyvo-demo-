@@ -16,6 +16,16 @@
   }
   const lang = detect();
   const DICT = {
+"Twoje filtry": "Your filters",
+"filtry Kyvo": "Kyvo filters",
+"blisko ukończenia krzywej": "close to completing the curve",
+"Zaktualizowano:": "Updated:",
+"Odświeżane automatycznie co 6 godzin": "Refreshed automatically every 6 hours",
+"Solana, źródło:": "Solana, source:",
+"Nowy w top 50": "New in top 50",
+"Awans": "Moved up",
+"Spadek": "Moved down",
+"Top 50 traderów Solany w każdym okresie (Dzień / Tydzień / Miesiąc) z publicznego rankingu. „—” = poza top 50 w tym okresie. Zysk w SOL przeliczony na $ po bieżącym kursie. BSC i Robinhood Chain: brak darmowego publicznego rankingu, dodamy gdy będzie źródło. Wyniki przybliżone · to nie jest porada finansowa.": "Top 50 Solana traders per period (Day / Week / Month) from a public leaderboard. “—” = outside the top 50 in this period. Profit in SOL converted to $ at the current rate. BSC and Robinhood Chain: no free public leaderboard yet, we will add them when a source exists. Approximate results · not financial advice.",
 "Sieć": "Network",
 "dziś": "today",
 "7 dni": "7 days",
@@ -638,7 +648,7 @@
     document.documentElement.lang = lang;
     document.querySelectorAll('.lang-sw [data-lang]').forEach((b) => b.classList.toggle('on', b.dataset.lang === lang));
     if (lang !== 'en') return;
-    document.title = 'Kyvo — smart money and viral memecoins';
+    document.title = 'Kyvo';
     const md = document.querySelector('meta[name="description"]');
     if (md) md.setAttribute('content', 'Kyvo — smart money and viral memecoins in one place. Live Pulse for Solana, BSC and Robinhood Chain, trader leaderboard, Viral from X and your PnL. Free, no account needed. Not financial advice.');
     walk(document.body);

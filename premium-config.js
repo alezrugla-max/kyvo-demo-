@@ -16,3 +16,13 @@ window.KYVO_PREMIUM_CONFIG = {
   manageUrl: '',
   popupAfterLogin: true,                // v8.2: show the Premium pop-up after login / "continue without login" (max once per session and per day)                        // Stripe customer portal link (cancel / change card)
 };
+
+/* v8.4: entitlement hook used by notifications (free = 2/day, Premium = all). Until a real backend exists
+   nobody is Premium. Later: set from Firebase/Stripe entitlement (never trust a value the user can type). */
+window.KyvoPremium = window.KyvoPremium || {
+  isActive() {
+    const C = window.KYVO_PREMIUM_CONFIG || {};
+    if (!C.enabled) return false;
+    try { const u = +localStorage.getItem('kyvo_premium_until') || 0; return u > Date.now(); } catch (e) { return false; }
+  },
+};

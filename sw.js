@@ -1,12 +1,12 @@
 /* Kyvo service worker — cache static shell only; never pin API JSON forever */
-/* v8.2 background push (DISABLED until push_plan.md is done). For OneSignal, uncomment the next line so OneSignal shares this SW:
-importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-*/
-const C = 'kyvo-v8-3';
+/* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
+   Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
+const PUSH = !!self.KYVO_ONESIGNAL;
+const C = 'kyvo-v8-4';
 const A = [
   './', 'index.html', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
-  'kyvo_mark.svg', 'kyvo_logo.svg',
+  'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
   'data/x_viral.json', 'data/smart_money.json', 'data/leaderboard.json'
 ];
@@ -40,6 +40,7 @@ self.addEventListener('fetch', e => {
   );
 });
 self.addEventListener('notificationclick', e => {
+  if (PUSH && !(e.notification.data && e.notification.data.kyvo)) return; // OneSignal handles its own clicks
   e.notification.close();
   const url = (e.notification.data && e.notification.data.url) || './';
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
@@ -49,7 +50,7 @@ self.addEventListener('notificationclick', e => {
 });
 
 /* v8.2: generic Web Push (FCM / VAPID) — only fires if a push subscription exists (none until KYVO_PUSH_CONFIG.enabled). */
-self.addEventListener('push', e => {
+if (!PUSH) self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: e.data ? e.data.text() : '' }; }
   const n = d.notification || d;

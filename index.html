@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_3">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_4">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -17,14 +17,14 @@
 <meta property="og:site_name" content="Kyvo">
 <meta property="og:locale" content="pl_PL">
 <meta property="og:url" content="https://alezrugla-max.github.io/kyvo-demo-/">
-<meta property="og:title" content="Kyvo — smart money i viralowe memecoiny · smart money &amp; viral memecoins">
+<meta property="og:title" content="Kyvo">
 <meta property="og:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta. | EN: Live Pulse for Solana, BSC &amp; Robinhood Chain · trader leaderboard · Viral from X · your PnL. Free, no account.">
 <meta property="og:image" content="https://alezrugla-max.github.io/kyvo-demo-/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Kyvo — duszek z wykresem i hasło: Smart money i viralowe memecoiny w jednym miejscu">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu">
+<meta name="twitter:title" content="Kyvo">
 <meta name="twitter:description" content="Live Pulse z Solany, BSC i Robinhood Chain · ranking traderów · Viral z X · Twój PnL. Za darmo, bez konta. | EN: Live Pulse for Solana, BSC &amp; Robinhood Chain · trader leaderboard · Viral from X · your PnL. Free, no account.">
 <meta name="twitter:image" content="https://alezrugla-max.github.io/kyvo-demo-/og-image.png">
 <meta name="twitter:image:alt" content="Kyvo — smart money i viralowe memecoiny">
@@ -44,7 +44,7 @@
 <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="icons/splash/splash-1242x2688.png">
 <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/splash-828x1792.png">
 <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="icons/splash/splash-750x1334.png">
-<title>Kyvo — smart money i viralowe memecoiny</title>
+<title>Kyvo</title>
 <style>
 :root{--bg:#07070B;--card:#121218;--card2:#16161d;--line:#ffffff12;--txt:#f2f2f7;--mut:#8b8b9a;--acc:#8B5CF6;--acc2:#22D3EE;--up:#34E07A;--dn:#FF5468;--warn:#f5b83c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -235,6 +235,7 @@ mark{background:#8B5CF633;color:#fff;border-radius:4px;padding:0 3px}
 .rk-row:last-child{border-bottom:0}
 .rk-head{cursor:default;font-size:10.5px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
 .rk-n{width:22px;text-align:center;font-weight:800;color:var(--mut);flex:none}
+.rk-mv{font-size:9px;font-weight:800;width:22px;margin-left:-4px;flex:none;text-align:center}.rk-mv.up{color:var(--up,#2ecc71)}.rk-mv.dn{color:var(--dn,#ff5d5d)}.rk-mv.new{color:#7aa7ff}
 .rk-n.top1{color:#FFD54A}.rk-n.top2{color:#cfd6e4}.rk-n.top3{color:#E59866}
 .av{border-radius:50%;object-fit:cover;background:#222;flex:none}
 .avl{display:grid;place-items:center;font-size:13px;font-weight:800;color:#ddd;background:linear-gradient(135deg,#8B5CF655,#22D3EE33)}
@@ -605,7 +606,7 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.3 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_3" style="display:none">KYVO_LIVE_v8_3</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.4 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_4" style="display:none">KYVO_LIVE_v8_4</span></div>
   </div>
 </div>
 

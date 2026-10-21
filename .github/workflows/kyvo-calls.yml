@@ -59,19 +59,13 @@ jobs:
         id: track
         if: ${{ github.event_name == 'schedule' || github.event.inputs.news == '' }}
         run: python3 tools/track_record.py --flags .kyvo_calls/flags.json --out data/track_record.json
-      - name: Commit track record when data/track_record.json changed
+      - name: Commit track record (only new flags or >= 60 min since last commit)
         if: ${{ steps.track.outputs.commit == 'true' && github.event.inputs.dry_run != 'true' }}
         run: |
           git config user.name "kyvo-track-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- data/track_record.json
-          # Commit only when the file bytes actually changed.
-          if git diff --cached --quiet; then
-            echo "data/track_record.json unchanged"
-            exit 0
-          fi
-          # [skip ci] applies only to Actions workflows triggered by push or pull_request.
-          # This repo's Pages source is the main branch (pages-build-deployment, event: dynamic), so that deploy still runs.
+          git add data/track_record.json
+          git diff --cached --quiet && exit 0
           git commit -m "track record: update [skip ci]"
           for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
       - name: YouTube new videos / live (public RSS, @calytonnx)

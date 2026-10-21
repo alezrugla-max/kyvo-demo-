@@ -566,7 +566,7 @@
       root, kind: 'trader', back: true, title: L.name, handle: L.handle, x_url: L.x_url, address: L.address,
       avatar: L.avatar ? { type: 'url', v: L.avatar } : { type: 'ghost', v: (L.name || 'a').charCodeAt(0) % GHOSTS.length },
       model,
-      footNote: `Dane z ostatnich ${cov.sigs != null ? cov.sigs : '—'} transakcji portfela (${cov.window_days != null ? cov.window_days + ' dni' : '—'}), zaktualizowano ${meta && meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Przypisanie portfela: publiczne źródło${L.source ? ' (' + L.source.replace(/^https?:\/\/(www\.)?/, '').split('/')[0] + ')' : ''}.`,
+      footNote: (!L.coverage && meta && meta.version >= 2) ? `Wynik z publicznego rankingu kolscan.io (Solana), zaktualizowano ${meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Lista transakcji tylko dla portfeli śledzonych przez Kyvo on-chain.` : `Dane z ostatnich ${cov.sigs != null ? cov.sigs : '—'} transakcji portfela (${cov.window_days != null ? cov.window_days + ' dni' : '—'}), zaktualizowano ${meta && meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Przypisanie portfela: publiczne źródło${L.source ? ' (' + L.source.replace(/^https?:\/\/(www\.)?/, '').split('/')[0] + ')' : ''}.`,
     });
   }
 

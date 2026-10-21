@@ -21,14 +21,31 @@
 
   async function system(title, body, url, tag) {
     if (perm() !== 'granted') return false;
-    const opts = { body, icon: 'icons/icon-192.png', badge: 'icons/icon-96.png', tag: tag || 'kyvo', data: { url } };
+    const opts = { body, icon: 'icons/icon-192.png', badge: 'icons/icon-96.png', tag: tag || 'kyvo', data: { url, kyvo: true } };
     try {
       const reg = navigator.serviceWorker && (await navigator.serviceWorker.getRegistration());
       if (reg && reg.showNotification) { await reg.showNotification(title, opts); return true; }
       new Notification(title, opts); return true; // eslint-disable-line no-new
     } catch (e) { return false; }
   }
+  /* v8.4: free plan = max FREE_CAP notifications per local day (in-app + system); Premium = all.
+     Premium flag: KyvoPremium.isActive() (entitlement backend later). Client-side only — background push
+     caps are enforced by the sender (see push-config.js). */
+  const FREE_CAP = 2, CAPKEY = 'kyvo_notif_cap_v1';
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+  function isPremium() { try { return !!(window.KyvoPremium && window.KyvoPremium.isActive()); } catch (e) { return false; } }
+  function capState() { const c = load(CAPKEY, { day: '', n: 0, hinted: false }); if (c.day !== today()) { c.day = today(); c.n = 0; c.hinted = false; } return c; }
+  function usedToday() { return capState().n; }
   function send(title, body, hash, tag) {
+    if (!isPremium()) {
+      const c = capState();
+      if (c.n >= FREE_CAP) {
+        if (!c.hinted && D && D.toast) D.toast('🔒 ' + L(`Limit ${FREE_CAP} powiadomień na dziś. Premium dostaje wszystkie alerty.`, `Daily limit of ${FREE_CAP} notifications reached. Premium gets all alerts.`));
+        c.hinted = true; save(CAPKEY, c);
+        return false;
+      }
+      c.n++; save(CAPKEY, c);
+    }
     const url = location.href.split('#')[0] + (hash || '');
     if (D && D.toast) D.toast('🔔 ' + title + (body ? ' — ' + body : ''));
     // system notification only when the user is not looking at Kyvo (no double ping)
@@ -144,6 +161,7 @@
       <label class="nrow"><input type="checkbox" data-nt="runner" ${S.runner !== false ? 'checked' : ''}><span><b>🏃 Runner</b><small>${L('najmocniejsze sygnały: ogromny rosnący wolumen, tysiące transakcji, super-ważne tweety (kilka–kilkanaście dziennie)', 'strongest signals: huge rising volume, thousands of txns, super-important tweets (a handful to ~20 a day)')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')} (≥ ${esc(S.minScore || 75)}/100)</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('z aktualizacji Viral z X (ok. 3× dziennie)', 'from the Viral from X update (about 3× a day)')}</small></span></label>
+      <div class="mut nnote ncap">${isPremium() ? '✦ ' + L('Premium: wszystkie powiadomienia bez limitu.', 'Premium: all notifications, no limit.') : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
       <div class="mut nnote">${L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
       ${p === 'default' ? `<button type="button" class="pf-btn" data-nperm>${L('Włącz powiadomienia systemowe', 'Enable system notifications')}</button>` : ''}
       ${p === 'granted' ? `<div class="nok">✓ ${L('Powiadomienia systemowe włączone', 'System notifications enabled')}</div><button type="button" class="pf-btn" data-ntest>${L('Wyślij test', 'Send a test')}</button>` : ''}
@@ -166,7 +184,7 @@
     if (t) t.onclick = () => system('Kyvo', L('Test powiadomienia ✓', 'Test notification ✓'), location.href.split('#')[0] + '#more', 'kyvo-test');
   }
 
-  window.KyvoNotify = { init(deps) { D = deps; }, onGood, onViral, onRunner, settingsHtml, wireSettings, settings: () => S, log: () => log, _send: send };
+  window.KyvoNotify = { init(deps) { D = deps; }, isPremium, usedToday, FREE_CAP, onGood, onViral, onRunner, settingsHtml, wireSettings, settings: () => S, log: () => log, _send: send };
 })();
 
 /* ---- KyvoPush: hooks for REAL background push (app closed). Disabled unless KYVO_PUSH_CONFIG.enabled. ---- */
@@ -186,9 +204,10 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         await loadScript('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js');
         window.OneSignalDeferred.push(async (OneSignal) => {
-          await OneSignal.init({ appId: C.onesignalAppId, serviceWorkerPath: 'sw.js', serviceWorkerParam: { scope: './' } });
+          const base = location.pathname.replace(/[^/]*$/, ''); // '/kyvo-demo-/' on GitHub Pages
+          await OneSignal.init({ appId: C.onesignalAppId, serviceWorkerPath: C.swPath || base.replace(/^\//, '') + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: C.swScope || base }, autoResubscribe: true, notifyButton: { enable: false }, promptOptions: { autoPrompt: false } });
           await OneSignal.User.PushSubscription.optIn();
-          OneSignal.User.addTags({ good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' });
+          OneSignal.User.addTags({ good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' });
         });
         return true;
       }
