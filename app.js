@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_6 — multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_7 — v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_6';
+  const MVP_MARKER = 'KYVO_LIVE_v8_7';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -2515,7 +2515,16 @@
     const h = (location.hash || '').slice(1).split('/')[0];
     if (['rank', 'trader', 'profil', 'leaderboard'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
   });
-  Promise.all([loadViral(), loadSmartMoney(), pLb, refresh()]).then(() => { if (location.hash !== earlyRouted) routeFromHash(); try { updateRunnerBadge(); } catch (e) {} });
+  // v8.7: a cold start with a deep link (#watch, #coin/…, #tweets — e.g. from a push notification) used to land on Pulse,
+  // because the first live render set location.hash = 'pulse' before this route ran. Restore the boot hash unless the user navigated.
+  const bootHash = location.hash;
+  let userNav = false;
+  document.addEventListener('click', () => { userNav = true; }, { once: true, capture: true });
+  Promise.all([loadViral(), loadSmartMoney(), pLb, refresh()]).then(() => {
+    if (!userNav && bootHash && bootHash !== '#pulse' && bootHash !== earlyRouted && location.hash === '#pulse') { try { history.replaceState(null, '', bootHash); } catch (e) {} }
+    if (location.hash !== earlyRouted) routeFromHash();
+    try { updateRunnerBadge(); } catch (e) {}
+  });
   setInterval(() => refresh(), REFRESH_MS);
   document.addEventListener('visibilitychange', () => { if (!document.hidden && navigator.serviceWorker && navigator.serviceWorker.getRegistration) navigator.serviceWorker.getRegistration().then((r) => r && r.update()).catch(() => {}); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden && lastFetch && ['pulse', 'hot', 'good', 'new', 'stretch', 'migrated', 'boosted', 'runner'].includes(view)) keepUi(() => setView(view)); });

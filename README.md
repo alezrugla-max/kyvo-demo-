@@ -79,6 +79,13 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.7 (KYVO_LIVE_v8_7 · SW kyvo-v8-7)
+- ⭐ **Watchlist "od dodania"**: adding a coin stores the entry point (time, price USD, MC) in `kyvo_watch_v1`.
+  Each row shows % since added (green/red), MC entry → now, "dodano 2 godziny temu", $100 → $X and the peak % since added
+  (taken from the 30 s DexScreener refreshes while Kyvo is open). Summary card: "$100 in each" total, best and worst coin.
+- Migration: watchlist entries saved before v8.7 without an entry price take the first live price after the update and are
+  marked "📍 liczone od teraz" / "od startu". Coins added without a price wait for the first live price (≤ 30 s).
+
 ## v8.6 (KYVO_LIVE_v8_6 · SW kyvo-v8-6)
 - 🐦 **New Tweet** tab (`#tweets`): fresh tweets (≤2 h on top, ≤24 h below with real age) from tracked accounts that name a coin
   (contract address or unambiguous $ticker on DexScreener) — coin logo, chain, MC, price since tweet, volume after vs 1 h before,

@@ -1,4 +1,4 @@
-/* Kyvo v8.3 insights (v8.1 base + v8.3 upside/why/verdict): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
+/* Kyvo v8.7 insights (v8.1 base + v8.3 upside/why/verdict + v8.7 watchlist "od dodania" P/L): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
    Public data only (DexScreener, GeckoTerminal, RugCheck, GoPlus). No keys, no tracking, everything stays in this browser.
    Not financial advice. */
 (function () {
@@ -246,15 +246,31 @@
   const WKEY = 'kyvo_watch_v1';
   let watch = {};
   try { watch = JSON.parse(localStorage.getItem(WKEY) || '{}') || {}; } catch (e) { watch = {}; }
+  // v8.7: every coin keeps its entry point (time, price, MC at the moment of adding) → "as if you bought then".
+  // Entries saved before v8.7 without an entry price get the first live price after the update (entryFrom:'update' → "od teraz").
+  (function migrateWatch() {
+    let dirty = false;
+    for (const k of Object.keys(watch)) {
+      const w = watch[k];
+      if (!w || typeof w !== 'object' || !w.address) { delete watch[k]; dirty = true; continue; }
+      if (!(w.addedPrice > 0) && !w.entryPending) { w.entryPending = 'update'; w.addedPrice = null; dirty = true; }
+      if (!w.addedAt) { w.addedAt = Date.now(); dirty = true; }
+    }
+    if (dirty) { try { localStorage.setItem(WKEY, JSON.stringify(watch)); } catch (e) {} }
+  })();
   const live = {}; // key -> coin-ish {priceUsd, mcap, change, liquidity, image}
   function saveWatch() { try { localStorage.setItem(WKEY, JSON.stringify(watch)); } catch (e) {} updateBadge(); }
   function isWatched(key) { return !!watch[key]; }
   function toggleWatch(c) {
     const k = D.keyOf(c);
+    delete lastCh[k];
     if (watch[k]) { delete watch[k]; saveWatch(); D.toast('Usunięto z watchlisty'); return false; }
     if (Object.keys(watch).length >= 60) { D.toast('Watchlista: max 60 coinów'); return false; }
     watch[k] = { chain: c.chainId || 'solana', address: c.address, symbol: c.symbol, name: c.name, image: c.image || null,
-      addedAt: Date.now(), addedPrice: c.priceUsd || null, addedMcap: c.mcap || null, alerts: [] };
+      addedAt: Date.now(), entryAt: null, addedPrice: null, addedMcap: c.mcap || null, peakPct: 0, lowPct: 0, alerts: [] };
+    const px = c.priceUsd != null ? +c.priceUsd : NaN;
+    if (px > 0 && isFinite(px)) { watch[k].addedPrice = px; watch[k].entryAt = watch[k].addedAt; }
+    else watch[k].entryPending = 'add'; // no price on this coin object → first live DexScreener price (≤ 30 s)
     saveWatch();
     D.toast('⭐ Dodano do watchlisty');
     ensurePoll();
@@ -292,8 +308,35 @@
         Object.assign(live, best);
       } catch (e) { /* keep last */ }
     }
+    updateEntries();
     checkAlerts();
     if (document.querySelector('#watchBody') && document.querySelector('#s-watch.on')) renderWatch(document.querySelector('#watchBody'));
+  }
+  // v8.7: fill missing entry prices + track peak / low "since added" from every live refresh (only while Kyvo is open)
+  function sincePct(w, L) { return w && w.addedPrice > 0 && L && L.priceUsd > 0 ? (L.priceUsd / w.addedPrice - 1) * 100 : null; }
+  const lastCh = {}; // key -> % since added at the previous refresh (memory only)
+  function updateEntries() {
+    let dirty = false;
+    for (const [k, w] of Object.entries(watch)) {
+      const L = live[k];
+      if (!L || !(L.priceUsd > 0)) continue;
+      if (w.entryPending || !(w.addedPrice > 0)) {
+        w.addedPrice = L.priceUsd; w.addedMcap = L.mcap || w.addedMcap || null; w.entryAt = Date.now();
+        if (w.entryPending === 'update') w.entryFrom = 'update';
+        delete w.entryPending; w.peakPct = 0; w.lowPct = 0; dirty = true;
+        continue;
+      }
+      if (!(w.addedMcap > 0) && L.mcap > 0) { w.addedMcap = L.mcap * w.addedPrice / L.priceUsd; dirty = true; }
+      const ch = sincePct(w, L);
+      if (ch == null || !isFinite(ch)) continue;
+      // peak/low need 2 refreshes in a row (one odd DexScreener tick — e.g. a switch to another pool — must not set a fake peak)
+      const prev = lastCh[k]; lastCh[k] = ch;
+      if (prev == null) continue;
+      const hi = Math.min(prev, ch), lo = Math.max(prev, ch);
+      if (hi > (w.peakPct || 0) + 0.05) { w.peakPct = hi; w.peakAt = Date.now(); dirty = true; }
+      if (lo < (w.lowPct || 0) - 0.05) { w.lowPct = lo; dirty = true; }
+    }
+    if (dirty) saveWatch();
   }
   function checkAlerts() {
     let dirty = false;
@@ -336,6 +379,22 @@
   function alertLabel(a) {
     return a.type === 'mcAbove' ? `MC ≥ ${D.fmtUsd(a.value)}` : a.type === 'mcBelow' ? `MC ≤ ${D.fmtUsd(a.value)}` : `ruch ±${a.value}% od dodania`;
   }
+  // v8.7: watchlist helpers
+  function money(v) {
+    if (v == null || !isFinite(v)) return '—';
+    if (v >= 1e4) return D.fmtUsd(v);
+    return '$' + (v >= 1000 ? Math.round(v).toLocaleString('en-US') : v < 10 ? v.toFixed(2) : Math.round(v));
+  }
+  function agoLong(ms) {
+    const s = Math.max(0, (Date.now() - ms) / 1000);
+    if (s < 60) return L('przed chwilą', 'just now');
+    const m = Math.floor(s / 60);
+    if (m < 60) return L(`${m} ${plPl(m, 'minutę', 'minuty', 'minut')} temu`, `${m} ${m === 1 ? 'minute' : 'minutes'} ago`);
+    const h = Math.floor(m / 60);
+    if (h < 48) return L(`${h} ${plPl(h, 'godzinę', 'godziny', 'godzin')} temu`, `${h} ${h === 1 ? 'hour' : 'hours'} ago`);
+    const d = Math.floor(h / 24);
+    return L(`${d} ${plPl(d, 'dzień', 'dni', 'dni')} temu`, `${d} ${d === 1 ? 'day' : 'days'} ago`);
+  }
   function renderWatch(root) {
     if (!root) return;
     const keys = Object.keys(watch).sort((a, b) => (watch[b].addedAt || 0) - (watch[a].addedAt || 0));
@@ -343,7 +402,7 @@
     const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
     const notifCard = `<div class="card" style="font-size:12.5px;line-height:1.5">
       <b>🔔 Jak działają alerty</b><br>
-      Alerty sprawdzamy co 30 s, <b>tylko gdy Kyvo jest otwarte</b> (także w tle na komputerze). Dostaniesz komunikat w apce${perm === 'granted' ? ' i powiadomienie systemowe' : ''}. Gdy apka jest zamknięta, alerty nie działają — powiadomienia push przy zamkniętej apce wymagają serwera i dojdą później.
+      Alerty sprawdzamy co 30 s, <b>tylko gdy Kyvo jest otwarte</b> (także w tle na komputerze). Dostaniesz komunikat w apce${perm === 'granted' ? ' i powiadomienie systemowe' : ''}. ${L('Gdy apka jest zamknięta, alerty z watchlisty nie działają — push przy zamkniętej apce dostajesz dla Runnera, Good Coins i New Tweet (ustawienia poniżej).', 'When the app is closed, watchlist alerts do not run — with the app closed you get push for Runner, Good Coins and New Tweet (settings below).')}
       ${perm === 'default' ? `<div style="margin-top:8px"><button type="button" class="pf-btn" id="notifBtn">Włącz powiadomienia systemowe</button></div>` : ''}
       ${perm === 'denied' ? '<div class="mut" style="margin-top:6px">Powiadomienia są zablokowane w ustawieniach przeglądarki — zostają komunikaty w apce.</div>' : ''}
       ${perm === 'unsupported' ? `<div class="mut" style="margin-top:6px">Ta przeglądarka nie obsługuje powiadomień${/iPhone|iPad/.test(navigator.userAgent) && !isStandalone ? ' (na iPhonie działają tylko po dodaniu Kyvo do ekranu głównego, iOS 16.4+)' : ''} — zostają komunikaty w apce.</div>` : ''}
@@ -351,23 +410,53 @@
     const nset = window.KyvoNotify ? window.KyvoNotify.settingsHtml() : '';
     if (!keys.length) {
       root.innerHTML = `<div class="h">⭐ Watchlista</div><div class="sub">Twoje obserwowane coiny i alerty — zapisane tylko w tej przeglądarce</div>
-        <div class="empty">Pusto. Otwórz dowolny coin i kliknij <b>☆ Obserwuj</b>.</div>${notifCard}${nset}`;
+        <div class="empty">Pusto. Otwórz dowolny coin i kliknij <b>☆ Obserwuj</b>.</div>
+        <div class="card mut" style="font-size:12px;line-height:1.5">${L('Od momentu dodania liczymy, ile coin zrobił, tak jakbyś wtedy kupił: % zmiany, MC wejście → teraz i ile byłoby z $100.', 'From the moment you add a coin we track what it did as if you had bought then: % change, entry MC → now and what $100 would be worth.')}</div>${notifCard}${nset}`;
       wireNotif(root);
       return;
     }
+    const rows = keys.map((k) => ({ k, w: watch[k], L: live[k] || {} })).map((r) => Object.assign(r, { since: sincePct(r.w, r.L) }));
+    const priced = rows.filter((r) => r.since != null && isFinite(r.since));
+    let summary = '';
+    if (priced.length) {
+      const inv = priced.length * 100, now = priced.reduce((a, r) => a + 100 * (1 + r.since / 100), 0), tot = (now / inv - 1) * 100;
+      const best = priced.reduce((a, r) => (r.since > a.since ? r : a)), worst = priced.reduce((a, r) => (r.since < a.since ? r : a));
+      summary = `<div class="card wsum">
+        <div class="wsum-l"><small>${L('Gdybyś wszedł po $100 w każdy', 'If you put $100 into each')} (${priced.length} ${L(plPl(priced.length, 'coin', 'coiny', 'coinów'), priced.length === 1 ? 'coin' : 'coins')})</small>
+          <b>${money(inv)} → <span class="${D.pctClass(tot)}">${money(now)}</span></b></div>
+        <div class="wsum-r"><b class="${D.pctClass(tot)}">${D.fmtPct(tot)}</b><small>${L('od dodania', 'since added')}</small></div>
+        ${priced.length > 1 ? `<div class="wsum-x">${L('Najlepszy', 'Best')} <b>$${E(best.w.symbol)}</b> <span class="${D.pctClass(best.since)}">${D.fmtPct(best.since)}</span> · ${L('najgorszy', 'worst')} <b>$${E(worst.w.symbol)}</b> <span class="${D.pctClass(worst.since)}">${D.fmtPct(worst.since)}</span></div>` : ''}
+      </div>`;
+    }
     root.innerHTML = `<div class="h">⭐ Watchlista <span class="badge live">${keys.length}</span></div>
-      <div class="sub">Ceny na żywo z DexScreener · zmiana liczona od momentu dodania · zapisane tylko w tej przeglądarce</div>
-      <div class="card" style="padding:4px 10px">${keys.map((k) => {
-        const w = watch[k], L = live[k] || {};
-        const since = w.addedPrice && L.priceUsd ? (L.priceUsd / w.addedPrice - 1) * 100 : null;
+      <div class="sub">${L('Ceny na żywo z DexScreener · wynik liczony od momentu dodania, tak jakbyś wtedy kupił · zapisane tylko w tej przeglądarce', 'Live prices from DexScreener · result measured from the moment you added it, as if you bought then · saved only in this browser')}</div>
+      ${summary}
+      <div class="card" style="padding:4px 10px">${rows.map(({ k, w, L: lv, since }) => {
         const al = (w.alerts || []);
-        return `<div class="wrow" data-wk="${E(k)}">
-          <a class="wmain" href="#coin/${encodeURIComponent(k)}">
-            ${D.imgTag ? D.imgTag({ chainId: w.chain, address: w.address, symbol: w.symbol, image: L.image || w.image }, 'tok', 38) : ''}
+        const mig = w.entryFrom === 'update';
+        const t0 = mig ? (w.entryAt || w.addedAt) : w.addedAt;
+        const fresh = Date.now() - t0 < 90e3;
+        const timeTxt = w.entryPending ? L('czekam na cenę wejścia…', 'waiting for the entry price…')
+          : mig ? (fresh ? L('📍 liczone od teraz', '📍 counted from now') : L('📍 start liczenia ', '📍 counting started ') + agoLong(t0))
+          : L('dodano ', 'added ') + agoLong(t0);
+        const mcNow = lv.mcap != null ? lv.mcap : null;
+        const val = since != null ? 100 * (1 + since / 100) : null;
+        const peak = since != null && (w.peakPct || 0) > 0.05 ? Math.max(w.peakPct, since) : null;
+        const cls = D.pctClass(since);
+        const tip = w.addedPrice > 0 ? `${L('Wejście', 'Entry')}: ${L('cena', 'price')} ${D.fmtUsd(w.addedPrice)} · MC ${D.fmtUsd(w.addedMcap)} · ${new Date(t0).toLocaleString(L('pl-PL', 'en-US'))}` : '';
+        return `<div class="wrow${since != null ? ' w-' + cls : ''}" data-wk="${E(k)}">
+          <a class="wmain" href="#coin/${encodeURIComponent(k)}"${tip ? ` title="${E(tip)}"` : ''}>
+            ${D.imgTag ? D.imgTag({ chainId: w.chain, address: w.address, symbol: w.symbol, image: lv.image || w.image }, 'tok', 38) : ''}
             <span class="nm"><b><span class="cbadge c-${E(w.chain)}">${E(w.chain === 'solana' ? 'SOL' : w.chain === 'bsc' ? 'BSC' : 'RH')}</span> $${E(w.symbol)}</b>
-              <small>MC ${D.fmtUsd(L.mcap != null ? L.mcap : w.addedMcap)} · od dodania <b class="${D.pctClass(since)}">${D.fmtPct(since)}</b></small></span>
-            <span class="rt"><b class="${D.pctClass(L.change && L.change.h1)}">${D.fmtPct(L.change && L.change.h1 != null ? +L.change.h1 : null)}</b><small class="mut">1h</small></span>
+              <small>MC <span class="wmc0">${D.fmtUsd(w.addedMcap)}</span> → <b class="${cls}">${D.fmtUsd(mcNow)}</b></small>
+              <small>${timeTxt}</small></span>
+            <span class="rt"><b class="wpct ${cls}">${since != null ? D.fmtPct(since) : '—'}</b><small class="mut">${mig ? L('od startu', 'since start') : L('od dodania', 'since added')}</small></span>
           </a>
+          ${since != null ? `<div class="wpl">
+            <span>$100 → <b class="${cls}">${money(val)}</b></span>
+            ${peak != null ? `<span>${L('szczyt', 'peak')} <b class="up">${D.fmtPct(peak)}</b></span>` : ''}
+            ${lv.change && lv.change.h1 != null ? `<span>1h <b class="${D.pctClass(+lv.change.h1)}">${D.fmtPct(+lv.change.h1)}</b></span>` : ''}
+          </div>` : ''}
           <div class="walerts">${al.map((a, i) => `<span class="achip${a.fired ? ' fired' : ''}">${a.fired ? '🔔 ' : ''}${E(alertLabel(a))}${a.fired ? ' · zadziałał' : ''} <button type="button" data-adel="${i}" aria-label="Usuń alert">×</button></span>`).join('')}
             <button type="button" class="achip add" data-aadd>+ alert</button>
             <button type="button" class="achip rm" data-wrm>Usuń</button></div>
@@ -377,7 +466,9 @@
             <button type="button" class="pf-btn" data-asave>Zapisz</button>
           </div>
         </div>`;
-      }).join('')}</div>${notifCard}${nset}
+      }).join('')}</div>
+      <div class="foot">${L('Wynik „od dodania” = cena teraz vs cena w chwili dodania (bez opłat i poślizgu). Szczyt liczymy z odświeżeń co 30 s, gdy Kyvo jest otwarte.', '“Since added” = price now vs price when you added it (no fees or slippage). Peak is taken from 30 s refreshes while Kyvo is open.')}</div>
+      ${notifCard}${nset}
       <div class="foot">Alerty działają lokalnie, gdy Kyvo jest otwarte · to nie jest porada finansowa</div>`;
     root.querySelectorAll('.wrow').forEach((row) => {
       const k = row.dataset.wk, w = watch[k];
