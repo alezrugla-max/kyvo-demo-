@@ -1,4 +1,5 @@
 # Kyvo v8.6: phone push (app CLOSED) for genuinely new important tweets + new Runner coins, via OneSignal.
+# v8.8: Runner also covers 👑 KOL coin / 🚀 Moon run overrides (tools/kol_coins.py), feed data/kol_live.json for the app.
 # Runs on GitHub's servers only (never on the trading VPS). Secret: ONESIGNAL_REST_API_KEY (Settings -> Secrets and
 # variables -> Actions). Missing secret = feed still refreshes, push step is a no-op. The key is never printed.
 # Delay: GitHub runs */5 schedules on a best-effort basis — in practice every 5–15 min, sometimes longer at busy hours.
@@ -39,22 +40,24 @@ jobs:
       - name: New Tweet feed (tracked accounts -> coins)
         id: live
         run: python3 tools/x_live.py
-      - name: Runner scan (flags only, posts nothing to Discord)
+      - name: Runner scan (flags only, posts nothing to Discord) + v8.8 KOL coin / Moon run feed
+        id: scan
         env:
           KYVO_CALLS_STATE: .kyvo_push/calls_state.json
-        run: python3 tools/discord_calls.py --flags-out .kyvo_push/flags.json || echo "runner scan failed -> tweets only"
+        run: python3 tools/discord_calls.py --flags-out .kyvo_push/flags.json --kol-out data/kol_live.json || echo "runner scan failed -> tweets only"
       - name: Send OneSignal push
         env:
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
         run: python3 tools/kyvo_push.py --flags .kyvo_push/flags.json ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-      - name: Commit New Tweet feed (only when the tweet set changed or every 30 min)
-        if: ${{ steps.live.outputs.commit == 'true' && github.event.inputs.dry_run != 'true' }}
+      - name: Commit New Tweet + KOL coin feeds (only when a set changed or every 30 min)
+        if: ${{ (steps.live.outputs.commit == 'true' || steps.scan.outputs.kol_commit == 'true') && github.event.inputs.dry_run != 'true' }}
         run: |
           git config user.name "kyvo-push-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/x_live.json
+          if [ -f data/kol_live.json ]; then git add data/kol_live.json; fi
           git diff --cached --quiet && exit 0
-          git commit -m "x_live: new tweets"
+          git commit -m "x_live: new tweets / kol coins"
           for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
       - name: Save sent-ids state
         if: always()

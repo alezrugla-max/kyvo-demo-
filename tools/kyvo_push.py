@@ -4,6 +4,7 @@
 Sends one push per genuinely NEW item:
   * 🐦 New Tweet: a tracked account tweeted about a coin (data/x_live.json, built by tools/x_live.py), tweet ≤ 2 h old
   * 🏃 Runner: a coin that passed the app's runnerRule this run (flags JSON written by tools/discord_calls.py --flags-out)
+  * v8.8 👑 KOL coin / 🚀 Moon run: Runner overrides (tools/kol_coins.py), same "runner" tag + same free-user daily cap
 Dedupe: sent ids live in the state file (restored/saved with actions/cache). First run only seeds (no blast of old items).
 Audience (tags set by the app in notify.js): premium=1 -> every alert; everyone else -> at most FREE_CAP alerts per
 Europe/Warsaw day (one global counter = same broadcasts for all free users). Users who switched a type off (tag tweets=0 /
@@ -94,11 +95,28 @@ def main() -> int:
         kid = "run:" + f["k"].lower()
         if kid in sent: continue
         if seeding: sent[kid] = now; continue
+        b = f.get("badge")
+        if b == "kol":      # v8.8 👑 KOL coin (official coin of a known KOL) — high risk: supply sits in the KOL's wallet
+            conc_pl = f" · ⚠️ {round(f['top_pct'])}% podaży u KOL-a, wysokie ryzyko" if f.get("concentrated") and f.get("top_pct") else " · ⚠️ wysokie ryzyko"
+            conc_en = f" · ⚠️ {round(f['top_pct'])}% of supply with the KOL, high risk" if f.get("concentrated") and f.get("top_pct") else " · ⚠️ high risk"
+            who = f"@{f['kol']} · " if f.get("kol") else ""
+            items.append({"id": kid, "kind": "runner", "topic": kid, "hash": "#runner",
+                          "title_pl": f"👑 KOL coin: ${f['sym']}", "title_en": f"👑 KOL coin: ${f['sym']}",
+                          "body_pl": f"{who}{f['chain']} · MC {fmt_usd(f.get('mc0'))}{conc_pl}. To nie porada finansowa.",
+                          "body_en": f"{who}{f['chain']} · MC {fmt_usd(f.get('mc0'))}{conc_en}. Not financial advice."})
+            continue
+        if b == "moon":     # v8.8 🚀 Moon run — extreme real momentum, safety score failed
+            items.append({"id": kid, "kind": "runner", "topic": kid, "hash": "#runner",
+                          "title_pl": f"🚀 Moon run: ${f['sym']} · wysokie ryzyko", "title_en": f"🚀 Moon run: ${f['sym']} · high risk",
+                          "body_pl": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · ogromny wolumen i tysiące kupujących, ale nie przeszedł testów bezpieczeństwa. To nie porada finansowa.",
+                          "body_en": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · huge volume and thousands of buyers, but it failed the safety checks. Not financial advice."})
+            continue
         items.append({"id": kid, "kind": "runner", "topic": kid, "hash": "#coin/" + f["k"],
                       "title_pl": f"🏃 Runner: ${f['sym']}", "title_en": f"🏃 Runner: ${f['sym']}",
                       "body_pl": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · mocny wolumen i dużo transakcji. To nie porada finansowa.",
                       "body_en": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · strong volume and lots of trades. Not financial advice."})
     if seeding: print(f"first run: seeded {len(sent)} existing items, nothing sent")
+    items.sort(key=lambda it: 0 if it["title_en"].startswith(("👑", "🚀")) else 1)
     for it in items[:MAX_PER_RUN]:
         print(f"- {it['id']}: {it['title_en']}")
         targets = [audience(it["kind"], True)]

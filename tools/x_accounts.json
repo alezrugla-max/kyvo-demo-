@@ -118,7 +118,31 @@
   {
    "handle": "0xSisyphus",
    "role": "kol"
+  },
+  {
+   "handle": "kimchi1x",
+   "role": "kol",
+   "note": "v8.8: Solana trader/KOL, Pump.fun partner (bio @pumpfun). Verified via api.fxtwitter.com 2026-10-22: verified, ~213k followers."
   }
  ],
- "live_note": "v8.6 New Tweet feed (tools/x_live.py): accounts + live_extra are read every ~5 min from the public FxTwitter API (no X key). live_extra verified to exist via api.fxtwitter.com/2/profile on 2026-10-21."
+ "live_note": "v8.6 New Tweet feed (tools/x_live.py): accounts + live_extra are read every ~5 min from the public FxTwitter API (no X key). live_extra verified to exist via api.fxtwitter.com/2/profile on 2026-10-21.",
+ "kol_extra": [
+  {
+   "handle": "kimchi1x",
+   "why": "Pump.fun partner trader; $KIMCHI (CSoc…pump) linked x.com/kimchi1x in on-chain metadata"
+  },
+  {
+   "handle": "theunipcs",
+   "why": "well-known Solana memecoin figure (Bonk), verified, ~338k followers (fxtwitter 2026-10-22)"
+  },
+  {
+   "handle": "rajgokal",
+   "why": "Solana co-founder, verified, ~2.4M followers (fxtwitter 2026-10-22)"
+  },
+  {
+   "handle": "ShockedJS",
+   "why": "well-known memecoin trader/KOL, verified, ~72k followers (fxtwitter 2026-10-22)"
+  }
+ ],
+ "kol_note": "v8.8 KOL-coin list (tools/kol_coins.py) = accounts + live_extra + kol_extra + every kolscan leaderboard handle (data/leaderboard.json). Exact handle match only (e.g. @Ansem is NOT @blknoiz06)."
 }

@@ -24,6 +24,8 @@ Only public data, no keys needed for reading. Not financial advice.
 from __future__ import annotations
 import argparse, json, os, shutil, subprocess, sys, time, urllib.parse, urllib.request
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import kol_coins  # noqa: E402  v8.8: 👑 KOL coin / 🚀 Moon run overrides
 
 APP = os.environ.get("KYVO_APP_URL", "https://alezrugla-max.github.io/kyvo-demo-/")
 DS = "https://api.dexscreener.com"
@@ -87,6 +89,10 @@ def candidates(chain: str) -> list[str]:
                 rid = (((p.get("relationships") or {}).get("base_token") or {}).get("data") or {}).get("id", "")
                 if "_" in rid: addrs.append(rid.split("_", 1)[1])
             time.sleep(2.1)   # GeckoTerminal free tier ~30 req/min
+    d = get(f"{GT}/networks/{net}/trending_pools?duration=5m&page=1") or {}   # v8.8: what is exploding in the last 5 min
+    for p in d.get("data") or []:
+        rid = (((p.get("relationships") or {}).get("base_token") or {}).get("data") or {}).get("id", "")
+        if "_" in rid: addrs.append(rid.split("_", 1)[1])
     seen, out = set(), []
     for a in addrs:
         k = a.lower()
@@ -122,6 +128,7 @@ def to_coin(p: dict) -> dict:
         "on_curve": dex in ("pumpfun", "fourmeme"), "dex": dex, "boost": ((p.get("boosts") or {}).get("active") or 0),
         "price": float(p["priceUsd"]) if p.get("priceUsd") else None, "pair": p.get("pairAddress") or "",
         "ds_url": p.get("url") or f"https://dexscreener.com/{p.get('chainId')}/{b.get('address')}",
+        "links": [x.get("url") for x in (info.get("socials") or []) + (info.get("websites") or []) if isinstance(x, dict) and x.get("url")],  # v8.8 KOL check
     }
 
 def good(c: dict) -> bool:
@@ -310,6 +317,27 @@ def load_state(p: Path) -> dict:
     try: return json.loads(p.read_text())
     except Exception: return {"posted": {}, "hist": {}}
 
+def write_kol_feed(path: Path, new: list[dict], dry: bool = False) -> None:
+    """v8.8: data/kol_live.json for the app's Runner tab — first flag per coin kept (time + MC), 24 h window."""
+    try: doc = json.loads(path.read_text())
+    except Exception: doc = {"items": []}
+    now = int(time.time() * 1000)
+    items = {e["k"]: e for e in doc.get("items", []) if now - e.get("at", 0) < 24 * 3.6e6}
+    added = 0
+    for f in new:
+        if f["k"] in items:
+            e = items[f["k"]]; e.update({"mcNow": f["mc0"], "lastAt": f["at"], "top_pct": f.get("top_pct") or e.get("top_pct")})
+            if f.get("badge") == "kol" and e.get("badge") != "kol": e.update({"badge": "kol", "kol": f.get("kol"), "evidence": f.get("evidence")})
+        else: items[f["k"]] = dict(f); added += 1
+    out = {"version": 1, "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "items": sorted(items.values(), key=lambda e: -e["at"])}
+    changed = added > 0 or len(items) != len(doc.get("items", []))
+    if not dry:
+        path.parent.mkdir(parents=True, exist_ok=True); path.write_text(json.dumps(out, ensure_ascii=False, indent=1))
+    gh = os.environ.get("GITHUB_OUTPUT")
+    if gh and not dry:
+        with open(gh, "a") as fh: fh.write(f"kol_commit={'true' if changed else 'false'}\n")
+    print(f"kol feed -> {path}: {len(items)} items ({added} new)")
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--dry-run", action="store_true", help="print embeds, post nothing")
@@ -318,6 +346,7 @@ def main() -> int:
     ap.add_argument("--news", help="post this changelog text to DISCORD_WEBHOOK_NEWS and exit")
     ap.add_argument("--flags-out", type=Path, help="v8.3 track record: write every coin that passes the Good / Runner rule "
                     "(first-flag price + MC) to this JSON, even when no webhook is set (tools/track_record.py merges it)")
+    ap.add_argument("--kol-out", type=Path, help="v8.8: merge 👑 KOL coin / 🚀 Moon run flags into this JSON (app feed data/kol_live.json)")
     a = ap.parse_args()
 
     if a.news is not None:
@@ -330,10 +359,17 @@ def main() -> int:
     hooks = {ch: os.environ.get(CHAINS[ch]["secret"], "").strip() for ch in CHAINS}
     chains = [c for c in a.chains.split(",") if c in CHAINS and (a.dry_run or hooks[c] or a.flags_out)]
     flags: list[dict] = []
-    def flag(c: dict, kind: str):
+    def flag(c: dict, kind: str, ov: dict | None = None):
         if c.get("price") and c.get("mcap"):
-            flags.append({"k": f"{c['chain']}:{c['address']}", "sym": c["symbol"], "name": c["name"], "chain": c["chain"], "addr": c["address"],
-                          "pair": c.get("pair") or "", "img": c.get("image"), "kind": kind, "at": int(time.time() * 1000), "px0": c["price"], "mc0": c["mcap"]})
+            f = {"k": f"{c['chain']}:{c['address']}", "sym": c["symbol"], "name": c["name"], "chain": c["chain"], "addr": c["address"],
+                 "pair": c.get("pair") or "", "img": c.get("image"), "kind": kind, "at": int(time.time() * 1000), "px0": c["price"], "mc0": c["mcap"]}
+            if ov and ov.get("badge"):   # v8.8 override: no thresholds stored, only what the app shows
+                f.update({"badge": ov["badge"], "kol": ov.get("handle") if ov["badge"] == "kol" else None, "top_pct": ov.get("top_pct"),
+                          "top_is": ov.get("top_is"), "concentrated": ov.get("concentrated"), "evidence": ov.get("evidence") or [],
+                          "tweeted_by": ov.get("tweeted_by") or [], "buyers1h": ov.get("buyers1h"),
+                          "snap": {"liq": c.get("liq"), "vol1h": c.get("vol1h"), "h1": c.get("h1"), "m5": c.get("m5"), "tx1h": c.get("tx_h1"),
+                                   "age_h": round(c["age_h"], 3) if c.get("age_h") is not None else None, "created": int(time.time() * 1000 - (c.get("age_h") or 0) * 3.6e6)}})
+            flags.append(f)
     if not chains:
         print("No DISCORD_WEBHOOK_SOL / DISCORD_WEBHOOK_BSC secret set -> nothing to do."); return 0
     st = load_state(a.state); now = time.time()
@@ -371,11 +407,24 @@ def main() -> int:
         for _, c, *_rest in ranked: flag(c, "good")
         # 🏃 Runner (same runnerRule as the app): cheap market prefilter, then Kyvo Check, then node --runner
         rc = [c for c in coins if (c["vol1h"] or 0) >= 100_000 and (c["h1"] or 0) >= 30 and (c["tx_h1"] or 0) >= 1000 and (c["liq"] or 0) >= 15_000][:8]
+        # v8.8: fresh coins with big volume also get a look for the 👑 KOL coin / 🚀 Moon run overrides (young pairs often have no h1 yet)
+        seen_rc = {c["address"] for c in rc}
+        rc += sorted([c for c in coins if c["address"] not in seen_rc and c["age_h"] is not None and c["age_h"] <= kol_coins.KOL_T["ageMaxH"]
+                      and (c["vol1h"] or 0) >= kol_coins.KOL_T["vol1h"] and (c["tx_h1"] or 0) >= kol_coins.KOL_T["tx1h"]],
+                     key=lambda c: -(c["vol1h"] or 0))[:6]
         rin = []
         for c in rc:
-            score, checks = kyvo_check(c, coins); rin.append((c, rule_input(c, score, checks, brank.get(c["address"].lower()))))
-        for (c, _), r in zip(rin, good_rule([x for _, x in rin], "--runner") or []):
-            if r.get("ok"): flag(c, "runner"); print(f"  runner ${c['symbol']} MC {fmt_usd(c['mcap'])}")
+            score, checks = kyvo_check(c, coins); rin.append((c, rule_input(c, score, checks, brank.get(c["address"].lower())), checks))
+        res_r = good_rule([x for _, x, _ in rin], "--runner") or [{} for _ in rin]
+        for (c, _, checks), r in zip(rin, res_r):
+            ov = None
+            try: ov = kol_coins.evaluate(c, checks, coins)
+            except Exception as e: print(f"  kol/moon check error ${c['symbol']}: {type(e).__name__}")
+            if ov and ov.get("blocked"): print(f"  no override ${c['symbol']}: {ov['blocked']}"); ov = None
+            if r.get("ok"):
+                flag(c, "runner", ov if ov and ov.get("badge") == "kol" else None); print(f"  runner ${c['symbol']} MC {fmt_usd(c['mcap'])}" + (" 👑 KOL" if ov and ov.get("badge") == "kol" else ""))
+            elif ov and ov.get("badge"):
+                flag(c, "runner", ov); print(f"  runner (override {ov['badge']}) ${c['symbol']} MC {fmt_usd(c['mcap'])} @{ov.get('handle') or '-'} top {ov.get('top_pct')}% ev={ov.get('evidence')}")
         if not a.dry_run and not hooks[chain]:
             st.setdefault("hist", {})[chain] = hist; continue   # flag-only run for this chain (no webhook)
         sent = 0
@@ -396,6 +445,7 @@ def main() -> int:
     if a.flags_out:
         a.flags_out.parent.mkdir(parents=True, exist_ok=True); a.flags_out.write_text(json.dumps(flags))
         print(f"flags -> {a.flags_out}: {len(flags)}")
+    if a.kol_out: write_kol_feed(a.kol_out, [f for f in flags if f.get("badge")], dry=a.dry_run)
     return 0
 
 if __name__ == "__main__":

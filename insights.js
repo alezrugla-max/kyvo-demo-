@@ -1,4 +1,4 @@
-/* Kyvo v8.7 insights (v8.1 base + v8.3 upside/why/verdict + v8.7 watchlist "od dodania" P/L): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
+/* Kyvo v8.8 insights (v8.1 base + v8.3 upside/why/verdict + v8.7 watchlist "od dodania" P/L): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
    Public data only (DexScreener, GeckoTerminal, RugCheck, GoPlus). No keys, no tracking, everything stays in this browser.
    Not financial advice. */
 (function () {

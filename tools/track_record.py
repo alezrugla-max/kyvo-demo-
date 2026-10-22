@@ -50,6 +50,7 @@ def main() -> int:
             items[f["k"]] = e = {x: f.get(x) for x in ("k", "sym", "name", "chain", "addr", "pair", "img", "at", "px0", "mc0")}
             e.update({"kinds": {}, "max": f["px0"], "maxAt": f["at"], "last": f["px0"], "mcNow": f["mc0"], "lastAt": f["at"]}); new += 1
         e.setdefault("kinds", {}).setdefault(f["kind"], f["at"])
+        if f.get("badge") and not e.get("badge"): e["badge"] = f["badge"]; e["kol"] = f.get("kol")   # v8.8 👑 / 🚀
     items = {k: e for k, e in items.items() if now_ms - e["at"] < KEEP_DAYS * 864e5}
     live = [e for e in items.values() if now_ms - e["at"] < 7 * 864e5]
     # current price: DexScreener tokens batch per chain (≤ 30 addresses / call)

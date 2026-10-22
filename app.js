@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_7 — v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_8 — v8.8 👑 KOL coin + 🚀 Moon run in Runner · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_7';
+  const MVP_MARKER = 'KYVO_LIVE_v8_8';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -1140,7 +1140,7 @@
     const tm = (ms) => new Date(ms).toLocaleString(window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     const row = (e) => {
       const st = stageOf(e.mc0);
-      const kinds = Object.keys(e.kinds || {}).map((k) => (k === 'runner' ? '🏃 Runner' : k === 'leg2' ? '🔁 ' + L2('Kolejna fala', 'Second leg') : '✅ Good')).join(' · ');
+      const kinds = Object.keys(e.kinds || {}).map((k) => (k === 'runner' ? (e.badge === 'kol' ? '👑 KOL coin' : e.badge === 'moon' ? '🚀 Moon run' : '🏃 Runner') : k === 'leg2' ? '🔁 ' + L2('Kolejna fala', 'Second leg') : '✅ Good')).join(' · ');
       const p1 = e.p1 != null ? pctOf(e.p1, e.px0) : null, p8 = e.p8 != null ? pctOf(e.p8, e.px0) : null;
       const pend = (h) => (Date.now() - e.at < h * 3.6e6 ? `<span class="mut">${L2('za', 'in')} ${ageLabelH(h - (Date.now() - e.at) / 3.6e6)}</span>` : '<span class="mut">—</span>');
       return `<div class="row trk" data-key="${esc(e.k)}" role="button" tabindex="0">${imgTag({ image: e.img, chainId: e.chain, address: e.addr, symbol: e.sym, dexId: '' })}
@@ -1169,7 +1169,55 @@
   const RSEEN = 'kyvo_runner_viewed_v1';
   let runnerStage = +(localStorage.getItem('kyvo_runner_stage') || 0) || 0;
   let shapeT = 0;
-  function runnerItems() { return window.KyvoInsights ? window.KyvoInsights.runnerList(activeChain) : { coins: [], tweets: [] }; }
+  /* v8.8: 👑 KOL coin / 🚀 Moon run — Runner overrides found by the server (tools/kol_coins.py in the kyvo-push Action)
+     -> data/kol_live.json. They fail the normal safety score on purpose (e.g. supply sits in the KOL's wallet), so every
+     card carries a high-risk line. No thresholds are shown. */
+  let kolLive = null, kolLiveAt = 0, kolBusy = false;
+  async function loadKolLive() {
+    if (kolBusy) return kolLive;
+    kolBusy = true;
+    try { kolLive = await fetchJson('data/kol_live.json?t=' + Math.floor(Date.now() / 120000)); } catch (e) { kolLive = kolLive || { items: [] }; }
+    kolLiveAt = Date.now(); kolBusy = false;
+    return kolLive;
+  }
+  function kolCoinOf(e) {
+    const u = allUniverse().find((c) => keyOf(c) === e.k);
+    if (u) return u;
+    const s2 = e.snap || {};
+    return { address: e.addr, name: e.name || e.sym, symbol: e.sym, chainId: e.chain, mcap: e.mcNow || e.mc0, priceUsd: null, liquidity: s2.liq, pairAddress: e.pair || '',
+      volume: { m5: null, h1: s2.vol1h, h6: null, h24: null }, change: { m5: s2.m5, h1: s2.h1, h6: null, h24: null }, pairCreatedAt: s2.created || null,
+      image: e.img || null, dexId: '', socials: [], websites: [], _snap: true };
+  }
+  function kolWhy(e) {
+    const en = window.KyvoI18n && window.KyvoI18n.isEn(), L2 = (pl, x) => (en ? x : pl);
+    const ev = { link: L2('coin linkuje X tego KOL-a', 'coin links this KOL\u2019s X'), profile_wallet: L2('podaż wysłana do portfela z profilu KOL-a', 'supply sent to the KOL\u2019s profile wallet'),
+      kol_wallet: L2('znany portfel KOL-a trzyma podaż', 'a known KOL wallet holds supply'), tweet: L2('tweet z tym CA', 'tweet with this CA') };
+    const out = [];
+    if (e.badge === 'kol') { if (e.kol) out.push('@' + esc(e.kol)); for (const k of e.evidence || []) if (ev[k]) out.push(ev[k] + (k === 'tweet' && (e.tweeted_by || []).length ? ' @' + esc(e.tweeted_by[0]) : '')); }
+    else out.push(L2('bardzo szybki wzrost MC', 'very fast MC growth'), L2('ogromny wolumen', 'huge volume'));
+    if (e.buyers1h) out.push(`${fmtInt(Math.round(e.buyers1h))} ${L2('kupujących 1h', 'buyers 1h')}`);
+    return out;
+  }
+  function kolWarnHtml(e) {
+    const en = window.KyvoI18n && window.KyvoI18n.isEn(), L2 = (pl, x) => (en ? x : pl);
+    const p = e.top_pct != null ? Math.round(e.top_pct) : null, who = e.kol ? ' (@' + esc(e.kol) + ')' : '';
+    let t;
+    if (e.badge === 'kol' && e.concentrated && p) t = L2(`Wysokie ryzyko: ~${p}% podaży leży w portfelu KOL-a${who} — jedna jego sprzedaż może mocno zrzucić cenę.`, `High risk: ~${p}% of the supply sits in the KOL\u2019s wallet${who} — one sale by them can crash the price.`);
+    else if (e.badge === 'kol') t = L2('Wysokie ryzyko: coin nie przeszedł zwykłych testów bezpieczeństwa Kyvo.', 'High risk: this coin did not pass Kyvo\u2019s usual safety checks.');
+    else t = L2(`Wysokie ryzyko: nie przeszedł testów bezpieczeństwa Kyvo${p && e.concentrated ? ` (największy portfel ma ~${p}% podaży)` : ''}. Tak szybkie ruchy często kończą się dużym spadkiem.`, `High risk: it failed Kyvo\u2019s safety checks${p && e.concentrated ? ` (the biggest wallet holds ~${p}% of supply)` : ''}. Moves this fast often end in a big drop.`);
+    return `<div class="kolwarn" translate="no">⚠️ ${t}</div>`;
+  }
+  function runnerItems() {
+    const base = window.KyvoInsights ? window.KyvoInsights.runnerList(activeChain) : { coins: [], tweets: [] };
+    const srv = ((kolLive && kolLive.items) || []).filter((e) => e.badge && Date.now() - e.at < 12 * 3.6e6 && (activeChain === 'all' || !activeChain || e.chain === activeChain));
+    for (const e of srv) {
+      const have = base.coins.find((x) => x.key === e.k && !x.leg2);
+      if (have) { have.srv = e; have.why = kolWhy(e).concat(have.why || []); continue; }
+      base.coins.push({ kind: 'coin', key: e.k, c: kolCoinOf(e), srv: e, score: 2, why: kolWhy(e) });
+    }
+    if (!kolBusy && Date.now() - kolLiveAt > 120000) loadKolLive().then(() => { if (view === 'runner' && srv.length !== ((kolLive && kolLive.items) || []).filter((e) => e.badge && Date.now() - e.at < 12 * 3.6e6 && (activeChain === 'all' || !activeChain || e.chain === activeChain)).length) renderRunner(); else updateRunnerBadge(); });
+    return base;
+  }
   function updateRunnerBadge(items) {
     items = items || runnerItems();
     let seenK = {}; try { seenK = JSON.parse(localStorage.getItem(RSEEN) || '{}') || {}; } catch (e) {}
@@ -1187,22 +1235,24 @@
     updateRunnerBadge(items);
     // v8.3: stages by MC, smallest first (how early each runner is); MC at first flag from the track-record log
     for (const x of items.coins) trackFlag(x.c, x.leg2 ? 'leg2' : 'runner');
-    items.coins.sort((a, b) => (a.c.mcap || 0) - (b.c.mcap || 0));
+    items.coins.sort((a, b) => (b.srv && b.srv.badge === 'kol' ? 1 : 0) - (a.srv && a.srv.badge === 'kol' ? 1 : 0) || (a.c.mcap || 0) - (b.c.mcap || 0)); // v8.8: 👑 KOL coins first
     const stCount = {}; for (const x of items.coins) { const st = stageOf(x.c.mcap); if (st) stCount[st.n] = (stCount[st.n] || 0) + 1; }
     if (runnerStage && !stCount[runnerStage]) runnerStage = 0;
     const shown = runnerStage ? items.coins.filter((x) => (stageOf(x.c.mcap) || {}).n === runnerStage) : items.coins;
     const flagAgo = (ms) => { const m = Math.max(1, Math.round((Date.now() - ms) / 60e3)); return m < 60 ? L2(m + ' min temu', m + ' min ago') : L2(Math.round(m / 60) + ' h temu', Math.round(m / 60) + ' h ago'); };
     const coinCard = (x) => {
       const c = x.c;
-      const st = stageOf(c.mcap), tr = track.items[keyOf(c)];
+      const st = stageOf(c.mcap), sv = x.srv;
+      const tr = sv ? { mc0: sv.mc0, at: sv.at, kinds: { runner: sv.at } } : track.items[keyOf(c)]; // v8.8: server flag time/MC for 👑/🚀
       const climb = tr && tr.mc0 ? (c.mcap / tr.mc0 - 1) * 100 : null;
       return `<div class="row runner${x.leg2 ? ' leg2' : ''}" data-key="${esc(keyOf(c))}" role="button" tabindex="0">${imgTag(c)}
-        <div class="nm"><b><span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span> ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span>${x.leg2 ? ` <span class="leg2b" translate="no">🔁 ${L2('Kolejna fala', 'Second leg')}</span>` : x.early ? ` <span class="leg2b early" translate="no">⚡ ${L2('Zaczyna pompować', 'Starting to pump')}</span>` : ''}</b>
+        <div class="nm"><b><span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span> ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span>${sv ? '' : x.leg2 ? ` <span class="leg2b" translate="no">🔁 ${L2('Kolejna fala', 'Second leg')}</span>` : x.early ? ` <span class="leg2b early" translate="no">⚡ ${L2('Zaczyna pompować', 'Starting to pump')}</span>` : ''}</b>
+          ${sv ? `<div class="kolline">${sv.badge === 'kol' ? '<span class="leg2b kolb" translate="no">👑 KOL coin</span>' : `<span class="leg2b moonb" translate="no">🚀 Moon run · ${L2('wysokie ryzyko', 'high risk')}</span>`}</div>` + kolWarnHtml(sv) : ''}
           ${st ? `<div class="rstage st${st.n}" translate="no"><b>${L2('Etap', 'Stage')} ${st.n}</b> ${stageBarHtml(st)} <span class="mut">${esc(st.range)} · ${esc(L2(st.pl, st.en))}</span></div>` : ''}
           <div class="rmc" translate="no">${tr && tr.mc0 ? `${L2('MC przy oznaczeniu', 'MC at flag')} <b>${fmtUsd(tr.mc0)}</b> → ${L2('teraz', 'now')} <b>${fmtUsd(c.mcap)}</b> <span class="${pctClass(climb)}">${climb >= 0.5 ? '↑' : climb <= -0.5 ? '↓' : '→'} ${fmtPct(climb)}</span> <span class="mut">· ${esc(flagAgo(tr.kinds.runner || tr.kinds.leg2 || tr.at))}</span>` : `MC <b>${fmtUsd(c.mcap)}</b>`}</div>
           <small>Liq ${fmtLiq(c)} · ⏱ ${esc(ageFrom(c.pairCreatedAt))}</small>
-          <div class="rwhy" translate="no">${x.leg2 ? '🔁 ' + L2('Dlaczego kolejna fala', 'Why second leg') : '🏃 ' + L2('Dlaczego runner', 'Why runner')}: ${x.why.join(' · ')}</div>
-          ${window.KyvoInsights.upsideRowHtml(c)}</div>
+          <div class="rwhy" translate="no">${sv && sv.badge === 'kol' ? '👑 ' + L2('Dlaczego KOL coin', 'Why KOL coin') : sv && sv.badge === 'moon' ? '🚀 ' + L2('Dlaczego moon run', 'Why moon run') : x.leg2 ? '🔁 ' + L2('Dlaczego kolejna fala', 'Why second leg') : '🏃 ' + L2('Dlaczego runner', 'Why runner')}: ${x.why.join(' · ')}</div>
+          ${c._snap ? '' : window.KyvoInsights.upsideRowHtml(c)}</div>
         <div class="rt"><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small></div></div>`;
     };
     const twCard = (x) => {

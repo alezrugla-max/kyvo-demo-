@@ -79,6 +79,22 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.8 (KYVO_LIVE_v8_8 · SW kyvo-v8-8)
+- 👑 **KOL coin** (Runner override, `tools/kol_coins.py`, called from `tools/discord_calls.py` in kyvo-push / kyvo-calls):
+  a fresh coin whose on-chain metadata / DexScreener socials link EXACTLY a curated KOL X handle (`tools/x_accounts.json`
+  accounts + live_extra + kol_extra + every kolscan leaderboard handle) AND one more proof (biggest holder = known KOL wallet,
+  or = the wallet of the coin's linked pump.fun profile, or a tracked account tweeted this CA in `data/x_live.json`), plus
+  momentum (volume, trades, unique buyers from GeckoTerminal). Flagged as Runner + push even if the Kyvo Check / holder
+  concentration fails; the 30M MC cap is lifted for KOL coins in their first hours.
+- 🚀 **Moon run · wysokie ryzyko**: no KOL proof, but extreme real momentum in the first hours (MC into the millions very fast,
+  huge volume, thousands of trades and unique buyers, low trades-per-wallet = no wash trading).
+- Hard-rug protections stay for both: mint/freeze authority, rugged, mutable balances, transfer fee, unlocked AMM LP, bundled
+  launch (RugCheck insider network), dev-held supply, same-ticker/same-name copycat (older or ≥3× bigger original),
+  impersonation (linked X is a post by another account, mixed links, or not the real big account); BSC honeypot/sell tax.
+- App: Runner tab shows them first with the badge and a clear ⚠️ high-risk line (e.g. "~75% podaży leży w portfelu KOL-a");
+  feed `data/kol_live.json` (committed by kyvo-push only when it changes). No thresholds in the UI. Free users: same 2 push/day cap.
+- New Tweet: + @kimchi1x. Backfill + notes: `kyvo_v8_8_notes.md` (box only).
+
 ## v8.7 (KYVO_LIVE_v8_7 · SW kyvo-v8-7)
 - ⭐ **Watchlist "od dodania"**: adding a coin stores the entry point (time, price USD, MC) in `kyvo_watch_v1`.
   Each row shows % since added (green/red), MC entry → now, "dodano 2 godziny temu", $100 → $X and the peak % since added
