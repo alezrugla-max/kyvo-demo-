@@ -40,7 +40,25 @@ HARD_T = {"insiders": 20, "devPct": 20, "transferFee": 5, "lpLocked": 90, "bscSe
 PROGRAM_OWNERS = {"FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"}
 RESERVED = {"i", "home", "search", "intent", "share", "hashtag", "explore", "messages", "notifications", "settings"}
 
+CACHE_DIR = Path(__import__("os").environ.get("KYVO_FACT_CACHE", ".kyvo_push/facts"))
+CACHE_TTL = 600  # v8.9: RugCheck / GoPlus answers reused for 10 min (contract facts change slowly; keeps the 90-s loop polite)
+
 def get(url: str, timeout: int = 20):
+    cacheable = url.startswith((RC, GP))
+    if cacheable:
+        import hashlib
+        cp = CACHE_DIR / (hashlib.sha1(url.encode()).hexdigest() + ".json")
+        try:
+            if time.time() - cp.stat().st_mtime < CACHE_TTL: return json.loads(cp.read_text())
+        except Exception: pass
+        d = _get(url, timeout)
+        if d is not None:
+            try: CACHE_DIR.mkdir(parents=True, exist_ok=True); cp.write_text(json.dumps(d))
+            except Exception: pass
+        return d
+    return _get(url, timeout)
+
+def _get(url: str, timeout: int = 20):
     for i in range(3):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
@@ -141,13 +159,16 @@ def verify_handle(h: str) -> dict:
     return {"ok": fol >= 20_000 or (ver and fol >= 5_000), "followers": fol, "verified": ver}
 
 # ---------------- facts ----------------
-def gt_traders(c: dict) -> dict | None:
+def gt_traders(c: dict, with_h6: bool = False) -> dict | None:
     if c.get("chain") not in ("solana", "bsc") or not c.get("pair"): return None
     d = get(f"{GT}/networks/{c['chain']}/pools/{c['pair']}")
+    time.sleep(2.1)   # v8.9: GeckoTerminal public limit ~30 req/min (the loop scans every ~90 s)
     tx = (((d or {}).get("data") or {}).get("attributes") or {}).get("transactions") or {}
     h1 = tx.get("h1") or {}
     if not h1: return None
-    return {"buyers1h": h1.get("buyers") or 0, "sellers1h": h1.get("sellers") or 0, "buys1h": h1.get("buys") or 0, "sells1h": h1.get("sells") or 0}
+    out = {"buyers1h": h1.get("buyers") or 0, "sellers1h": h1.get("sellers") or 0, "buys1h": h1.get("buys") or 0, "sells1h": h1.get("sells") or 0}
+    if with_h6: out["buyers6h"] = (tx.get("h6") or {}).get("buyers")
+    return out
 
 def holders(r: dict) -> list[dict]:
     """top non-pool holders from a RugCheck full report (same pool detection as contract_facts)."""
@@ -278,6 +299,98 @@ def kol_evidence(c: dict, r: dict | None, meta: dict, live: dict | None = None, 
     return {"ok": ok and not imp, "handle": handle, "evidence": ev, "impersonation": imp, "tweeted_by": tw,
             "top_pct": round(top_pct, 1), "top_is": "kol_wallet" if wallet_kol and top_owner in kw else "kol_profile" if profile_hold else "unknown",
             "linked": L}
+
+BIG_X = {"buyersH1": 150, "txPerTrader": 8, "buyersUp": 1.2}
+
+def big_check(c: dict, checks, universe: list[dict] | None = None, facts: dict | None = None) -> dict:
+    """v8.9 📈 Big runner (established $1M–$100M coin, passed bigRunnerRule): hard-rug protections + copycat guard + REAL unique
+    buyers in the last hour (not a few wallets wash-trading) and buyers rising vs the 6 h pace (GeckoTerminal pool transactions)."""
+    facts = facts or {}
+    r = facts.get("rc") if "rc" in facts else (get(RC + urllib.parse.quote(c["address"]) + "/report") if c["chain"] == "solana" else None)
+    if "gp" in facts: g = facts["gp"]
+    elif c["chain"] == "solana": g = ((get(GP + "solana/token_security?contract_addresses=" + c["address"]) or {}).get("result") or {}).get(c["address"])
+    else:
+        res = (get(GP + "token_security/56?contract_addresses=" + c["address"]) or {}).get("result") or {}
+        g = res.get(c["address"].lower()) or res.get(c["address"])
+    bad = hard_rug(c, checks, r, g)
+    if not bad and copycat_of(c, universe, facts.get("search")): bad = "copycat"
+    if bad: return {"blocked": bad}
+    tr = facts["tr"] if "tr" in facts else gt_traders(c, with_h6=True)
+    if not tr: return {"blocked": "traders_unknown"}
+    traders = (tr["buyers1h"] or 0) + (tr["sellers1h"] or 0)
+    if (tr["buyers1h"] or 0) < BIG_X["buyersH1"]: return {"blocked": "buyers"}
+    if traders and (tr["buys1h"] + tr["sells1h"]) / traders > BIG_X["txPerTrader"]: return {"blocked": "wash"}
+    b6 = tr.get("buyers6h")
+    if b6 and (tr["buyers1h"] or 0) < BIG_X["buyersUp"] * b6 / 6: return {"blocked": "buyers_flat"}
+    hs = holders(r or {}) if r else []
+    top = round(float(hs[0].get("pct") or 0), 1) if hs else None
+    return {"badge": "big", "buyers1h": tr["buyers1h"], "top_pct": top, "concentrated": bool((top or 0) >= 20), "evidence": []}
+
+# v8.9 🐦 Tweet runner: a coin from a tracked account's tweet (data/x_live.json) that clearly runs AFTER the tweet
+TW_T = {"maxAgeH": 4, "minAgeMin": 3, "chgMin": 40, "vol1h": 30_000, "volX": 2.5, "buyShare": 0.52, "m5Min": -5, "h1Min": 0,
+        "buyersH1": 80, "buyersUp": 1.3, "txPerTrader": 8}
+
+def px_at(c: dict, ts: int) -> float | None:
+    """price at tweet time from GeckoTerminal 5-min candles (only when x_live had no budget left for this tweet)."""
+    if c.get("chain") not in ("solana", "bsc") or not c.get("pair"): return None
+    d = get(f"{GT}/networks/{c['chain']}/pools/{c['pair']}/ohlcv/minute?aggregate=5&limit=100&currency=usd&token={c.get('address')}")
+    time.sleep(2.1)
+    rows = sorted((((d or {}).get("data") or {}).get("attributes") or {}).get("ohlcv_list") or [], key=lambda r: r[0])
+    before = [r for r in rows if r[0] < ts]
+    return float(before[-1][4]) if before else None
+
+def tweet_candidates(live: dict | None = None) -> list[dict]:
+    """fresh tweets (minAgeMin..maxAgeH) with a coin that existed BEFORE the tweet; newest first, one entry per coin."""
+    if live is None:
+        try: live = json.loads((ROOT / "data" / "x_live.json").read_text())
+        except Exception: live = {}
+    now = time.time(); out, seen = [], set()
+    for t in sorted(live.get("tweets", []), key=lambda x: -(x.get("ts") or 0)):
+        age = now - (t.get("ts") or 0)
+        if age < TW_T["minAgeMin"] * 60 or age > TW_T["maxAgeH"] * 3600: continue
+        for c in (t.get("coins") or [])[:1]:
+            k = f"{c.get('chain')}:{c.get('address')}"
+            if c.get("pre_launch") or k in seen or c.get("chain") not in ("solana", "bsc"): continue
+            seen.add(k); out.append({"t": t, "c": c})
+    return out
+
+def tweet_momentum(c: dict, x: dict, px0: float | None) -> str | None:
+    """market gates on live DexScreener fields (c = to_coin dict). None = passes."""
+    if not px0 or not c.get("price"): return "no_px"
+    chg = (c["price"] / px0 - 1) * 100
+    if chg < TW_T["chgMin"]: return "chg"
+    vb = (x.get("vol_1h_before") or 0)
+    if (c.get("vol1h") or 0) < max(TW_T["vol1h"], TW_T["volX"] * vb): return "vol"
+    ntx = (c.get("buys1h") or 0) + (c.get("sells1h") or 0)
+    if not ntx or (c.get("buys1h") or 0) / ntx < TW_T["buyShare"]: return "buys"
+    if c.get("m5") is not None and c["m5"] < TW_T["m5Min"]: return "dumping"
+    if c.get("h1") is not None and c["h1"] < TW_T["h1Min"]: return "fading"
+    return None
+
+def tweet_check(c: dict, checks, tw: dict, px0: float, universe: list[dict] | None = None, facts: dict | None = None) -> dict:
+    """hard-rug + copycat blocks (same as v8.8) + REAL buyers rising (GeckoTerminal). Returns the override or {'blocked': why}."""
+    facts = facts or {}
+    r = facts.get("rc") if "rc" in facts else (get(RC + urllib.parse.quote(c["address"]) + "/report") if c["chain"] == "solana" else None)
+    if "gp" in facts: g = facts["gp"]
+    elif c["chain"] == "solana": g = ((get(GP + "solana/token_security?contract_addresses=" + c["address"]) or {}).get("result") or {}).get(c["address"])
+    else:
+        res = (get(GP + "token_security/56?contract_addresses=" + c["address"]) or {}).get("result") or {}
+        g = res.get(c["address"].lower()) or res.get(c["address"])
+    bad = hard_rug(c, checks, r, g)
+    if not bad and copycat_of(c, universe, facts.get("search")): bad = "copycat"
+    if bad: return {"blocked": bad}
+    tr = facts["tr"] if "tr" in facts else gt_traders(c, with_h6=True)
+    if not tr: return {"blocked": "traders_unknown"}
+    traders = (tr["buyers1h"] or 0) + (tr["sellers1h"] or 0)
+    if (tr["buyers1h"] or 0) < TW_T["buyersH1"]: return {"blocked": "buyers"}
+    if traders and (tr["buys1h"] + tr["sells1h"]) / traders > TW_T["txPerTrader"]: return {"blocked": "wash"}
+    b6 = tr.get("buyers6h")
+    if b6 and (tr["buyers1h"] or 0) < TW_T["buyersUp"] * b6 / 6: return {"blocked": "buyers_flat"}
+    t = tw["t"]; hs = holders(r or {}) if r else []
+    top = round(float(hs[0].get("pct") or 0), 1) if hs else None
+    return {"badge": "tweet", "buyers1h": tr["buyers1h"], "top_pct": top, "concentrated": bool((top or 0) >= 20), "evidence": ["tweet"],
+            "tweeted_by": [t.get("handle")], "tweet": {"id": str(t.get("id")), "url": t.get("url"), "handle": t.get("handle"), "ts": t.get("ts"),
+            "px0": px0, "chg": round((c["price"] / px0 - 1) * 100, 1)}}
 
 def evaluate(c: dict, checks, universe: list[dict] | None = None, live: dict | None = None, facts: dict | None = None, verify: bool = True) -> dict | None:
     """Return {'badge': 'kol'|'moon', ...} when an override applies, else None (or {'blocked': reason} for logging).

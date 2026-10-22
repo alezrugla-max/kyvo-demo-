@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_8 — v8.8 👑 KOL coin + 🚀 Moon run in Runner · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_9 — v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_8';
+  const MVP_MARKER = 'KYVO_LIVE_v8_9';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -633,6 +633,7 @@
       sellsH1: sells,
       buysM5: tx.m5 && tx.m5.buys != null ? Number(tx.m5.buys) : null,
       sellsM5: tx.m5 && tx.m5.sells != null ? Number(tx.m5.sells) : null,
+      txH6: tx.h6 && tx.h6.buys != null ? Number(tx.h6.buys) + Number(tx.h6.sells || 0) : null, // v8.9 big runner: trades vs 6 h pace
       buyRatioH1,
       hasSocials: !!(socials && socials.length) || !!(websites && websites.length),
       curveEst,
@@ -864,8 +865,8 @@
   /* v8.6: New Tweet feed — data/x_live.json (tools/x_live.py in GitHub Actions every ~5–15 min) */
   let xLive = null, xLiveAt = 0;
   async function loadLive(force) {
-    if (!force && xLive && Date.now() - xLiveAt < 120000) return xLive;
-    try { xLive = await fetchJson('data/x_live.json?t=' + Math.floor(Date.now() / 120000)); xLiveAt = Date.now(); } catch (e) { xLive = xLive || { tweets: [], updated_at: null }; }
+    if (!force && xLive && Date.now() - xLiveAt < 55000) return xLive;
+    try { xLive = await fetchJson('data/x_live.json?t=' + Math.floor(Date.now() / 60000)); /* v8.9: 1-min cache-bust */ xLiveAt = Date.now(); } catch (e) { xLive = xLive || { tweets: [], updated_at: null }; }
     mergeLive();
     return xLive;
   }
@@ -1176,7 +1177,7 @@
   async function loadKolLive() {
     if (kolBusy) return kolLive;
     kolBusy = true;
-    try { kolLive = await fetchJson('data/kol_live.json?t=' + Math.floor(Date.now() / 120000)); } catch (e) { kolLive = kolLive || { items: [] }; }
+    try { kolLive = await fetchJson('data/kol_live.json?t=' + Math.floor(Date.now() / 60000)); } catch (e) { kolLive = kolLive || { items: [] }; }
     kolLiveAt = Date.now(); kolBusy = false;
     return kolLive;
   }
@@ -1194,11 +1195,23 @@
       kol_wallet: L2('znany portfel KOL-a trzyma podaż', 'a known KOL wallet holds supply'), tweet: L2('tweet z tym CA', 'tweet with this CA') };
     const out = [];
     if (e.badge === 'kol') { if (e.kol) out.push('@' + esc(e.kol)); for (const k of e.evidence || []) if (ev[k]) out.push(ev[k] + (k === 'tweet' && (e.tweeted_by || []).length ? ' @' + esc(e.tweeted_by[0]) : '')); }
+    else if (e.badge === 'tweet' && e.tweet) { // v8.9 🐦 Tweet runner: runs after a tracked account's tweet
+      out.push(`+${Math.round(e.tweet.chg || 0)}% ${L2('od tweeta', 'since the tweet')} @${esc(e.tweet.handle || '')}`, L2('wolumen i kupujący rosną od tweeta', 'volume and buyers rising since the tweet'));
+    }
+    else if (e.badge === 'big') { // v8.9 📈 Big runner (server): established $1M+ coin running now
+      const b = e.big || {}, pc = (v) => (v == null ? null : (v >= 0 ? '+' : '') + Math.round(v) + '%');
+      if (b.h1 != null) out.push(pc(b.h1) + ' 1h' + (b.h6 != null ? ' · ' + pc(b.h6) + ' 6h' : ''));
+      if (b.acc) out.push(`vol 1h ×${(+b.acc).toFixed(1)} ${L2('vs średnia', 'vs avg')}`);
+      if (b.txAcc) out.push(`${L2('transakcje', 'trades')} ↑×${(+b.txAcc).toFixed(1)}`);
+      if (b.br) out.push(`${Math.round(b.br * 100)}% ${L2('kupna', 'buys')}`);
+    }
     else out.push(L2('bardzo szybki wzrost MC', 'very fast MC growth'), L2('ogromny wolumen', 'huge volume'));
     if (e.buyers1h) out.push(`${fmtInt(Math.round(e.buyers1h))} ${L2('kupujących 1h', 'buyers 1h')}`);
     return out;
   }
   function kolWarnHtml(e) {
+    if (e.badge === 'tweet') return `<div class="kolwarn" translate="no">⚠️ ${(window.KyvoI18n && window.KyvoI18n.isEn()) ? 'Moves right after a tweet often fade fast — late entries are risky.' : 'Ruchy zaraz po tweecie często szybko się kończą — późne wejście jest ryzykowne.'}</div>`;
+    if (e.badge === 'big') return ''; // v8.9: big runners passed the normal safety floor — no high-risk banner
     const en = window.KyvoI18n && window.KyvoI18n.isEn(), L2 = (pl, x) => (en ? x : pl);
     const p = e.top_pct != null ? Math.round(e.top_pct) : null, who = e.kol ? ' (@' + esc(e.kol) + ')' : '';
     let t;
@@ -1215,7 +1228,7 @@
       if (have) { have.srv = e; have.why = kolWhy(e).concat(have.why || []); continue; }
       base.coins.push({ kind: 'coin', key: e.k, c: kolCoinOf(e), srv: e, score: 2, why: kolWhy(e) });
     }
-    if (!kolBusy && Date.now() - kolLiveAt > 120000) loadKolLive().then(() => { if (view === 'runner' && srv.length !== ((kolLive && kolLive.items) || []).filter((e) => e.badge && Date.now() - e.at < 12 * 3.6e6 && (activeChain === 'all' || !activeChain || e.chain === activeChain)).length) renderRunner(); else updateRunnerBadge(); });
+    if (!kolBusy && Date.now() - kolLiveAt > 60000) loadKolLive().then(() => { if (view === 'runner' && srv.length !== ((kolLive && kolLive.items) || []).filter((e) => e.badge && Date.now() - e.at < 12 * 3.6e6 && (activeChain === 'all' || !activeChain || e.chain === activeChain)).length) renderRunner(); else updateRunnerBadge(); });
     return base;
   }
   function updateRunnerBadge(items) {
@@ -1235,7 +1248,8 @@
     updateRunnerBadge(items);
     // v8.3: stages by MC, smallest first (how early each runner is); MC at first flag from the track-record log
     for (const x of items.coins) trackFlag(x.c, x.leg2 ? 'leg2' : 'runner');
-    items.coins.sort((a, b) => (b.srv && b.srv.badge === 'kol' ? 1 : 0) - (a.srv && a.srv.badge === 'kol' ? 1 : 0) || (a.c.mcap || 0) - (b.c.mcap || 0)); // v8.8: 👑 KOL coins first
+    const pri = (x) => (x.srv && x.srv.badge === 'kol' ? 2 : x.srv && x.srv.tweet ? 1 : 0); // v8.9: 👑 first, then 🐦
+    items.coins.sort((a, b) => pri(b) - pri(a) || (a.c.mcap || 0) - (b.c.mcap || 0)); // v8.8: 👑 KOL coins first
     const stCount = {}; for (const x of items.coins) { const st = stageOf(x.c.mcap); if (st) stCount[st.n] = (stCount[st.n] || 0) + 1; }
     if (runnerStage && !stCount[runnerStage]) runnerStage = 0;
     const shown = runnerStage ? items.coins.filter((x) => (stageOf(x.c.mcap) || {}).n === runnerStage) : items.coins;
@@ -1246,14 +1260,15 @@
       const tr = sv ? { mc0: sv.mc0, at: sv.at, kinds: { runner: sv.at } } : track.items[keyOf(c)]; // v8.8: server flag time/MC for 👑/🚀
       const climb = tr && tr.mc0 ? (c.mcap / tr.mc0 - 1) * 100 : null;
       return `<div class="row runner${x.leg2 ? ' leg2' : ''}" data-key="${esc(keyOf(c))}" role="button" tabindex="0">${imgTag(c)}
-        <div class="nm"><b><span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span> ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span>${sv ? '' : x.leg2 ? ` <span class="leg2b" translate="no">🔁 ${L2('Kolejna fala', 'Second leg')}</span>` : x.early ? ` <span class="leg2b early" translate="no">⚡ ${L2('Zaczyna pompować', 'Starting to pump')}</span>` : ''}</b>
-          ${sv ? `<div class="kolline">${sv.badge === 'kol' ? '<span class="leg2b kolb" translate="no">👑 KOL coin</span>' : `<span class="leg2b moonb" translate="no">🚀 Moon run · ${L2('wysokie ryzyko', 'high risk')}</span>`}</div>` + kolWarnHtml(sv) : ''}
+        <div class="nm"><b><span class="cbadge c-${esc(c.chainId || 'solana')}">${esc(chainBadge(c))}</span> ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span>${sv ? '' : x.leg2 ? ` <span class="leg2b" translate="no">🔁 ${L2('Kolejna fala', 'Second leg')}</span>` : x.big ? ` <span class="leg2b bigb" translate="no">📈 ${L2('Duży runner', 'Big runner')}</span>` : x.early ? ` <span class="leg2b early" translate="no">⚡ ${L2('Zaczyna pompować', 'Starting to pump')}</span>` : ''}</b>
+          ${sv ? `<div class="kolline">${sv.badge === 'kol' ? '<span class="leg2b kolb" translate="no">👑 KOL coin</span>' : sv.badge === 'tweet' ? `<span class="leg2b twb" translate="no">🐦 Tweet runner</span>` : sv.badge === 'big' ? `<span class="leg2b bigb" translate="no">📈 ${L2('Duży runner', 'Big runner')}</span>` : `<span class="leg2b moonb" translate="no">🚀 Moon run · ${L2('wysokie ryzyko', 'high risk')}</span>`}</div>` + kolWarnHtml(sv) : ''}
+          ${sv && sv.tweet && sv.tweet.url ? `<div class="twlink" translate="no"><a href="${esc(sv.tweet.url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">🐦 ${L2('Tweet', 'Tweet')} @${esc(sv.tweet.handle || '')} · +${Math.round(sv.tweet.chg || 0)}% ${L2('od tweeta', 'since')} ↗</a></div>` : ''}
           ${st ? `<div class="rstage st${st.n}" translate="no"><b>${L2('Etap', 'Stage')} ${st.n}</b> ${stageBarHtml(st)} <span class="mut">${esc(st.range)} · ${esc(L2(st.pl, st.en))}</span></div>` : ''}
           <div class="rmc" translate="no">${tr && tr.mc0 ? `${L2('MC przy oznaczeniu', 'MC at flag')} <b>${fmtUsd(tr.mc0)}</b> → ${L2('teraz', 'now')} <b>${fmtUsd(c.mcap)}</b> <span class="${pctClass(climb)}">${climb >= 0.5 ? '↑' : climb <= -0.5 ? '↓' : '→'} ${fmtPct(climb)}</span> <span class="mut">· ${esc(flagAgo(tr.kinds.runner || tr.kinds.leg2 || tr.at))}</span>` : `MC <b>${fmtUsd(c.mcap)}</b>`}</div>
           <small>Liq ${fmtLiq(c)} · ⏱ ${esc(ageFrom(c.pairCreatedAt))}</small>
-          <div class="rwhy" translate="no">${sv && sv.badge === 'kol' ? '👑 ' + L2('Dlaczego KOL coin', 'Why KOL coin') : sv && sv.badge === 'moon' ? '🚀 ' + L2('Dlaczego moon run', 'Why moon run') : x.leg2 ? '🔁 ' + L2('Dlaczego kolejna fala', 'Why second leg') : '🏃 ' + L2('Dlaczego runner', 'Why runner')}: ${x.why.join(' · ')}</div>
+          <div class="rwhy" translate="no">${sv && sv.badge === 'kol' ? '👑 ' + L2('Dlaczego KOL coin', 'Why KOL coin') : sv && sv.badge === 'moon' ? '🚀 ' + L2('Dlaczego moon run', 'Why moon run') : sv && sv.badge === 'tweet' ? '🐦 ' + L2('Dlaczego tweet runner', 'Why tweet runner') : (sv && sv.badge === 'big') || x.big ? '📈 ' + L2('Dlaczego duży runner', 'Why big runner') : x.leg2 ? '🔁 ' + L2('Dlaczego kolejna fala', 'Why second leg') : '🏃 ' + L2('Dlaczego runner', 'Why runner')}: ${x.why.join(' · ')}</div>
           ${c._snap ? '' : window.KyvoInsights.upsideRowHtml(c)}</div>
-        <div class="rt"><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small></div></div>`;
+        <div class="rt"><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small><small class="rtmc" translate="no">MC ${fmtUsd(c.mcap)}</small></div></div>`;
     };
     const twCard = (x) => {
       const k = coinKey(x.coin.chain, x.coin.address);
@@ -1774,7 +1789,7 @@
     if (window.KyvoChart) {
       window.KyvoChart.mount($('#chartSlot'), {
         key: keyOf(c), network: GECKO_NET[c.chainId || 'solana'], pool: c.pairAddress || null, token: c.address,
-        dsChain: c.chainId || 'solana', pair: c.pairAddress || '', smBuys,
+        dsChain: c.chainId || 'solana', pair: c.pairAddress || '', smBuys, price: c.priceUsd, change: c.change, // v8.9: last-resort line chart
       });
     }
     if (window.KyvoInsights) {
@@ -1923,9 +1938,14 @@
         : `<span class="mut">${L2('Cena i wolumen od tweeta: brak danych świec', 'Price and volume since tweet: no candle data')}</span>`;
       return `${vCoinHtml(c)}<div class="vsince">${c.pumping ? `<span class="badge pumpb">🚀 ${L2('Pompuje po tweecie', 'Pumping after tweet')}</span> ` : ''}${facts}</div>`;
     };
+    // v8.9 🐦 Tweet runner: coins that clearly run after this tweet (server feed data/kol_live.json)
+    if (!kolLive) { try { await loadKolLive(); } catch (e) {} }
+    const twRun = {};
+    for (const e of (kolLive && kolLive.items) || []) if (e.tweet && e.tweet.id && Date.now() - e.at < 24 * 3.6e6) twRun[String(e.tweet.id)] = e;
     const card = (t) => {
       const h = ageH(t);
-      return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}">
+      const tr = twRun[String(t.id)];
+      return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}${tr ? ' twrun' : ''}">${tr ? `<div class="twrunb" translate="no">🐦 Tweet runner · <b>$${esc(tr.sym)}</b> <b class="up">+${Math.round(tr.tweet.chg || 0)}%</b> ${L2('po tweecie', 'after the tweet')} · <a href="#runner">${L2('w Runnerach', 'in Runner')} →</a></div>` : ''}
         <div class="meta">${imgTag(t.avatar, 'av', 36)}
           <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(t.author_name || t.handle)} <span class="mut">@${esc(t.handle)}</span> ${t.role === 'celebrity' ? '<span class="badge demo">VIP</span>' : roleBadge(t.role)}</b>
           <div class="mut" style="font-size:11.5px">${t.author_followers != null ? `👥 ${fmtInt(t.author_followers)} ${L2('obserwujących', 'followers')} · ` : ''}🕒 ${esc(exactTime(t.created_at))} · <b class="${h < 2 ? 'up' : ''}">${esc(ageLabelH(h))} ${L2('temu', 'ago')}</b>${t.is_reply ? ' · ' + L2('odpowiedź', 'reply') : ''}</div></div>
@@ -1936,7 +1956,7 @@
       </div>`;
     };
     body.innerHTML = `<div class="h" translate="no">🐦 New Tweet <span class="badge live">${fresh.length} ${L2(fresh.length === 1 ? 'świeży' : plFew(fresh.length) ? 'świeże' : 'świeżych', 'fresh')}</span></div>
-      <div class="sub" translate="no">${L2('Gdy znany trader, KOL albo celebryta tweetuje o coinie — od razu tutaj, najnowsze na górze. Sprawdzamy', 'When a well-known trader, KOL or celebrity tweets about a coin — right here, newest first. We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co ~5–15 min', 'every ~5–15 min')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
+      <div class="sub" translate="no">${L2('Gdy znany trader, KOL albo celebryta tweetuje o coinie — od razu tutaj, najnowsze na górze. Sprawdzamy', 'When a well-known trader, KOL or celebrity tweets about a coin — right here, newest first. We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co kilka minut', 'every few minutes')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
       ${updMin != null && updMin > 45 ? `<div class="card" style="font-size:12.5px;color:var(--warn)" translate="no">${L2('Feed nie odświeżył się od', 'Feed has not refreshed for')} ${updMin} min — ${L2('źródło mogło chwilowo nie odpowiadać.', 'the source may be temporarily unavailable.')}</div>` : ''}
       <div>${fresh.length ? fresh.map(card).join('') : `<div class="empty">${L2('W ostatnich 2 h nikt ze śledzonych kont nie tweetował o coinie, który da się jednoznacznie znaleźć. Dostaniesz powiadomienie, gdy to się stanie.', 'No tracked account has tweeted about a clearly identifiable coin in the last 2 h. You will get a notification when it happens.')}</div>`}</div>
       ${older.length ? `<div class="h" style="font-size:14px;margin-top:14px" translate="no">${L2('Wcześniej (2–24 h)', 'Earlier (2–24 h)')} <span class="mut" style="font-size:12px">${older.length}</span></div><div>${older.map(card).join('')}</div>` : ''}
@@ -2589,11 +2609,32 @@
       }
     } catch (e) {}
   }, 10 * 60e3);
-  // v8.6: New Tweet feed every 2 min while Kyvo is open (in-app alert for fresh tweets; the phone push comes from GitHub Actions)
+  // v8.6: New Tweet feed while Kyvo is open (in-app alert for fresh tweets; the phone push comes from GitHub Actions)
+  // v8.9: every 60 s (the server loop now updates the feeds every few minutes instead of every ~35 min); only re-render when it changed
+  let liveSig = '';
   setInterval(async () => {
     if (document.hidden) return;
-    try { await loadLive(true); if (viral && window.KyvoNotify) window.KyvoNotify.onViral(viral); if (view === 'tweets') renderTweets(); } catch (e) {}
-  }, 120e3);
+    try {
+      await loadLive(true);
+      const sig = ((xLive && xLive.tweets) || []).map((t) => t.id).join(',');
+      if (sig === liveSig) return;
+      liveSig = sig;
+      if (viral && window.KyvoNotify) window.KyvoNotify.onViral(viral);
+      if (view === 'tweets') keepUi(() => renderTweets());
+    } catch (e) {}
+  }, 60e3);
+  // v8.9: 👑 KOL / 🚀 Moon / 📈 Big runner server feed every 60 s while open (Runner tab + badge update without a reload)
+  let kolSig = '';
+  setInterval(async () => {
+    if (document.hidden) return;
+    try {
+      await loadKolLive();
+      const sig = ((kolLive && kolLive.items) || []).map((e) => e.k + ':' + (e.lastAt || e.at)).join(',');
+      if (sig === kolSig) return;
+      kolSig = sig;
+      if (view === 'runner') keepUi(() => renderRunner()); else if (view === 'tweets') keepUi(() => renderTweets()); else updateRunnerBadge();
+    } catch (e) {}
+  }, 60e3);
   if (window.KyvoNotify) window.KyvoNotify.init({ toast, keyOf, fmtUsd });
   if (window.KyvoPush) window.KyvoPush.init();
   setInterval(updateClock, 1000);

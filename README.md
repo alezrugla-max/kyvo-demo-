@@ -79,6 +79,25 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.9 (KYVO_LIVE_v8_9 · SW kyvo-v8-9)
+- ⏱ **Continuous feeds** (`tools/kyvo_loop.py`, `.github/workflows/kyvo-push.yml`): one run loops ~51 min in 3 chunks
+  (state saved to actions/cache after each chunk): Runner scan every ~90 s, New Tweet read every ~4 min (in parallel, GT budget 5),
+  OneSignal push right after each step (same sent-ids dedupe + free 2/day cap). Feed commits only on new items
+  (or a 30-min heartbeat), ≤ 1 per 3 min and ≤ 7 per hour (GitHub Pages branch build: soft limit 10 builds/h, shared).
+  The run requeues itself (`gh workflow run`, only after success); cron */15 is a backstop; `concurrency: kyvo-push` = 1 running + 1 queued.
+  Kill switch: repo variable `KYVO_LOOP_CHAIN=0`. RugCheck/GoPlus answers cached 10 min (`.kyvo_push/facts`).
+- App polls `data/x_live.json` and `data/kol_live.json` every 60 s while open (1-min `?t=` cache-bust) and re-renders only on change.
+- 📈 **Duży runner / Big runner** (`bigRunnerRule` in insights.js = tools/upside_estimate.js `--big`): established $1M–$100M coins
+  (≥ 6 h old) running now — strong 1 h (or 6 h) move, last-hour volume far above its 24 h average, trades above the 6 h pace,
+  buyers dominate, healthy liquidity, Kyvo Check floor, not parabolic / not dumping. Server adds GT 1 h trending + top-volume pools,
+  hard-rug + copycat guard + unique buyers (≥ threshold, rising vs 6 h, no wash trading) → `badge: "big"` in `data/kol_live.json` + push.
+  Second wave (🔁) MC cap 30M → 100M. Runner cards show MC on the right. Research: `tools/big_runner_research.py`.
+- 📊 **Charts** (`chart.js`): GT queue with a priority lane for the open chart (background GT calls pause while it loads), 12-s
+  timeout per call, backoff 3/6/12 s, OHLCV 404 → token's own GT pool, empty OHLCV on new pools → 1-min candles from trades,
+  12-s watchdog → DexScreener embed (15-s load watchdog) → simple line from DexScreener % changes; four.meme curve pairs go
+  straight to DexScreener; chart library loaded on demand if missing; reopen reuses a healthy chart / remembers a fallback for 3 min.
+  SW: `vendor/` cache-first.
+
 ## v8.8 (KYVO_LIVE_v8_8 · SW kyvo-v8-8)
 - 👑 **KOL coin** (Runner override, `tools/kol_coins.py`, called from `tools/discord_calls.py` in kyvo-push / kyvo-calls):
   a fresh coin whose on-chain metadata / DexScreener socials link EXACTLY a curated KOL X handle (`tools/x_accounts.json`
@@ -110,3 +129,9 @@ Memecoins are extremely risky. Kyvo shows public market data and public wallet a
   runner scan (`tools/discord_calls.py --flags-out`, no Discord posts) → `tools/kyvo_push.py` → OneSignal REST.
   Secret `ONESIGNAL_REST_API_KEY` only in GitHub Secrets; missing = no-op. Premium (tag premium=1) gets all; free max 2/day.
 - Static privacy page `privacy.html` (PL + EN) for App Store Connect / Play Console "Privacy policy URL".
+
+### v8.9 — 🐦 Tweet runner
+A coin named in a tracked account's tweet (New Tweet feed: x_live / KOL) that clearly runs **after** the tweet, within the first few hours, gets:
+a push (`🐦 Tweet runner: $X +NN% po tweecie @handle`, same OneSignal path, dedupe `twr:<coin>`, free cap 2/day, Premium unlimited),
+a 🐦 badge plus a tweet link in Runner, and a highlighted card in New Tweet. The rule needs a strong price rise since the tweet, rising volume and buyers, and no dump in progress.
+Only hard rugs and copycats are blocked, the same as v8.8. It is checked in every loop scan (about 90 s). Thresholds live only in `tools/kol_coins.py` (TW_T) and are not shown in the app.

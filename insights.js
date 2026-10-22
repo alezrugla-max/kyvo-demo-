@@ -1,4 +1,4 @@
-/* Kyvo v8.8 insights (v8.1 base + v8.3 upside/why/verdict + v8.7 watchlist "od dodania" P/L): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
+/* Kyvo v8.9 insights (+ 📈 Big runner) (v8.1 base + v8.3 upside/why/verdict + v8.7 watchlist "od dodania" P/L): Kyvo Check (safety score), "Dlaczego tu?", watchlista + lokalne alerty, cena od tweeta.
    Public data only (DexScreener, GeckoTerminal, RugCheck, GoPlus). No keys, no tracking, everything stays in this browser.
    Not financial advice. */
 (function () {
@@ -833,7 +833,7 @@
    * Extra x fields: vol5m, buys5m, sells5m, and from 15-min candles (pending until known): pumpX, belowHigh, coolRatio.
    * Research (tools/second_leg_research.py) → kyvo_v8_3_notes.md.
    */
-  const LEG2_T = { kc: 60, liq: 15000, liqMc: 0.05, mcMax: 3e7, pumpX: 2, belowMin: 30, belowMax: 60, coolMax: 0.5, acc: 2, v5Min: 5000, buy5: 0.55 };
+  const LEG2_T = { kc: 60, liq: 15000, liqMc: 0.05, mcMax: 1e8, pumpX: 2, belowMin: 30, belowMax: 60, coolMax: 0.5, acc: 2, v5Min: 5000, buy5: 0.55 };
   function secondLegRule(x, T) {
     T = Object.assign({}, LEG2_T, T || {});
     const n = (v) => (v == null || !isFinite(+v) ? null : +v);
@@ -887,6 +887,38 @@
     const c01 = (v) => Math.max(0, Math.min(1, v));
     const score = 0.4 * c01((acc || 0) / 6) + 0.3 * c01(((br5 || 0) - 0.5) / 0.3) + 0.3 * c01(Math.log10(Math.max(tx5, 1) / T.tx5) + 0.3);
     return { ok: !f, failed: f ? f[0] : null, score, acc, br5, tx5 };
+  }
+  /**
+   * v8.9 bigRunnerRule(x, T) → { ok, failed, score, acc, txAcc, br } — "📈 Duży runner / Big runner": an ESTABLISHED coin
+   * ($1M–$100M MC, not minutes old) that is running right now: strong 1 h (or 6 h) price move, volume of the last hour far
+   * above its own 24 h average, more trades than its recent pace, buyers dominate, healthy liquidity, safety floor passed,
+   * not a parabolic blow-off and not dumping in the last 5 min. Research: tools/big_runner_research.py → kyvo_v8_9_notes.md.
+   * Extra x fields: vol5m, tx6h (buys+sells 6 h). Thresholds are never shown in the app.
+   */
+  const BIG_T = { kc: 60, mcMin: 1e6, mcMax: 1e8, ageMinH: 6, liq: 50000, liqMc: 0.03, vol1h: 150000, volMc: 0.02, acc: 2.5, tx1h: 500, txAcc: 1.3, buyShare: 0.52, h1Min: 15, h6Min: 40, h1Soft: 5, h1Max: 300, m5Min: -3 };
+  function bigRunnerRule(x, T) {
+    T = Object.assign({}, BIG_T, T || {});
+    const n = (v) => (v == null || !isFinite(+v) ? null : +v);
+    const c01 = (v) => (isFinite(v) ? Math.max(0, Math.min(1, v)) : 0);
+    const mc = n(x.mcap), liq = n(x.liquidity), v1 = n(x.vol1h), v24 = n(x.vol24h), h1 = n(x.h1), h6 = n(x.h6), m5 = n(x.m5), ageH = n(x.ageH), tx6 = n(x.tx6h);
+    const b = n(x.buys1h) || 0, s = n(x.sells1h) || 0, ntx = b + s, br = ntx ? b / ntx : null;
+    const acc = v1 != null && v24 > 0 ? v1 / (v24 / 24) : null;
+    const txAcc = tx6 != null && tx6 > 0 ? ntx / (tx6 / 6) : null;
+    const checks = [
+      ['safety', (n(x.score) || 0) >= T.kc && !(n(x.redFlags) || 0)],
+      ['mc', mc != null && mc >= T.mcMin && mc <= T.mcMax],
+      ['age', ageH != null && ageH >= T.ageMinH],
+      ['liq', liq != null && !x.onCurve && liq >= T.liq && mc > 0 && liq / mc >= T.liqMc && liq <= 2 * mc],
+      ['vol', v1 != null && v1 >= Math.max(T.vol1h, T.volMc * (mc || 0))],
+      ['surge', acc != null && acc >= T.acc],
+      ['tx', ntx >= T.tx1h && (txAcc == null || txAcc >= T.txAcc)],
+      ['buys', br != null && br >= T.buyShare],
+      ['move', h1 != null && h1 <= T.h1Max && (h1 >= T.h1Min || (h6 != null && h6 >= T.h6Min && h1 >= T.h1Soft))],
+      ['notDumping', m5 == null || m5 >= T.m5Min],
+    ];
+    const f = checks.find((q) => !q[1]);
+    const score = 0.35 * c01(Math.log10((acc || 1)) / 1) + 0.25 * c01((h1 || 0) / 60) + 0.2 * c01(((br || 0) - 0.5) / 0.2) + 0.2 * c01(((txAcc || 1) - 1) / 2);
+    return { ok: !f, failed: f ? f[0] : null, score, acc, txAcc, br, ntx };
   }
   /* UPSIDE_CORE_END */
 
@@ -1073,11 +1105,22 @@
       return `<div class="gate ${ok ? 'ok' : 'no'}"><b>${ok ? '✅' : '⛔'} ${ic} ${t}</b> <span class="mut">${gs.map((q) => (q.pass ? '✓ ' : q.pass === null ? '… ' : '✗ ') + L(GATE_TXT[q.key][0], GATE_TXT[q.key][1])).join(' · ')}</span></div>`; }).join('')}</div>`;
   }
   /* ---- 🏃 Runner: coin runners + super-important tweets ---- */
+  const fmtPctS = (v) => (v == null || !isFinite(v) ? '—' : (v >= 0 ? '+' : '') + Math.round(v) + '%');
   function runnerOf(c) {
     let a;
     try { a = analyze(c); } catch (e) { return null; }
-    const xin = Object.assign({}, a.input, { vol5m: c.volume && c.volume.m5, buys5m: c.buysM5, sells5m: c.sellsM5 });
+    const xin = Object.assign({}, a.input, { vol5m: c.volume && c.volume.m5, buys5m: c.buysM5, sells5m: c.sellsM5, tx6h: c.txH6 });
     const r = runnerRule(xin);
+    if (!r.ok && (c.mcap || 0) >= BIG_T.mcMin) {
+      // v8.9 📈 Big runner: established $1M+ coin running now (the small-cap runner gates do not fit big coins)
+      const g = bigRunnerRule(xin);
+      if (g.ok) {
+        const why = [`${fmtPctS(c.change.h1)} 1h${c.change.h6 != null ? ' · ' + fmtPctS(c.change.h6) + ' 6h' : ''}`, `vol 1h ${D.fmtUsd(c.volume.h1)} ×${g.acc.toFixed(1)} ${L('vs średnia', 'vs avg')}`,
+          `${g.ntx >= 1000 ? (g.ntx / 1000).toFixed(1) + 'k' : g.ntx} txns${g.txAcc ? ' ↑×' + g.txAcc.toFixed(1) : ''}`, `${Math.round(g.br * 100)}% ${L('kupna', 'buys')}`];
+        if (a.tw) why.push(`${L('tweet', 'tweet')} @${E(a.tw.handle)}`);
+        return { kind: 'coin', big: true, key: D.keyOf(c), c, a, r: g, score: 0.8 * g.score, why };
+      }
+    }
     if (!r.ok) {
       // first pump, as early as possible (same dedupe key as the full runner → max one first-pump alert per coin)
       const e = earlyRunnerRule(xin);
@@ -1325,7 +1368,7 @@
     if (e.key === 'Escape') { const s = document.getElementById('upSheet'); if (s) s.classList.remove('on'); }
   }, true);
 
-  window.KyvoUpside = { estimate: estimateUpside, popularity: estimatePopularity, goodCoinRule, runnerRule, earlyRunnerRule, secondLegRule, horizons: UPSIDE_HORIZONS };
+  window.KyvoUpside = { estimate: estimateUpside, popularity: estimatePopularity, goodCoinRule, runnerRule, earlyRunnerRule, secondLegRule, bigRunnerRule, horizons: UPSIDE_HORIZONS };
   window.KyvoInsights = {
     init(deps) { D = deps; updateBadge(); ensurePoll(); },
     mountCheck, localChecks, scoreOf, cloneCheck, whyHtml,

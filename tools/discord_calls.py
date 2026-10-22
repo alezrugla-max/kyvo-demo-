@@ -41,6 +41,10 @@ MIN_LIQ_POST = float(os.environ.get("KYVO_CALLS_MIN_LIQ", "25000"))
 MAX_PER_HOUR = int(os.environ.get("KYVO_CALLS_MAX_PER_HOUR", "5"))
 MAX_PER_RUN = 2           # per channel, keeps the feed calm
 REPOST_AFTER_H = 72       # never post the same coin twice within 3 days
+# v8.9: quote / stable tokens that top the volume lists (never a "coin" for Kyvo)
+QUOTE_TOKENS = {"so11111111111111111111111111111111111111112", "epjfwdd5aufqssqem2qn1xzybapc8g4weggkzwytdt1v", "es9vmfrzacermjfrf4h2fyd4kconky11mcce8benwnyb",
+                "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0x55d398326f99059ff775485246999027b3197955", "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+                "0xe9e7cea3dedca5984780bafc599bd69add087d56", "0x2170ed0880ac9a755fd29b2688956bd959f933f8", "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"}
 UA = {"User-Agent": "kyvo-discord-calls/8.3 (+https://github.com/alezrugla-max/kyvo-demo-)", "Accept": "application/json"}
 RC_PL = {
     "Top 10 holders high ownership": "Top 10 holderów ma >70% podaży", "High holder concentration": "Top 10 holderów ma >50% podaży",
@@ -89,15 +93,19 @@ def candidates(chain: str) -> list[str]:
                 rid = (((p.get("relationships") or {}).get("base_token") or {}).get("data") or {}).get("id", "")
                 if "_" in rid: addrs.append(rid.split("_", 1)[1])
             time.sleep(2.1)   # GeckoTerminal free tier ~30 req/min
-    d = get(f"{GT}/networks/{net}/trending_pools?duration=5m&page=1") or {}   # v8.8: what is exploding in the last 5 min
-    for p in d.get("data") or []:
-        rid = (((p.get("relationships") or {}).get("base_token") or {}).get("data") or {}).get("id", "")
-        if "_" in rid: addrs.append(rid.split("_", 1)[1])
+    # v8.8: what is exploding in the last 5 min; v8.9: + 1 h trending and top 24 h volume = established $1M–$100M coins (📈 Big runner)
+    for u in (f"{GT}/networks/{net}/trending_pools?duration=5m&page=1", f"{GT}/networks/{net}/trending_pools?duration=1h&page=1", f"{GT}/networks/{net}/trending_pools?duration=6h&page=1",
+              f"{GT}/networks/{net}/pools?sort=h24_volume_usd_desc&page=1"):
+        d = get(u) or {}
+        for p in d.get("data") or []:
+            rid = (((p.get("relationships") or {}).get("base_token") or {}).get("data") or {}).get("id", "")
+            if "_" in rid and rid.split("_", 1)[1].lower() not in QUOTE_TOKENS: addrs.append(rid.split("_", 1)[1])
+        time.sleep(2.1)
     seen, out = set(), []
     for a in addrs:
         k = a.lower()
         if k not in seen: seen.add(k); out.append(a)
-    return out[:150]
+    return out[:210]
 
 def pairs_for(chain: str, addrs: list[str]) -> list[dict]:
     best: dict[str, dict] = {}
@@ -122,6 +130,7 @@ def to_coin(p: dict) -> dict:
         "h1": (p.get("priceChange") or {}).get("h1"), "h24": (p.get("priceChange") or {}).get("h24"),
         "m5": (p.get("priceChange") or {}).get("m5"), "h6": (p.get("priceChange") or {}).get("h6"),
         "vol1h": (p.get("volume") or {}).get("h1"), "vol5m": (p.get("volume") or {}).get("m5"), "buys1h": buys, "sells1h": sells,
+        "tx6h": (((p.get("txns") or {}).get("h6") or {}).get("buys") or 0) + (((p.get("txns") or {}).get("h6") or {}).get("sells") or 0) if ((p.get("txns") or {}).get("h6")) else None,
         "age_h": (time.time() * 1000 - created) / 3.6e6 if created else None,
         "buy_ratio": buys / (buys + sells) if buys + sells else None, "tx_h1": buys + sells,
         "socials": bool(info.get("socials") or info.get("websites")), "image": info.get("imageUrl"),
@@ -249,7 +258,7 @@ def rule_input(c: dict, score: int, checks: list[tuple[str, str]], boost_rank, c
             "onCurve": c["on_curve"], "vol1h": c["vol1h"], "vol24h": c["vol24"], "m5": c["m5"], "h1": c["h1"], "h6": c["h6"],
             "h24": c["h24"], "buys1h": c["buys1h"], "sells1h": c["sells1h"], "ageH": c["age_h"], "smBuyers": 0, "smSellers": 0,
             "tweetNamed": None, "tweetAgeH": None, "sinceTweetPct": None, "top10": None, "boostRank": boost_rank,
-            "vol5m": c.get("vol5m"), "contract": contract}
+            "vol5m": c.get("vol5m"), "tx6h": c.get("tx6h"), "contract": contract}
 
 def good_rule(inputs: list[dict], mode: str = "--good") -> list[dict] | None:
     node = shutil.which("node")
@@ -328,6 +337,8 @@ def write_kol_feed(path: Path, new: list[dict], dry: bool = False) -> None:
         if f["k"] in items:
             e = items[f["k"]]; e.update({"mcNow": f["mc0"], "lastAt": f["at"], "top_pct": f.get("top_pct") or e.get("top_pct")})
             if f.get("badge") == "kol" and e.get("badge") != "kol": e.update({"badge": "kol", "kol": f.get("kol"), "evidence": f.get("evidence")})
+            if f.get("tweet") and not e.get("tweet"): e["tweet"] = f["tweet"]; added += 1   # v8.9: 🐦 also a tweet runner -> commit + app badge
+            elif f.get("tweet") and e.get("tweet"): e["tweet"]["chg"] = max(e["tweet"].get("chg") or 0, f["tweet"].get("chg") or 0)
         else: items[f["k"]] = dict(f); added += 1
     out = {"version": 1, "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "items": sorted(items.values(), key=lambda e: -e["at"])}
     changed = added > 0 or len(items) != len(doc.get("items", []))
@@ -366,7 +377,7 @@ def main() -> int:
             if ov and ov.get("badge"):   # v8.8 override: no thresholds stored, only what the app shows
                 f.update({"badge": ov["badge"], "kol": ov.get("handle") if ov["badge"] == "kol" else None, "top_pct": ov.get("top_pct"),
                           "top_is": ov.get("top_is"), "concentrated": ov.get("concentrated"), "evidence": ov.get("evidence") or [],
-                          "tweeted_by": ov.get("tweeted_by") or [], "buyers1h": ov.get("buyers1h"),
+                          "tweeted_by": ov.get("tweeted_by") or [], "buyers1h": ov.get("buyers1h"), "big": ov.get("big"), "tweet": ov.get("tweet"),
                           "snap": {"liq": c.get("liq"), "vol1h": c.get("vol1h"), "h1": c.get("h1"), "m5": c.get("m5"), "tx1h": c.get("tx_h1"),
                                    "age_h": round(c["age_h"], 3) if c.get("age_h") is not None else None, "created": int(time.time() * 1000 - (c.get("age_h") or 0) * 3.6e6)}})
             flags.append(f)
@@ -425,6 +436,22 @@ def main() -> int:
                 flag(c, "runner", ov if ov and ov.get("badge") == "kol" else None); print(f"  runner ${c['symbol']} MC {fmt_usd(c['mcap'])}" + (" 👑 KOL" if ov and ov.get("badge") == "kol" else ""))
             elif ov and ov.get("badge"):
                 flag(c, "runner", ov); print(f"  runner (override {ov['badge']}) ${c['symbol']} MC {fmt_usd(c['mcap'])} @{ov.get('handle') or '-'} top {ov.get('top_pct')}% ev={ov.get('evidence')}")
+        # v8.9 📈 Big runner: established $1M–$100M coins running now (bigRunnerRule, same code as the app) + hard-rug / copycat / unique buyers
+        flagged = {f["addr"] for f in flags if f["kind"] == "runner"}
+        bc = sorted([c for c in coins if c["address"] not in flagged and 1e6 <= (c["mcap"] or 0) <= 1e8 and (c["age_h"] or 0) >= 6
+                     and (c["vol1h"] or 0) >= 150_000 and ((c["h1"] or 0) >= 5 or (c["h6"] or 0) >= 40)], key=lambda c: -(c["vol1h"] or 0))[:10]
+        bin_ = []
+        for c in bc:
+            score, checks = kyvo_check(c, coins); bin_.append((c, rule_input(c, score, checks, brank.get(c["address"].lower())), checks))
+        res_b = good_rule([x for _, x, _ in bin_], "--big") or [{} for _ in bin_]
+        if bin_: print(f"  [{chain}] big-runner candidates={len(bin_)} pass rule={sum(1 for r in res_b if r.get('ok'))}")
+        for (c, _, checks), r in zip(bin_, res_b):
+            if not r.get("ok"): continue
+            try: ov = kol_coins.big_check(c, checks, coins)
+            except Exception as e: print(f"  big check error ${c['symbol']}: {type(e).__name__}"); continue
+            if ov.get("blocked"): print(f"  no big runner ${c['symbol']}: {ov['blocked']}"); continue
+            ov["big"] = {"h1": c.get("h1"), "h6": c.get("h6"), "acc": round(r.get("acc") or 0, 1), "txAcc": round(r["txAcc"], 1) if r.get("txAcc") else None, "br": round(r.get("br") or 0, 2)}
+            flag(c, "runner", ov); print(f"  big runner ${c['symbol']} MC {fmt_usd(c['mcap'])} h1 {c.get('h1')} ×{r.get('acc', 0):.1f} vol")
         if not a.dry_run and not hooks[chain]:
             st.setdefault("hist", {})[chain] = hist; continue   # flag-only run for this chain (no webhook)
         sent = 0
@@ -440,6 +467,29 @@ def main() -> int:
                 print(f"  posted ${c['symbol']} score {score} rank {res['rank']:.3f}"); time.sleep(1.2)
         if not ranked: print(f"  [{chain}] no coin with a positive outlook right now -> nothing posted")
         st.setdefault("hist", {})[chain] = hist
+    # v8.9 🐦 Tweet runner: coins from fresh New Tweet items (≤ 4 h) that clearly run AFTER the tweet (every scan, ~90 s in the loop)
+    if a.flags_out or a.kol_out:
+        try:
+            cands = kol_coins.tweet_candidates()
+            by_chain: dict[str, list] = {}
+            for x in cands: by_chain.setdefault(x["c"]["chain"], []).append(x)
+            n_ok = 0
+            for ch, xs in by_chain.items():
+                live_c = {c["address"].lower(): c for c in (to_coin(p) for p in pairs_for(ch, [x["c"]["address"] for x in xs]))}
+                for x in xs:
+                    c = live_c.get(str(x["c"]["address"]).lower())
+                    if not c: continue
+                    px0 = x["c"].get("px_at_tweet") or kol_coins.px_at(dict(c, chain=ch, address=c["address"]), int(x["t"]["ts"]))
+                    m = kol_coins.tweet_momentum(c, x["c"], px0)
+                    if m: continue
+                    score, checks = kyvo_check(c, [c])
+                    ov = kol_coins.tweet_check(c, checks, x, px0, [c])
+                    if ov.get("blocked"): print(f"  no tweet runner ${c['symbol']} (@{x['t'].get('handle')}): {ov['blocked']}"); continue
+                    flag(c, "runner", ov); n_ok += 1
+                    print(f"  🐦 tweet runner ${c['symbol']} +{ov['tweet']['chg']:.0f}% after @{x['t'].get('handle')} MC {fmt_usd(c['mcap'])}")
+            print(f"tweet runners: {len(cands)} fresh tweet coins checked, {n_ok} running")
+        except Exception as e:
+            print(f"  tweet runner check error: {type(e).__name__}")
     if not a.dry_run:
         a.state.parent.mkdir(parents=True, exist_ok=True); a.state.write_text(json.dumps(st))
     if a.flags_out:

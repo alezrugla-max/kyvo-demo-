@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Kyvo v8.9 — continuous feed loop for the kyvo-push GitHub Action (runs on GitHub's servers only, never on the trading VPS).
+
+GitHub fires "*/5" schedules only every ~30–40 min in practice, so one workflow run now keeps working for ~50 min:
+  * every SCAN_EVERY  (~90 s): Runner scan  -> .kyvo_push/flags.json + data/kol_live.json (👑 KOL / 🚀 Moon / 📈 Big runner)
+  * every TWEET_EVERY (~4 min): New Tweet feed -> data/x_live.json (FxTwitter, ~24 accounts at 1 req/s)
+  * after every step: OneSignal push for genuinely new items (tools/kyvo_push.py: sent-ids dedupe + free 2/day cap)
+  * data commits only when a feed's CONTENT changed (new tweet / new flag) or as a 30-min heartbeat, at most one commit per
+    COMMIT_GAP (3 min) and at most COMMIT_MAX_H (7) per rolling hour — GitHub Pages (branch build) has a soft limit of
+    10 builds/hour shared with the other workflows. Push = pull --rebase with retries; on a conflict our two feed files win.
+The steps run as child processes (same scripts as before), so a crash in one step never stops the loop.
+Local test:  python3 tools/kyvo_loop.py --max-min 4 --dry-run --no-git
+"""
+from __future__ import annotations
+import argparse, json, os, shutil, subprocess, sys, tempfile, time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+FEEDS = ["data/x_live.json", "data/kol_live.json"]
+
+def log(*a):
+    print(time.strftime("%H:%M:%S"), *a, flush=True)
+
+def run(cmd: list[str], env_extra: dict | None = None, timeout: int = 240) -> dict:
+    """run a step; returns its GITHUB_OUTPUT key=values (commit / kol_commit)."""
+    fd, outp = tempfile.mkstemp(prefix="kyvo_gho_"); os.close(fd)
+    env = dict(os.environ, GITHUB_OUTPUT=outp, **(env_extra or {}))
+    t = time.time()
+    try:
+        r = subprocess.run(cmd, cwd=ROOT, env=env, capture_output=True, text=True, timeout=timeout)
+        tail = (r.stdout or "").strip().splitlines()[-3:]
+        log(f"{Path(cmd[1]).name} rc={r.returncode} {time.time() - t:.0f}s |", " / ".join(tail)[:300])
+        if r.returncode and r.stderr: log("  stderr:", r.stderr.strip().splitlines()[-1][:200])
+    except subprocess.TimeoutExpired:
+        log(f"{Path(cmd[1]).name} TIMEOUT after {timeout}s")
+    out = {}
+    try:
+        for line in Path(outp).read_text().splitlines():
+            if "=" in line: k, v = line.split("=", 1); out[k.strip()] = v.strip()
+    except Exception: pass
+    Path(outp).unlink(missing_ok=True)
+    return out
+
+class Bg:
+    """v8.9: the New Tweet read (~1.5–2 min: ~24 accounts at 1 req/s) runs NEXT TO the Runner scan, so scans keep their ~90-s pace."""
+    def __init__(self, cmd: list[str]):
+        fd, self.outp = tempfile.mkstemp(prefix="kyvo_gho_"); os.close(fd)
+        self.t = time.time(); self.cmd = cmd
+        self.p = subprocess.Popen(cmd, cwd=ROOT, env=dict(os.environ, GITHUB_OUTPUT=self.outp, KYVO_LIVE_GT_BUDGET=os.environ.get("KYVO_LIVE_GT_BUDGET", "5")), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    def done(self) -> bool:
+        if self.p.poll() is None and time.time() - self.t > 200: self.p.kill()
+        return self.p.poll() is not None
+    def result(self) -> dict:
+        out_txt = self.p.stdout.read() if self.p.stdout else ""
+        tail = out_txt.strip().splitlines()[-2:]
+        log(f"{Path(self.cmd[1]).name} rc={self.p.returncode} {time.time() - self.t:.0f}s |", " / ".join(tail)[:300])
+        out = {}
+        try:
+            for line in Path(self.outp).read_text().splitlines():
+                if "=" in line: k, v = line.split("=", 1); out[k.strip()] = v.strip()
+        except Exception: pass
+        Path(self.outp).unlink(missing_ok=True)
+        return out
+
+def git(*a, check=False) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True, check=check)
+
+def commit_feeds(msg: str) -> bool:
+    files = [f for f in FEEDS if (ROOT / f).exists()]
+    git("add", *files)
+    if git("diff", "--cached", "--quiet").returncode == 0: return False
+    git("commit", "-q", "-m", msg)
+    branch = os.environ.get("GITHUB_REF_NAME") or "main"
+    keep = {f: (ROOT / f).read_bytes() for f in files}
+    for i in range(4):
+        pr = git("pull", "--rebase", "-q", "origin", branch)
+        if pr.returncode != 0:      # someone else touched our feed files (e.g. a release deploy) -> take theirs, re-apply ours
+            git("rebase", "--abort"); git("fetch", "-q", "origin", branch); git("reset", "-q", "--hard", f"origin/{branch}")
+            for f, b in keep.items(): (ROOT / f).parent.mkdir(parents=True, exist_ok=True); (ROOT / f).write_bytes(b)
+            git("add", *files)
+            if git("diff", "--cached", "--quiet").returncode == 0: return False
+            git("commit", "-q", "-m", msg)
+        if git("push", "-q", "origin", f"HEAD:{branch}").returncode == 0:
+            log(f"committed + pushed: {msg}"); return True
+        time.sleep(4 * (i + 1))
+    log("push failed 4× -> will retry at the next commit slot"); return False
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--max-min", type=float, default=50)
+    ap.add_argument("--scan-every", type=float, default=90)
+    ap.add_argument("--tweet-every", type=float, default=240)
+    ap.add_argument("--commit-gap", type=float, default=180)
+    ap.add_argument("--commit-max-h", type=int, default=7)
+    ap.add_argument("--heartbeat", type=float, default=1800, help="commit refreshed metrics at least this often (s) even without new items")
+    ap.add_argument("--state-dir", default=".kyvo_push")
+    ap.add_argument("--dry-run", action="store_true", help="push step prints payloads, nothing is sent; no git")
+    ap.add_argument("--no-git", action="store_true")
+    a = ap.parse_args()
+    sd = ROOT / a.state_dir; sd.mkdir(parents=True, exist_ok=True)
+    lt = sd / "loop.json"                      # commit times survive between steps/runs (actions/cache)
+    try: ls = json.loads(lt.read_text())
+    except Exception: ls = {}
+    commits = [t for t in ls.get("commits", []) if time.time() - t < 3600]
+    last_commit = ls.get("last_commit", 0)
+    py = sys.executable; end = time.time() + a.max_min * 60
+    next_scan = next_tw = time.time(); pending = []; n_scan = n_tw = 0
+    use_git = not (a.dry_run or a.no_git) and shutil.which("git")
+    push_cmd = [py, "tools/kyvo_push.py", "--flags", f"{a.state_dir}/flags.json", "--state", f"{a.state_dir}/sent.json"] + (["--dry-run"] if a.dry_run else [])
+    tw = None
+    while time.time() < end - 20 or tw is not None:
+        did = False
+        if tw is not None and tw.done():
+            o = tw.result(); tw = None; did = True
+            if o.get("commit") == "true": pending.append("new tweets")
+        if tw is None and time.time() >= next_tw and time.time() < end - 150:
+            next_tw = time.time() + a.tweet_every; n_tw += 1
+            tw = Bg([py, "tools/x_live.py"])
+        if time.time() >= next_scan and time.time() < end - 45:
+            next_scan = time.time() + a.scan_every; n_scan += 1
+            o = run([py, "tools/discord_calls.py", "--flags-out", f"{a.state_dir}/flags.json", "--kol-out", "data/kol_live.json"],
+                    env_extra={"KYVO_CALLS_STATE": f"{a.state_dir}/calls_state.json", "KYVO_FACT_CACHE": f"{a.state_dir}/facts"}, timeout=240)
+            if o.get("kol_commit") == "true": pending.append("runner coins")
+            did = True
+        if did: run(push_cmd, timeout=120)
+        now = time.time(); commits = [t for t in commits if now - t < 3600]
+        due = bool(pending) or (now - last_commit >= a.heartbeat)
+        if use_git and due and now - last_commit >= a.commit_gap and len(commits) < a.commit_max_h:
+            msg = "feeds: " + (", ".join(dict.fromkeys(pending)) if pending else "refresh") + " [kyvo-loop]"
+            if commit_feeds(msg): commits.append(now)
+            last_commit = now; pending = []            # also after "nothing to commit" -> no hot loop
+            lt.write_text(json.dumps({"commits": commits, "last_commit": last_commit}))
+        wait = min(next_scan, next_tw) - time.time()
+        if tw is not None: wait = min(wait, 3)
+        if wait > 0: time.sleep(min(wait, max(1, end - time.time())))
+        if time.time() >= end - 20 and tw is None: break
+    log(f"loop done: {n_scan} scans, {n_tw} tweet reads, {len(commits)} commits in the last hour, pending={pending}")
+    if use_git and pending and len(commits) < a.commit_max_h + 1:   # leave nothing important uncommitted for the next run
+        if commit_feeds("feeds: " + ", ".join(dict.fromkeys(pending)) + " [kyvo-loop]"): commits.append(time.time()); last_commit = time.time()
+    lt.write_text(json.dumps({"commits": commits, "last_commit": last_commit}))
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

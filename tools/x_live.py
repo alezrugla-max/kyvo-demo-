@@ -117,7 +117,7 @@ def main() -> int:
         if tid not in items and now - (p.get("ts") or 0) <= KEEP_H * 3600: items[tid] = p
     tweets = sorted(items.values(), key=lambda x: -x["ts"])[:MAX_ITEMS]
     # after-tweet market facts (only for tweets < 12 h, refreshed every run, ≤ 12 GeckoTerminal calls)
-    budget = 12
+    budget = int(__import__('os').environ.get('KYVO_LIVE_GT_BUDGET', '12'))  # v8.9: the loop uses 5 (runs next to the Runner scan; GT ~30 req/min)
     for t in tweets:
         if now - t["ts"] > 12 * 3600 or budget <= 0: continue
         for c in t["coins"][:1]:

@@ -2,7 +2,7 @@
 /* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
    Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
 const PUSH = !!self.KYVO_ONESIGNAL;
-const C = 'kyvo-v8-8';
+const C = 'kyvo-v8-9';
 const A = [
   './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
@@ -31,6 +31,12 @@ self.addEventListener('fetch', e => {
     || /(auth|premium|contact|push)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    return;
+  }
+  // v8.9: vendor libraries (chart library ~160 kB) = CACHE-FIRST. Network-first with a 5-s abort could leave a slow first
+  // visit without the chart library, so every chart fell back to the DexScreener embed. They change only with a new cache name.
+  if (u.origin === self.location.origin && /\/vendor\//.test(u.pathname)) {
+    e.respondWith(caches.open(C).then((cache) => cache.match(e.request, { ignoreSearch: true }).then((hit) => hit || fetch(e.request).then((r) => { if (r && r.ok) cache.put(e.request, r.clone()); return r; }))));
     return;
   }
   // v8.5: app shell = NETWORK-FIRST with revalidation (ETag → tiny 304), cache only as offline fallback.

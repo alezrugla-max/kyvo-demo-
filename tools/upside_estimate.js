@@ -7,6 +7,7 @@
      echo '[{...},{...}]' | node tools/upside_estimate.js --good     (goodCoinRule: Good Coins / Discord calls rule)
      echo '[{...}]' | node tools/upside_estimate.js --runner   (runnerRule: 🏃 Runner trigger)
      echo '[{...}]' | node tools/upside_estimate.js --leg2     (secondLegRule: 🔁 Kolejna fala; needs pumpX/belowHigh/coolRatio)
+     echo '[{...}]' | node tools/upside_estimate.js --big      (v8.9 bigRunnerRule: 📈 established $1M–$100M coin running now)
      echo '[{...}]' | node tools/upside_estimate.js --early    (earlyRunnerRule: 🏃 first pump, 5-min acceleration)
      const { estimateUpside } = require('./tools/upside_estimate.js');
    Regenerate after changing insights.js: python3 tools/sync_upside.py (copies the core block verbatim). */
@@ -215,7 +216,7 @@ function runnerRule(x, T) {
  * Extra x fields: vol5m, buys5m, sells5m, and from 15-min candles (pending until known): pumpX, belowHigh, coolRatio.
  * Research (tools/second_leg_research.py) → kyvo_v8_3_notes.md.
  */
-const LEG2_T = { kc: 60, liq: 15000, liqMc: 0.05, mcMax: 3e7, pumpX: 2, belowMin: 30, belowMax: 60, coolMax: 0.5, acc: 2, v5Min: 5000, buy5: 0.55 };
+const LEG2_T = { kc: 60, liq: 15000, liqMc: 0.05, mcMax: 1e8, pumpX: 2, belowMin: 30, belowMax: 60, coolMax: 0.5, acc: 2, v5Min: 5000, buy5: 0.55 };
 function secondLegRule(x, T) {
   T = Object.assign({}, LEG2_T, T || {});
   const n = (v) => (v == null || !isFinite(+v) ? null : +v);
@@ -270,14 +271,46 @@ function earlyRunnerRule(x, T) {
   const score = 0.4 * c01((acc || 0) / 6) + 0.3 * c01(((br5 || 0) - 0.5) / 0.3) + 0.3 * c01(Math.log10(Math.max(tx5, 1) / T.tx5) + 0.3);
   return { ok: !f, failed: f ? f[0] : null, score, acc, br5, tx5 };
 }
+/**
+ * v8.9 bigRunnerRule(x, T) → { ok, failed, score, acc, txAcc, br } — "📈 Duży runner / Big runner": an ESTABLISHED coin
+ * ($1M–$100M MC, not minutes old) that is running right now: strong 1 h (or 6 h) price move, volume of the last hour far
+ * above its own 24 h average, more trades than its recent pace, buyers dominate, healthy liquidity, safety floor passed,
+ * not a parabolic blow-off and not dumping in the last 5 min. Research: tools/big_runner_research.py → kyvo_v8_9_notes.md.
+ * Extra x fields: vol5m, tx6h (buys+sells 6 h). Thresholds are never shown in the app.
+ */
+const BIG_T = { kc: 60, mcMin: 1e6, mcMax: 1e8, ageMinH: 6, liq: 50000, liqMc: 0.03, vol1h: 150000, volMc: 0.02, acc: 2.5, tx1h: 500, txAcc: 1.3, buyShare: 0.52, h1Min: 15, h6Min: 40, h1Soft: 5, h1Max: 300, m5Min: -3 };
+function bigRunnerRule(x, T) {
+  T = Object.assign({}, BIG_T, T || {});
+  const n = (v) => (v == null || !isFinite(+v) ? null : +v);
+  const c01 = (v) => (isFinite(v) ? Math.max(0, Math.min(1, v)) : 0);
+  const mc = n(x.mcap), liq = n(x.liquidity), v1 = n(x.vol1h), v24 = n(x.vol24h), h1 = n(x.h1), h6 = n(x.h6), m5 = n(x.m5), ageH = n(x.ageH), tx6 = n(x.tx6h);
+  const b = n(x.buys1h) || 0, s = n(x.sells1h) || 0, ntx = b + s, br = ntx ? b / ntx : null;
+  const acc = v1 != null && v24 > 0 ? v1 / (v24 / 24) : null;
+  const txAcc = tx6 != null && tx6 > 0 ? ntx / (tx6 / 6) : null;
+  const checks = [
+    ['safety', (n(x.score) || 0) >= T.kc && !(n(x.redFlags) || 0)],
+    ['mc', mc != null && mc >= T.mcMin && mc <= T.mcMax],
+    ['age', ageH != null && ageH >= T.ageMinH],
+    ['liq', liq != null && !x.onCurve && liq >= T.liq && mc > 0 && liq / mc >= T.liqMc && liq <= 2 * mc],
+    ['vol', v1 != null && v1 >= Math.max(T.vol1h, T.volMc * (mc || 0))],
+    ['surge', acc != null && acc >= T.acc],
+    ['tx', ntx >= T.tx1h && (txAcc == null || txAcc >= T.txAcc)],
+    ['buys', br != null && br >= T.buyShare],
+    ['move', h1 != null && h1 <= T.h1Max && (h1 >= T.h1Min || (h6 != null && h6 >= T.h6Min && h1 >= T.h1Soft))],
+    ['notDumping', m5 == null || m5 >= T.m5Min],
+  ];
+  const f = checks.find((q) => !q[1]);
+  const score = 0.35 * c01(Math.log10((acc || 1)) / 1) + 0.25 * c01((h1 || 0) / 60) + 0.2 * c01(((br || 0) - 0.5) / 0.2) + 0.2 * c01(((txAcc || 1) - 1) / 2);
+  return { ok: !f, failed: f ? f[0] : null, score, acc, txAcc, br, ntx };
+}
 /* UPSIDE_CORE_END */
 
-module.exports = { estimateUpside, estimatePopularity, goodCoinRule, GOOD_T, runnerRule, RUNNER_T, earlyRunnerRule, EARLY_T, secondLegRule, LEG2_T, UPSIDE_HORIZONS };
+module.exports = { estimateUpside, estimatePopularity, goodCoinRule, GOOD_T, runnerRule, RUNNER_T, earlyRunnerRule, EARLY_T, secondLegRule, LEG2_T, bigRunnerRule, BIG_T, UPSIDE_HORIZONS };
 
 if (require.main === module) {
   const run = (txt) => {
     const inp = JSON.parse(txt);
-    const fn = process.argv.includes('--good') ? goodCoinRule : process.argv.includes('--runner') ? runnerRule : process.argv.includes('--leg2') ? secondLegRule : process.argv.includes('--early') ? earlyRunnerRule : estimateUpside;
+    const fn = process.argv.includes('--good') ? goodCoinRule : process.argv.includes('--runner') ? runnerRule : process.argv.includes('--leg2') ? secondLegRule : process.argv.includes('--early') ? earlyRunnerRule : process.argv.includes('--big') ? bigRunnerRule : estimateUpside;
     const res = Array.isArray(inp) ? inp.map(fn) : fn(inp);
     process.stdout.write(JSON.stringify(res, null, 2) + '\n');
   };
