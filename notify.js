@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   const SKEY = 'kyvo_notif_v1', GKEY = 'kyvo_seen_good_v1', TKEY = 'kyvo_seen_tw_v1';
-  const DEF = { good: true, tweets: true, runner: true, minScore: 75 };
+  const DEF = { good: true, tweets: true, runner: true, gold: true, minScore: 75 };
   let D = null;
   const T = (x) => (window.KyvoI18n ? window.KyvoI18n.t(x) : x);
   const EN = () => !!(window.KyvoI18n && window.KyvoI18n.isEn());
@@ -165,6 +165,7 @@
     return `<div class="card nset" data-nset>
       <div class="h" style="font-size:14px;margin:0 0 6px">🔔 ${L('Powiadomienia', 'Notifications')}</div>
       <label class="nrow"><input type="checkbox" data-nt="runner" ${S.runner !== false ? 'checked' : ''}><span><b>🏃 Runner</b><small>${L('najmocniejsze sygnały: ogromny rosnący wolumen, tysiące transakcji, super-ważne tweety (kilka–kilkanaście dziennie)', 'strongest signals: huge rising volume, thousands of txns, super-important tweets (a handful to ~20 a day)')}</small></span></label>
+      <label class="nrow"><input type="checkbox" data-nt="gold" ${S.gold !== false ? 'checked' : ''}><span><b>🥇 Gold</b><small>${L('alerty dla coinów z werdyktem Gold: cena ±15–20%, kopia (wampir) powyżej $500K MC, nowy artykuł o narracji · Premium', 'alerts for coins with a Gold verdict: price ±15–20%, a copy (vamp) above $500K MC, a new article about the narrative · Premium')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('znany trader, KOL lub celebryta tweetuje o coinie (New Tweet, sprawdzane co kilka minut)', 'a well-known trader, KOL or celebrity tweets about a coin (New Tweet, checked every few minutes)')}</small></span></label>
       <div class="mut nnote ncap">${isPremium() ? '✦ ' + L('Premium: wszystkie powiadomienia bez limitu.', 'Premium: all notifications, no limit.') : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
@@ -209,7 +210,7 @@
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
   function tags() {
     const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
-    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
+    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
   }
   function withOS(fn) { if (!started || !window.OneSignalDeferred) return Promise.resolve(false); return new Promise((res) => window.OneSignalDeferred.push(async (OneSignal) => { try { await fn(OneSignal); res(true); } catch (e) { res(false); } })); }
   function syncTags() { return withOS((OneSignal) => OneSignal.User.addTags(tags())); }

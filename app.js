@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_11 — v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_12 — v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_11';
+  const MVP_MARKER = 'KYVO_LIVE_v8_12';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -2354,13 +2354,13 @@
     const map = {
       pulse: 's-list', hot: 's-list', good: 's-list', new: 's-list', stretch: 's-list',
       migrated: 's-list', boosted: 's-list', search: 's-list', runner: 's-list', track: 's-list', viral: 's-viral', tweets: 's-tweets', more: 's-more', coin: 's-coin',
-      rank: 's-rank', trader: 's-trader', profil: 's-profil', watch: 's-watch',
+      rank: 's-rank', trader: 's-trader', profil: 's-profil', watch: 's-watch', gold: 's-gold',
       help: 's-help', legal: 's-legal', login: 's-login', premium: 's-premium', kontakt: 's-kontakt',
     };
     if (which !== 'login') document.body.classList.remove('chrome-off');
     $('#' + (map[which] || 's-list')).classList.add('on');
     $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' ? 'rank' : which === 'search' ? 'hot' : which)));
-    const tabMap = { runner: 'runner', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', tweets: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
+    const tabMap = { gold: 'gold', runner: 'runner', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', tweets: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
@@ -2387,6 +2387,14 @@
       renderFilterPanel('viral');
       renderTweets();
       location.hash = 'tweets';
+      return;
+    }
+    if (v === 'gold') {   // v8.12 🥇 Gold (gold.js)
+      show('gold');
+      renderFilterPanel('more');
+      loadLive().catch(() => {}); loadKolLive().catch(() => {});
+      if (window.KyvoGold) window.KyvoGold.show($('#goldBody'), arg);
+      if (location.hash !== '#gold') { if (arg) history.replaceState(null, '', '#gold'); else location.hash = 'gold'; }
       return;
     }
     if (v === 'profil') {
@@ -2516,6 +2524,7 @@
       openCoin(decodeURIComponent(b));
       return;
     }
+    if (a === 'gold') { setView('gold', b); return; }
     if (a === 'trader' && b) {
       view = 'rank';
       show('trader');
@@ -2668,16 +2677,18 @@
     return (viral.topics || []).find((t) => (t.coins || []).some((x) => x.address === c.address)) || null;
   }
   window.addEventListener('kyvo-premium-change', () => { // v8.11: owner unlock / entitlement change → re-render gated views
+    try { if (view === 'gold' && window.KyvoGold) window.KyvoGold.render(); } catch (e) {}
     try { if (view === 'runner') keepUi(() => renderRunner()); else if (view === 'track') renderTrack(); else if (view === 'tweets') keepUi(() => renderTweets()); } catch (e) {}
   });
   if (window.KyvoInsights) window.KyvoInsights.init({ vl, esc, fmtUsd, fmtPct, pctClass, toast, keyOf, getUniverse: allUniverse, consensus: consensusOf, tabsFor, tweetsFor, topicFor, imgTag, getViral: () => viral, boostRank, onShape: () => { clearTimeout(shapeT); shapeT = setTimeout(() => { if (view === 'runner') renderRunner(); }, 1500); } });
   if (window.KyvoProfile) window.KyvoProfile.init({ esc, fmtUsd, agoLabel, shortCa, toast });
+  if (window.KyvoGold) window.KyvoGold.init({ fmtUsd, imgTag, toast, openPremium, getLeaderboard: () => leaderboard, getLive: () => xLive, getKolLive: () => kolLive, isView: (v) => view === v });
   loadCache();
   // Ranking / trader / profil don't need live coins — route them as soon as the snapshot is in
   let earlyRouted = null;
   const pLb = loadLeaderboard().then(() => {
     const h = (location.hash || '').slice(1).split('/')[0];
-    if (['rank', 'trader', 'profil', 'leaderboard'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
+    if (['rank', 'trader', 'profil', 'leaderboard', 'gold'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
   });
   // v8.7: a cold start with a deep link (#watch, #coin/…, #tweets — e.g. from a push notification) used to land on Pulse,
   // because the first live render set location.hash = 'pulse' before this route ran. Restore the boot hash unless the user navigated.

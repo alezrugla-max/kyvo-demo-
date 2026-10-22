@@ -17,6 +17,17 @@ window.KYVO_PREMIUM_CONFIG = {
   popupAfterLogin: true,                // v8.2: show the Premium pop-up after login / "continue without login" (max once per session and per day)                        // Stripe customer portal link (cancel / change card)
 };
 
+/* v8.12 🥇 Gold tab (Orangie-style coin DD). Client-side gate like the Runner gate (bypassable by a technical user — data is public).
+   enabled:false hides the tab, the seg button and the in-app Gold alerts; the server feed (tools/gold.py) keeps running. */
+window.KYVO_GOLD_CONFIG = {
+  enabled: true,
+  checkerFreePerDay: 3,        // "Sprawdź coin": free checks per Warsaw day (re-checking the same CA the same day is free); Premium = unlimited
+  feedFreeCards: 1,            // Gold feed: free users see 1 full DD card per Warsaw day (the first one they open), the rest is Premium
+  alertsPremium: true,         // 🔔 Gold alerts (server push + in-app watchlist ±15 % / vamp alerts) = Premium
+  watchPriceMovePct: 15,       // in-app alert for ⭐ watchlist coins: move vs the last alert / baseline
+  watchVampMc: 500000,         // in-app vamp alert: a copy of a watchlist coin's ticker above this MC
+};
+
 /* v8.4: entitlement hook used by notifications (free = 2/day, Premium = all). Until a real backend exists
    nobody is Premium. Later: set from Firebase/Stripe entitlement (never trust a value the user can type).
    v8.11: also gates Runners (free = 1 Runner per Warsaw day) + OWNER unlock:

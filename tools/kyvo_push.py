@@ -7,6 +7,8 @@ Sends one push per genuinely NEW item:
   * v8.8 👑 KOL coin / 🚀 Moon run: Runner overrides (tools/kol_coins.py), same "runner" tag + same free-user daily cap
   * v8.9 🐦 Tweet runner: coin from a fresh New Tweet item that clearly runs after the tweet (dedupe id twr:<coin>)
   * v8.9 📈 Big runner: established $1M–$100M coin running now (bigRunnerRule + tools/kol_coins.big_check)
+  * v8.12 🥇 Gold alerts (tools/gold.py -> .kyvo_push/gold_alerts.json): price ±15–20 % / vamp > $500K MC / new article on a Gold coin.
+    Tag "gold"; Premium only by default (GOLD_FREE_PUSH=0 -> never counts against / goes to the free 2/day plan); max GOLD_PER_RUN per run.
 Dedupe: sent ids live in the state file (restored/saved with actions/cache). First run only seeds (no blast of old items).
 Audience (tags set by the app in notify.js): premium=1 -> every alert; everyone else -> at most FREE_CAP alerts per
 Europe/Warsaw day (one global counter = same broadcasts for all free users); v8.11: of those, at most FREE_RUNNERS (1)
@@ -27,6 +29,9 @@ FREE_CAP = 2
 FREE_RUNNERS = 1      # v8.11: free users get a push for ONE Runner per Warsaw day (the first one sent); Premium gets all
 MAX_TWEET_AGE_S = 2 * 3600
 MAX_PER_RUN = 6
+GOLD_FREE_PUSH = int(os.environ.get("KYVO_GOLD_FREE_PUSH", "0"))   # v8.12: 0 = Gold alerts go to premium=1 only
+GOLD_PER_RUN = 2
+MAX_GOLD_AGE_S = 3600
 WARSAW = ZoneInfo("Europe/Warsaw")
 
 def fmt_usd(v) -> str:
@@ -71,6 +76,7 @@ def main() -> int:
     ap.add_argument("--live", type=Path, default=Path("data/x_live.json"))
     ap.add_argument("--flags", type=Path, default=Path(".kyvo_push/flags.json"))
     ap.add_argument("--state", type=Path, default=Path(".kyvo_push/sent.json"))
+    ap.add_argument("--gold", type=Path, default=Path(".kyvo_push/gold_alerts.json"), help="v8.12 Gold alerts written by tools/gold.py")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     key = os.environ.get("ONESIGNAL_REST_API_KEY", "").strip()
@@ -142,6 +148,15 @@ def main() -> int:
                       "title_pl": f"🏃 Runner: ${f['sym']}", "title_en": f"🏃 Runner: ${f['sym']}",
                       "body_pl": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · mocny wolumen i dużo transakcji. To nie porada finansowa.",
                       "body_en": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · strong volume and lots of trades. Not financial advice."})
+    n_gold = 0
+    for g in sorted(load(a.gold, []), key=lambda x: -(x.get("at") or 0)):   # v8.12 🥇 Gold alerts
+        kid = "gold:" + str(g.get("id"))
+        if kid in sent or now - (g.get("at") or 0) / 1000 > MAX_GOLD_AGE_S: continue
+        if seeding: sent[kid] = now; continue
+        if n_gold >= GOLD_PER_RUN: continue          # next run (alerts expire after 1 h)
+        n_gold += 1
+        items.append({"id": kid, "kind": "gold", "topic": kid, "hash": g.get("hash") or "#gold",
+                      "title_pl": g["title_pl"], "title_en": g["title_en"], "body_pl": g["body_pl"], "body_en": g["body_en"]})
     if seeding: print(f"first run: seeded {len(sent)} existing items, nothing sent")
     items.sort(key=lambda it: 0 if it["title_en"].startswith(("👑", "🚀", "🐦")) else 1)
     for it in items[:MAX_PER_RUN]:
@@ -149,6 +164,7 @@ def main() -> int:
         targets = [audience(it["kind"], True)]
         free_ok = st.get("free_n", 0) < FREE_CAP
         if it["kind"] == "runner" and st.get("free_runner_n", 0) >= FREE_RUNNERS: free_ok = False   # v8.11: Runners are Premium — free users get only the day's first Runner
+        if it["kind"] == "gold" and not GOLD_FREE_PUSH: free_ok = False   # v8.12: Gold alerts are Premium
         if free_ok: targets.append(audience(it["kind"], False))
         if a.dry_run:
             for tg in targets: print(json.dumps(payload(it, tg), ensure_ascii=False)[:600])

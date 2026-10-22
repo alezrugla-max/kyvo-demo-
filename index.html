@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Kyvo">
 <meta name="description" content="Kyvo — smart money i viralowe memecoiny w jednym miejscu. Live Pulse z Solany, BSC i Robinhood Chain, ranking traderów, Viral z X i Twój PnL. Za darmo, bez konta. To nie jest porada finansowa.">
-<meta name="kyvo-build" content="KYVO_LIVE_v8_11">
+<meta name="kyvo-build" content="KYVO_LIVE_v8_12">
 <meta name="color-scheme" content="dark">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://alezrugla-max.github.io/kyvo-demo-/">
@@ -93,7 +93,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#1c1c24;color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:50;box-shadow:0 8px 30px #000a,inset 0 0 0 1px #fff2;max-width:90%}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .tb{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;background:#0a0a10ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 8px max(8px,env(safe-area-inset-bottom))}
-.tb nav{width:100%;max-width:560px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.tb nav{width:100%;max-width:600px;display:grid;grid-template-columns:repeat(var(--tbn,7),1fr);gap:3px}
 .tb button{padding:8px 4px;border-radius:12px;color:var(--mut);font-size:11px;font-weight:700}
 .tb button.on{color:#fff;background:#ffffff0d}
 .tb button span{display:block;font-size:16px;margin-bottom:2px}
@@ -418,6 +418,69 @@ img.tok,img.av{color:transparent}
 .twfs{display:flex;gap:6px;margin:8px 0 10px;overflow-x:auto}.twf{flex:none;padding:7px 12px;border-radius:999px;background:var(--card2);color:var(--mut);font-size:12.5px;font-weight:800;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}.twf.on{background:linear-gradient(135deg,#8B5CF6,#22D3EE);color:#fff;box-shadow:none}
 .card.vtweet.newin{animation:twin 2.4s ease-out}@keyframes twin{0%{box-shadow:0 0 0 2px #22D3EE,0 0 22px #22D3EE66;transform:translateY(-4px)}100%{box-shadow:none;transform:none}}
 @media (prefers-reduced-motion:reduce){.card.vtweet.newin{animation:none}}
+/* v8.12 🥇 Gold tab (gold.js) */
+.tb button{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:400px){.tb button{font-size:10px;padding:8px 2px}.tb button span{font-size:15px}}
+.tb button.tb-gold span{filter:drop-shadow(0 0 4px #facc15)}
+.tb button.tb-gold.on{color:#fde68a}
+.seg button.seg-gold{color:#fde68a;box-shadow:inset 0 0 0 1px #facc1555}
+.seg button.seg-gold.on{background:linear-gradient(135deg,#facc1526,#f59e0b14);color:#fff;box-shadow:inset 0 0 0 1px #facc15aa}
+.g-hero h2{font-size:20px;margin:2px 0 4px;display:flex;align-items:center;gap:8px}
+.g-hero p{font-size:12.5px;line-height:1.45;margin:0 0 10px}
+.g-sh{font-size:13.5px;font-weight:800;margin:2px 0 8px}
+.g-form{display:flex;gap:8px}
+.g-form input{flex:1;min-width:0;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;color:var(--txt);outline:none;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.g-form input:focus{border-color:#facc1588}
+.g-form .rplan-cta{background:linear-gradient(135deg,#f59e0b,#facc15);color:#1a1300}
+.g-left{font-size:11.5px;line-height:1.4;margin:8px 0 2px}
+#goldRes:empty{display:none}#goldRes{margin-top:10px}
+.g-card{position:relative;padding:12px 12px 10px;border-left:3px solid #ffffff22}
+.g-card.g-gold{border-left-color:#facc15;box-shadow:inset 0 0 0 1px #facc1530,0 0 24px #facc150c}
+.g-card.g-haz{border-left-color:#f59e0b}
+.g-card.g-bad{border-left-color:var(--dn);box-shadow:inset 0 0 0 1px #ff546830}
+.g-res{margin:0}
+.g-vh{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;margin-bottom:10px}
+.g-vh>div{flex:1;min-width:0}.g-vh b{display:block;font-size:15.5px;letter-spacing:.2px}.g-vh small{display:block;font-size:12px;line-height:1.35;margin-top:2px;color:#d6d6e0}
+.g-vic{font-size:24px;line-height:1}
+.g-vh.g-gold{background:linear-gradient(135deg,#facc1524,#f59e0b0d);box-shadow:inset 0 0 0 1px #facc1550}.g-vh.g-gold b{color:#fde68a}
+.g-vh.g-haz{background:linear-gradient(135deg,#f59e0b1f,#f59e0b08);box-shadow:inset 0 0 0 1px #f59e0b45}.g-vh.g-haz b{color:#fcd34d}
+.g-vh.g-bad{background:linear-gradient(135deg,#ff54682a,#ff54680a);box-shadow:inset 0 0 0 1px #ff546860}.g-vh.g-bad b{color:#ff8a98}
+.g-score{flex:none;min-width:38px;text-align:center;padding:5px 7px;border-radius:10px;font-weight:900;font-size:14px;background:#00000040;box-shadow:inset 0 0 0 1px var(--line)}
+.g-coin{display:flex;align-items:center;gap:10px;margin:0 0 8px}.g-coin .nm{min-width:0;flex:1}.g-coin .nm b{font-size:14px}
+.g-coin img,.g-coin .av{flex:none;border-radius:50%}
+.g-ca{font-family:ui-monospace,Menlo,monospace}
+.g-rs{list-style:none;margin:0 0 8px;padding:0}
+.g-r{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.42;padding:5px 0;border-bottom:1px solid #ffffff08}
+.g-r>span:first-child{flex:none;width:18px;text-align:center}
+.g-r.bad>span:last-child{color:#ffb3bd}.g-r.warn>span:last-child{color:#fde3a7}.g-r.info>span:last-child{color:#cbd5e1}
+.g-mx{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.g-mx .st small{display:block;font-size:10.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-mx .st b{font-size:13px}
+.g-mx .wr,.wr{color:var(--warn)}
+.g-narr{margin-top:8px}
+.g-nt{font-size:12.5px;margin:8px 0 4px}
+.g-art{display:block;padding:7px 9px;margin:4px 0;border-radius:10px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);color:var(--txt);text-decoration:none;font-size:12.5px;line-height:1.35}
+.g-art small{display:block;color:var(--mut);font-size:11px;margin-top:2px}.g-art.bad{box-shadow:inset 0 0 0 1px #ff546860}
+.g-src{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.g-src a{font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:999px;color:#c4b5fd;box-shadow:inset 0 0 0 1px #8b5cf655;text-decoration:none}
+.g-tip,.g-disc,.g-feednote{font-size:11px;line-height:1.4;margin-top:6px}
+.g-act a.pf-btn{color:var(--txt)}.g-act{display:flex;gap:8px;margin-top:10px}.g-act .pf-btn{flex:1;text-align:center;text-decoration:none;margin:0}
+.g-more summary{cursor:pointer;font-size:12px;font-weight:700;color:#c4b5fd;padding:6px 0;list-style:none}.g-more summary::-webkit-details-marker{display:none}
+.g-tags{display:flex;flex-wrap:wrap;gap:5px;margin:-2px 0 8px}.g-tag{font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:999px;background:#ffffff0a;box-shadow:inset 0 0 0 1px var(--line)}.g-tag.kol{color:#fde68a}
+.g-chg{margin-left:4px}
+.g-gh{font-size:13px;font-weight:800;margin:14px 2px 8px}
+.g-fh{margin:16px 2px 2px;font-size:15px}.g-fh .mut{font-size:11.5px;font-weight:600;margin-left:4px}
+.g-feednote{margin:0 2px 8px}
+.g-lock .g-vh{margin-bottom:6px}.g-lock{cursor:pointer}
+.g-alerts .g-al{display:block;padding:7px 0;border-bottom:1px solid #ffffff08;color:var(--txt);text-decoration:none;font-size:12.5px;font-weight:700}.g-alerts .g-al small{display:block;color:var(--mut);font-weight:500;font-size:11px;margin-top:2px}
+.g-alts{font-size:11.5px;margin:-2px 0 8px;line-height:1.9}.g-alt{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;color:var(--txt);background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);margin-right:4px}
+.g-err{color:#ffb3bd;font-size:13px}
+.g-how{font-size:11.5px;line-height:1.5;margin-top:14px}
+.g-tag.flt{color:#a5f3fc;box-shadow:inset 0 0 0 1px #22d3ee55;background:#22d3ee12}
+.g-scan{padding:10px 12px;margin-bottom:10px}.g-scan .g-sh .mut{font-weight:500;font-size:11px;display:block;margin-top:2px}
+.g-flt{display:flex;gap:8px;align-items:center;font-size:12.5px;padding:6px 0;border-top:1px solid #ffffff08}.g-flt>span:nth-child(2){flex:1}.g-flt b{min-width:22px;text-align:center;font-size:12px;padding:2px 6px;border-radius:8px;background:#22d3ee1a;color:#a5f3fc}
+.g-old{opacity:.85}
+.g-flash{animation:gflash 2.2s ease}
+@keyframes gflash{0%,40%{box-shadow:inset 0 0 0 2px #facc15,0 0 28px #facc1555}100%{}}
+@media (min-width:900px){#goldBody{max-width:860px;margin:0 auto}.g-mx{grid-template-columns:repeat(6,1fr)}}
 /* v8.11 Runner = Premium: free plan banner + locked Runner cards (no name / CA / chart / links) */
 .rplan{display:flex;align-items:center;gap:10px;margin:10px 0 4px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.08));box-shadow:inset 0 0 0 1px rgba(139,92,246,.35)}
 .rplan.prem{display:block;font-size:12.5px;font-weight:700;color:#d8c8ff}
@@ -606,6 +669,7 @@ body.chrome-off .app{padding-bottom:0}
     <div class="chainsw" id="chainSwitch" aria-label="Chain"></div>
     <div class="seg" id="seg">
       <button data-view="pulse" class="on">Pulse</button>
+      <button data-view="gold" class="seg-gold" translate="no" data-gold-ui>🥇 Gold <span class="wcount" data-gold-count style="display:none"></span></button>
       <button data-view="tweets" class="seg-tweets" translate="no">🐦 New Tweet</button>
       <button data-view="runner" class="seg-runner" translate="no">🏃 Runner <span class="wcount" data-runner-count style="display:none"></span></button>
       <button data-view="track" class="seg-track">📊 Wyniki</button>
@@ -640,6 +704,7 @@ body.chrome-off .app{padding-bottom:0}
     <section class="scr" id="s-login"><div class="pg" id="loginBody"></div></section>
     <section class="scr" id="s-premium"><div class="pg" id="premiumBody"></div></section>
     <section class="scr" id="s-kontakt"><div class="pg" id="kontaktBody"></div></section>
+    <section class="scr" id="s-gold"><div class="pg" id="goldBody"><div class="loading"><div class="spin"></div>Ładuję Gold…</div></div></section>
     <section class="scr" id="s-watch"><div class="pg" id="watchBody"></div></section>
     <section class="scr" id="s-more"><div class="pg" id="moreBody"></div></section>
   </main>
@@ -648,34 +713,37 @@ body.chrome-off .app{padding-bottom:0}
     <div><b>To nie jest porada finansowa. DYOR.</b> Memecoiny są bardzo ryzykowne — możesz stracić wszystko. Kyvo pokazuje tylko publiczne dane, nie trzyma Twoich środków i nigdy nie prosi o seed phrase ani klucz prywatny.</div>
     <div style="margin-top:6px">Dane: DexScreener, GeckoTerminal, publiczne RPC, Blockscout, Binance · treści X jako cytaty z linkiem · wykresy <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a>. Konto niewymagane, bez trackingu.</div>
     <div class="foot-links"><a href="#help">Jak korzystać</a><a href="#legal/regulamin">Regulamin</a><a href="#legal/prywatnosc">Prywatność</a><a href="#legal/zrodla">Źródła danych</a><a href="#legal/ryzyko">Ryzyko</a><a href="#premium">Premium</a><a href="#kontakt">Kontakt</a></div>
-    <div style="margin-top:6px;opacity:.55">Kyvo v8.11 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_11" style="display:none">KYVO_LIVE_v8_11</span></div>
+    <div style="margin-top:6px;opacity:.55">Kyvo v8.12 <span id="mvpMarker" data-marker="KYVO_LIVE_v8_12" style="display:none">KYVO_LIVE_v8_12</span></div>
   </div>
 </div>
 
 <nav class="tb"><nav>
   <button data-tab="hot" class="on"><span>⚡</span>Pulse</button>
   <button data-tab="runner" class="tb-runner" translate="no"><span>🏃</span>Runner</button>
+  <button data-tab="gold" class="tb-gold" translate="no" data-gold-ui><span>🥇</span>Gold</button>
   <button data-tab="viral"><span>𝕏</span>Viral</button>
   <button data-tab="rank" class="tb-center" aria-label="Ranking traderów"><span>🏆</span>Ranking</button>
   <button data-tab="search"><span>⌕</span>Szukaj</button>
   <button data-tab="profil"><span>👤</span>Profil</button>
 </nav></nav>
 <div class="toast" id="toast"></div>
-<script src="compat.js?v=8.11"></script>
-<script src="i18n.js?v=8.11" defer></script>
-<script src="auth-config.js?v=8.11" defer></script>
-<script src="premium-config.js?v=8.11" defer></script>
-<script src="contact-config.js?v=8.11" defer></script>
-<script src="push-config.js?v=8.11" defer></script>
+<script src="compat.js?v=8.12"></script>
+<script src="i18n.js?v=8.12" defer></script>
+<script src="auth-config.js?v=8.12" defer></script>
+<script src="premium-config.js?v=8.12" defer></script>
+<script src="contact-config.js?v=8.12" defer></script>
+<script src="push-config.js?v=8.12" defer></script>
 <script src="vendor/kyvo-crypto/kyvo-crypto.min.js" defer></script>
 <script src="vendor/lightweight-charts/lightweight-charts.standalone.production.js" defer></script>
-<script src="chart.js?v=8.11" defer></script>
-<script src="evm.js?v=8.11" defer></script>
-<script src="profile.js?v=8.11" defer></script>
-<script src="launch.js?v=8.11" defer></script>
-<script src="auth.js?v=8.11" defer></script>
-<script src="insights.js?v=8.11" defer></script>
-<script src="notify.js?v=8.11" defer></script>
-<script src="app.js?v=8.11" defer></script>
+<script src="chart.js?v=8.12" defer></script>
+<script src="evm.js?v=8.12" defer></script>
+<script src="profile.js?v=8.12" defer></script>
+<script src="launch.js?v=8.12" defer></script>
+<script src="auth.js?v=8.12" defer></script>
+<script src="insights.js?v=8.12" defer></script>
+<script src="gold-rules.js?v=8.12" defer></script>
+<script src="gold.js?v=8.12" defer></script>
+<script src="notify.js?v=8.12" defer></script>
+<script src="app.js?v=8.12" defer></script>
 </body>
 </html>
