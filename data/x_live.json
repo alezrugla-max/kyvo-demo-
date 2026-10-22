@@ -1,7 +1,7 @@
 {
  "source": "FxTwitter public API (api.fxtwitter.com) — unofficial X mirror, no key; coins via DexScreener, candles via GeckoTerminal",
- "updated_at": "2026-10-21T20:57:01Z",
- "accounts_read": 17,
+ "updated_at": "2026-10-22T06:40:54Z",
+ "accounts_read": 21,
  "accounts": [
   "orangie",
   "Quanterty",
@@ -31,6 +31,59 @@
  "keep_hours": 24,
  "tweets": [
   {
+   "id": "2113147565659361729",
+   "url": "https://x.com/Dior100x/status/2113147565659361729",
+   "handle": "Dior100x",
+   "author_name": "Dior",
+   "avatar": "https://pbs.twimg.com/profile_images/2044557055139172352/yOwOwull_200x200.jpg",
+   "author_followers": 128488,
+   "verified": true,
+   "role": "kol",
+   "wallet_id": null,
+   "text": "El gato may finally bring back the game I love\n\nOnwards!",
+   "is_reply": false,
+   "created_at": "2026-10-22T05:56:54Z",
+   "ts": 1792648614,
+   "metrics": {
+    "likes": 15,
+    "reposts": 1,
+    "replies": 7,
+    "quotes": 0,
+    "bookmarks": 0,
+    "views": 2902
+   },
+   "metrics_at": "2026-10-22T06:40:01+00:00",
+   "coin_match": "named",
+   "coins": [
+    {
+     "chain": "solana",
+     "address": "55A3VxMBfzw6uSe64zms5iMPw9k6kx9WzzusbCU6pump",
+     "symbol": "Gato",
+     "name": "El Gato",
+     "image": "https://cdn.dexscreener.com/cms/images/uUqRUduB-KydJTv-?width=800&height=800&quality=95&format=auto",
+     "mcap": 413084,
+     "liquidity": 75872.15,
+     "price_usd": 0.0004251,
+     "change_h24": 184,
+     "volume_h24": 832335.16,
+     "pair": "H4wp14QGkt3YextGrQXDqF1c3EPZVMxufgGcUhxSRJN4",
+     "dex": "pumpswap",
+     "pair_created_at": 1792191249000,
+     "dexscreener": "https://dexscreener.com/solana/h4wp14qgkt3yextgrqxdqf1c3epzvmxufggcuhxsrjn4",
+     "kyvo": true,
+     "match": "contract",
+     "px_at_tweet": 0.00044207723208727255,
+     "vol_1h_before": 64305,
+     "vol_after": 79595,
+     "hours_after": 0.73,
+     "chg_since_tweet": -3.8,
+     "pumping": false,
+     "measured_at": 1792651161
+    }
+   ],
+   "first_seen": 1792651161
+  },
+  {
    "id": "2112990849126879570",
    "url": "https://x.com/blknoiz06/status/2112990849126879570",
    "handle": "blknoiz06",
@@ -45,14 +98,14 @@
    "created_at": "2026-10-21T19:34:10Z",
    "ts": 1792611250,
    "metrics": {
-    "likes": 377,
-    "reposts": 79,
-    "replies": 141,
-    "quotes": 15,
-    "bookmarks": 18,
-    "views": 46702
+    "likes": 563,
+    "reposts": 108,
+    "replies": 164,
+    "quotes": 17,
+    "bookmarks": 26,
+    "views": 78296
    },
-   "metrics_at": "2026-10-21T20:49:59+00:00",
+   "metrics_at": "2026-10-22T06:39:37+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -74,11 +127,11 @@
      "match": "cashtag",
      "px_at_tweet": 0.09634454702502995,
      "vol_1h_before": 55095,
-     "vol_after": 70295,
-     "hours_after": 1.38,
+     "vol_after": 256101,
+     "hours_after": 11.11,
      "chg_since_tweet": -3.5,
      "pumping": false,
-     "measured_at": 1792616045
+     "measured_at": 1792651161
     }
    ],
    "first_seen": 1792615788
@@ -98,14 +151,14 @@
    "created_at": "2026-10-21T14:41:37Z",
    "ts": 1792593697,
    "metrics": {
-    "likes": 1222,
+    "likes": 1202,
     "reposts": 44,
-    "replies": 90,
+    "replies": 101,
     "quotes": 2,
-    "bookmarks": 5,
-    "views": 46691
+    "bookmarks": 7,
+    "views": 48116
    },
-   "metrics_at": "2026-10-21T20:50:29+00:00",
+   "metrics_at": "2026-10-22T06:39:56+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -187,14 +240,14 @@
    "created_at": "2026-10-21T14:01:13Z",
    "ts": 1792591273,
    "metrics": {
-    "likes": 1508,
-    "reposts": 43,
-    "replies": 85,
+    "likes": 1507,
+    "reposts": 46,
+    "replies": 100,
     "quotes": 0,
     "bookmarks": 1,
-    "views": 68833
+    "views": 69743
    },
-   "metrics_at": "2026-10-21T20:50:30+00:00",
+   "metrics_at": "2026-10-22T06:39:56+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -221,52 +274,6 @@
      "chg_since_tweet": 4.2,
      "pumping": false,
      "measured_at": 1792616045
-    }
-   ],
-   "first_seen": 1792615788
-  },
-  {
-   "id": "2112707091525996947",
-   "url": "https://x.com/CryptoKaleo/status/2112707091525996947",
-   "handle": "CryptoKaleo",
-   "author_name": "K A L E O",
-   "avatar": "https://pbs.twimg.com/profile_images/2103001655104901120/E3gT5gmK_200x200.jpg",
-   "author_followers": 729930,
-   "verified": true,
-   "role": "kol",
-   "wallet_id": null,
-   "text": "I will be delusionally bullish on $HMM all the way to billions\n\nRobinhood Chain isn’t dead",
-   "is_reply": false,
-   "created_at": "2026-10-21T00:46:37Z",
-   "ts": 1792543597,
-   "metrics": {
-    "likes": 218,
-    "reposts": 26,
-    "replies": 58,
-    "quotes": 1,
-    "bookmarks": 3,
-    "views": 27035
-   },
-   "metrics_at": "2026-10-21T20:55:48+00:00",
-   "coin_match": "named",
-   "coins": [
-    {
-     "chain": "robinhood",
-     "address": "0x7FE995a80075dF3Dc8Ae11A9b82c7FE4202CD87f",
-     "symbol": "HMM",
-     "name": "Thinking Cat",
-     "image": "https://cdn.dexscreener.com/cms/images/M-tVSdxn8tmiZwiC?width=800&height=800&quality=95&format=auto",
-     "mcap": 7219436,
-     "liquidity": 352647.97,
-     "price_usd": 0.007309,
-     "change_h24": 9.47,
-     "volume_h24": 139928.65,
-     "pair": "0x2b0D0183d017c58B924401cA8AC362f6E01F0E9e",
-     "dex": "uniswap",
-     "pair_created_at": 1784447643000,
-     "dexscreener": "https://dexscreener.com/robinhood/0x2b0d0183d017c58b924401ca8ac362f6e01f0e9e",
-     "kyvo": true,
-     "match": "cashtag"
     }
    ],
    "first_seen": 1792615788
