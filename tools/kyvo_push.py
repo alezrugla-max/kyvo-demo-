@@ -84,9 +84,10 @@ def main() -> int:
     for t in load(a.live, {}).get("tweets", []):
         kid = "tw:" + str(t.get("id"))
         age = now - (t.get("ts") or 0)
-        if kid in sent or age > MAX_TWEET_AGE_S or not t.get("coins"): continue
+        named = [c for c in t.get("coins") or [] if c.get("rel", "named") == "named"]   # v8.10: a 'powiązany coin' (key-word match) never pushes on its own
+        if kid in sent or age > MAX_TWEET_AGE_S or not named: continue
         if seeding and age > 20 * 60: sent[kid] = now; continue
-        c = t["coins"][0]; mins = max(1, round(age / 60))
+        c = named[0]; mins = max(1, round(age / 60))
         fol = t.get("author_followers")
         items.append({"id": kid, "kind": "tweets", "topic": kid, "hash": "#tweets",
                       "title_pl": f"🐦 @{t['handle']} o ${c['symbol']}", "title_en": f"🐦 @{t['handle']} on ${c['symbol']}",

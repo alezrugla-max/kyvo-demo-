@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_9 — v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_10 — v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_9';
+  const MVP_MARKER = 'KYVO_LIVE_v8_10';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -870,10 +870,12 @@
     mergeLive();
     return xLive;
   }
+  const namedCoins = (t) => (t.coins || []).filter((c) => (c.rel || 'named') === 'named');
   function mergeLive() {
     if (!viral || !xLive || !(xLive.tweets || []).length) return;
     const have = new Set((viral.trader_tweets || []).map((t) => String(t.id || t.url)));
-    viral.trader_tweets = (viral.trader_tweets || []).concat(xLive.tweets.filter((t) => !have.has(String(t.id)) && !have.has(t.url)));
+    // v8.10: the New Tweet feed now carries EVERY tweet; only those with a coin named in the tweet go to Viral / alerts
+    viral.trader_tweets = (viral.trader_tweets || []).concat(xLive.tweets.filter((t) => !have.has(String(t.id)) && !have.has(t.url) && namedCoins(t).length).map((t) => Object.assign({}, t, { coins: namedCoins(t) })));
   }
   async function loadViral() {
     try {
@@ -1833,7 +1835,7 @@
   }
   async function refreshViralCoins(root) {
     const all = [];
-    if (!viral) viral = { topics: [], posts: [], trader_tweets: (xLive && xLive.tweets) || [] };
+    if (!viral) viral = { topics: [], posts: [], trader_tweets: [] };
     for (const t of viral.topics || []) for (const c of t.coins || []) all.push(c);
     for (const t of viral.trader_tweets || []) for (const c of t.coins || []) all.push(c);
     for (const p of viral.posts || []) for (const c of (p.coins || []).concat(p.spec_coins || [])) all.push(c);
@@ -1911,9 +1913,11 @@
   const sinceResolve = (el) => sinceReg[+el.dataset.since] || null;
   const MOM_HELP = '<details class="gloss momhelp"><summary>⚡ Jak czytać momentum?</summary><div>„Wcześnie” = tweet ma mniej niż 2 h, „W trakcie” = 2–12 h, „Późno” = 12–48 h, „Bardzo późno” = ponad 2 dni. Wyświetlenia na godzinę liczymy z danych z chwili pobrania (snapshot X ok. 3× dziennie), więc to średnia, nie tempo na żywo. Jeśli coin już mocno urósł od tweeta, większa część ruchu mogła już być. To tylko podpowiedź, nie sygnał kupna.</div></details>';
 
-  /* v8.6: 🐦 New Tweet — a tracked account (trader / KOL / celebrity) tweeted about a coin. Newest first, real tweet time,
-     fresh (<2 h) on top, older ones (≤24 h) below with their real age. Coin: logo, chain, MC, price since tweet, volume after. */
+  /* v8.10: 🐦 New Tweet — EVERY fresh tweet of the tracked accounts (trader / KOL / celebrity / news), newest first, ≤ 12 h.
+     Coin: 'wspomniany' (named in the tweet) or 'powiązany' (a new coin about the tweet's topic, launched ≤ 60 min after it),
+     else 'brak coina jeszcze' (a coin can attach later). Logo, chain, MC, price since tweet / launch, volume after. */
   const plFew = (n) => { const d = n % 10, h = n % 100; return d >= 2 && d <= 4 && (h < 12 || h > 14); };
+  let twFilter = 'all'; const twSeen = new Set(); // v8.10: filter chips + 'new since last render' flash
   async function renderTweets() {
     document.body.classList.remove('pulse-on');
     const body = $('#tweetsBody');
@@ -1924,44 +1928,70 @@
     if (view !== 'tweets') return;
     const now = Date.now();
     const seen = new Set();
-    const list = ((xLive && xLive.tweets) || []).filter((t) => { const k = String(t.id); if (seen.has(k)) return false; seen.add(k); return (t.coins || []).length && now - new Date(t.created_at).getTime() <= 24 * 3.6e6; })
+    // v8.10: EVERY fresh tweet of the tracked accounts (≤ 12 h), newest first — with its coin when there is one
+    const all = ((xLive && xLive.tweets) || []).filter((t) => { const k = String(t.id); if (seen.has(k)) return false; seen.add(k); return now - new Date(t.created_at).getTime() <= 12 * 3.6e6; })
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const hasCoin = (t) => (t.coins || []).length > 0;
+    const pumps = (t) => (t.coins || []).some((c) => c.pumping);
+    const list = all.filter((t) => twFilter === 'coin' ? hasCoin(t) : twFilter === 'pump' ? pumps(t) : true);
     const ageH = (t) => (now - new Date(t.created_at).getTime()) / 3.6e6;
     const fresh = list.filter((t) => ageH(t) < 2), older = list.filter((t) => ageH(t) >= 2);
     const upd = xLive && xLive.updated_at;
     const updMin = upd ? Math.round((now - new Date(upd).getTime()) / 60000) : null;
     const coinBox = (c, t) => {
-      const ch = c.chg_since_tweet, va = c.vol_after, vb = c.vol_1h_before;
+      const ch = c.pre_launch ? c.chg_since_launch : c.chg_since_tweet, va = c.vol_after, vb = c.vol_1h_before;
       const meas = c.measured_at ? Math.max(0, Math.round((now / 1000 - c.measured_at) / 60)) : null;
-      const facts = c.pre_launch ? `<span class="mut">${L2('Tweet był przed startem tej puli', 'Tweet came before this pool launched')}</span>`
-        : ch != null || va != null ? `${ch != null ? `${L2('Od tweeta', 'Since tweet')}: <b class="${pctClass(ch)}">${fmtPct(ch)}</b>` : ''}${va != null ? ` · ${L2('wolumen po tweecie', 'volume after tweet')} <b>${fmtUsd(va)}</b>${vb != null ? ` <span class="mut">(${L2('1 h przed', '1 h before')}: ${fmtUsd(vb)})</span>` : ''}` : ''}${meas != null ? ` <span class="mut">· ${L2('pomiar', 'measured')} ${meas} min ${L2('temu', 'ago')}</span>` : ''}`
-        : `<span class="mut">${L2('Cena i wolumen od tweeta: brak danych świec', 'Price and volume since tweet: no candle data')}</span>`;
+      const lab = c.pre_launch ? L2('Od startu (po tweecie)', 'Since launch (after tweet)') : L2('Od tweeta', 'Since tweet');
+      const facts = ch != null || va != null ? `${ch != null ? `${lab}: <b class="${pctClass(ch)}">${fmtPct(ch)}</b>` : ''}${va != null ? ` · ${L2('wolumen po tweecie', 'volume after tweet')} <b>${fmtUsd(va)}</b>${vb != null && !c.pre_launch ? ` <span class="mut">(${L2('1 h przed', '1 h before')}: ${fmtUsd(vb)})</span>` : ''}` : ''}${meas != null ? ` <span class="mut">· ${L2('pomiar', 'measured')} ${meas} min ${L2('temu', 'ago')}</span>` : ''}`
+        : `<span class="mut">${L2('Cena od tweeta: liczę…', 'Price since tweet: measuring…')}</span>`;
       return `${vCoinHtml(c)}<div class="vsince">${c.pumping ? `<span class="badge pumpb">🚀 ${L2('Pompuje po tweecie', 'Pumping after tweet')}</span> ` : ''}${facts}</div>`;
+    };
+    const coinPart = (t) => {
+      const cs = t.coins || [];
+      if (!cs.length) {
+        const young = ageH(t) < 1.5;
+        return `<div class="mchip none" translate="no">⏳ ${L2('Brak coina jeszcze', 'No coin yet')}${young ? ` <span class="mut">· ${L2('szukamy nowych coinów o tym temacie co kilka minut', 'checking new coins about this topic every few minutes')}</span>` : ''}</div>`;
+      }
+      if ((cs[0].rel || 'named') === 'related') {
+        const c = cs[0], dm = c.pair_created_at ? Math.round((c.pair_created_at / 1000 - t.ts) / 60) : null;
+        return `<div class="mchip rel" translate="no">🔗 ${L2('Powiązany coin', 'Related coin')} <span class="mut">· ${L2('tweet go nie podaje — nowy coin o tym temacie', 'not named in the tweet — a new coin about this topic')}${dm != null ? ` · ${L2('start', 'launched')} ${dm <= 0 ? L2('razem z tweetem', 'with the tweet') : dm + ' min ' + L2('po tweecie', 'after the tweet')}` : ''}${c.kw ? ` · ${L2('słowo', 'word')} „${esc(c.kw)}”` : ''}${c.alts ? ` · ${L2('kopii', 'copies')}: ${c.alts}` : ''}</span></div>
+          <div class="vcoins vcoins-t">${coinBox(c, t)}</div><div class="mut mdisc" translate="no">${L2('Dopasowanie po nazwie — może nie mieć związku z autorem tweeta. Wybraliśmy ten z największym wolumenem; oczywiste scamy odrzucone. Nie porada finansowa.', 'Matched by name — may have nothing to do with the author. We picked the one with the most volume; obvious scams dropped. Not financial advice.')}</div>`;
+      }
+      return `<div class="mchip named" translate="no">✅ ${L2('Wspomniany coin', 'Mentioned coin')}</div><div class="vcoins vcoins-t">${cs.map((c) => coinBox(c, t)).join('')}</div>`;
     };
     // v8.9 🐦 Tweet runner: coins that clearly run after this tweet (server feed data/kol_live.json)
     if (!kolLive) { try { await loadKolLive(); } catch (e) {} }
     const twRun = {};
     for (const e of (kolLive && kolLive.items) || []) if (e.tweet && e.tweet.id && Date.now() - e.at < 24 * 3.6e6) twRun[String(e.tweet.id)] = e;
+    const isNew = (t) => twSeen.size && !twSeen.has(String(t.id));
     const card = (t) => {
       const h = ageH(t);
       const tr = twRun[String(t.id)];
-      return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}${tr ? ' twrun' : ''}">${tr ? `<div class="twrunb" translate="no">🐦 Tweet runner · <b>$${esc(tr.sym)}</b> <b class="up">+${Math.round(tr.tweet.chg || 0)}%</b> ${L2('po tweecie', 'after the tweet')} · <a href="#runner">${L2('w Runnerach', 'in Runner')} →</a></div>` : ''}
+      const q = t.quote, m = (t.media || [])[0];
+      return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}${tr ? ' twrun' : ''}${isNew(t) ? ' newin' : ''}${hasCoin(t) ? '' : ' nocoin'}">${tr ? `<div class="twrunb" translate="no">🐦 Tweet runner · <b>$${esc(tr.sym)}</b> <b class="up">+${Math.round(tr.tweet.chg || 0)}%</b> ${L2('po tweecie', 'after the tweet')} · <a href="#runner">${L2('w Runnerach', 'in Runner')} →</a></div>` : ''}
         <div class="meta">${imgTag(t.avatar, 'av', 36)}
-          <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(t.author_name || t.handle)} <span class="mut">@${esc(t.handle)}</span> ${t.role === 'celebrity' ? '<span class="badge demo">VIP</span>' : roleBadge(t.role)}</b>
+          <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(t.author_name || t.handle)} <span class="mut">@${esc(t.handle)}</span> ${t.role === 'celebrity' ? '<span class="badge demo">VIP</span>' : t.role === 'news' ? '<span class="badge demo">NEWS</span>' : t.role === 'project' ? '<span class="badge demo">' + L2('projekt', 'project') + '</span>' : roleBadge(t.role)}</b>
           <div class="mut" style="font-size:11.5px">${t.author_followers != null ? `👥 ${fmtInt(t.author_followers)} ${L2('obserwujących', 'followers')} · ` : ''}🕒 ${esc(exactTime(t.created_at))} · <b class="${h < 2 ? 'up' : ''}">${esc(ageLabelH(h))} ${L2('temu', 'ago')}</b>${t.is_reply ? ' · ' + L2('odpowiedź', 'reply') : ''}</div></div>
           <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="vx" aria-label="${L2('Otwórz na X', 'Open on X')}">𝕏</a></div>
         <div class="txt vq${String(t.text || '').length > 190 ? ' long' : ''}">${tweetText(t.text)}</div>
-        <div class="vcoins vcoins-t">${(t.coins || []).map((c) => coinBox(c, t)).join('')}</div>
+        ${q && q.text ? `<div class="twq"><span class="mut">↪ @${esc(q.handle || '')}:</span> ${esc(q.text.length > 200 ? q.text.slice(0, 200) + '…' : q.text)}</div>` : ''}
+        ${m && m.url ? `<a class="twimg" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="${esc(m.url)}" alt="${esc(m.alt || '')}" onerror="this.parentNode.remove()">${m.type !== 'photo' ? '<span>▶</span>' : ''}</a>` : ''}
+        ${coinPart(t)}
         <div class="vfoot"><a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${L2('Tweet na X', 'Tweet on X')} ↗</a>${t.wallet_id ? `<a class="vbtn" href="#trader/${encodeURIComponent(t.wallet_id)}">${L2('Profil w Rankingu', 'Ranking profile')}</a>` : ''}</div>
       </div>`;
     };
-    body.innerHTML = `<div class="h" translate="no">🐦 New Tweet <span class="badge live">${fresh.length} ${L2(fresh.length === 1 ? 'świeży' : plFew(fresh.length) ? 'świeże' : 'świeżych', 'fresh')}</span></div>
-      <div class="sub" translate="no">${L2('Gdy znany trader, KOL albo celebryta tweetuje o coinie — od razu tutaj, najnowsze na górze. Sprawdzamy', 'When a well-known trader, KOL or celebrity tweets about a coin — right here, newest first. We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co kilka minut', 'every few minutes')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
+    const nCoin = all.filter(hasCoin).length, nPump = all.filter(pumps).length;
+    const chip = (id, lb, n) => `<button type="button" class="twf${twFilter === id ? ' on' : ''}" data-twf="${id}">${lb} <span class="vcount">${n}</span></button>`;
+    body.innerHTML = `<div class="h" translate="no">🐦 New Tweet <span class="badge live">${all.filter((t) => ageH(t) < 2).length} ${L2('z ostatnich 2 h', 'in the last 2 h')}</span></div>
+      <div class="sub" translate="no">${L2('Wszystkie świeże tweety Elona, Trumpa, CZ, KOL-i i dużych traderów — najnowsze na górze, z coinem, gdy jest. Sprawdzamy', 'Every fresh tweet from Elon, Trump, CZ, KOLs and big traders — newest first, with the coin when there is one. We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co kilka minut', 'every few minutes')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
       ${updMin != null && updMin > 45 ? `<div class="card" style="font-size:12.5px;color:var(--warn)" translate="no">${L2('Feed nie odświeżył się od', 'Feed has not refreshed for')} ${updMin} min — ${L2('źródło mogło chwilowo nie odpowiadać.', 'the source may be temporarily unavailable.')}</div>` : ''}
-      <div>${fresh.length ? fresh.map(card).join('') : `<div class="empty">${L2('W ostatnich 2 h nikt ze śledzonych kont nie tweetował o coinie, który da się jednoznacznie znaleźć. Dostaniesz powiadomienie, gdy to się stanie.', 'No tracked account has tweeted about a clearly identifiable coin in the last 2 h. You will get a notification when it happens.')}</div>`}</div>
-      ${older.length ? `<div class="h" style="font-size:14px;margin-top:14px" translate="no">${L2('Wcześniej (2–24 h)', 'Earlier (2–24 h)')} <span class="mut" style="font-size:12px">${older.length}</span></div><div>${older.map(card).join('')}</div>` : ''}
-      <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45" translate="no">${L2('Coin pokazujemy tylko, gdy tweet podaje adres kontraktu albo jednoznaczny $ticker na DexScreener. „Pompuje po tweecie” = cena +30% od tweeta albo wolumen po tweecie ≥3× godziny przed nim. To nie jest porada finansowa — wejście po tweecie bywa późne.', 'A coin is shown only when the tweet gives a contract address or an unambiguous $ticker on DexScreener. “Pumping after tweet” = price +30% since the tweet or volume after it ≥3× the hour before. Not financial advice — buying after a tweet is often late.')}</div>
+      <div class="twfs" translate="no">${chip('all', L2('Wszystkie', 'All'), all.length)}${chip('coin', L2('Z coinem', 'With a coin'), nCoin)}${chip('pump', '🚀 ' + L2('Pompuje', 'Pumping'), nPump)}</div>
+      <div>${fresh.length ? fresh.map(card).join('') : `<div class="empty">${twFilter === 'all' ? L2('W ostatnich 2 h śledzone konta nic nie napisały.', 'The tracked accounts have not posted in the last 2 h.') : L2('Brak takich tweetów w ostatnich 2 h.', 'No such tweets in the last 2 h.')}</div>`}</div>
+      ${older.length ? `<div class="h" style="font-size:14px;margin-top:14px" translate="no">${L2('Wcześniej (2–12 h)', 'Earlier (2–12 h)')} <span class="mut" style="font-size:12px">${older.length}</span></div><div>${older.map(card).join('')}</div>` : ''}
+      <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45" translate="no">${L2('„Wspomniany coin” = tweet podaje adres kontraktu albo jednoznaczny $ticker. „Powiązany coin” = tweet nie podaje coina, ale do godziny po nim wystartował coin Solana/BSC o tej nazwie z prawdziwym handlem (bierzemy ten z największym wolumenem). „Pompuje po tweecie” = cena +30% od tweeta (albo od startu) lub wolumen po tweecie ≥3× godziny przed nim. Nie porada finansowa — wejście po tweecie bywa późne.', '“Mentioned coin” = the tweet gives a contract address or an unambiguous $ticker. “Related coin” = the tweet names no coin, but within an hour a Solana/BSC coin with that name launched and really trades (we take the one with the most volume). “Pumping after tweet” = price +30% since the tweet (or launch) or volume after it ≥3× the hour before. Not financial advice — buying after a tweet is often late.')}</div>
       <div class="foot">${L2('Źródło tweetów: publiczne API FxTwitter (lustro X) · ceny: DexScreener / GeckoTerminal', 'Tweet source: public FxTwitter API (X mirror) · prices: DexScreener / GeckoTerminal')}</div>`;
+    body.querySelectorAll('[data-twf]').forEach((b) => b.addEventListener('click', () => { twFilter = b.dataset.twf; keepUi(() => renderTweets()); }));
+    for (const t of all) twSeen.add(String(t.id));
     refreshViralCoins(body).catch(() => {});
   }
   async function renderViral() {
@@ -2616,7 +2646,7 @@
     if (document.hidden) return;
     try {
       await loadLive(true);
-      const sig = ((xLive && xLive.tweets) || []).map((t) => t.id).join(',');
+      const sig = ((xLive && xLive.tweets) || []).map((t) => t.id + ':' + (t.coins || []).map((c) => c.address + (c.pumping ? '!' : '')).join('+')).join(','); // v8.10: a coin attached later re-renders too
       if (sig === liveSig) return;
       liveSig = sig;
       if (viral && window.KyvoNotify) window.KyvoNotify.onViral(viral);

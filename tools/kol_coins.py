@@ -107,7 +107,7 @@ def tweeted_ca(addr: str, live: dict | None = None, max_age_h: float = 6) -> lis
     now = time.time(); out = []
     for t in live.get("tweets", []):
         if now - (t.get("ts") or 0) > max_age_h * 3600: continue
-        if any(str(c.get("address")) == addr for c in t.get("coins") or []) and t.get("handle") not in out: out.append(t.get("handle"))
+        if any(str(c.get("address")) == addr and c.get("rel", "named") == "named" for c in t.get("coins") or []) and t.get("handle") not in out: out.append(t.get("handle"))
     return out
 
 # ---------------- link parsing ----------------
@@ -350,7 +350,7 @@ def tweet_candidates(live: dict | None = None) -> list[dict]:
         if age < TW_T["minAgeMin"] * 60 or age > TW_T["maxAgeH"] * 3600: continue
         for c in (t.get("coins") or [])[:1]:
             k = f"{c.get('chain')}:{c.get('address')}"
-            if c.get("pre_launch") or k in seen or c.get("chain") not in ("solana", "bsc"): continue
+            if c.get("pre_launch") or c.get("rel", "named") != "named" or k in seen or c.get("chain") not in ("solana", "bsc"): continue
             seen.add(k); out.append({"t": t, "c": c})
     return out
 

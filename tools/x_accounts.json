@@ -144,5 +144,80 @@
    "why": "well-known memecoin trader/KOL, verified, ~72k followers (fxtwitter 2026-10-22)"
   }
  ],
- "kol_note": "v8.8 KOL-coin list (tools/kol_coins.py) = accounts + live_extra + kol_extra + every kolscan leaderboard handle (data/leaderboard.json). Exact handle match only (e.g. @Ansem is NOT @blknoiz06)."
+ "kol_note": "v8.8 KOL-coin list (tools/kol_coins.py) = accounts + live_extra + kol_extra + every kolscan leaderboard handle (data/leaderboard.json). Exact handle match only (e.g. @Ansem is NOT @blknoiz06).",
+ "live_more": [
+  {
+   "handle": "WhiteHouse",
+   "role": "celebrity"
+  },
+  {
+   "handle": "saylor",
+   "role": "celebrity"
+  },
+  {
+   "handle": "justinsuntron",
+   "role": "celebrity"
+  },
+  {
+   "handle": "brian_armstrong",
+   "role": "celebrity"
+  },
+  {
+   "handle": "VitalikButerin",
+   "role": "celebrity"
+  },
+  {
+   "handle": "MrBeast",
+   "role": "celebrity"
+  },
+  {
+   "handle": "Cobratate",
+   "role": "celebrity"
+  },
+  {
+   "handle": "cb_doge",
+   "role": "kol"
+  },
+  {
+   "handle": "DogeDesigner",
+   "role": "kol"
+  },
+  {
+   "handle": "KookCapitalLLC",
+   "role": "kol"
+  },
+  {
+   "handle": "ZssBecker",
+   "role": "kol"
+  },
+  {
+   "handle": "theunipcs",
+   "role": "kol"
+  },
+  {
+   "handle": "rajgokal",
+   "role": "kol"
+  },
+  {
+   "handle": "ShockedJS",
+   "role": "kol"
+  },
+  {
+   "handle": "WatcherGuru",
+   "role": "news"
+  },
+  {
+   "handle": "binance",
+   "role": "project"
+  },
+  {
+   "handle": "BNBCHAIN",
+   "role": "project"
+  },
+  {
+   "handle": "solana",
+   "role": "project"
+  }
+ ],
+ "live_more_note": "v8.10 New Tweet only (tools/x_live.py; NOT used for 👑 KOL coin): big accounts whose tweets often spawn memecoins (Elon circle, politics, exchanges, news). Each verified to answer on api.fxtwitter.com/2/profile/<handle>/statuses on 2026-10-22."
 }

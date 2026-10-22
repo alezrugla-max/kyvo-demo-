@@ -79,6 +79,14 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.10 (KYVO_LIVE_v8_10 · SW kyvo-v8-10)
+- 🐦 **New Tweet = a moving feed**: every own tweet (no retweets; replies only when they name a coin) from ~43 tracked accounts in the last 12 h, newest first, sections "<2 h" / "Wcześniej". Previously tweets without a resolvable coin were dropped, so the tab showed ~2 tweets.
+- Tracked list expanded (`tools/x_accounts.json` → `live_more`: WhiteHouse, saylor, justinsuntron, brian_armstrong, VitalikButerin, MrBeast, Cobratate, cb_doge, DogeDesigner, KookCapitalLLC, ZssBecker, theunipcs, rajgokal, ShockedJS, WatcherGuru, binance, BNBCHAIN, solana). These feed New Tweet only, not 👑 KOL coin.
+- Coin per tweet: **✅ Wspomniany coin** ($ticker / CA in the tweet) → else **🔗 Powiązany coin**: the highest-volume fresh Solana/BSC coin (DexScreener search, free) whose name/ticker matches the tweet's key word and that launched −2…+60 min after the tweet (min MC $15k, vol24 $10k, real 1 h activity; obvious rugs dropped) → else **⏳ Brak coina jeszcze** (a coin can attach on later runs, for tweets ≤ 90 min).
+- Price since tweet (or since launch for related coins) refreshed every run; 🚀 "Pompuje" = ≥ +30 %, or ≥ +8 % on a 3× volume spike. Filter chips: Wszystkie / Z coinem / Pompuje.
+- Push / 🐦 Tweet runner / KOL coin: unchanged rules, **only mentioned coins** (related coins never push).
+- Loop: tweet read every ~150 s (was 240), FxTwitter 3 tries, background job limit 230 s.
+
 ## v8.9 (KYVO_LIVE_v8_9 · SW kyvo-v8-9)
 - ⏱ **Continuous feeds** (`tools/kyvo_loop.py`, `.github/workflows/kyvo-push.yml`): one run loops ~51 min in 3 chunks
   (state saved to actions/cache after each chunk): Runner scan every ~90 s, New Tweet read every ~4 min (in parallel, GT budget 5),

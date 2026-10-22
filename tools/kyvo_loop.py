@@ -3,7 +3,7 @@
 
 GitHub fires "*/5" schedules only every ~30–40 min in practice, so one workflow run now keeps working for ~50 min:
   * every SCAN_EVERY  (~90 s): Runner scan  -> .kyvo_push/flags.json + data/kol_live.json (👑 KOL / 🚀 Moon / 📈 Big runner)
-  * every TWEET_EVERY (~4 min): New Tweet feed -> data/x_live.json (FxTwitter, ~24 accounts at 1 req/s)
+  * every TWEET_EVERY (~2.5 min, v8.10): New Tweet feed -> data/x_live.json (FxTwitter, ~43 accounts, 2 at a time, ≤ ~3 min)
   * after every step: OneSignal push for genuinely new items (tools/kyvo_push.py: sent-ids dedupe + free 2/day cap)
   * data commits only when a feed's CONTENT changed (new tweet / new flag) or as a 30-min heartbeat, at most one commit per
     COMMIT_GAP (3 min) and at most COMMIT_MAX_H (7) per rolling hour — GitHub Pages (branch build) has a soft limit of
@@ -48,7 +48,7 @@ class Bg:
         self.t = time.time(); self.cmd = cmd
         self.p = subprocess.Popen(cmd, cwd=ROOT, env=dict(os.environ, GITHUB_OUTPUT=self.outp, KYVO_LIVE_GT_BUDGET=os.environ.get("KYVO_LIVE_GT_BUDGET", "5")), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     def done(self) -> bool:
-        if self.p.poll() is None and time.time() - self.t > 200: self.p.kill()
+        if self.p.poll() is None and time.time() - self.t > 230: self.p.kill()   # v8.10: x_live stops itself at ~175 s
         return self.p.poll() is not None
     def result(self) -> dict:
         out_txt = self.p.stdout.read() if self.p.stdout else ""
@@ -89,7 +89,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-min", type=float, default=50)
     ap.add_argument("--scan-every", type=float, default=90)
-    ap.add_argument("--tweet-every", type=float, default=240)
+    ap.add_argument("--tweet-every", type=float, default=150)
     ap.add_argument("--commit-gap", type=float, default=180)
     ap.add_argument("--commit-max-h", type=int, default=7)
     ap.add_argument("--heartbeat", type=float, default=1800, help="commit refreshed metrics at least this often (s) even without new items")
@@ -113,7 +113,7 @@ def main() -> int:
         if tw is not None and tw.done():
             o = tw.result(); tw = None; did = True
             if o.get("commit") == "true": pending.append("new tweets")
-        if tw is None and time.time() >= next_tw and time.time() < end - 150:
+        if tw is None and time.time() >= next_tw and time.time() < end - 180:
             next_tw = time.time() + a.tweet_every; n_tw += 1
             tw = Bg([py, "tools/x_live.py"])
         if time.time() >= next_scan and time.time() < end - 45:
