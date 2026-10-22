@@ -175,6 +175,7 @@
         ${C.promoActive ? `<div class="pm-promo">${L('Cena startowa dla pierwszych użytkowników', 'Launch price for early users')} · ${L('potem', 'later')} ${esc(C.regularPrice)} / ${esc(per)}</div>` : ''}
         <div class="pm-trial">${L(esc(C.trialDays) + ' dni za darmo na start', esc(C.trialDays) + '-day free trial')} · ${L('anulujesz kiedy chcesz', 'cancel anytime')}</div>
         <ul class="pmpop-li">
+          <li>${L('🏃 Wszystkie Runnery na żywo + push (darmowo: 1 dziennie)', '🏃 All Runners live + push (free: 1 a day)')}</li>
           <li>${L('🔔 Alerty push, także gdy apka jest zamknięta', '🔔 Push alerts, even when the app is closed')}</li>
           <li>${L('🧠 Więcej portfeli smart money i szybsze odświeżanie', '🧠 More smart money wallets and faster refresh')}</li>
           <li>${L('𝕏 Viral z X częściej niż 3× dziennie', '𝕏 Viral from X more often than 3× a day')}</li>
@@ -210,7 +211,7 @@
       ['Co jeśli portfel prosi o zatwierdzenie transakcji?', 'Odrzuć ją. Kyvo nigdy nie wysyła transakcji do podpisu — tylko wiadomość tekstową. Nikt z Kyvo nie poprosi też o seed phrase ani klucz prywatny.'],
       ['Google, e-mail i Apple', 'Logowanie przez Google i e-mail (link logowania wysyłany na maila — bez hasła) włączymy wkrótce; Apple — później. Do tego czasu przyciski są oznaczone „Wkrótce”.'],
       ['Jak się wylogować?', 'Profil → „Wyloguj”. Adres zostaje w Profilu, możesz go usunąć osobno. Więcej → „Wyczyść dane Kyvo” usuwa wszystko z tej przeglądarki.'],
-      ['Kyvo Premium', 'Plan Premium jest w przygotowaniu — funkcje oznaczone „wkrótce” jeszcze nie działają i nic nie jest sprzedawane. Planowana cena: $9.99 / mies., cena startowa dla pierwszych użytkowników $3.99 / mies., 3 dni za darmo (z podpiętą kartą, Apple Pay lub Google Pay; BLIK nie działa dla subskrypcji). Premium będzie wymagać logowania. Wszystko, co działa dziś, zostaje za darmo.'],
+      ['Kyvo Premium', 'Plan Premium jest w przygotowaniu — funkcje oznaczone „wkrótce” jeszcze nie działają i nic nie jest sprzedawane. Planowana cena: $9.99 / mies., cena startowa dla pierwszych użytkowników $3.99 / mies., 3 dni za darmo (z podpiętą kartą, Apple Pay lub Google Pay; BLIK nie działa dla subskrypcji). Premium będzie wymagać logowania. Wszystko, co działa dziś, zostaje za darmo — poza Runnerami: darmowo 1 Runner dziennie (pierwszy oznaczony danego dnia), wszystkie Runnery i ich push w Premium.'],
       ['Kontakt', 'Chcesz pogadać, pomóc albo współpracować? Więcej → Kontakt (Discord).'],
     ]],
     ['Zakładki z coinami', [
@@ -350,6 +351,7 @@
     ['Ranking traderów i profile', 'free', 'free'],
     ['Profil: do 8 portfeli + karta PnL', 'free', 'free'],
     ['Kyvo Check, watchlista + alerty (gdy apka otwarta)', 'free', 'free'],
+    ['🏃 Runnery (👑 KOL coin, 🚀 Moon run, 📈 Duży runner, 🐦 Tweet runner) + push', '1 / dzień', 'all'],
     ['Alerty smart money na żywo (push, apka zamknięta)', '—', 'soon'],
     ['Do 25 portfeli w Profilu', '—', 'soon'],
     ['Dłuższa historia PnL (90 dni)', '—', 'soon'],
@@ -406,7 +408,7 @@
       ['What if my wallet asks me to approve a transaction?', 'Reject it. Kyvo never sends a transaction to sign — only a text message. Nobody from Kyvo will ever ask for your seed phrase or private key either.'],
       ['Google, email and Apple', 'Google and email sign-in (a sign-in link sent to your email — no password) are coming soon; Apple later. Until then the buttons are marked “Coming soon”.'],
       ['How do I sign out?', 'Profile → “Sign out”. The address stays in Profile and you can remove it separately. More → “Clear Kyvo data” removes everything from this browser.'],
-      ['Kyvo Premium', 'The Premium plan is in preparation — features marked “coming soon” don\'t work yet and nothing is being sold. Planned price: $9.99 / month, launch price for early users $3.99 / month, 3 days free (with a card, Apple Pay or Google Pay attached; BLIK doesn\'t work for subscriptions). Premium will require signing in. Everything that works today stays free.'],
+      ['Kyvo Premium', 'The Premium plan is in preparation — features marked “coming soon” don\'t work yet and nothing is being sold. Planned price: $9.99 / month, launch price for early users $3.99 / month, 3 days free (with a card, Apple Pay or Google Pay attached; BLIK doesn\'t work for subscriptions). Premium will require signing in. Everything that works today stays free — except Runners: 1 free Runner a day (the first one flagged that day), all Runners and their push with Premium.'],
       ['Contact', 'Want to chat, help out or collaborate? More → Contact (Discord).'],
     ]],
     ['Coin tabs', [
@@ -516,6 +518,7 @@
     ['Trader leaderboard and profiles', 'free', 'free'],
     ['Profile: up to 8 wallets + PnL card', 'free', 'free'],
     ['Kyvo Check, watchlist + alerts (while the app is open)', 'free', 'free'],
+    ['🏃 Runners (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner) + push', '1 / day', 'all'],
     ['Live smart money alerts (push, app closed)', '—', 'soon'],
     ['Up to 25 wallets in Profile', '—', 'soon'],
     ['Longer PnL history (90 days)', '—', 'soon'],
@@ -532,7 +535,7 @@
     const link = C.promoActive ? C.stripePaymentLinkPromo : C.stripePaymentLinkRegular;
     const live = !!(C.enabled && /^https:\/\//.test(link || ''));
     const S = window.KyvoAuth && window.KyvoAuth.session();
-    const cell = (v) => (v === 'free' ? '<span class="pm-ok">✓</span>' : v === 'soon' ? '<span class="pm-soon">wkrótce</span>' : '<span class="mut">—</span>');
+    const cell = (v) => (v === 'free' ? '<span class="pm-ok">✓</span>' : v === 'soon' ? '<span class="pm-soon">wkrótce</span>' : v === 'all' ? '<span class="pm-ok">✓ ' + (EN ? 'all' : 'wszystkie') + '</span>' : v === '—' ? '<span class="mut">—</span>' : '<span class="mut">' + esc(v) + '</span>'); // v8.11: text cells (e.g. Runner 1 / day)
     const price = C.promoActive
       ? `<span class="pm-old">${esc(C.regularPrice)}</span><b>${esc(C.promoPrice)}</b><span>/ ${esc(C.period)}</span>`
       : `<b>${esc(C.regularPrice)}</b><span>/ ${esc(C.period)}</span>`;
@@ -592,11 +595,11 @@
 
   async function clearData() {
     if (!confirm(T('Usunąć wszystkie dane Kyvo z tej przeglądarki? (portfele w Profilu, nick, filtry, cache)'))) return false;
-    let keepLang = null;
-    try { keepLang = localStorage.getItem('kyvo_lang'); } catch (e) {}
+    let keepLang = null, keepOwner = null;
+    try { keepLang = localStorage.getItem('kyvo_lang'); keepOwner = localStorage.getItem('kyvo_owner_tok'); } catch (e) {}
     try { Object.keys(localStorage).filter((k) => k.startsWith('kyvo_')).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
     try { if (window.caches) for (const k of await caches.keys()) await caches.delete(k); } catch (e) {}
-    try { localStorage.setItem(OB_KEY, String(Date.now())); if (keepLang) localStorage.setItem('kyvo_lang', keepLang); } catch (e) {}
+    try { localStorage.setItem(OB_KEY, String(Date.now())); if (keepLang) localStorage.setItem('kyvo_lang', keepLang); if (keepOwner) localStorage.setItem('kyvo_owner_tok', keepOwner); /* v8.11: owner Premium survives "clear data" */ } catch (e) {}
     return true;
   }
 

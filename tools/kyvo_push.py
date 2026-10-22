@@ -9,7 +9,8 @@ Sends one push per genuinely NEW item:
   * v8.9 📈 Big runner: established $1M–$100M coin running now (bigRunnerRule + tools/kol_coins.big_check)
 Dedupe: sent ids live in the state file (restored/saved with actions/cache). First run only seeds (no blast of old items).
 Audience (tags set by the app in notify.js): premium=1 -> every alert; everyone else -> at most FREE_CAP alerts per
-Europe/Warsaw day (one global counter = same broadcasts for all free users). Users who switched a type off (tag tweets=0 /
+Europe/Warsaw day (one global counter = same broadcasts for all free users); v8.11: of those, at most FREE_RUNNERS (1)
+Runner push per day — the day's first Runner; every other Runner goes to premium=1 only. Users who switched a type off (tag tweets=0 /
 runner=0) are excluded. Quiet hours: none for now.
 Secret: ONESIGNAL_REST_API_KEY (GitHub -> Settings -> Secrets -> Actions). Missing -> safe no-op. The key is never printed.
 """
@@ -23,6 +24,7 @@ APP_ID = "a5a8f0d3-4c22-4d5b-8ace-5e94dc22ef5f"   # public OneSignal App ID (sam
 APP_URL = "https://alezrugla-max.github.io/kyvo-demo-/"
 API = "https://api.onesignal.com/notifications?c=push"
 FREE_CAP = 2
+FREE_RUNNERS = 1      # v8.11: free users get a push for ONE Runner per Warsaw day (the first one sent); Premium gets all
 MAX_TWEET_AGE_S = 2 * 3600
 MAX_PER_RUN = 6
 WARSAW = ZoneInfo("Europe/Warsaw")
@@ -78,7 +80,7 @@ def main() -> int:
     st = load(a.state, {})
     seeding = not st.get("seeded")
     sent: dict = {k: t for k, t in st.get("sent", {}).items() if now - t < 3 * 86400}
-    if st.get("free_day") != day: st["free_day"], st["free_n"] = day, 0
+    if st.get("free_day") != day: st["free_day"], st["free_n"], st["free_runner_n"] = day, 0, 0
 
     items = []
     for t in load(a.live, {}).get("tweets", []):
@@ -146,15 +148,22 @@ def main() -> int:
         print(f"- {it['id']}: {it['title_en']}")
         targets = [audience(it["kind"], True)]
         free_ok = st.get("free_n", 0) < FREE_CAP
+        if it["kind"] == "runner" and st.get("free_runner_n", 0) >= FREE_RUNNERS: free_ok = False   # v8.11: Runners are Premium — free users get only the day's first Runner
         if free_ok: targets.append(audience(it["kind"], False))
         if a.dry_run:
             for tg in targets: print(json.dumps(payload(it, tg), ensure_ascii=False)[:600])
+            print(f"  audience: premium=1{' + free' if free_ok else ' only'}")
+            if free_ok:   # dry run: count in memory (state is not written) so the free caps can be checked
+                st["free_n"] = st.get("free_n", 0) + 1
+                if it["kind"] == "runner": st["free_runner_n"] = st.get("free_runner_n", 0) + 1
             continue
         if not key: continue
         ok = all([send(key, payload(it, tg)) for tg in targets])
         if ok:
             sent[it["id"]] = now
-            if free_ok: st["free_n"] = st.get("free_n", 0) + 1
+            if free_ok:
+                st["free_n"] = st.get("free_n", 0) + 1
+                if it["kind"] == "runner": st["free_runner_n"] = st.get("free_runner_n", 0) + 1; st["free_runner_id"] = it["id"]
         time.sleep(1)
     st["sent"] = sent; st["seeded"] = True
     if not a.dry_run and (key or seeding):

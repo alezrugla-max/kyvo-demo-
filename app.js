@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_10 — v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_11 — v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_10';
+  const MVP_MARKER = 'KYVO_LIVE_v8_11';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -1141,7 +1141,11 @@
     const hit50 = done1.filter((e) => (maxP(e) || 0) >= 50).length, hit100 = done1.filter((e) => (maxP(e) || 0) >= 100).length;
     const pc = (v) => (v == null || !isFinite(v) ? '<span class="mut">—</span>' : `<b class="${pctClass(v)}">${fmtPct(v)}</b>`);
     const tm = (ms) => new Date(ms).toLocaleString(window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const tkPrem = isPremiumUser(), tkFree = tkPrem ? null : String(RunnerGate.freeKey() || '').replace(/^leg2:/, '');
     const row = (e) => {
+      const rAt = e.kinds && Math.max(e.kinds.runner || 0, e.kinds.leg2 || 0);
+      if (!tkPrem && rAt && Date.now() - rAt < 24 * 3.6e6 && e.k !== tkFree) // v8.11: Runners from the last 24 h stay locked for free users (no name / CA)
+        return `<div class="row trk rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div><div class="nm"><b>🏃 Runner <span class="mut" style="font-weight:600">· ${L2('Oznaczony', 'Flagged')} ${esc(tm(rAt))}</span></b><small class="rlock-t">🔒 ${L2('Wynik widoczny w Premium (darmowo po 24 h)', 'Result visible with Premium (free after 24 h)')}</small></div></div>`;
       const st = stageOf(e.mc0);
       const kinds = Object.keys(e.kinds || {}).map((k) => (k === 'runner' ? (e.badge === 'kol' ? '👑 KOL coin' : e.badge === 'moon' ? '🚀 Moon run' : '🏃 Runner') : k === 'leg2' ? '🔁 ' + L2('Kolejna fala', 'Second leg') : '✅ Good')).join(' · ');
       const p1 = e.p1 != null ? pctOf(e.p1, e.px0) : null, p8 = e.p8 != null ? pctOf(e.p8, e.px0) : null;
@@ -1165,6 +1169,7 @@
       <div class="foot" translate="no">${L2('„Max” = najwyższa cena po oznaczeniu (świece 15-min GeckoTerminal lub próbki z apki). Wejście po cenie z chwili oznaczenia, bez poślizgu i opłat. „Kyvo” = log serwera (GitHub Action co ~15 min), reszta = log z tego urządzenia, gdy apka była otwarta. Przeszłe wyniki nie gwarantują przyszłych — to nie porada finansowa, memecoiny mogą spaść do zera.', '“Max” = highest price after the flag (GeckoTerminal 15-min candles or app samples). Entry at the price at flag time, no slippage or fees. “Kyvo” = server log (GitHub Action every ~15 min), the rest = this device’s log while the app was open. Past results don’t guarantee future ones — not financial advice, memecoins can go to zero.')}</div>`;
     $$('#trkKinds [data-tk]').forEach((b) => (b.onclick = () => { trackKind = b.dataset.tk; localStorage.setItem('kyvo_track_kind', trackKind); renderTrack(); }));
     wireRows($('#listBody'));
+    $$('#listBody [data-unlock]').forEach((el) => { el.onclick = () => openPremium(); });
     trackBackfill(list, () => { if (view === 'track') renderTrack(); });
   }
 
@@ -1222,7 +1227,45 @@
     else t = L2(`Wysokie ryzyko: nie przeszedł testów bezpieczeństwa Kyvo${p && e.concentrated ? ` (największy portfel ma ~${p}% podaży)` : ''}. Tak szybkie ruchy często kończą się dużym spadkiem.`, `High risk: it failed Kyvo\u2019s safety checks${p && e.concentrated ? ` (the biggest wallet holds ~${p}% of supply)` : ''}. Moves this fast often end in a big drop.`);
     return `<div class="kolwarn" translate="no">⚠️ ${t}</div>`;
   }
+  /* v8.11: Runners are Premium. Free plan = ONE Runner per Europe/Warsaw day: the first Runner flagged today (earliest flag
+     time among today's Runners, remembered for the whole day on this device). Every other Runner (incl. 👑 KOL coin,
+     🚀 Moon run, 📈 Big runner, 🐦 Tweet runner, 🔁 second leg) renders as a locked card without name / CA / chart / links.
+     CLIENT-SIDE gate only: Kyvo is a static PWA and data/*.json is public, so a technical user can bypass it. Real
+     enforcement later = login (Supabase/Firebase) + entitlement + a server-filtered Runner feed. */
+  const FREE_RK = 'kyvo_free_runner_v1';
+  let trackTried = false;
+  const warsawDay = (ms) => { try { return new Date(ms).toLocaleDateString('en-CA', { timeZone: 'Europe/Warsaw' }); } catch (e) { return new Date(ms).toISOString().slice(0, 10); } };
+  const isPremiumUser = () => { try { return !!(window.KyvoPremium && window.KyvoPremium.isActive()); } catch (e) { return false; } };
+  function runnerFlagAt(x) {
+    if (x.srv && x.srv.at) return x.srv.at;
+    const tr = track.items[x.leg2 ? String(x.key).replace(/^leg2:/, '') : x.key] || track.items[x.c ? keyOf(x.c) : ''];
+    if (!tr) return null;
+    const k = tr.kinds || {};
+    let at = (x.leg2 ? k.leg2 : k.runner) || tr.at || null;
+    const sv = trackServer && (trackServer.items || []).find((e) => e.k === tr.k); // server log = first flag time for everyone
+    const sAt = sv && sv.kinds && (x.leg2 ? sv.kinds.leg2 : sv.kinds.runner);
+    if (sAt && (!at || sAt < at)) at = sAt;
+    return at;
+  }
+  function freeRunnerKey(coins) {
+    const day = warsawDay(Date.now());
+    let st = {}; try { st = JSON.parse(localStorage.getItem(FREE_RK) || '{}') || {}; } catch (e) {}
+    if (st.day === day && st.key) return st.key;
+    const today = (coins || []).map((x) => ({ x, at: runnerFlagAt(x) })).filter((o) => o.at && warsawDay(o.at) === day).sort((a, b) => a.at - b.at);
+    if (!today.length) return null;
+    if (!kolLiveAt || trackTried !== true) return today[0].x.key; // server Runner feed not loaded yet → don't lock in a pick that an earlier server Runner should win
+    try { localStorage.setItem(FREE_RK, JSON.stringify({ day, key: today[0].x.key, at: today[0].at })); } catch (e) {}
+    return today[0].x.key;
+  }
+  const RunnerGate = {
+    premium: isPremiumUser,
+    freeKey: () => freeRunnerKey(runnerItems().coins),
+    unlocked(key) { if (isPremiumUser()) return true; const f = this.freeKey(); return !!f && key === f; },
+  };
+  window.KyvoRunnerGate = RunnerGate;
+  function openPremium() { if (window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(true)) return; location.hash = 'premium'; }
   function runnerItems() {
+    if (!trackTried) { trackTried = 'busy'; loadTrackServer().finally(() => { trackTried = true; if (view === 'runner') renderRunner(); }); }
     const base = window.KyvoInsights ? window.KyvoInsights.runnerList(activeChain) : { coins: [], tweets: [] };
     const srv = ((kolLive && kolLive.items) || []).filter((e) => e.badge && Date.now() - e.at < 12 * 3.6e6 && (activeChain === 'all' || !activeChain || e.chain === activeChain));
     for (const e of srv) {
@@ -1254,9 +1297,21 @@
     items.coins.sort((a, b) => pri(b) - pri(a) || (a.c.mcap || 0) - (b.c.mcap || 0)); // v8.8: 👑 KOL coins first
     const stCount = {}; for (const x of items.coins) { const st = stageOf(x.c.mcap); if (st) stCount[st.n] = (stCount[st.n] || 0) + 1; }
     if (runnerStage && !stCount[runnerStage]) runnerStage = 0;
+    const prem = isPremiumUser(), freeK = prem ? null : freeRunnerKey(items.coins);
+    const isOpen = (x) => prem || x.key === freeK;
+    if (!prem) items.coins.sort((a, b) => (isOpen(b) ? 1 : 0) - (isOpen(a) ? 1 : 0)); // v8.11: the free Runner first
     const shown = runnerStage ? items.coins.filter((x) => (stageOf(x.c.mcap) || {}).n === runnerStage) : items.coins;
+    const freeLeft = !prem && freeK && items.coins.some((x) => x.key === freeK);
     const flagAgo = (ms) => { const m = Math.max(1, Math.round((Date.now() - ms) / 60e3)); return m < 60 ? L2(m + ' min temu', m + ' min ago') : L2(Math.round(m / 60) + ' h temu', Math.round(m / 60) + ' h ago'); };
+    const kindLabel = (x) => { const b = x.srv && x.srv.badge; return b === 'kol' ? '👑 KOL coin' : b === 'moon' ? '🚀 Moon run' : b === 'tweet' ? '🐦 Tweet runner' : b === 'big' || x.big ? '📈 ' + L2('Duży runner', 'Big runner') : x.leg2 ? '🔁 ' + L2('Kolejna fala', 'Second leg') : x.early ? '⚡ ' + L2('Zaczyna pompować', 'Starting to pump') : '🏃 Runner'; };
+    const lockCard = (x) => { const at = runnerFlagAt(x); // v8.11: no name / ticker / CA / logo / chart / links for locked Runners
+      return `<div class="row runner rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div>
+        <div class="nm"><b>${kindLabel(x)}${at ? ` <span class="mut" style="font-weight:600">· ${esc(flagAgo(at))}</span>` : ''}</b>
+          <div class="rlock-bars" aria-hidden="true"><i style="width:62%"></i><i style="width:44%"></i><i style="width:74%"></i></div>
+          <small class="rlock-t">🔒 +1 Runner — Premium</small></div>
+        <div class="rt"><span class="rlock-cta">${L2('Odblokuj', 'Unlock')}</span></div></div>`; };
     const coinCard = (x) => {
+      if (!isOpen(x)) return lockCard(x);
       const c = x.c;
       const st = stageOf(c.mcap), sv = x.srv;
       const tr = sv ? { mc0: sv.mc0, at: sv.at, kinds: { runner: sv.at } } : track.items[keyOf(c)]; // v8.8: server flag time/MC for 👑/🚀
@@ -1273,6 +1328,7 @@
         <div class="rt"><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small><small class="rtmc" translate="no">MC ${fmtUsd(c.mcap)}</small></div></div>`;
     };
     const twCard = (x) => {
+      if (!prem) return `<div class="card runner-tw rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rtw-h"><span class="rlock-ic sm" aria-hidden="true">🔒</span> <b>${L2('Super-ważny tweet z coinem', 'Super-important tweet with a coin')}</b> <span class="mut">${esc(agoLabel(x.at))}</span></div><div class="rlock-bars" aria-hidden="true"><i style="width:80%"></i><i style="width:56%"></i></div><small class="rlock-t">🔒 Premium · <span class="rlock-cta">${L2('Odblokuj', 'Unlock')}</span></small></div>`;
       const k = coinKey(x.coin.chain, x.coin.address);
       return `<div class="card runner-tw" translate="no">
         <div class="rtw-h">${imgTag(x.t.avatar, 'av', 32)} <b>@${esc(x.t.handle)}</b> <span class="mut">${esc(agoLabel(x.at))} · ${x.views ? fmtInt(x.views) + ' views' : fmtInt(x.likes) + ' ♥'}${x.vel ? ' · ' + fmtInt(Math.round(x.vel)) + ' views/h' : ''}</span></div>
@@ -1285,6 +1341,8 @@
     };
     $('#listBody').innerHTML = `<div class="h">🏃 Runner <span class="badge live">LIVE</span></div>
       <div class="sub" translate="no">${L2('Tylko najmocniejsze sygnały: ogromny i rosnący wolumen, bardzo dużo transakcji, szybki ruch po filtrach bezpieczeństwa — oraz super-ważne tweety z coinem.', 'Only the strongest signals: huge and accelerating volume, very many txns, a fast move after safety filters — plus super-important tweets with a coin.')}</div>
+      ${prem ? `<div class="rplan prem" translate="no">✦ ${L2('Premium: wszystkie Runnery i push bez limitu.', 'Premium: all Runners and push, no limit.')}${window.KyvoPremium && window.KyvoPremium.isOwner && window.KyvoPremium.isOwner() ? ' <span class="mut">(' + L2('właściciel', 'owner') + ')</span>' : ''}</div>`
+        : `<div class="rplan" translate="no"><div class="rplan-t"><b>${L2('Plan darmowy: 1 Runner dziennie', 'Free plan: 1 Runner a day')}</b><small>${freeLeft ? L2('Twój darmowy Runner na dziś jest odblokowany poniżej — pierwszy oznaczony dziś (czas PL). Pozostałe Runnery są w Premium.', 'Your free Runner for today is unlocked below — the first one flagged today (Polish time). All other Runners are Premium.') : freeK ? L2('Dzisiejszy darmowy Runner już minął. Kolejny jutro — albo wszystkie od razu w Premium.', 'Today\u2019s free Runner has passed. Next one tomorrow — or all of them now with Premium.') : L2('Darmowy Runner na dziś odblokuje się przy pierwszym coinie oznaczonym dziś (czas PL). Pozostałe Runnery są w Premium.', 'Today\u2019s free Runner unlocks with the first coin flagged today (Polish time). All other Runners are Premium.')}</small></div><button type="button" class="rplan-cta" data-unlock>✦ ${L2('Odblokuj Premium', 'Unlock Premium')}</button></div>`}
       <div class="h" style="font-size:14px;margin-top:10px">${L2('Coiny — od najmniejszego MC (najwcześniej)', 'Coins — smallest MC first (earliest)')} <span class="mut" style="font-size:12px">${items.coins.length}</span></div>
       ${items.coins.length ? `<div class="filtbar rstages" style="margin:6px 0" translate="no"><button type="button" class="fbtn ${!runnerStage ? 'on' : ''}" data-rst="0">${L2('Wszystkie', 'All')}</button>${STAGES.map((s2) => `<button type="button" class="fbtn ${runnerStage === s2.n ? 'on' : ''}" data-rst="${s2.n}" ${stCount[s2.n] ? '' : 'disabled'}>${L2('Etap', 'Stage')} ${s2.n} <span class="mut">${esc(s2.range)}</span> ${stCount[s2.n] || 0}</button>`).join('')}</div>` : ''}
       ${items.coins.length ? `<div class="card" style="padding:4px 10px">${shown.map(coinCard).join('')}</div>` : `<div class="empty" translate="no">${L2('Teraz brak runnerów — próg jest celowo wysoki (kilka–kilkanaście dziennie).', 'No runners right now — the bar is deliberately high (a handful to ~20 a day).')}</div>`}
@@ -1292,6 +1350,7 @@
       ${items.tweets.length ? items.tweets.map(twCard).join('') : `<div class="empty" translate="no">${L2('Brak super-ważnych tweetów z ostatnich 24 h w migawce X.', 'No super-important tweets from the last 24 h in the X snapshot.')}</div>`}
       <div class="foot" translate="no">${L2('Runner to spekulacja, nie prognoza ani porada finansowa — memecoiny mogą spaść do zera. Migawka X odświeżana ok. 3× dziennie; powiadomienia działają przy otwartej apce (push w tle po włączeniu OneSignal).', 'Runner is speculation, not a forecast or financial advice — memecoins can go to zero. X snapshot refreshes about 3× a day; notifications work while the app is open (background push once OneSignal is enabled).')}</div>`;
     wireRows($('#listBody'));
+    $$('#listBody [data-unlock]').forEach((el) => { el.onclick = (e) => { e.stopPropagation(); openPremium(); }; el.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPremium(); } }; });
     $$('#listBody [data-rst]').forEach((b) => (b.onclick = () => { runnerStage = +b.dataset.rst || 0; localStorage.setItem('kyvo_runner_stage', String(runnerStage)); renderRunner(); }));
     saveTrack();
     // move since tweet (GeckoTerminal candle, cached)
@@ -1964,9 +2023,11 @@
     const twRun = {};
     for (const e of (kolLive && kolLive.items) || []) if (e.tweet && e.tweet.id && Date.now() - e.at < 24 * 3.6e6) twRun[String(e.tweet.id)] = e;
     const isNew = (t) => twSeen.size && !twSeen.has(String(t.id));
+    const twPrem = isPremiumUser(); let twFree; const twOpen = (k) => twPrem || k === (twFree === undefined ? (twFree = RunnerGate.freeKey()) : twFree);
     const card = (t) => {
       const h = ageH(t);
-      const tr = twRun[String(t.id)];
+      const tr0 = twRun[String(t.id)];
+      const tr = tr0 && twOpen(tr0.k) ? tr0 : null; // v8.11: locked Tweet runner → no runner badge at all for free users (a 🔒 badge would reveal which coin runs)
       const q = t.quote, m = (t.media || [])[0];
       return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}${tr ? ' twrun' : ''}${isNew(t) ? ' newin' : ''}${hasCoin(t) ? '' : ' nocoin'}">${tr ? `<div class="twrunb" translate="no">🐦 Tweet runner · <b>$${esc(tr.sym)}</b> <b class="up">+${Math.round(tr.tweet.chg || 0)}%</b> ${L2('po tweecie', 'after the tweet')} · <a href="#runner">${L2('w Runnerach', 'in Runner')} →</a></div>` : ''}
         <div class="meta">${imgTag(t.avatar, 'av', 36)}
@@ -2606,6 +2667,9 @@
     if (!viral) return null;
     return (viral.topics || []).find((t) => (t.coins || []).some((x) => x.address === c.address)) || null;
   }
+  window.addEventListener('kyvo-premium-change', () => { // v8.11: owner unlock / entitlement change → re-render gated views
+    try { if (view === 'runner') keepUi(() => renderRunner()); else if (view === 'track') renderTrack(); else if (view === 'tweets') keepUi(() => renderTweets()); } catch (e) {}
+  });
   if (window.KyvoInsights) window.KyvoInsights.init({ vl, esc, fmtUsd, fmtPct, pctClass, toast, keyOf, getUniverse: allUniverse, consensus: consensusOf, tabsFor, tweetsFor, topicFor, imgTag, getViral: () => viral, boostRank, onShape: () => { clearTimeout(shapeT); shapeT = setTimeout(() => { if (view === 'runner') renderRunner(); }, 1500); } });
   if (window.KyvoProfile) window.KyvoProfile.init({ esc, fmtUsd, agoLabel, shortCa, toast });
   loadCache();

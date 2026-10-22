@@ -100,7 +100,9 @@
     st.at = now;
     save(RKEY, st);
     if (S.runner === false || !added.length) return;
-    for (const x of added.slice(0, 3)) {
+    const G = window.KyvoRunnerGate; // v8.11: free users get a Runner alert only for their 1 free daily Runner (Premium: all)
+    const open = G && !isPremium() ? added.filter((x) => G.unlocked(x.key)) : added;
+    for (const x of open.slice(0, 3)) {
       if (x.kind === 'coin' && x.leg2) {
         const c = x.c;
         send(`🔁 ${L('Kolejna fala', 'Second leg')}: $${c.symbol}${c.mcap ? ' @ ' + D.fmtUsd(c.mcap) + ' MC' : ''}`, x.why.slice(0, 3).join(', ').replace(/<[^>]+>/g, '') + '…', '#coin/' + encodeURIComponent(x.key.replace(/^leg2:/, '')), 'kyvo-leg2-' + x.key);

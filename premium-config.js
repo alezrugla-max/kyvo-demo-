@@ -18,11 +18,59 @@ window.KYVO_PREMIUM_CONFIG = {
 };
 
 /* v8.4: entitlement hook used by notifications (free = 2/day, Premium = all). Until a real backend exists
-   nobody is Premium. Later: set from Firebase/Stripe entitlement (never trust a value the user can type). */
-window.KyvoPremium = window.KyvoPremium || {
-  isActive() {
-    const C = window.KYVO_PREMIUM_CONFIG || {};
-    if (!C.enabled) return false;
-    try { const u = +localStorage.getItem('kyvo_premium_until') || 0; return u > Date.now(); } catch (e) { return false; }
-  },
-};
+   nobody is Premium. Later: set from Firebase/Stripe entitlement (never trust a value the user can type).
+   v8.11: also gates Runners (free = 1 Runner per Warsaw day) + OWNER unlock:
+   opening the app with ?owner=<token> checks SHA-256(token) against KYVO_OWNER_SHA256 below (only the HASH is public,
+   the token itself is never in the repo), stores the token in this device's localStorage (kyvo_owner_tok — survives
+   reloads, SW updates and "clear data"), strips the parameter from the URL and makes this device Premium.
+   Client-side only (static PWA, public data/*.json) — a technical user can bypass any client gate. */
+(function () {
+  'use strict';
+  var KYVO_OWNER_SHA256 = 'fe4e23b1d006665193fb50952d6d357bb7f1da522ae3cc208aa4aca0c4e4ad7e';
+  var owner = false;
+  function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function sha(t) {
+    if (!t || !(window.crypto && crypto.subtle && window.TextEncoder)) return Promise.resolve('');
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(t))).then(hex, function () { return ''; });
+  }
+  function toast(msg) {
+    var show = function () {
+      var el = document.createElement('div');
+      el.textContent = msg; el.setAttribute('role', 'status');
+      el.style.cssText = 'white-space:nowrap;position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;padding:10px 16px;border-radius:12px;background:#151a24;color:#e8ecf3;font:700 13px/1.3 system-ui,sans-serif;box-shadow:0 0 0 1px rgba(139,92,246,.55),0 8px 24px rgba(0,0,0,.5)';
+      document.body.appendChild(el); setTimeout(function () { el.remove(); }, 3800);
+    };
+    if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+  }
+  var tokUrl = null;
+  try {
+    var u = new URL(location.href);
+    tokUrl = u.searchParams.get('owner');
+    if (tokUrl !== null) { u.searchParams.delete('owner'); history.replaceState(history.state, '', u.pathname + u.search + u.hash); }
+  } catch (e) {}
+  var stored = null; try { stored = localStorage.getItem('kyvo_owner_tok'); } catch (e) {}
+  window.KyvoPremiumReady = Promise.all([sha(tokUrl), sha(stored)]).then(function (r) {
+    var en = false; try { en = localStorage.getItem('kyvo_lang') === 'en'; } catch (e) {}
+    if (tokUrl && r[0] === KYVO_OWNER_SHA256) {
+      owner = true;
+      try { localStorage.setItem('kyvo_owner_tok', tokUrl); } catch (e) {}
+      toast(en ? '✦ Premium active (owner)' : '✦ Premium aktywne (właściciel)');
+    } else if (tokUrl) toast(en ? 'Invalid owner link' : 'Nieprawidłowy link właściciela');
+    if (!owner && stored && r[1] === KYVO_OWNER_SHA256) owner = true;
+    if (owner) {
+      try { window.dispatchEvent(new CustomEvent('kyvo-premium-change', { detail: { owner: true } })); } catch (e) {}
+      // OneSignal tag premium=1 (only works once push was enabled on this device; notify.js also re-syncs on opt-in)
+      setTimeout(function () { try { if (window.KyvoPush && window.KyvoPush.syncTags) window.KyvoPush.syncTags(); } catch (e) {} }, 4000);
+    }
+    return owner;
+  });
+  window.KyvoPremium = window.KyvoPremium || {
+    isActive: function () {
+      if (owner) return true;
+      var C = window.KYVO_PREMIUM_CONFIG || {};
+      if (!C.enabled) return false;
+      try { var until = +localStorage.getItem('kyvo_premium_until') || 0; return until > Date.now(); } catch (e) { return false; }
+    },
+    isOwner: function () { return owner; },
+  };
+})();

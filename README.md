@@ -79,6 +79,13 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.11 (KYVO_LIVE_v8_11 · SW kyvo-v8-11)
+- 🏃 **Runners are Premium.** Free plan: 1 Runner per Europe/Warsaw day — the first Runner flagged that day (earliest flag time, remembered per device for the day). Every other Runner (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner, 🔁 second leg, super-important tweets) shows as a locked card: kind + flag time only, no name / ticker / CA / logo / chart / links; "✦ Odblokuj Premium" opens the existing Premium pop-up.
+- No leaks via the Runner badge (best effort): New Tweet tab shows the 🐦 Tweet runner highlight only when unlocked (no 🔒 badge either), 📊 Wyniki masks Runner rows from the last 24 h, in-app Runner alerts fire only for the free Runner. Coin detail / search / watchlist never showed a Runner badge.
+- Push (tools/kyvo_push.py): premium=1 gets every Runner; premium≠1 gets at most 1 Runner push per Warsaw day (the first one sent), still inside the 2/day free cap.
+- Owner unlock: `?owner=<token>` → SHA-256 checked against the hash in premium-config.js (token never in the repo), stored on the device (`kyvo_owner_tok`, survives reloads / SW updates / "clear data"), URL param stripped, toast "Premium aktywne (właściciel)", OneSignal tag premium=1 re-synced.
+- **Limit:** static PWA + public data/*.json → the gate is client-side and bypassable by a technical user. Real enforcement needs login + entitlement (Supabase/Firebase + Stripe webhook) and a server-filtered Runner feed (Edge Function returning full Runner data only to Premium tokens; the public JSON would carry only locked stubs), plus per-user push targeting (OneSignal external_id) instead of client-set tags.
+
 ## v8.10 (KYVO_LIVE_v8_10 · SW kyvo-v8-10)
 - 🐦 **New Tweet = a moving feed**: every own tweet (no retweets; replies only when they name a coin) from ~43 tracked accounts in the last 12 h, newest first, sections "<2 h" / "Wcześniej". Previously tweets without a resolvable coin were dropped, so the tab showed ~2 tweets.
 - Tracked list expanded (`tools/x_accounts.json` → `live_more`: WhiteHouse, saylor, justinsuntron, brian_armstrong, VitalikButerin, MrBeast, Cobratate, cb_doge, DogeDesigner, KookCapitalLLC, ZssBecker, theunipcs, rajgokal, ShockedJS, WatcherGuru, binance, BNBCHAIN, solana). These feed New Tweet only, not 👑 KOL coin.
