@@ -2,11 +2,11 @@
 /* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
    Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
 const PUSH = !!self.KYVO_ONESIGNAL;
-const C = 'kyvo-v8-5';
+const C = 'kyvo-v8-6';
 const A = [
   './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
-  'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js',
+  'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js', 'privacy.html',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
   'data/x_viral.json', 'data/smart_money.json', 'data/leaderboard.json'
 ];
@@ -16,17 +16,18 @@ self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => Promise.all(A.map(u => fetch(new Request(u, { cache: 'reload' })).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))
-    .then(() => self.clients.claim())
-    // pages still running an OLD app version reload once onto the new one
-    .then(() => self.clients.matchAll({ type: 'window' })).then(cs => Promise.all(cs.map(c => { try { return c.navigate(c.url); } catch (err) { return null; } }))).catch(() => {}));
+  // v8.6: reload open pages ONLY on an upgrade (an older kyvo-* cache existed). v8.5 also reloaded on the very first
+  // install, so every first visit restarted ~10 s in (after the coins had loaded).
+  e.waitUntil(caches.keys().then(ks => { const old = ks.filter(k => k !== C); return Promise.all(old.map(k => caches.delete(k))).then(() => old.some(k => /^kyvo-/.test(k))); })
+    .then(upgrade => self.clients.claim().then(() => upgrade))
+    .then(upgrade => upgrade ? self.clients.matchAll({ type: 'window' }).then(cs => Promise.all(cs.map(c => { try { return c.navigate(c.url); } catch (err) { return null; } }))) : null).catch(() => {}));
 });
 self.addEventListener('message', e => { if (e.data === 'kyvo-skip-waiting') self.skipWaiting(); });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
   const isApi = /dexscreener\.com|geckoterminal\.com|solana\.com|publicnode\.com|binance|blxrbdn\.com|48\.club|bnbchain\.org|blockscout\.com|robinhood\.com|rugcheck\.xyz|gopluslabs\.io/.test(u.hostname)
-    || /\/data\/(x_viral|smart_money|leaderboard|track_record)\.json/.test(u.pathname) || /version\.json$/.test(u.pathname)
+    || /\/data\/(x_viral|x_live|smart_money|leaderboard|track_record)\.json/.test(u.pathname) || /version\.json$/.test(u.pathname)
     || /(auth|premium|contact|push)-config\.js$/.test(u.pathname) || /gstatic\.com|googleapis\.com|firebaseapp\.com/.test(u.hostname);
   if (isApi) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));

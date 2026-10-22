@@ -1,22 +1,124 @@
 {
-  "note": "Public X accounts read for 'Tweety traderów'. role=trader: wallet publicly attributed in wallets_public.json; role=kol: well-known public memecoin/crypto account (X profile verified to exist via x MCP get_users_by_usernames, 2026-10-20). No wallet attribution implied for kol.",
-  "accounts": [
-    {"handle": "orangie", "id": "2758205289", "role": "trader", "wallet_id": "orangie"},
-    {"handle": "Quanterty", "id": "1501306277351366660", "role": "trader", "wallet_id": "quanterty"},
-    {"handle": "Cupseyy", "id": "1168903946989010944", "role": "trader", "wallet_id": "cupsey"},
-    {"handle": "blknoiz06", "id": "973261472", "role": "kol"},
-    {"handle": "MustStopMurad", "id": "844304603336232960", "role": "kol"},
-    {"handle": "Ga__ke", "id": "86647812", "role": "kol"},
-    {"handle": "Cented7", "id": "1048768598494199809", "role": "kol"},
-    {"handle": "notthreadguy", "id": "1426732252768182281", "role": "kol"},
-    {"handle": "frankdegods", "id": "1441835930889818113", "role": "kol"},
-    {"handle": "jijo_exe", "id": "1705421907326033920", "role": "kol"},
-    {"handle": "MarcellxMarcell", "id": "1585960998321770497", "role": "kol"},
-    {"handle": "Dior100x", "id": "2728708501", "role": "kol"},
-    {"handle": "kreo444", "id": "1562555201231265793", "role": "kol"},
-    {"handle": "traderpow", "id": "1325739682752204800", "role": "kol"},
-    {"handle": "CryptoKaleo", "id": "906234475604037637", "role": "kol"},
-    {"handle": "a1lon9", "id": "1470958472409792515", "role": "kol"},
-    {"handle": "Pumpfun", "id": "1622243071806128131", "role": "kol"}
-  ]
+ "note": "Public X accounts read for 'Tweety traderów'. role=trader: wallet publicly attributed in wallets_public.json; role=kol: well-known public memecoin/crypto account (X profile verified to exist via x MCP get_users_by_usernames, 2026-10-20). No wallet attribution implied for kol.",
+ "accounts": [
+  {
+   "handle": "orangie",
+   "id": "2758205289",
+   "role": "trader",
+   "wallet_id": "orangie"
+  },
+  {
+   "handle": "Quanterty",
+   "id": "1501306277351366660",
+   "role": "trader",
+   "wallet_id": "quanterty"
+  },
+  {
+   "handle": "Cupseyy",
+   "id": "1168903946989010944",
+   "role": "trader",
+   "wallet_id": "cupsey"
+  },
+  {
+   "handle": "blknoiz06",
+   "id": "973261472",
+   "role": "kol"
+  },
+  {
+   "handle": "MustStopMurad",
+   "id": "844304603336232960",
+   "role": "kol"
+  },
+  {
+   "handle": "Ga__ke",
+   "id": "86647812",
+   "role": "kol"
+  },
+  {
+   "handle": "Cented7",
+   "id": "1048768598494199809",
+   "role": "kol"
+  },
+  {
+   "handle": "notthreadguy",
+   "id": "1426732252768182281",
+   "role": "kol"
+  },
+  {
+   "handle": "frankdegods",
+   "id": "1441835930889818113",
+   "role": "kol"
+  },
+  {
+   "handle": "jijo_exe",
+   "id": "1705421907326033920",
+   "role": "kol"
+  },
+  {
+   "handle": "MarcellxMarcell",
+   "id": "1585960998321770497",
+   "role": "kol"
+  },
+  {
+   "handle": "Dior100x",
+   "id": "2728708501",
+   "role": "kol"
+  },
+  {
+   "handle": "kreo444",
+   "id": "1562555201231265793",
+   "role": "kol"
+  },
+  {
+   "handle": "traderpow",
+   "id": "1325739682752204800",
+   "role": "kol"
+  },
+  {
+   "handle": "CryptoKaleo",
+   "id": "906234475604037637",
+   "role": "kol"
+  },
+  {
+   "handle": "a1lon9",
+   "id": "1470958472409792515",
+   "role": "kol"
+  },
+  {
+   "handle": "Pumpfun",
+   "id": "1622243071806128131",
+   "role": "kol"
+  }
+ ],
+ "live_extra": [
+  {
+   "handle": "elonmusk",
+   "role": "celebrity"
+  },
+  {
+   "handle": "cz_binance",
+   "role": "celebrity"
+  },
+  {
+   "handle": "heyibinance",
+   "role": "kol"
+  },
+  {
+   "handle": "realDonaldTrump",
+   "role": "celebrity"
+  },
+  {
+   "handle": "gainzy222",
+   "role": "kol"
+  },
+  {
+   "handle": "Loopierr",
+   "role": "kol"
+  },
+  {
+   "handle": "0xSisyphus",
+   "role": "kol"
+  }
+ ],
+ "live_note": "v8.6 New Tweet feed (tools/x_live.py): accounts + live_extra are read every ~5 min from the public FxTwitter API (no X key). live_extra verified to exist via api.fxtwitter.com/2/profile on 2026-10-21."
 }

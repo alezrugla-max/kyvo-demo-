@@ -78,3 +78,12 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 ## Legal
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
+
+## v8.6 (KYVO_LIVE_v8_6 · SW kyvo-v8-6)
+- 🐦 **New Tweet** tab (`#tweets`): fresh tweets (≤2 h on top, ≤24 h below with real age) from tracked accounts that name a coin
+  (contract address or unambiguous $ticker on DexScreener) — coin logo, chain, MC, price since tweet, volume after vs 1 h before,
+  🚀 "Pompuje po tweecie". Data: `data/x_live.json`, built by `tools/x_live.py` (public FxTwitter API, no X key).
+- **Phone push (app closed)**: `.github/workflows/kyvo-push.yml` (cron */5, real cadence ~5–15 min) → `tools/x_live.py` +
+  runner scan (`tools/discord_calls.py --flags-out`, no Discord posts) → `tools/kyvo_push.py` → OneSignal REST.
+  Secret `ONESIGNAL_REST_API_KEY` only in GitHub Secrets; missing = no-op. Premium (tag premium=1) gets all; free max 2/day.
+- Static privacy page `privacy.html` (PL + EN) for App Store Connect / Play Console "Privacy policy URL".

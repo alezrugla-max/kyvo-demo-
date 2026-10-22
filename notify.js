@@ -124,8 +124,11 @@
   /* ---- 2) new important tweet with a coin in the X snapshot ---- */
   function tweetItems(doc) {
     const out = [];
-    for (const t of (doc && doc.trader_tweets) || []) if ((t.coins || []).length) out.push({ id: 'tt:' + (t.id || t.url), h: t.handle, c: t.coins[0], kind: 'named', views: t.metrics && t.metrics.views });
+    // v8.6: only genuinely NEW tweets (≤ 2 h old) — old snapshot tweets never trigger a "new tweet" alert
+    const fresh = (x) => Date.now() - new Date(x.posted_at || x.created_at).getTime() <= 2 * 3.6e6;
+    for (const t of (doc && doc.trader_tweets) || []) if ((t.coins || []).length && fresh(t)) out.push({ id: 'tt:' + (t.id || t.url), h: t.handle, c: t.coins[0], kind: 'named', views: t.metrics && t.metrics.views });
     for (const p of (doc && doc.posts) || []) {
+      if (!fresh(p)) continue;
       const named = p.coin_match === 'named' && (p.coins || []).length;
       const spec = (p.spec_coins || []).length;
       if (named || spec) out.push({ id: 'p:' + p.url, h: p.handle, c: named ? p.coins[0] : p.spec_coins[0], kind: named ? 'named' : 'speculative', views: p.metrics && p.metrics.views });
@@ -146,12 +149,13 @@
     const tag = (x) => (x.kind === 'named' ? L('podany w tweecie', 'named in tweet') : L('spekulacja', 'speculative'));
     if (added.length === 1) {
       const x = added[0];
-      send(L('Nowy tweet z coinem', 'New tweet with a coin'), `@${x.h}: $${x.c.symbol} (${tag(x)})`, '#viral', 'kyvo-tw-' + x.id);
+      send(L('Nowy tweet z coinem', 'New tweet with a coin'), `@${x.h}: $${x.c.symbol} (${tag(x)})`, '#tweets', 'kyvo-tw-' + x.id);
     } else {
-      send(L(`${added.length} ${plN(added.length, 'nowe tweety', 'nowych tweetów')} z coinami`, `${added.length} new tweets with coins`), added.slice(0, 4).map((x) => `@${x.h} $${x.c.symbol}`).join(' · '), '#viral', 'kyvo-tw');
+      send(L(`${added.length} ${plN(added.length, 'nowe tweety', 'nowych tweetów')} z coinami`, `${added.length} new tweets with coins`), added.slice(0, 4).map((x) => `@${x.h} $${x.c.symbol}`).join(' · '), '#tweets', 'kyvo-tw');
     }
   }
 
+  function pushOff() { try { return localStorage.getItem('kyvo_push_off') === '1'; } catch (e) { return false; } }
   /* ---- settings card (Więcej + Watchlista) ---- */
   function settingsHtml() {
     const p = perm();
@@ -159,21 +163,30 @@
     return `<div class="card nset" data-nset>
       <div class="h" style="font-size:14px;margin:0 0 6px">🔔 ${L('Powiadomienia', 'Notifications')}</div>
       <label class="nrow"><input type="checkbox" data-nt="runner" ${S.runner !== false ? 'checked' : ''}><span><b>🏃 Runner</b><small>${L('najmocniejsze sygnały: ogromny rosnący wolumen, tysiące transakcji, super-ważne tweety (kilka–kilkanaście dziennie)', 'strongest signals: huge rising volume, thousands of txns, super-important tweets (a handful to ~20 a day)')}</small></span></label>
-      <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')} (≥ ${esc(S.minScore || 75)}/100)</small></span></label>
-      <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('z aktualizacji Viral z X (ok. 3× dziennie)', 'from the Viral from X update (about 3× a day)')}</small></span></label>
+      <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')}</small></span></label>
+      <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('znany trader, KOL lub celebryta tweetuje o coinie (New Tweet, sprawdzane co ~5–15 min)', 'a well-known trader, KOL or celebrity tweets about a coin (New Tweet, checked every ~5–15 min)')}</small></span></label>
       <div class="mut nnote ncap">${isPremium() ? '✦ ' + L('Premium: wszystkie powiadomienia bez limitu.', 'Premium: all notifications, no limit.') : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
-      <div class="mut nnote">${L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
+      <div class="mut nnote">${P.enabled ? L('Gdy Kyvo jest otwarte, dostajesz komunikat w apce. Po włączeniu powiadomień systemowych alerty przychodzą też, gdy apka jest zamknięta.', 'While Kyvo is open you get an in-app message. After you enable system notifications, alerts also arrive when the app is closed.') : L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
       ${p === 'default' ? `<button type="button" class="pf-btn" data-nperm>${L('Włącz powiadomienia systemowe', 'Enable system notifications')}</button>` : ''}
       ${p === 'granted' ? `<div class="nok">✓ ${L('Powiadomienia systemowe włączone', 'System notifications enabled')}</div><button type="button" class="pf-btn" data-ntest>${L('Wyślij test', 'Send a test')}</button>` : ''}
       ${p === 'denied' ? `<div class="mut nnote">${L('Powiadomienia są zablokowane w ustawieniach przeglądarki — zostają komunikaty w apce.', 'Notifications are blocked in your browser settings — in-app messages still work.')}</div>` : ''}
       ${p === 'unsupported' ? `<div class="mut nnote">${isIOS() && !standalone() ? L('Na iPhonie powiadomienia działają tylko po dodaniu Kyvo do ekranu głównego (Safari → Udostępnij → „Do ekranu początkowego”, iOS 16.4+). Do tego czasu zostają komunikaty w apce.', 'On iPhone, notifications only work after adding Kyvo to the Home Screen (Safari → Share → “Add to Home Screen”, iOS 16.4+). Until then you get in-app messages.') : L('Ta przeglądarka nie obsługuje powiadomień — zostają komunikaty w apce.', 'This browser doesn\'t support notifications — in-app messages still work.')}</div>` : ''}
-      <div class="mut nnote">${P.enabled ? L('Push w tle (apka zamknięta): włączony.', 'Background push (app closed): enabled.') : L('Push w tle, gdy apka jest zamknięta: wkrótce (wymaga serwera wysyłającego).', 'Background push when the app is closed: coming soon (needs a sending server).')}</div>
+      ${P.enabled && p === 'granted' ? `<div class="mut nnote">${pushOff() ? L('Powiadomienia w tle (apka zamknięta): wyłączone.', 'Background notifications (app closed): off.') : L('Powiadomienia w tle (apka zamknięta): włączone.', 'Background notifications (app closed): on.')}</div><button type="button" class="pf-btn" data-npush>${pushOff() ? L('Włącz powiadomienia w tle', 'Turn on background notifications') : L('Wyłącz powiadomienia w tle', 'Turn off background notifications')}</button>` : ''}
+      ${!P.enabled ? `<div class="mut nnote">${L('Push w tle, gdy apka jest zamknięta: wkrótce.', 'Background push when the app is closed: coming soon.')}</div>` : ''}
     </div>`;
   }
   function wireSettings(root, rerender) {
     const box = root && root.querySelector('[data-nset]');
     if (!box) return;
-    box.querySelectorAll('[data-nt]').forEach((i) => (i.onchange = () => { S[i.dataset.nt] = i.checked; save(SKEY, S); if (D && D.toast) D.toast(L('Zapisano', 'Saved')); }));
+    box.querySelectorAll('[data-nt]').forEach((i) => (i.onchange = () => { S[i.dataset.nt] = i.checked; save(SKEY, S); if (window.KyvoPush && window.KyvoPush.syncTags) window.KyvoPush.syncTags(); if (D && D.toast) D.toast(L('Zapisano', 'Saved')); }));
+    const np = box.querySelector('[data-npush]');
+    if (np) np.onclick = async () => {
+      const off = !pushOff();
+      try { localStorage.setItem('kyvo_push_off', off ? '1' : '0'); } catch (e) {}
+      if (window.KyvoPush) { if (off) await window.KyvoPush.optOut(); else await window.KyvoPush.init(true); }
+      if (D && D.toast) D.toast(off ? L('Powiadomienia w tle wyłączone', 'Background notifications off') : L('Powiadomienia w tle włączone', 'Background notifications on'));
+      const n = document.createElement('div'); n.innerHTML = settingsHtml(); box.replaceWith(n.firstElementChild); wireSettings(root, rerender);
+    };
     const b = box.querySelector('[data-nperm]');
     if (b) b.onclick = async () => {
       try { await Notification.requestPermission(); } catch (e) {}
@@ -192,9 +205,19 @@
   'use strict';
   let started = false;
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
-  async function init() {
+  function tags() {
+    const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
+    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
+  }
+  function withOS(fn) { if (!started || !window.OneSignalDeferred) return Promise.resolve(false); return new Promise((res) => window.OneSignalDeferred.push(async (OneSignal) => { try { await fn(OneSignal); res(true); } catch (e) { res(false); } })); }
+  function syncTags() { return withOS((OneSignal) => OneSignal.User.addTags(tags())); }
+  function optOut() { return withOS((OneSignal) => OneSignal.User.PushSubscription.optOut()); }
+  async function init(force) {
     const C = window.KYVO_PUSH_CONFIG || {};
-    if (started || !C.enabled) return false;
+    if (!C.enabled) return false;
+    let off = false; try { off = localStorage.getItem('kyvo_push_off') === '1'; } catch (e) {}
+    if (off && !force) return false;
+    if (started) return force ? withOS(async (OneSignal) => { await OneSignal.User.PushSubscription.optIn(); await OneSignal.User.addTags(tags()); }) : false;
     if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return false; // permission is asked only on a button tap
     started = true;
     const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
@@ -207,7 +230,7 @@
           const base = location.pathname.replace(/[^/]*$/, ''); // '/kyvo-demo-/' on GitHub Pages
           await OneSignal.init({ appId: C.onesignalAppId, serviceWorkerPath: C.swPath || base.replace(/^\//, '') + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: C.swScope || base }, autoResubscribe: true, notifyButton: { enable: false }, promptOptions: { autoPrompt: false } });
           await OneSignal.User.PushSubscription.optIn();
-          OneSignal.User.addTags({ good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' });
+          OneSignal.User.addTags(tags());
         });
         return true;
       }
@@ -224,5 +247,5 @@
     } catch (e) { started = false; }
     return false;
   }
-  window.KyvoPush = { init, enabled: () => !!(window.KYVO_PUSH_CONFIG || {}).enabled };
+  window.KyvoPush = { init, syncTags, optOut, enabled: () => !!(window.KYVO_PUSH_CONFIG || {}).enabled };
 })();
