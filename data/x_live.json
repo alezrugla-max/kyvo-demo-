@@ -1,6 +1,6 @@
 {
  "source": "FxTwitter public API (api.fxtwitter.com) — unofficial X mirror, no key; coins via DexScreener, candles via GeckoTerminal",
- "updated_at": "2026-10-22T22:09:16Z",
+ "updated_at": "2026-10-22T22:19:39Z",
  "accounts_read": 42,
  "accounts": [
   "orangie",
@@ -50,6 +50,47 @@
  "keep_hours": 12,
  "tweets": [
   {
+   "id": "2113392664184041960",
+   "url": "https://x.com/notthreadguy/status/2113392664184041960",
+   "handle": "notthreadguy",
+   "author_name": "threadguy",
+   "avatar": "https://pbs.twimg.com/profile_images/2062220989379825665/ergNEj5z_200x200.jpg",
+   "author_followers": 416588,
+   "verified": true,
+   "role": "kol",
+   "wallet_id": null,
+   "text": "Why you shouldn't panic about AI hacks: my full interview with cybersecurity expert @tayvano_\n\n0:37 how bad is the PHP bug? \n2:33 PHP is 70% of the internet \n6:59 a private key that was just \"4\" \n9:04 crypto is safer than the internet \n15:30 never panic, diversify \n17:04 how Cloudflare saved the internet \n18:49 Railway hack drained wallets \n21:07 Monero & Zcash are most hardened \n22:35 Bitcoin's real risk is its culture \n27:02 hardware 2FA on everything",
+   "is_reply": false,
+   "quote": null,
+   "media": [
+    {
+     "type": "video",
+     "url": "https://pbs.twimg.com/amplify_video_thumb/2113389082030252032/img/n0iNKCxhvOdkrsgf.jpg",
+     "alt": ""
+    }
+   ],
+   "created_at": "2026-10-22T22:10:50Z",
+   "ts": 1792707050,
+   "metrics": {
+    "likes": 35,
+    "reposts": 2,
+    "replies": 7,
+    "quotes": 0,
+    "bookmarks": 13,
+    "views": 4721
+   },
+   "metrics_at": "2026-10-22T22:18:58+00:00",
+   "coin_match": "none",
+   "coins": [],
+   "first_seen": 1792707137,
+   "kw": [
+    "php",
+    "cloudflare",
+    "railway",
+    "monero"
+   ]
+  },
+  {
    "id": "2113391874417344985",
    "url": "https://x.com/notthreadguy/status/2113391874417344985",
    "handle": "notthreadguy",
@@ -69,14 +110,14 @@
    "created_at": "2026-10-22T22:07:42Z",
    "ts": 1792706862,
    "metrics": {
-    "likes": 5,
+    "likes": 25,
     "reposts": 0,
-    "replies": 0,
-    "quotes": 0,
-    "bookmarks": 0,
-    "views": 1478
+    "replies": 6,
+    "quotes": 1,
+    "bookmarks": 1,
+    "views": 3916
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792706895,
@@ -104,14 +145,14 @@
    "created_at": "2026-10-22T22:07:39Z",
    "ts": 1792706859,
    "metrics": {
-    "likes": 9,
-    "reposts": 1,
-    "replies": 18,
-    "quotes": 0,
+    "likes": 60,
+    "reposts": 3,
+    "replies": 71,
+    "quotes": 2,
     "bookmarks": 0,
-    "views": 2123
+    "views": 5720
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792706895,
@@ -143,14 +184,14 @@
    "created_at": "2026-10-22T22:02:41Z",
    "ts": 1792706561,
    "metrics": {
-    "likes": 308,
-    "reposts": 71,
-    "replies": 41,
-    "quotes": 1,
-    "bookmarks": 2,
-    "views": 25519
+    "likes": 644,
+    "reposts": 130,
+    "replies": 81,
+    "quotes": 3,
+    "bookmarks": 8,
+    "views": 35841
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792706678,
@@ -180,31 +221,31 @@
    "created_at": "2026-10-22T22:00:11Z",
    "ts": 1792706411,
    "metrics": {
-    "likes": 11,
+    "likes": 15,
     "reposts": 1,
-    "replies": 4,
+    "replies": 8,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 8653
+    "views": 9981
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "related",
    "coins": [
     {
      "chain": "bsc",
-     "address": "0x94444c040643a27B6534f7AaEc50315cC00c7777",
+     "address": "0x0Ca8300ED3c61AE0402cd856dDBbD076619C7777",
      "symbol": "Jenner",
      "name": "Jenner",
      "image": null,
-     "mcap": 26178,
-     "liquidity": 36164.8,
-     "price_usd": 0.0001258,
-     "change_h24": 94.84,
-     "volume_h24": 28833.67,
-     "pair": "0xED4180AFCde5780c55258119820a6a38710E4606",
+     "mcap": 20898,
+     "liquidity": 32296.98,
+     "price_usd": 0.0001004,
+     "change_h24": 55.49,
+     "volume_h24": 22611.4,
+     "pair": "0x8303ea9d23a3351BABB90aC2f340FdF3150f63a0",
      "dex": "pancakeswap",
-     "pair_created_at": 1792706517000,
-     "dexscreener": "https://dexscreener.com/bsc/0xed4180afcde5780c55258119820a6a38710e4606",
+     "pair_created_at": 1792707316000,
+     "dexscreener": "https://dexscreener.com/bsc/0x8303ea9d23a3351babb90ac2f340fdf3150f63a0",
      "kyvo": true,
      "rel": "related",
      "kw": "jenner",
@@ -241,14 +282,14 @@
    "created_at": "2026-10-22T21:56:34Z",
    "ts": 1792706194,
    "metrics": {
-    "likes": 55,
+    "likes": 76,
     "reposts": 10,
-    "replies": 20,
+    "replies": 24,
     "quotes": 1,
     "bookmarks": 2,
-    "views": 11546
+    "views": 14736
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792706326,
@@ -285,14 +326,14 @@
    "created_at": "2026-10-22T21:54:36Z",
    "ts": 1792706076,
    "metrics": {
-    "likes": 84,
-    "reposts": 6,
-    "replies": 43,
-    "quotes": 0,
-    "bookmarks": 4,
-    "views": 27571
+    "likes": 102,
+    "reposts": 10,
+    "replies": 46,
+    "quotes": 4,
+    "bookmarks": 6,
+    "views": 32502
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792706084,
@@ -320,14 +361,14 @@
    "created_at": "2026-10-22T21:28:01Z",
    "ts": 1792704481,
    "metrics": {
-    "likes": 60,
+    "likes": 69,
     "reposts": 1,
-    "replies": 31,
+    "replies": 33,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 4748
+    "views": 5269
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792705521,
@@ -360,14 +401,14 @@
    "created_at": "2026-10-22T21:22:51Z",
    "ts": 1792704171,
    "metrics": {
-    "likes": 338,
-    "reposts": 21,
-    "replies": 143,
-    "quotes": 9,
-    "bookmarks": 38,
-    "views": 52108
+    "likes": 377,
+    "reposts": 23,
+    "replies": 148,
+    "quotes": 10,
+    "bookmarks": 44,
+    "views": 56518
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792705521,
@@ -395,14 +436,14 @@
    "created_at": "2026-10-22T21:22:24Z",
    "ts": 1792704144,
    "metrics": {
-    "likes": 59,
+    "likes": 63,
     "reposts": 3,
-    "replies": 45,
+    "replies": 49,
     "quotes": 1,
     "bookmarks": 0,
-    "views": 3723
+    "views": 4021
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792704150,
@@ -433,14 +474,14 @@
    "created_at": "2026-10-22T21:18:53Z",
    "ts": 1792703933,
    "metrics": {
-    "likes": 691,
-    "reposts": 202,
-    "replies": 207,
-    "quotes": 7,
-    "bookmarks": 20,
-    "views": 54740
+    "likes": 765,
+    "reposts": 219,
+    "replies": 219,
+    "quotes": 8,
+    "bookmarks": 22,
+    "views": 58108
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792703914,
@@ -468,14 +509,14 @@
    "created_at": "2026-10-22T21:14:00Z",
    "ts": 1792703640,
    "metrics": {
-    "likes": 26,
-    "reposts": 3,
-    "replies": 9,
+    "likes": 36,
+    "reposts": 5,
+    "replies": 10,
     "quotes": 0,
-    "bookmarks": 0,
-    "views": 5041
+    "bookmarks": 1,
+    "views": 5748
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792703563,
@@ -503,14 +544,14 @@
    "created_at": "2026-10-22T21:11:12Z",
    "ts": 1792703472,
    "metrics": {
-    "likes": 986,
-    "reposts": 94,
-    "replies": 111,
-    "quotes": 23,
-    "bookmarks": 41,
-    "views": 162661
+    "likes": 1053,
+    "reposts": 105,
+    "replies": 114,
+    "quotes": 24,
+    "bookmarks": 44,
+    "views": 180003
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792703757,
@@ -544,14 +585,14 @@
    "created_at": "2026-10-22T21:01:25Z",
    "ts": 1792702885,
    "metrics": {
-    "likes": 158,
+    "likes": 164,
     "reposts": 19,
     "replies": 94,
     "quotes": 3,
-    "bookmarks": 6,
-    "views": 78851
+    "bookmarks": 7,
+    "views": 81378
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792702983,
@@ -585,14 +626,14 @@
    "created_at": "2026-10-22T20:50:18Z",
    "ts": 1792702218,
    "metrics": {
-    "likes": 2833,
-    "reposts": 339,
-    "replies": 190,
-    "quotes": 22,
-    "bookmarks": 53,
-    "views": 81797
+    "likes": 3041,
+    "reposts": 369,
+    "replies": 193,
+    "quotes": 23,
+    "bookmarks": 54,
+    "views": 86319
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792702402,
@@ -623,14 +664,14 @@
    "created_at": "2026-10-22T20:49:19Z",
    "ts": 1792702159,
    "metrics": {
-    "likes": 231,
-    "reposts": 15,
-    "replies": 49,
+    "likes": 245,
+    "reposts": 16,
+    "replies": 51,
     "quotes": 6,
-    "bookmarks": 43,
-    "views": 42886
+    "bookmarks": 45,
+    "views": 44954
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792702402,
@@ -658,14 +699,14 @@
    "created_at": "2026-10-22T20:42:06Z",
    "ts": 1792701726,
    "metrics": {
-    "likes": 611,
-    "reposts": 47,
-    "replies": 36,
+    "likes": 666,
+    "reposts": 53,
+    "replies": 39,
     "quotes": 2,
-    "bookmarks": 93,
-    "views": 41079
+    "bookmarks": 105,
+    "views": 42940
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792702402,
@@ -693,14 +734,14 @@
    "created_at": "2026-10-22T20:40:26Z",
    "ts": 1792701626,
    "metrics": {
-    "likes": 238,
-    "reposts": 24,
+    "likes": 245,
+    "reposts": 25,
     "replies": 69,
-    "quotes": 8,
-    "bookmarks": 21,
-    "views": 51999
+    "quotes": 7,
+    "bookmarks": 22,
+    "views": 53260
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792702402,
@@ -769,14 +810,14 @@
    "created_at": "2026-10-22T20:08:30Z",
    "ts": 1792699710,
    "metrics": {
-    "likes": 52,
+    "likes": 54,
     "reposts": 3,
-    "replies": 24,
+    "replies": 25,
     "quotes": 1,
     "bookmarks": 1,
-    "views": 5800
+    "views": 5932
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792699764,
@@ -804,14 +845,14 @@
    "created_at": "2026-10-22T19:59:12Z",
    "ts": 1792699152,
    "metrics": {
-    "likes": 362,
+    "likes": 367,
     "reposts": 13,
-    "replies": 179,
+    "replies": 178,
     "quotes": 11,
     "bookmarks": 3,
-    "views": 51278
+    "views": 52170
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792699274,
@@ -845,9 +886,9 @@
     "replies": 56,
     "quotes": 1,
     "bookmarks": 11,
-    "views": 44311
+    "views": 44902
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792699274,
@@ -881,14 +922,14 @@
    "created_at": "2026-10-22T19:57:14Z",
    "ts": 1792699034,
    "metrics": {
-    "likes": 344,
+    "likes": 349,
     "reposts": 13,
     "replies": 92,
     "quotes": 1,
     "bookmarks": 22,
-    "views": 64048
+    "views": 65184
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792699274,
@@ -917,14 +958,14 @@
    "created_at": "2026-10-22T19:48:32Z",
    "ts": 1792698512,
    "metrics": {
-    "likes": 239,
+    "likes": 242,
     "reposts": 20,
     "replies": 109,
     "quotes": 3,
     "bookmarks": 24,
-    "views": 55045
+    "views": 55922
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792698568,
@@ -952,14 +993,14 @@
    "created_at": "2026-10-22T19:44:11Z",
    "ts": 1792698251,
    "metrics": {
-    "likes": 154,
+    "likes": 159,
     "reposts": 2,
-    "replies": 36,
+    "replies": 37,
     "quotes": 1,
     "bookmarks": 3,
-    "views": 12644
+    "views": 12958
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792698390,
@@ -998,9 +1039,9 @@
     "replies": 23,
     "quotes": 2,
     "bookmarks": 5,
-    "views": 6455
+    "views": 6553
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792697891,
@@ -1034,14 +1075,14 @@
    "created_at": "2026-10-22T19:29:29Z",
    "ts": 1792697369,
    "metrics": {
-    "likes": 2873,
-    "reposts": 687,
-    "replies": 1026,
-    "quotes": 77,
-    "bookmarks": 112,
-    "views": 210759
+    "likes": 2973,
+    "reposts": 719,
+    "replies": 1059,
+    "quotes": 83,
+    "bookmarks": 123,
+    "views": 218227
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792697361,
@@ -1075,14 +1116,14 @@
    "created_at": "2026-10-22T19:27:31Z",
    "ts": 1792697251,
    "metrics": {
-    "likes": 317,
-    "reposts": 97,
-    "replies": 70,
+    "likes": 325,
+    "reposts": 100,
+    "replies": 71,
     "quotes": 16,
-    "bookmarks": 46,
-    "views": 25016
+    "bookmarks": 48,
+    "views": 25338
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792697361,
@@ -1110,14 +1151,14 @@
    "created_at": "2026-10-22T19:08:17Z",
    "ts": 1792696097,
    "metrics": {
-    "likes": 891,
-    "reposts": 80,
-    "replies": 588,
-    "quotes": 77,
-    "bookmarks": 40,
-    "views": 80578
+    "likes": 908,
+    "reposts": 83,
+    "replies": 599,
+    "quotes": 78,
+    "bookmarks": 43,
+    "views": 82813
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1151,14 +1192,14 @@
    "created_at": "2026-10-22T19:03:51Z",
    "ts": 1792695831,
    "metrics": {
-    "likes": 2707,
-    "reposts": 736,
-    "replies": 388,
+    "likes": 2771,
+    "reposts": 752,
+    "replies": 390,
     "quotes": 53,
-    "bookmarks": 55,
-    "views": 95980
+    "bookmarks": 56,
+    "views": 97299
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1189,14 +1230,14 @@
    "created_at": "2026-10-22T19:00:00Z",
    "ts": 1792695600,
    "metrics": {
-    "likes": 341,
-    "reposts": 26,
-    "replies": 98,
+    "likes": 353,
+    "reposts": 27,
+    "replies": 99,
     "quotes": 10,
-    "bookmarks": 60,
-    "views": 53283
+    "bookmarks": 64,
+    "views": 54176
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1227,14 +1268,14 @@
    "created_at": "2026-10-22T18:54:58Z",
    "ts": 1792695298,
    "metrics": {
-    "likes": 61,
+    "likes": 64,
     "reposts": 6,
-    "replies": 24,
+    "replies": 25,
     "quotes": 2,
     "bookmarks": 3,
-    "views": 28037
+    "views": 28936
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1265,14 +1306,14 @@
    "created_at": "2026-10-22T18:50:51Z",
    "ts": 1792695051,
    "metrics": {
-    "likes": 27,
+    "likes": 28,
     "reposts": 2,
     "replies": 25,
     "quotes": 2,
     "bookmarks": 1,
-    "views": 7643
+    "views": 7729
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1303,14 +1344,14 @@
    "created_at": "2026-10-22T18:47:23Z",
    "ts": 1792694843,
    "metrics": {
-    "likes": 20,
+    "likes": 21,
     "reposts": 0,
     "replies": 20,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 6664
+    "views": 6741
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1346,9 +1387,9 @@
     "replies": 15,
     "quotes": 2,
     "bookmarks": 1,
-    "views": 17512
+    "views": 17659
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792696173,
@@ -1382,14 +1423,14 @@
    "created_at": "2026-10-22T18:26:54Z",
    "ts": 1792693614,
    "metrics": {
-    "likes": 219,
+    "likes": 220,
     "reposts": 21,
-    "replies": 124,
+    "replies": 125,
     "quotes": 7,
     "bookmarks": 11,
-    "views": 27324
+    "views": 27857
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693612,
@@ -1420,14 +1461,14 @@
    "created_at": "2026-10-22T18:26:26Z",
    "ts": 1792693586,
    "metrics": {
-    "likes": 381,
+    "likes": 389,
     "reposts": 7,
-    "replies": 39,
+    "replies": 40,
     "quotes": 0,
-    "bookmarks": 28,
-    "views": 37898
+    "bookmarks": 29,
+    "views": 38491
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693612,
@@ -1461,14 +1502,14 @@
    "created_at": "2026-10-22T18:20:48Z",
    "ts": 1792693248,
    "metrics": {
-    "likes": 2183,
-    "reposts": 351,
-    "replies": 69,
+    "likes": 2258,
+    "reposts": 362,
+    "replies": 70,
     "quotes": 21,
-    "bookmarks": 57,
-    "views": 32804
+    "bookmarks": 59,
+    "views": 33494
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693395,
@@ -1499,14 +1540,14 @@
    "created_at": "2026-10-22T18:16:47Z",
    "ts": 1792693007,
    "metrics": {
-    "likes": 601,
+    "likes": 612,
     "reposts": 20,
     "replies": 135,
     "quotes": 4,
-    "bookmarks": 222,
-    "views": 103549
+    "bookmarks": 226,
+    "views": 105064
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1541,9 +1582,9 @@
     "replies": 2,
     "quotes": 0,
     "bookmarks": 1,
-    "views": 7871
+    "views": 7991
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1574,14 +1615,14 @@
    "created_at": "2026-10-22T18:14:32Z",
    "ts": 1792692872,
    "metrics": {
-    "likes": 2995,
-    "reposts": 410,
-    "replies": 840,
-    "quotes": 33,
-    "bookmarks": 277,
-    "views": 1213550
+    "likes": 3057,
+    "reposts": 420,
+    "replies": 856,
+    "quotes": 34,
+    "bookmarks": 283,
+    "views": 1246193
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1615,14 +1656,14 @@
    "created_at": "2026-10-22T18:11:10Z",
    "ts": 1792692670,
    "metrics": {
-    "likes": 2010,
-    "reposts": 557,
-    "replies": 713,
+    "likes": 2031,
+    "reposts": 561,
+    "replies": 718,
     "quotes": 43,
     "bookmarks": 43,
-    "views": 124268
+    "views": 125249
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1656,14 +1697,14 @@
    "created_at": "2026-10-22T18:07:57Z",
    "ts": 1792692477,
    "metrics": {
-    "likes": 640,
-    "reposts": 95,
-    "replies": 112,
+    "likes": 653,
+    "reposts": 98,
+    "replies": 113,
     "quotes": 18,
-    "bookmarks": 21,
-    "views": 54905
+    "bookmarks": 23,
+    "views": 55556
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1702,9 +1743,9 @@
     "replies": 58,
     "quotes": 0,
     "bookmarks": 4,
-    "views": 111175
+    "views": 111836
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1735,14 +1776,14 @@
    "created_at": "2026-10-22T18:00:00Z",
    "ts": 1792692000,
    "metrics": {
-    "likes": 3572,
-    "reposts": 391,
-    "replies": 644,
-    "quotes": 39,
-    "bookmarks": 103,
-    "views": 2518499
+    "likes": 3621,
+    "reposts": 404,
+    "replies": 648,
+    "quotes": 41,
+    "bookmarks": 105,
+    "views": 2564424
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792693008,
@@ -1770,14 +1811,14 @@
    "created_at": "2026-10-22T17:51:42Z",
    "ts": 1792691502,
    "metrics": {
-    "likes": 385,
+    "likes": 387,
     "reposts": 4,
     "replies": 76,
     "quotes": 1,
     "bookmarks": 32,
-    "views": 26770
+    "views": 27187
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792691643,
@@ -1813,9 +1854,9 @@
     "replies": 25,
     "quotes": 0,
     "bookmarks": 1,
-    "views": 5685
+    "views": 5729
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792691403,
@@ -1846,14 +1887,14 @@
    "created_at": "2026-10-22T17:19:13Z",
    "ts": 1792689553,
    "metrics": {
-    "likes": 41488,
-    "reposts": 5297,
-    "replies": 3630,
-    "quotes": 416,
-    "bookmarks": 1229,
-    "views": 22636268
+    "likes": 42380,
+    "reposts": 5404,
+    "replies": 3689,
+    "quotes": 423,
+    "bookmarks": 1264,
+    "views": 23298711
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -1887,14 +1928,14 @@
    "created_at": "2026-10-22T17:15:55Z",
    "ts": 1792689355,
    "metrics": {
-    "likes": 613,
-    "reposts": 119,
+    "likes": 624,
+    "reposts": 120,
     "replies": 50,
     "quotes": 4,
     "bookmarks": 18,
-    "views": 21627
+    "views": 21981
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -1925,14 +1966,14 @@
    "created_at": "2026-10-22T17:09:17Z",
    "ts": 1792688957,
    "metrics": {
-    "likes": 34998,
-    "reposts": 4758,
-    "replies": 2069,
-    "quotes": 168,
-    "bookmarks": 287,
-    "views": 1969265
+    "likes": 35674,
+    "reposts": 4859,
+    "replies": 2091,
+    "quotes": 170,
+    "bookmarks": 293,
+    "views": 2013230
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -1960,14 +2001,14 @@
    "created_at": "2026-10-22T17:08:18Z",
    "ts": 1792688898,
    "metrics": {
-    "likes": 252,
+    "likes": 253,
     "reposts": 8,
     "replies": 49,
     "quotes": 1,
     "bookmarks": 1,
-    "views": 19140
+    "views": 19306
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -1994,14 +2035,14 @@
    "created_at": "2026-10-22T16:59:37Z",
    "ts": 1792688377,
    "metrics": {
-    "likes": 5370,
-    "reposts": 312,
-    "replies": 81,
+    "likes": 5450,
+    "reposts": 314,
+    "replies": 82,
     "quotes": 32,
-    "bookmarks": 66,
-    "views": 295863
+    "bookmarks": 67,
+    "views": 304270
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -2037,9 +2078,9 @@
     "replies": 37,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 8968
+    "views": 9015
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -2099,14 +2140,14 @@
    "created_at": "2026-10-22T16:53:38Z",
    "ts": 1792688018,
    "metrics": {
-    "likes": 460,
-    "reposts": 71,
+    "likes": 468,
+    "reposts": 74,
     "replies": 99,
     "quotes": 17,
     "bookmarks": 30,
-    "views": 46872
+    "views": 47310
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2139,9 +2180,9 @@
     "replies": 28,
     "quotes": 0,
     "bookmarks": 2,
-    "views": 7717
+    "views": 7772
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -2150,11 +2191,11 @@
      "symbol": "TRUMP",
      "name": "OFFICIAL TRUMP",
      "image": "https://cdn.dexscreener.com/cms/images/85a2613c51c8ded8e51b1b3910487ab66691cb60fecec7d0905481a603bba899?width=800&height=800&quality=95&format=auto",
-     "mcap": 489593100,
-     "liquidity": 231592.07,
+     "mcap": 489196078,
+     "liquidity": 231403.49,
      "price_usd": 1.73,
-     "change_h24": -5.82,
-     "volume_h24": 607048.93,
+     "change_h24": -5.89,
+     "volume_h24": 607272.25,
      "pair": "9d9mb8kooFfaD3SctgZtkxQypkshx6ezhbKio89ixyy2",
      "dex": "meteora",
      "pair_created_at": 1737196771000,
@@ -2177,11 +2218,11 @@
      "symbol": "Kimchi",
      "name": "Aura Final Boss",
      "image": "https://cdn.dexscreener.com/cms/images/fcvgd34-O9njY32R?width=800&height=800&quality=95&format=auto",
-     "mcap": 14139902,
-     "liquidity": 407772.15,
-     "price_usd": 0.0142,
-     "change_h24": -48.56,
-     "volume_h24": 11670085.29,
+     "mcap": 14004400,
+     "liquidity": 405660.82,
+     "price_usd": 0.01406,
+     "change_h24": -51.6,
+     "volume_h24": 11605504.91,
      "pair": "6DNxwecbtdNNstpB5tdnxZsfGe3HmsNgEUZhdue4b1PH",
      "dex": "pumpswap",
      "pair_created_at": 1792537216000,
@@ -2212,14 +2253,14 @@
    "created_at": "2026-10-22T16:49:48Z",
    "ts": 1792687788,
    "metrics": {
-    "likes": 517,
-    "reposts": 106,
+    "likes": 519,
+    "reposts": 107,
     "replies": 108,
     "quotes": 13,
     "bookmarks": 13,
-    "views": 31214
+    "views": 31415
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2250,14 +2291,14 @@
    "created_at": "2026-10-22T16:48:10Z",
    "ts": 1792687690,
    "metrics": {
-    "likes": 301,
+    "likes": 305,
     "reposts": 38,
-    "replies": 95,
+    "replies": 97,
     "quotes": 3,
     "bookmarks": 8,
-    "views": 45219
+    "views": 45480
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2290,9 +2331,9 @@
     "replies": 20,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 9138
+    "views": 9208
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2326,14 +2367,14 @@
    "created_at": "2026-10-22T16:42:34Z",
    "ts": 1792687354,
    "metrics": {
-    "likes": 985,
+    "likes": 992,
     "reposts": 115,
-    "replies": 304,
-    "quotes": 202,
-    "bookmarks": 84,
-    "views": 251321
+    "replies": 308,
+    "quotes": 203,
+    "bookmarks": 85,
+    "views": 254521
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -2517,14 +2558,14 @@
    "created_at": "2026-10-22T16:33:07Z",
    "ts": 1792686787,
    "metrics": {
-    "likes": 1404,
-    "reposts": 221,
-    "replies": 143,
-    "quotes": 33,
-    "bookmarks": 99,
-    "views": 49739
+    "likes": 1418,
+    "reposts": 224,
+    "replies": 144,
+    "quotes": 34,
+    "bookmarks": 101,
+    "views": 51316
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -2558,14 +2599,14 @@
    "created_at": "2026-10-22T16:30:26Z",
    "ts": 1792686626,
    "metrics": {
-    "likes": 1561,
-    "reposts": 161,
-    "replies": 250,
-    "quotes": 68,
+    "likes": 1569,
+    "reposts": 162,
+    "replies": 251,
+    "quotes": 70,
     "bookmarks": 105,
-    "views": 77438
+    "views": 78051
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2604,14 +2645,14 @@
    "created_at": "2026-10-22T16:27:14Z",
    "ts": 1792686434,
    "metrics": {
-    "likes": 9118,
-    "reposts": 954,
-    "replies": 480,
-    "quotes": 238,
-    "bookmarks": 469,
-    "views": 822265
+    "likes": 9198,
+    "reposts": 962,
+    "replies": 485,
+    "quotes": 241,
+    "bookmarks": 472,
+    "views": 832945
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -2641,14 +2682,14 @@
    "created_at": "2026-10-22T16:22:20Z",
    "ts": 1792686140,
    "metrics": {
-    "likes": 4669,
-    "reposts": 482,
-    "replies": 775,
-    "quotes": 53,
-    "bookmarks": 171,
-    "views": 1402996
+    "likes": 4703,
+    "reposts": 491,
+    "replies": 776,
+    "quotes": 54,
+    "bookmarks": 175,
+    "views": 1419994
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2682,14 +2723,14 @@
    "created_at": "2026-10-22T16:20:38Z",
    "ts": 1792686038,
    "metrics": {
-    "likes": 527,
-    "reposts": 67,
+    "likes": 531,
+    "reposts": 68,
     "replies": 40,
-    "quotes": 6,
+    "quotes": 7,
     "bookmarks": 20,
-    "views": 53001
+    "views": 53593
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -2723,14 +2764,14 @@
    "created_at": "2026-10-22T16:19:10Z",
    "ts": 1792685950,
    "metrics": {
-    "likes": 1956,
-    "reposts": 485,
-    "replies": 613,
-    "quotes": 52,
-    "bookmarks": 74,
-    "views": 134431
+    "likes": 1967,
+    "reposts": 487,
+    "replies": 615,
+    "quotes": 50,
+    "bookmarks": 75,
+    "views": 135090
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2758,14 +2799,14 @@
    "created_at": "2026-10-22T16:13:52Z",
    "ts": 1792685632,
    "metrics": {
-    "likes": 6913,
-    "reposts": 1668,
-    "replies": 1134,
+    "likes": 6996,
+    "reposts": 1690,
+    "replies": 1159,
     "quotes": 80,
-    "bookmarks": 91,
-    "views": 967992
+    "bookmarks": 94,
+    "views": 975301
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2793,14 +2834,14 @@
    "created_at": "2026-10-22T16:13:38Z",
    "ts": 1792685618,
    "metrics": {
-    "likes": 10653,
-    "reposts": 2627,
-    "replies": 902,
-    "quotes": 110,
-    "bookmarks": 175,
-    "views": 915166
+    "likes": 10835,
+    "reposts": 2682,
+    "replies": 920,
+    "quotes": 113,
+    "bookmarks": 182,
+    "views": 924891
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2828,14 +2869,14 @@
    "created_at": "2026-10-22T16:13:24Z",
    "ts": 1792685604,
    "metrics": {
-    "likes": 7438,
-    "reposts": 1860,
-    "replies": 680,
-    "quotes": 93,
-    "bookmarks": 197,
-    "views": 840167
+    "likes": 7517,
+    "reposts": 1882,
+    "replies": 690,
+    "quotes": 94,
+    "bookmarks": 204,
+    "views": 847071
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2863,14 +2904,14 @@
    "created_at": "2026-10-22T16:13:19Z",
    "ts": 1792685599,
    "metrics": {
-    "likes": 7469,
-    "reposts": 1884,
-    "replies": 617,
-    "quotes": 77,
-    "bookmarks": 196,
-    "views": 819640
+    "likes": 7592,
+    "reposts": 1919,
+    "replies": 623,
+    "quotes": 79,
+    "bookmarks": 199,
+    "views": 826633
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2898,14 +2939,14 @@
    "created_at": "2026-10-22T16:12:13Z",
    "ts": 1792685533,
    "metrics": {
-    "likes": 19882,
-    "reposts": 4361,
-    "replies": 2134,
-    "quotes": 297,
-    "bookmarks": 486,
-    "views": 2593380
+    "likes": 20157,
+    "reposts": 4409,
+    "replies": 2160,
+    "quotes": 298,
+    "bookmarks": 496,
+    "views": 2642736
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2933,14 +2974,14 @@
    "created_at": "2026-10-22T16:11:59Z",
    "ts": 1792685519,
    "metrics": {
-    "likes": 5575,
-    "reposts": 1420,
-    "replies": 449,
-    "quotes": 49,
-    "bookmarks": 116,
-    "views": 756632
+    "likes": 5634,
+    "reposts": 1433,
+    "replies": 453,
+    "quotes": 50,
+    "bookmarks": 119,
+    "views": 761944
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -2968,14 +3009,14 @@
    "created_at": "2026-10-22T16:11:54Z",
    "ts": 1792685514,
    "metrics": {
-    "likes": 5620,
-    "reposts": 1347,
-    "replies": 439,
+    "likes": 5685,
+    "reposts": 1366,
+    "replies": 444,
     "quotes": 42,
-    "bookmarks": 57,
-    "views": 757769
+    "bookmarks": 59,
+    "views": 763195
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3003,14 +3044,14 @@
    "created_at": "2026-10-22T16:11:25Z",
    "ts": 1792685485,
    "metrics": {
-    "likes": 6582,
-    "reposts": 1797,
-    "replies": 563,
-    "quotes": 70,
-    "bookmarks": 170,
-    "views": 839689
+    "likes": 6682,
+    "reposts": 1829,
+    "replies": 568,
+    "quotes": 72,
+    "bookmarks": 174,
+    "views": 846185
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3038,14 +3079,14 @@
    "created_at": "2026-10-22T16:11:18Z",
    "ts": 1792685478,
    "metrics": {
-    "likes": 9548,
-    "reposts": 2308,
-    "replies": 1700,
+    "likes": 9732,
+    "reposts": 2357,
+    "replies": 1725,
     "quotes": 151,
-    "bookmarks": 238,
-    "views": 946636
+    "bookmarks": 244,
+    "views": 957714
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3073,14 +3114,14 @@
    "created_at": "2026-10-22T16:10:48Z",
    "ts": 1792685448,
    "metrics": {
-    "likes": 5096,
-    "reposts": 1362,
-    "replies": 291,
+    "likes": 5187,
+    "reposts": 1385,
+    "replies": 294,
     "quotes": 25,
-    "bookmarks": 39,
-    "views": 758276
+    "bookmarks": 42,
+    "views": 763650
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3108,14 +3149,14 @@
    "created_at": "2026-10-22T16:10:42Z",
    "ts": 1792685442,
    "metrics": {
-    "likes": 3897,
-    "reposts": 1013,
-    "replies": 263,
+    "likes": 3948,
+    "reposts": 1027,
+    "replies": 264,
     "quotes": 18,
-    "bookmarks": 34,
-    "views": 721575
+    "bookmarks": 38,
+    "views": 726500
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3143,14 +3184,14 @@
    "created_at": "2026-10-22T16:10:04Z",
    "ts": 1792685404,
    "metrics": {
-    "likes": 6811,
-    "reposts": 1740,
-    "replies": 457,
-    "quotes": 61,
-    "bookmarks": 103,
-    "views": 932107
+    "likes": 6912,
+    "reposts": 1768,
+    "replies": 462,
+    "quotes": 63,
+    "bookmarks": 110,
+    "views": 941700
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3189,9 +3230,9 @@
     "replies": 2,
     "quotes": 1,
     "bookmarks": 1,
-    "views": 1699
+    "views": 1706
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3266,14 +3307,14 @@
    "created_at": "2026-10-22T16:00:01Z",
    "ts": 1792684801,
    "metrics": {
-    "likes": 201,
+    "likes": 202,
     "reposts": 21,
     "replies": 68,
     "quotes": 5,
     "bookmarks": 3,
-    "views": 125147
+    "views": 125786
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3301,14 +3342,14 @@
    "created_at": "2026-10-22T15:42:32Z",
    "ts": 1792683752,
    "metrics": {
-    "likes": 309,
-    "reposts": 11,
-    "replies": 42,
+    "likes": 311,
+    "reposts": 12,
+    "replies": 43,
     "quotes": 2,
     "bookmarks": 7,
-    "views": 14642
+    "views": 14712
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3336,14 +3377,14 @@
    "created_at": "2026-10-22T15:41:40Z",
    "ts": 1792683700,
    "metrics": {
-    "likes": 133,
+    "likes": 135,
     "reposts": 5,
     "replies": 47,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 16778
+    "views": 16840
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3374,14 +3415,14 @@
    "created_at": "2026-10-22T15:37:46Z",
    "ts": 1792683466,
    "metrics": {
-    "likes": 888,
-    "reposts": 146,
+    "likes": 897,
+    "reposts": 149,
     "replies": 52,
     "quotes": 10,
     "bookmarks": 32,
-    "views": 25625
+    "views": 25827
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -3412,14 +3453,14 @@
    "created_at": "2026-10-22T15:21:17Z",
    "ts": 1792682477,
    "metrics": {
-    "likes": 438,
+    "likes": 439,
     "reposts": 29,
     "replies": 115,
     "quotes": 10,
     "bookmarks": 17,
-    "views": 44539
+    "views": 44756
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -3428,11 +3469,11 @@
      "symbol": "USELESS",
      "name": "USELESS COIN",
      "image": "https://cdn.dexscreener.com/cms/images/4f8af59f26d45252fb4379d4b1a1e61d0b419fd34dab2ec9f3ba77585d1783cb?width=800&height=800&quality=95&format=auto",
-     "mcap": 150673321,
-     "liquidity": 3985964.9,
-     "price_usd": 0.1506,
-     "change_h24": -11.93,
-     "volume_h24": 506642.71,
+     "mcap": 150731560,
+     "liquidity": 3987494.67,
+     "price_usd": 0.1507,
+     "change_h24": -11.35,
+     "volume_h24": 499867.02,
      "pair": "Q2sPHPdUWFMg7M7wwrQKLrn619cAucfRsmhVJffodSp",
      "dex": "raydium",
      "pair_created_at": 1746886996000,
@@ -3443,10 +3484,10 @@
      "mention": "$USELESS",
      "px_at_tweet": 0.1522364292594672,
      "vol_1h_before": 35121,
-     "vol_after": 130508,
-     "hours_after": 6.42,
-     "measured_at": 1792705521,
-     "chg_since_tweet": -1.1,
+     "vol_after": 134467,
+     "hours_after": 6.97,
+     "measured_at": 1792707511,
+     "chg_since_tweet": -1.0,
      "pumping": false
     }
    ],
@@ -3514,14 +3555,14 @@
    "created_at": "2026-10-22T15:18:45Z",
    "ts": 1792682325,
    "metrics": {
-    "likes": 27934,
-    "reposts": 3492,
-    "replies": 1641,
-    "quotes": 115,
-    "bookmarks": 557,
-    "views": 1434027
+    "likes": 28272,
+    "reposts": 3551,
+    "replies": 1660,
+    "quotes": 117,
+    "bookmarks": 567,
+    "views": 1451688
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3549,14 +3590,14 @@
    "created_at": "2026-10-22T15:17:02Z",
    "ts": 1792682222,
    "metrics": {
-    "likes": 5761,
-    "reposts": 1297,
-    "replies": 578,
+    "likes": 5811,
+    "reposts": 1309,
+    "replies": 581,
     "quotes": 36,
     "bookmarks": 42,
-    "views": 954170
+    "views": 958633
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3584,14 +3625,14 @@
    "created_at": "2026-10-22T15:16:44Z",
    "ts": 1792682204,
    "metrics": {
-    "likes": 7063,
-    "reposts": 1594,
-    "replies": 687,
+    "likes": 7140,
+    "reposts": 1608,
+    "replies": 690,
     "quotes": 53,
     "bookmarks": 63,
-    "views": 1144733
+    "views": 1161935
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3619,14 +3660,14 @@
    "created_at": "2026-10-22T15:16:25Z",
    "ts": 1792682185,
    "metrics": {
-    "likes": 5946,
-    "reposts": 1426,
-    "replies": 520,
-    "quotes": 42,
+    "likes": 6004,
+    "reposts": 1434,
+    "replies": 523,
+    "quotes": 43,
     "bookmarks": 66,
-    "views": 899687
+    "views": 905801
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3660,14 +3701,14 @@
    "created_at": "2026-10-22T15:16:11Z",
    "ts": 1792682171,
    "metrics": {
-    "likes": 725,
-    "reposts": 149,
-    "replies": 63,
+    "likes": 737,
+    "reposts": 152,
+    "replies": 64,
     "quotes": 18,
-    "bookmarks": 64,
-    "views": 25552
+    "bookmarks": 67,
+    "views": 25840
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -3695,14 +3736,14 @@
    "created_at": "2026-10-22T15:16:05Z",
    "ts": 1792682165,
    "metrics": {
-    "likes": 6944,
-    "reposts": 1692,
-    "replies": 566,
+    "likes": 7009,
+    "reposts": 1709,
+    "replies": 568,
     "quotes": 68,
-    "bookmarks": 66,
-    "views": 856160
+    "bookmarks": 67,
+    "views": 860980
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3733,14 +3774,14 @@
    "created_at": "2026-10-22T15:03:24Z",
    "ts": 1792681404,
    "metrics": {
-    "likes": 52,
+    "likes": 54,
     "reposts": 4,
     "replies": 41,
     "quotes": 2,
     "bookmarks": 4,
-    "views": 45746
+    "views": 46060
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3776,12 +3817,12 @@
    "metrics": {
     "likes": 191,
     "reposts": 35,
-    "replies": 26,
+    "replies": 27,
     "quotes": 2,
     "bookmarks": 8,
-    "views": 20308
+    "views": 20399
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -3820,9 +3861,9 @@
     "replies": 225,
     "quotes": 16,
     "bookmarks": 42,
-    "views": 70260
+    "views": 70498
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3855,9 +3896,9 @@
     "replies": 44,
     "quotes": 2,
     "bookmarks": 23,
-    "views": 31252
+    "views": 31350
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -3901,14 +3942,14 @@
    "created_at": "2026-10-22T14:39:53Z",
    "ts": 1792679993,
    "metrics": {
-    "likes": 710,
-    "reposts": 116,
+    "likes": 712,
+    "reposts": 117,
     "replies": 38,
     "quotes": 10,
     "bookmarks": 58,
-    "views": 30801
+    "views": 30984
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -3957,14 +3998,14 @@
    "created_at": "2026-10-22T14:29:11Z",
    "ts": 1792679351,
    "metrics": {
-    "likes": 7849,
-    "reposts": 1691,
-    "replies": 540,
-    "quotes": 536,
-    "bookmarks": 1328,
-    "views": 903471
+    "likes": 7880,
+    "reposts": 1695,
+    "replies": 544,
+    "quotes": 537,
+    "bookmarks": 1337,
+    "views": 912366
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -3998,14 +4039,14 @@
    "created_at": "2026-10-22T14:21:33Z",
    "ts": 1792678893,
    "metrics": {
-    "likes": 1729,
-    "reposts": 325,
-    "replies": 136,
+    "likes": 1747,
+    "reposts": 326,
+    "replies": 137,
     "quotes": 12,
     "bookmarks": 65,
-    "views": 238649
+    "views": 241203
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4044,14 +4085,14 @@
    "created_at": "2026-10-22T14:18:32Z",
    "ts": 1792678712,
    "metrics": {
-    "likes": 4245,
-    "reposts": 434,
+    "likes": 4266,
+    "reposts": 435,
     "replies": 243,
-    "quotes": 73,
+    "quotes": 74,
     "bookmarks": 112,
-    "views": 264081
+    "views": 265209
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4087,9 +4128,9 @@
     "replies": 8,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 9924
+    "views": 9948
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4125,9 +4166,9 @@
     "replies": 3,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 1989
+    "views": 1993
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4160,9 +4201,9 @@
     "replies": 41,
     "quotes": 3,
     "bookmarks": 7,
-    "views": 22144
+    "views": 22235
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4195,9 +4236,9 @@
     "replies": 9,
     "quotes": 0,
     "bookmarks": 1,
-    "views": 11571
+    "views": 11602
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4228,14 +4269,14 @@
    "created_at": "2026-10-22T14:02:53Z",
    "ts": 1792677773,
    "metrics": {
-    "likes": 183,
+    "likes": 184,
     "reposts": 23,
     "replies": 52,
     "quotes": 4,
     "bookmarks": 4,
-    "views": 134078
+    "views": 134425
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -4244,11 +4285,11 @@
      "symbol": "USD1",
      "name": "World Liberty Financial USD",
      "image": null,
-     "mcap": 4140445746,
+     "mcap": 4140445747,
      "liquidity": 9900955.3,
      "price_usd": 0.9988,
      "change_h24": -0.02,
-     "volume_h24": 1605971.08,
+     "volume_h24": 1605961.69,
      "pair": "BCDdHonby65iduz3Ev3c9v5XjNkzyu5e56KRFHpBM4T9",
      "dex": "raydium",
      "pair_created_at": 1756577941000,
@@ -4294,9 +4335,9 @@
     "replies": 25,
     "quotes": 3,
     "bookmarks": 5,
-    "views": 47366
+    "views": 47703
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4330,14 +4371,14 @@
    "created_at": "2026-10-22T13:55:13Z",
    "ts": 1792677313,
    "metrics": {
-    "likes": 372,
+    "likes": 375,
     "reposts": 70,
     "replies": 51,
     "quotes": 3,
     "bookmarks": 7,
-    "views": 27151
+    "views": 27334
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4412,14 +4453,14 @@
    "created_at": "2026-10-22T13:51:56Z",
    "ts": 1792677116,
    "metrics": {
-    "likes": 10515,
-    "reposts": 1526,
-    "replies": 651,
-    "quotes": 462,
-    "bookmarks": 620,
-    "views": 1097835
+    "likes": 10561,
+    "reposts": 1531,
+    "replies": 652,
+    "quotes": 464,
+    "bookmarks": 624,
+    "views": 1109711
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4446,14 +4487,14 @@
    "created_at": "2026-10-22T13:40:45Z",
    "ts": 1792676445,
    "metrics": {
-    "likes": 4893,
-    "reposts": 325,
+    "likes": 4922,
+    "reposts": 326,
     "replies": 180,
     "quotes": 41,
-    "bookmarks": 159,
-    "views": 745396
+    "bookmarks": 161,
+    "views": 753911
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4484,14 +4525,14 @@
    "created_at": "2026-10-22T13:34:54Z",
    "ts": 1792676094,
    "metrics": {
-    "likes": 157,
+    "likes": 158,
     "reposts": 6,
-    "replies": 66,
+    "replies": 67,
     "quotes": 4,
     "bookmarks": 1,
-    "views": 26979
+    "views": 27056
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4566,14 +4607,14 @@
    "created_at": "2026-10-22T13:18:12Z",
    "ts": 1792675092,
    "metrics": {
-    "likes": 2247,
-    "reposts": 401,
-    "replies": 106,
+    "likes": 2255,
+    "reposts": 406,
+    "replies": 107,
     "quotes": 35,
-    "bookmarks": 111,
-    "views": 48033
+    "bookmarks": 113,
+    "views": 48192
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4604,14 +4645,14 @@
    "created_at": "2026-10-22T13:00:18Z",
    "ts": 1792674018,
    "metrics": {
-    "likes": 361,
+    "likes": 362,
     "reposts": 53,
     "replies": 64,
     "quotes": 5,
     "bookmarks": 21,
-    "views": 35128
+    "views": 35221
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4645,14 +4686,14 @@
    "created_at": "2026-10-22T12:42:37Z",
    "ts": 1792672957,
    "metrics": {
-    "likes": 2451,
-    "reposts": 220,
+    "likes": 2464,
+    "reposts": 221,
     "replies": 267,
     "quotes": 32,
     "bookmarks": 39,
-    "views": 185296
+    "views": 185989
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4760,9 +4801,9 @@
     "replies": 81,
     "quotes": 5,
     "bookmarks": 8,
-    "views": 61382
+    "views": 61586
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4787,14 +4828,14 @@
    "created_at": "2026-10-22T12:25:01Z",
    "ts": 1792671901,
    "metrics": {
-    "likes": 13200,
-    "reposts": 1860,
-    "replies": 1369,
-    "quotes": 344,
-    "bookmarks": 870,
-    "views": 794493
+    "likes": 13272,
+    "reposts": 1869,
+    "replies": 1377,
+    "quotes": 345,
+    "bookmarks": 875,
+    "views": 799958
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4822,14 +4863,14 @@
    "created_at": "2026-10-22T12:15:01Z",
    "ts": 1792671301,
    "metrics": {
-    "likes": 1644,
+    "likes": 1650,
     "reposts": 172,
     "replies": 156,
     "quotes": 22,
     "bookmarks": 65,
-    "views": 318995
+    "views": 319773
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -4857,14 +4898,14 @@
    "created_at": "2026-10-22T12:07:58Z",
    "ts": 1792670878,
    "metrics": {
-    "likes": 9102,
+    "likes": 9130,
     "reposts": 581,
-    "replies": 1617,
+    "replies": 1620,
     "quotes": 228,
     "bookmarks": 104,
-    "views": 1143118
+    "views": 1152251
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4896,14 +4937,14 @@
    "created_at": "2026-10-22T12:05:53Z",
    "ts": 1792670753,
    "metrics": {
-    "likes": 2769,
-    "reposts": 218,
-    "replies": 427,
+    "likes": 2790,
+    "reposts": 219,
+    "replies": 429,
     "quotes": 101,
-    "bookmarks": 118,
-    "views": 389975
+    "bookmarks": 117,
+    "views": 391535
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4937,14 +4978,14 @@
    "created_at": "2026-10-22T12:00:06Z",
    "ts": 1792670406,
    "metrics": {
-    "likes": 377,
+    "likes": 379,
     "reposts": 34,
     "replies": 119,
     "quotes": 8,
     "bookmarks": 12,
-    "views": 60105
+    "views": 60290
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -4983,9 +5024,9 @@
     "replies": 118,
     "quotes": 8,
     "bookmarks": 11,
-    "views": 196402
+    "views": 197030
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5015,9 +5056,9 @@
     "replies": 31,
     "quotes": 2,
     "bookmarks": 3,
-    "views": 25790
+    "views": 25844
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5054,9 +5095,9 @@
     "replies": 30,
     "quotes": 0,
     "bookmarks": 3,
-    "views": 8678
+    "views": 8694
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5122,14 +5163,14 @@
    "created_at": "2026-10-22T11:41:49Z",
    "ts": 1792669309,
    "metrics": {
-    "likes": 3983,
-    "reposts": 313,
+    "likes": 3997,
+    "reposts": 314,
     "replies": 174,
     "quotes": 23,
     "bookmarks": 67,
-    "views": 425973
+    "views": 426744
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -5157,14 +5198,14 @@
    "created_at": "2026-10-22T11:20:29Z",
    "ts": 1792668029,
    "metrics": {
-    "likes": 1005,
+    "likes": 1006,
     "reposts": 161,
     "replies": 156,
     "quotes": 35,
     "bookmarks": 28,
-    "views": 52119
+    "views": 52274
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5202,14 +5243,14 @@
    "created_at": "2026-10-22T11:16:02Z",
    "ts": 1792667762,
    "metrics": {
-    "likes": 5737,
-    "reposts": 593,
-    "replies": 312,
-    "quotes": 110,
-    "bookmarks": 335,
-    "views": 411407
+    "likes": 5768,
+    "reposts": 596,
+    "replies": 313,
+    "quotes": 112,
+    "bookmarks": 336,
+    "views": 413255
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -5243,14 +5284,14 @@
    "created_at": "2026-10-22T11:07:01Z",
    "ts": 1792667221,
    "metrics": {
-    "likes": 949,
-    "reposts": 179,
+    "likes": 955,
+    "reposts": 180,
     "replies": 71,
     "quotes": 19,
-    "bookmarks": 55,
-    "views": 35773
+    "bookmarks": 56,
+    "views": 35975
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792690031,
@@ -5278,14 +5319,14 @@
    "created_at": "2026-10-22T11:00:10Z",
    "ts": 1792666810,
    "metrics": {
-    "likes": 88,
+    "likes": 89,
     "reposts": 11,
     "replies": 20,
     "quotes": 1,
     "bookmarks": 5,
-    "views": 26296
+    "views": 26331
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5324,9 +5365,9 @@
     "replies": 61,
     "quotes": 2,
     "bookmarks": 4,
-    "views": 146537
+    "views": 146771
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5359,9 +5400,9 @@
     "replies": 24,
     "quotes": 0,
     "bookmarks": 2,
-    "views": 11943
+    "views": 11961
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
@@ -5397,9 +5438,9 @@
     "replies": 61,
     "quotes": 2,
     "bookmarks": 29,
-    "views": 39295
+    "views": 39384
    },
-   "metrics_at": "2026-10-22T22:08:43+00:00",
+   "metrics_at": "2026-10-22T22:18:58+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1792689834,
