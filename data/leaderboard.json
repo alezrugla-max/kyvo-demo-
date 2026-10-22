@@ -1,13 +1,13 @@
 {
  "version": 2,
- "updated_at": "2026-10-22T01:01:43Z",
- "updated_at_warsaw": "2026-10-22T03:01:43+02:00",
+ "updated_at": "2026-10-22T07:07:24Z",
+ "updated_at_warsaw": "2026-10-22T09:07:24+02:00",
  "source": "kolscan.io public leaderboard (Solana); SOL/USD Binance SOLUSDT. No keys.",
  "source_url": "https://kolscan.io/leaderboard",
  "chains": [
   "solana"
  ],
- "sol_price_usd": 107.12,
+ "sol_price_usd": 104.45,
  "prev_at": null,
  "note": "Top 50 per window from kolscan. Realized profit in SOL converted at current SOL/USD. Approximate. Not financial advice.",
  "wallets_count": 82,
@@ -25,26 +25,26 @@
    "telegram": "https://t.me/slingdeez",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 252445.5,
-     "pnl_sol": 2356.661,
-     "trades": 109,
-     "wins": 35,
-     "win_rate": 0.3211,
+     "realized_pnl_usd": 301593.39,
+     "pnl_sol": 2887.443,
+     "trades": 91,
+     "wins": 32,
+     "win_rate": 0.3516,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 535479.18,
-     "pnl_sol": 4998.872,
-     "trades": 659,
-     "wins": 211,
-     "win_rate": 0.3202,
+     "realized_pnl_usd": 716534.7,
+     "pnl_sol": 6860.074,
+     "trades": 639,
+     "wins": 214,
+     "win_rate": 0.3349,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 526237.34,
-     "pnl_sol": 4912.597,
-     "trades": 3432,
-     "wins": 973,
+     "realized_pnl_usd": 692992.83,
+     "pnl_sol": 6634.685,
+     "trades": 3421,
+     "wins": 970,
      "win_rate": 0.2835,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
@@ -53,51 +53,6 @@
     "1d": 1,
     "7d": 1,
     "30d": 1
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "walta-39q2",
-   "name": "Walta",
-   "handle": "Walta61",
-   "chain": "solana",
-   "address": "39q2g5tTQn9n7KnuapzwS2smSx3NGYqBoea11tBjsGEt",
-   "source": "https://kolscan.io/account/39q2g5tTQn9n7KnuapzwS2smSx3NGYqBoea11tBjsGEt",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Walta61",
-   "telegram": "https://t.me/waltacalls",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 17405.51,
-     "pnl_sol": 162.486,
-     "trades": 0,
-     "wins": 0,
-     "win_rate": null,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 68521.86,
-     "pnl_sol": 639.674,
-     "trades": 18,
-     "wins": 5,
-     "win_rate": 0.2778,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 57699.32,
-     "pnl_sol": 538.642,
-     "trades": 126,
-     "wins": 37,
-     "win_rate": 0.2937,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 2,
-    "7d": 2,
-    "30d": 20
    },
    "rank_prev": {},
    "active": true
@@ -115,19 +70,19 @@
    "telegram": "https://t.me/casino_calls",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 16329.51,
-     "pnl_sol": 152.441,
-     "trades": 22,
-     "wins": 9,
-     "win_rate": 0.4091,
+     "realized_pnl_usd": 22441.9,
+     "pnl_sol": 214.858,
+     "trades": 19,
+     "wins": 7,
+     "win_rate": 0.3684,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 28997.01,
-     "pnl_sol": 270.697,
-     "trades": 388,
-     "wins": 95,
-     "win_rate": 0.2448,
+     "realized_pnl_usd": 30288.85,
+     "pnl_sol": 289.984,
+     "trades": 398,
+     "wins": 97,
+     "win_rate": 0.2437,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -140,8 +95,53 @@
     }
    },
    "rank": {
+    "1d": 2,
+    "7d": 6
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "walta-39q2",
+   "name": "Walta",
+   "handle": "Walta61",
+   "chain": "solana",
+   "address": "39q2g5tTQn9n7KnuapzwS2smSx3NGYqBoea11tBjsGEt",
+   "source": "https://kolscan.io/account/39q2g5tTQn9n7KnuapzwS2smSx3NGYqBoea11tBjsGEt",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Walta61",
+   "telegram": "https://t.me/waltacalls",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 21780.47,
+     "pnl_sol": 208.525,
+     "trades": 0,
+     "wins": 0,
+     "win_rate": null,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 70657.74,
+     "pnl_sol": 676.474,
+     "trades": 15,
+     "wins": 4,
+     "win_rate": 0.2667,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 59702.51,
+     "pnl_sol": 571.589,
+     "trades": 125,
+     "wins": 36,
+     "win_rate": 0.288,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
     "1d": 3,
-    "7d": 5
+    "7d": 2,
+    "30d": 18
    },
    "rank_prev": {},
    "active": true
@@ -159,34 +159,34 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 8907.77,
-     "pnl_sol": 83.157,
-     "trades": 53,
-     "wins": 15,
-     "win_rate": 0.283,
+     "realized_pnl_usd": 14905.3,
+     "pnl_sol": 142.703,
+     "trades": 39,
+     "wins": 8,
+     "win_rate": 0.2051,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 5633.42,
-     "pnl_sol": 52.59,
-     "trades": 431,
-     "wins": 96,
-     "win_rate": 0.2227,
+     "realized_pnl_usd": 9086.66,
+     "pnl_sol": 86.995,
+     "trades": 426,
+     "wins": 88,
+     "win_rate": 0.2066,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 48414.12,
-     "pnl_sol": 451.962,
-     "trades": 1524,
-     "wins": 468,
-     "win_rate": 0.3071,
+     "realized_pnl_usd": 54601.97,
+     "pnl_sol": 522.757,
+     "trades": 1520,
+     "wins": 470,
+     "win_rate": 0.3092,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 4,
-    "7d": 39,
-    "30d": 24
+    "7d": 29,
+    "30d": 21
    },
    "rank_prev": {},
    "recent_trades": [
@@ -623,6 +623,51 @@
    "active": true
   },
   {
+   "id": "johnson-j9ty",
+   "name": "Johnson",
+   "handle": "johnsoncooks101",
+   "chain": "solana",
+   "address": "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
+   "source": "https://kolscan.io/account/J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/johnsoncooks101",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 13719.02,
+     "pnl_sol": 131.345,
+     "trades": 23,
+     "wins": 10,
+     "win_rate": 0.4348,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 34648.24,
+     "pnl_sol": 331.721,
+     "trades": 115,
+     "wins": 54,
+     "win_rate": 0.4696,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 73401.5,
+     "pnl_sol": 702.743,
+     "trades": 593,
+     "wins": 276,
+     "win_rate": 0.4654,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 5,
+    "7d": 5,
+    "30d": 13
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
    "id": "megga-h31v",
    "name": "Megga",
    "handle": "Megga",
@@ -635,11 +680,11 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 7955.2,
-     "pnl_sol": 74.264,
-     "trades": 170,
-     "wins": 57,
-     "win_rate": 0.3353,
+     "realized_pnl_usd": 7665.52,
+     "pnl_sol": 73.389,
+     "trades": 169,
+     "wins": 56,
+     "win_rate": 0.3314,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -651,8 +696,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 38020.68,
-     "pnl_sol": 354.935,
+     "realized_pnl_usd": 37047.77,
+     "pnl_sol": 354.694,
      "trades": 2770,
      "wins": 937,
      "win_rate": 0.3383,
@@ -660,8 +705,228 @@
     }
    },
    "rank": {
-    "1d": 5,
-    "30d": 33
+    "1d": 6,
+    "30d": 34
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "gr3g-j23q",
+   "name": "gr3g",
+   "handle": "gr3gor14n",
+   "chain": "solana",
+   "address": "J23qr98GjGJJqKq9CBEnyRhHbmkaVxtTJNNxKu597wsA",
+   "source": "https://kolscan.io/account/J23qr98GjGJJqKq9CBEnyRhHbmkaVxtTJNNxKu597wsA",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/gr3gor14n",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 6983.97,
+     "pnl_sol": 66.864,
+     "trades": 23,
+     "wins": 15,
+     "win_rate": 0.6522,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 14352.43,
+     "pnl_sol": 137.41,
+     "trades": 76,
+     "wins": 37,
+     "win_rate": 0.4868,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "1d": 7,
+    "7d": 20
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "chairman-be24",
+   "name": "Chairman ²",
+   "handle": "Chairman_DN",
+   "chain": "solana",
+   "address": "Be24Gbf5KisDk1LcWWZsBn8dvB816By7YzYF5zWZnRR6",
+   "source": "https://kolscan.io/account/Be24Gbf5KisDk1LcWWZsBn8dvB816By7YzYF5zWZnRR6",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Chairman_DN",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 6939.64,
+     "pnl_sol": 66.44,
+     "trades": 8,
+     "wins": 3,
+     "win_rate": 0.375,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "1d": 8
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "radiance-faic",
+   "name": "radiance",
+   "handle": "radiancebrr",
+   "chain": "solana",
+   "address": "FAicXNV5FVqtfbpn4Zccs71XcfGeyxBSGbqLDyDJZjke",
+   "source": "https://kolscan.io/account/FAicXNV5FVqtfbpn4Zccs71XcfGeyxBSGbqLDyDJZjke",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/radiancebrr",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 6101.44,
+     "pnl_sol": 58.415,
+     "trades": 35,
+     "wins": 8,
+     "win_rate": 0.2286,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 26400.9,
+     "pnl_sol": 252.761,
+     "trades": 236,
+     "wins": 74,
+     "win_rate": 0.3136,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 42216.87,
+     "pnl_sol": 404.183,
+     "trades": 1498,
+     "wins": 504,
+     "win_rate": 0.3364,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 9,
+    "7d": 9,
+    "30d": 29
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "iced-drj6",
+   "name": "Iced",
+   "handle": "IcedKnife",
+   "chain": "solana",
+   "address": "DrJ6SnDXkEsPeGdmSs93v5rwWumv5QMvAGSZjAyWSd5o",
+   "source": "https://kolscan.io/account/DrJ6SnDXkEsPeGdmSs93v5rwWumv5QMvAGSZjAyWSd5o",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/IcedKnife",
+   "telegram": "https://t.me/houseofdegeneracy",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 6073.98,
+     "pnl_sol": 58.152,
+     "trades": 24,
+     "wins": 18,
+     "win_rate": 0.75,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "1d": 10
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "decu-4vw5",
+   "name": "decu",
+   "handle": "notdecu",
+   "chain": "solana",
+   "address": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "source": "https://kolscan.io/account/4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/notdecu",
+   "telegram": "https://t.me/DecusCalls",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 5025.74,
+     "pnl_sol": 48.116,
+     "trades": 100,
+     "wins": 51,
+     "win_rate": 0.51,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 40169.03,
+     "pnl_sol": 384.577,
+     "trades": 835,
+     "wins": 436,
+     "win_rate": 0.5222,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 264217.55,
+     "pnl_sol": 2529.608,
+     "trades": 4440,
+     "wins": 1970,
+     "win_rate": 0.4437,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 11,
+    "7d": 3,
+    "30d": 2
    },
    "rank_prev": {},
    "active": true
@@ -679,11 +944,11 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 7684.49,
-     "pnl_sol": 71.737,
-     "trades": 23,
-     "wins": 8,
-     "win_rate": 0.3478,
+     "realized_pnl_usd": 5006.09,
+     "pnl_sol": 47.928,
+     "trades": 8,
+     "wins": 3,
+     "win_rate": 0.375,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -695,17 +960,16 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 16368.07,
-     "pnl_sol": 152.801,
-     "trades": 1037,
-     "wins": 257,
-     "win_rate": 0.2478,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
     }
    },
    "rank": {
-    "1d": 6,
-    "30d": 50
+    "1d": 12
    },
    "rank_prev": {},
    "recent_trades": [
@@ -1074,46 +1338,46 @@
    "active": true
   },
   {
-   "id": "decu-4vw5",
-   "name": "decu",
-   "handle": "notdecu",
+   "id": "schoen-5hag",
+   "name": "Schoen",
+   "handle": "Schoen_xyz",
    "chain": "solana",
-   "address": "4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
-   "source": "https://kolscan.io/account/4vw54BmAogeRV3vPKWyFet5yf8DTLcREzdSzx4rw9Ud9",
+   "address": "5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
+   "source": "https://kolscan.io/account/5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/notdecu",
-   "telegram": "https://t.me/DecusCalls",
+   "x_url": "https://x.com/Schoen_xyz",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 6971.59,
-     "pnl_sol": 65.082,
-     "trades": 100,
-     "wins": 51,
-     "win_rate": 0.51,
+     "realized_pnl_usd": 4627.08,
+     "pnl_sol": 44.3,
+     "trades": 91,
+     "wins": 46,
+     "win_rate": 0.5055,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 40827.08,
-     "pnl_sol": 381.134,
-     "trades": 836,
-     "wins": 434,
-     "win_rate": 0.5191,
+     "realized_pnl_usd": 26694.96,
+     "pnl_sol": 255.576,
+     "trades": 784,
+     "wins": 411,
+     "win_rate": 0.5242,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 274874.18,
-     "pnl_sol": 2566.04,
-     "trades": 4483,
-     "wins": 1982,
-     "win_rate": 0.4421,
+     "realized_pnl_usd": 26427.62,
+     "pnl_sol": 253.017,
+     "trades": 2825,
+     "wins": 1519,
+     "win_rate": 0.5377,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 7,
-    "7d": 3,
-    "30d": 2
+    "1d": 13,
+    "7d": 8,
+    "30d": 39
    },
    "rank_prev": {},
    "active": true
@@ -1131,8 +1395,8 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 6601.64,
-     "pnl_sol": 61.628,
+     "realized_pnl_usd": 4399.15,
+     "pnl_sol": 42.117,
      "trades": 0,
      "wins": 0,
      "win_rate": null,
@@ -1147,8 +1411,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 34377.82,
-     "pnl_sol": 320.928,
+     "realized_pnl_usd": 31986.8,
+     "pnl_sol": 306.24,
      "trades": 45,
      "wins": 9,
      "win_rate": 0.2,
@@ -1156,186 +1420,98 @@
     }
    },
    "rank": {
-    "1d": 8,
-    "30d": 36
+    "1d": 14,
+    "30d": 35
    },
    "rank_prev": {},
    "active": false
   },
   {
-   "id": "el-charto-ccuc",
-   "name": "el charto",
-   "handle": "elchartox",
+   "id": "kadenox-b32q",
+   "name": "Kadenox",
+   "handle": "kadenox",
    "chain": "solana",
-   "address": "CCUcjek5p6DLoH2YNtjizxYhAnStXAQAGVxhp1cYJF7w",
-   "source": "https://kolscan.io/account/CCUcjek5p6DLoH2YNtjizxYhAnStXAQAGVxhp1cYJF7w",
+   "address": "B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
+   "source": "https://kolscan.io/account/B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/elchartox",
-   "telegram": "https://t.me/ChartoCartel",
+   "x_url": "https://x.com/kadenox",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 4844.86,
-     "pnl_sol": 45.228,
-     "trades": 32,
-     "wins": 19,
-     "win_rate": 0.5938,
+     "realized_pnl_usd": 4391.41,
+     "pnl_sol": 42.043,
+     "trades": 48,
+     "wins": 35,
+     "win_rate": 0.7292,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 9100.97,
-     "pnl_sol": 84.961,
-     "trades": 82,
-     "wins": 42,
-     "win_rate": 0.5122,
+     "realized_pnl_usd": 16216.37,
+     "pnl_sol": 155.255,
+     "trades": 192,
+     "wins": 115,
+     "win_rate": 0.599,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 17102.4,
-     "pnl_sol": 159.656,
-     "trades": 378,
-     "wins": 169,
-     "win_rate": 0.4471,
+     "realized_pnl_usd": 71008.25,
+     "pnl_sol": 679.83,
+     "trades": 1419,
+     "wins": 548,
+     "win_rate": 0.3862,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 9,
-    "7d": 30,
-    "30d": 47
+    "1d": 15,
+    "7d": 18,
+    "30d": 14
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "trunoest-ardi",
-   "name": "trunoest",
-   "handle": "trunoest",
+   "id": "mitch-4be9",
+   "name": "Mitch",
+   "handle": "idrawline",
    "chain": "solana",
-   "address": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
-   "source": "https://kolscan.io/account/ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "address": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
+   "source": "https://kolscan.io/account/4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/trunoest",
-   "telegram": null,
+   "x_url": "https://x.com/idrawline",
+   "telegram": "https://t.me/whimsicalclown",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 4372.9,
-     "pnl_sol": 40.822,
-     "trades": 117,
-     "wins": 52,
-     "win_rate": 0.4444,
+     "realized_pnl_usd": 4390.85,
+     "pnl_sol": 42.038,
+     "trades": 5,
+     "wins": 3,
+     "win_rate": 0.6,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 38203.09,
-     "pnl_sol": 356.638,
-     "trades": 726,
-     "wins": 381,
-     "win_rate": 0.5248,
+     "realized_pnl_usd": 13107.59,
+     "pnl_sol": 125.492,
+     "trades": 232,
+     "wins": 66,
+     "win_rate": 0.2845,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 221624.2,
-     "pnl_sol": 2068.934,
-     "trades": 3420,
-     "wins": 1841,
-     "win_rate": 0.5383,
+     "realized_pnl_usd": 75871.71,
+     "pnl_sol": 726.393,
+     "trades": 338,
+     "wins": 128,
+     "win_rate": 0.3787,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 10,
-    "7d": 4,
-    "30d": 4
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "nyhrox-6s8g",
-   "name": "Nyhrox",
-   "handle": "nyhrox",
-   "chain": "solana",
-   "address": "6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
-   "source": "https://kolscan.io/account/6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/nyhrox",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 4362.45,
-     "pnl_sol": 40.725,
-     "trades": 12,
-     "wins": 5,
-     "win_rate": 0.4167,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 9133.03,
-     "pnl_sol": 85.26,
-     "trades": 68,
-     "wins": 30,
-     "win_rate": 0.4412,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 72544.83,
-     "pnl_sol": 677.23,
-     "trades": 506,
-     "wins": 142,
-     "win_rate": 0.2806,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 11,
-    "7d": 29,
-    "30d": 15
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "hermes-5dzh",
-   "name": "Hermes",
-   "handle": "coinsolmaxi",
-   "chain": "solana",
-   "address": "5dzH7gh5FjtrxUwtfBufJyTBA4fyCUGheZsdYQsE9vag",
-   "source": "https://kolscan.io/account/5dzH7gh5FjtrxUwtfBufJyTBA4fyCUGheZsdYQsE9vag",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/coinsolmaxi",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 4212.12,
-     "pnl_sol": 39.321,
-     "trades": 11,
-     "wins": 4,
-     "win_rate": 0.3636,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "1d": 12
+    "1d": 16,
+    "7d": 21,
+    "30d": 12
    },
    "rank_prev": {},
    "active": true
@@ -1353,7 +1529,7 @@
    "telegram": "https://t.me/WugiisPirates",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 4192.02,
+     "realized_pnl_usd": 4087.51,
      "pnl_sol": 39.134,
      "trades": 3,
      "wins": 3,
@@ -1361,7 +1537,7 @@
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 19843.77,
+     "realized_pnl_usd": 19349.13,
      "pnl_sol": 185.248,
      "trades": 58,
      "wins": 30,
@@ -1369,7 +1545,7 @@
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 80694.35,
+     "realized_pnl_usd": 78682.98,
      "pnl_sol": 753.308,
      "trades": 111,
      "wins": 79,
@@ -1378,9 +1554,99 @@
     }
    },
    "rank": {
-    "1d": 13,
-    "7d": 13,
-    "30d": 12
+    "1d": 17,
+    "7d": 14,
+    "30d": 11
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "ban-eqif",
+   "name": "ban",
+   "handle": "Ban_Val",
+   "chain": "solana",
+   "address": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "source": "https://kolscan.io/account/EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Ban_Val",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 3946.72,
+     "pnl_sol": 37.786,
+     "trades": 138,
+     "wins": 61,
+     "win_rate": 0.442,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 26867.8,
+     "pnl_sol": 257.231,
+     "trades": 865,
+     "wins": 373,
+     "win_rate": 0.4312,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 101304.15,
+     "pnl_sol": 969.882,
+     "trades": 3601,
+     "wins": 1519,
+     "win_rate": 0.4218,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 18,
+    "7d": 7,
+    "30d": 6
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "el-charto-ccuc",
+   "name": "el charto",
+   "handle": "elchartox",
+   "chain": "solana",
+   "address": "CCUcjek5p6DLoH2YNtjizxYhAnStXAQAGVxhp1cYJF7w",
+   "source": "https://kolscan.io/account/CCUcjek5p6DLoH2YNtjizxYhAnStXAQAGVxhp1cYJF7w",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/elchartox",
+   "telegram": "https://t.me/ChartoCartel",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 3586.65,
+     "pnl_sol": 34.338,
+     "trades": 27,
+     "wins": 14,
+     "win_rate": 0.5185,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 8874.13,
+     "pnl_sol": 84.961,
+     "trades": 82,
+     "wins": 42,
+     "win_rate": 0.5122,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 16675.4,
+     "pnl_sol": 159.65,
+     "trades": 378,
+     "wins": 169,
+     "win_rate": 0.4471,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 19,
+    "7d": 30,
+    "30d": 47
    },
    "rank_prev": {},
    "active": true
@@ -1398,11 +1664,11 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 3859.81,
-     "pnl_sol": 36.033,
-     "trades": 42,
-     "wins": 24,
-     "win_rate": 0.5714,
+     "realized_pnl_usd": 3233.63,
+     "pnl_sol": 30.959,
+     "trades": 40,
+     "wins": 22,
+     "win_rate": 0.55,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -1423,7 +1689,7 @@
     }
    },
    "rank": {
-    "1d": 14
+    "1d": 20
    },
    "rank_prev": {},
    "recent_trades": [
@@ -1795,136 +2061,63 @@
    "active": true
   },
   {
-   "id": "dv-bcag",
-   "name": "dv",
-   "handle": "vibed333",
+   "id": "art",
+   "name": "Art",
+   "handle": "ArtCryptoz",
    "chain": "solana",
-   "address": "BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd",
-   "source": "https://kolscan.io/account/BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd",
+   "address": "CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
+   "source": "https://kolscan.io/account/CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/vibed333",
+   "x_url": "https://x.com/ArtCryptoz",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 3540.55,
-     "pnl_sol": 33.052,
-     "trades": 25,
-     "wins": 8,
-     "win_rate": 0.32,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "1d": 15
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "ogantd-215n",
-   "name": "OGAntD",
-   "handle": "0GAntD",
-   "chain": "solana",
-   "address": "215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP",
-   "source": "https://kolscan.io/account/215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/0GAntD",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 3362.09,
-     "pnl_sol": 31.386,
-     "trades": 5,
-     "wins": 4,
-     "win_rate": 0.8,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 23654.5,
-     "pnl_sol": 220.822,
+     "realized_pnl_usd": 3127.56,
+     "pnl_sol": 29.943,
      "trades": 69,
-     "wins": 18,
-     "win_rate": 0.2609,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 273693.59,
-     "pnl_sol": 2555.019,
-     "trades": 260,
-     "wins": 93,
-     "win_rate": 0.3577,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 16,
-    "7d": 11,
-    "30d": 3
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "radiance-faic",
-   "name": "radiance",
-   "handle": "radiancebrr",
-   "chain": "solana",
-   "address": "FAicXNV5FVqtfbpn4Zccs71XcfGeyxBSGbqLDyDJZjke",
-   "source": "https://kolscan.io/account/FAicXNV5FVqtfbpn4Zccs71XcfGeyxBSGbqLDyDJZjke",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/radiancebrr",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 3311.47,
-     "pnl_sol": 30.914,
-     "trades": 38,
-     "wins": 9,
-     "win_rate": 0.2368,
+     "wins": 23,
+     "win_rate": 0.3333,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 25137.34,
-     "pnl_sol": 234.665,
-     "trades": 236,
-     "wins": 74,
-     "win_rate": 0.3136,
+     "realized_pnl_usd": 14989.72,
+     "pnl_sol": 143.511,
+     "trades": 555,
+     "wins": 229,
+     "win_rate": 0.4126,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 41364.65,
-     "pnl_sol": 386.152,
-     "trades": 1498,
-     "wins": 504,
-     "win_rate": 0.3364,
+     "realized_pnl_usd": 70511.24,
+     "pnl_sol": 675.072,
+     "trades": 1681,
+     "wins": 727,
+     "win_rate": 0.4325,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 17,
-    "7d": 10,
-    "30d": 31
+    "1d": 21,
+    "7d": 19,
+    "30d": 15
    },
    "rank_prev": {},
+   "volume_usd": {
+    "1d": 0.0,
+    "7d": 0.0,
+    "30d": 0.0
+   },
+   "coverage": {
+    "sigs": 5000,
+    "oldest_ts": 1792513066,
+    "window_days": 0.0,
+    "missing_tx": 0,
+    "unmatched_sells": 0,
+    "closed": 0,
+    "priced_hist": 0,
+    "priced_current": 0
+   },
    "active": true
   },
   {
@@ -1940,146 +2133,56 @@
    "telegram": "https://t.co/zb0ZJIEhEm",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 3287.21,
-     "pnl_sol": 30.687,
-     "trades": 82,
-     "wins": 26,
-     "win_rate": 0.3171,
+     "realized_pnl_usd": 3030.63,
+     "pnl_sol": 29.015,
+     "trades": 50,
+     "wins": 18,
+     "win_rate": 0.36,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 10990.18,
-     "pnl_sol": 102.597,
-     "trades": 590,
-     "wins": 144,
-     "win_rate": 0.2441,
+     "realized_pnl_usd": 9983.68,
+     "pnl_sol": 95.583,
+     "trades": 530,
+     "wins": 129,
+     "win_rate": 0.2434,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 39407.74,
-     "pnl_sol": 367.884,
-     "trades": 3152,
-     "wins": 587,
-     "win_rate": 0.1862,
+     "realized_pnl_usd": 37608.02,
+     "pnl_sol": 360.058,
+     "trades": 3092,
+     "wins": 565,
+     "win_rate": 0.1827,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 18,
-    "7d": 24,
+    "1d": 22,
+    "7d": 26,
     "30d": 32
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "coler-99xn",
-   "name": "Coler",
-   "handle": "ColerCooks",
+   "id": "dv-bcag",
+   "name": "dv",
+   "handle": "vibed333",
    "chain": "solana",
-   "address": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
-   "source": "https://kolscan.io/account/99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "address": "BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd",
+   "source": "https://kolscan.io/account/BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/ColerCooks",
+   "x_url": "https://x.com/vibed333",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2779.56,
-     "pnl_sol": 25.948,
-     "trades": 54,
-     "wins": 24,
-     "win_rate": 0.4444,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 8052.54,
-     "pnl_sol": 75.173,
-     "trades": 303,
-     "wins": 124,
-     "win_rate": 0.4092,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 45551.38,
-     "pnl_sol": 425.237,
-     "trades": 1187,
-     "wins": 464,
-     "win_rate": 0.3909,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 19,
-    "7d": 33,
-    "30d": 26
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "putrick-avje",
-   "name": "Putrick",
-   "handle": "Putrickk",
-   "chain": "solana",
-   "address": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
-   "source": "https://kolscan.io/account/AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Putrickk",
-   "telegram": "https://t.me/cryptoputro",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 2577.28,
-     "pnl_sol": 24.06,
-     "trades": 33,
-     "wins": 8,
-     "win_rate": 0.2424,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 12703.68,
-     "pnl_sol": 118.593,
-     "trades": 395,
-     "wins": 131,
-     "win_rate": 0.3316,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 44607.31,
-     "pnl_sol": 416.424,
-     "trades": 2041,
-     "wins": 672,
-     "win_rate": 0.3293,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 20,
-    "7d": 20,
-    "30d": 28
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "dov-7-8nqt",
-   "name": "dov 7",
-   "handle": "dovvvv7",
-   "chain": "solana",
-   "address": "8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
-   "source": "https://kolscan.io/account/8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/dovvvv7",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 2311.85,
-     "pnl_sol": 21.582,
-     "trades": 9,
-     "wins": 6,
-     "win_rate": 0.6667,
+     "realized_pnl_usd": 2862.05,
+     "pnl_sol": 27.401,
+     "trades": 40,
+     "wins": 9,
+     "win_rate": 0.225,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2091,174 +2194,83 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 26488.53,
-     "pnl_sol": 247.279,
-     "trades": 373,
-     "wins": 183,
-     "win_rate": 0.4906,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
     }
    },
    "rank": {
-    "1d": 21,
-    "30d": 42
+    "1d": 23
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "kadenox-b32q",
-   "name": "Kadenox",
-   "handle": "kadenox",
+   "id": "milito-eexv",
+   "name": "milito",
+   "handle": "fnmilito",
    "chain": "solana",
-   "address": "B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
-   "source": "https://kolscan.io/account/B32QbbdDAyhvUQzjcaM5j6ZVKwjCxAwGH5Xgvb9SJqnC",
+   "address": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "source": "https://kolscan.io/account/EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/kadenox",
+   "x_url": "https://x.com/fnmilito",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2294.29,
-     "pnl_sol": 21.418,
-     "trades": 44,
-     "wins": 30,
-     "win_rate": 0.6818,
+     "realized_pnl_usd": 2424.84,
+     "pnl_sol": 23.215,
+     "trades": 87,
+     "wins": 29,
+     "win_rate": 0.3333,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 14505.61,
-     "pnl_sol": 135.415,
-     "trades": 187,
-     "wins": 110,
-     "win_rate": 0.5882,
+     "realized_pnl_usd": 19434.92,
+     "pnl_sol": 186.069,
+     "trades": 544,
+     "wins": 201,
+     "win_rate": 0.3695,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 75994.0,
-     "pnl_sol": 709.429,
-     "trades": 1427,
-     "wins": 551,
-     "win_rate": 0.3861,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 22,
-    "7d": 18,
-    "30d": 13
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "jijo-4bdk",
-   "name": "Jijo",
-   "handle": "jijo_exe",
-   "chain": "solana",
-   "address": "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
-   "source": "https://kolscan.io/account/4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/jijo_exe",
-   "telegram": "https://t.me/jijosjournal",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 2214.91,
-     "pnl_sol": 20.677,
-     "trades": 23,
-     "wins": 16,
-     "win_rate": 0.6957,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 10879.45,
-     "pnl_sol": 101.563,
-     "trades": 94,
-     "wins": 62,
-     "win_rate": 0.6596,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 54839.84,
-     "pnl_sol": 511.948,
-     "trades": 443,
-     "wins": 261,
-     "win_rate": 0.5892,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 23,
-    "7d": 25,
-    "30d": 21
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "shawty-387f",
-   "name": "Shawty",
-   "handle": "sh4vwty",
-   "chain": "solana",
-   "address": "387FRwow6MKDhSwuMULhKjqeXuxoBY4BbbaSntdk9LaH",
-   "source": "https://kolscan.io/account/387FRwow6MKDhSwuMULhKjqeXuxoBY4BbbaSntdk9LaH",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/sh4vwty",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 2211.9,
-     "pnl_sol": 20.649,
-     "trades": 163,
-     "wins": 100,
-     "win_rate": 0.6135,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 18302.24,
-     "pnl_sol": 170.857,
-     "trades": 750,
-     "wins": 451,
-     "win_rate": 0.6013,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 103243.96,
-     "pnl_sol": 963.816,
-     "trades": 2965,
-     "wins": 1883,
-     "win_rate": 0.6351,
+     "realized_pnl_usd": 101255.96,
+     "pnl_sol": 969.42,
+     "trades": 3578,
+     "wins": 1216,
+     "win_rate": 0.3399,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 24,
-    "7d": 16,
+    "7d": 13,
     "30d": 7
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "trey-831y",
-   "name": "Trey",
-   "handle": "treysocial",
+   "id": "clown-edxh",
+   "name": "Clown",
+   "handle": "ClownsTrenches",
    "chain": "solana",
-   "address": "831yhv67QpKqLBJjbmw2xoDUeeFHGUx8RnuRj9imeoEs",
-   "source": "https://kolscan.io/account/831yhv67QpKqLBJjbmw2xoDUeeFHGUx8RnuRj9imeoEs",
+   "address": "EDXHdSFdadFbYFFjxPXBqMe1kCEDFqpPu552uvp48HR8",
+   "source": "https://kolscan.io/account/EDXHdSFdadFbYFFjxPXBqMe1kCEDFqpPu552uvp48HR8",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/treysocial",
-   "telegram": "https://t.me/treystele",
+   "x_url": "https://x.com/ClownsTrenches",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2204.01,
-     "pnl_sol": 20.575,
-     "trades": 56,
-     "wins": 17,
-     "win_rate": 0.3036,
+     "realized_pnl_usd": 2310.5,
+     "pnl_sol": 22.121,
+     "trades": 38,
+     "wins": 12,
+     "win_rate": 0.3158,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2285,108 +2297,137 @@
    "active": true
   },
   {
-   "id": "zef-ejtq",
-   "name": "Zef",
-   "handle": "zefwashere",
+   "id": "shawty-387f",
+   "name": "Shawty",
+   "handle": "sh4vwty",
    "chain": "solana",
-   "address": "EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
-   "source": "https://kolscan.io/account/EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
+   "address": "387FRwow6MKDhSwuMULhKjqeXuxoBY4BbbaSntdk9LaH",
+   "source": "https://kolscan.io/account/387FRwow6MKDhSwuMULhKjqeXuxoBY4BbbaSntdk9LaH",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/zefwashere",
-   "telegram": "https://t.me/SefaPVP",
+   "x_url": "https://x.com/sh4vwty",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2141.61,
-     "pnl_sol": 19.993,
-     "trades": 61,
-     "wins": 24,
-     "win_rate": 0.3934,
+     "realized_pnl_usd": 2263.46,
+     "pnl_sol": 21.67,
+     "trades": 161,
+     "wins": 88,
+     "win_rate": 0.5466,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 12574.66,
-     "pnl_sol": 117.389,
-     "trades": 400,
-     "wins": 151,
-     "win_rate": 0.3775,
+     "realized_pnl_usd": 17879.31,
+     "pnl_sol": 171.176,
+     "trades": 788,
+     "wins": 464,
+     "win_rate": 0.5888,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 42622.57,
-     "pnl_sol": 397.896,
-     "trades": 1001,
-     "wins": 398,
-     "win_rate": 0.3976,
+     "realized_pnl_usd": 99243.52,
+     "pnl_sol": 950.153,
+     "trades": 2968,
+     "wins": 1869,
+     "win_rate": 0.6297,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 26,
-    "7d": 21,
-    "30d": 30
+    "7d": 16,
+    "30d": 8
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "art",
-   "name": "Art",
-   "handle": "ArtCryptoz",
+   "id": "jijo-4bdk",
+   "name": "Jijo",
+   "handle": "jijo_exe",
    "chain": "solana",
-   "address": "CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
-   "source": "https://kolscan.io/account/CgaA9a1JwAXJyfHuvZ7VW8YfTVRkdiT5mjBBSKcg7Rz5",
+   "address": "4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
+   "source": "https://kolscan.io/account/4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/ArtCryptoz",
-   "telegram": null,
+   "x_url": "https://x.com/jijo_exe",
+   "telegram": "https://t.me/jijosjournal",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2138.74,
-     "pnl_sol": 19.966,
-     "trades": 58,
-     "wins": 17,
-     "win_rate": 0.2931,
+     "realized_pnl_usd": 2170.3,
+     "pnl_sol": 20.778,
+     "trades": 23,
+     "wins": 16,
+     "win_rate": 0.6957,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 12837.62,
-     "pnl_sol": 119.843,
-     "trades": 551,
-     "wins": 225,
-     "win_rate": 0.4083,
+     "realized_pnl_usd": 10696.07,
+     "pnl_sol": 102.404,
+     "trades": 94,
+     "wins": 62,
+     "win_rate": 0.6596,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 72610.9,
-     "pnl_sol": 677.846,
-     "trades": 1682,
-     "wins": 726,
-     "win_rate": 0.4316,
+     "realized_pnl_usd": 49454.09,
+     "pnl_sol": 473.471,
+     "trades": 427,
+     "wins": 254,
+     "win_rate": 0.5948,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 27,
-    "7d": 19,
-    "30d": 14
+    "7d": 24,
+    "30d": 23
    },
    "rank_prev": {},
-   "volume_usd": {
-    "1d": 0.0,
-    "7d": 0.0,
-    "30d": 0.0
+   "active": true
+  },
+  {
+   "id": "kev-btf4",
+   "name": "Kev",
+   "handle": "Kevsznx",
+   "chain": "solana",
+   "address": "BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd",
+   "source": "https://kolscan.io/account/BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Kevsznx",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 1818.03,
+     "pnl_sol": 17.406,
+     "trades": 87,
+     "wins": 40,
+     "win_rate": 0.4598,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 5703.99,
+     "pnl_sol": 54.61,
+     "trades": 587,
+     "wins": 245,
+     "win_rate": 0.4174,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
    },
-   "coverage": {
-    "sigs": 5000,
-    "oldest_ts": 1792513066,
-    "window_days": 0.0,
-    "missing_tx": 0,
-    "unmatched_sells": 0,
-    "closed": 0,
-    "priced_hist": 0,
-    "priced_current": 0
+   "rank": {
+    "1d": 28,
+    "7d": 41
    },
+   "rank_prev": {},
    "active": true
   },
   {
@@ -2402,11 +2443,11 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 2122.18,
-     "pnl_sol": 19.811,
-     "trades": 29,
-     "wins": 7,
-     "win_rate": 0.2414,
+     "realized_pnl_usd": 1640.91,
+     "pnl_sol": 15.71,
+     "trades": 18,
+     "wins": 3,
+     "win_rate": 0.1667,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2427,73 +2468,29 @@
     }
    },
    "rank": {
-    "1d": 28
+    "1d": 29
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "west-jdd3",
-   "name": "West",
-   "handle": "ratwizardx",
+   "id": "xander-b3wa",
+   "name": "xander",
+   "handle": "xandereef",
    "chain": "solana",
-   "address": "JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN",
-   "source": "https://kolscan.io/account/JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN",
+   "address": "B3wagQZiZU2hKa5pUCj6rrdhWsX3Q6WfTTnki9PjwzMh",
+   "source": "https://kolscan.io/account/B3wagQZiZU2hKa5pUCj6rrdhWsX3Q6WfTTnki9PjwzMh",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/ratwizardx",
-   "telegram": null,
+   "x_url": "https://x.com/xandereef",
+   "telegram": "https://t.me/xanderstrenches",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1661.8,
-     "pnl_sol": 15.513,
-     "trades": 16,
-     "wins": 4,
-     "win_rate": 0.25,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 5025.84,
-     "pnl_sol": 46.918,
-     "trades": 111,
-     "wins": 37,
-     "win_rate": 0.3333,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "1d": 29,
-    "7d": 43
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "cap-capn",
-   "name": "cap",
-   "handle": "himothy",
-   "chain": "solana",
-   "address": "CAPn1yH4oSywsxGU456jfgTrSSUidf9jgeAnHceNUJdw",
-   "source": "https://kolscan.io/account/CAPn1yH4oSywsxGU456jfgTrSSUidf9jgeAnHceNUJdw",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/himothy",
-   "telegram": "https://t.me/capskitchen",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 1624.0,
-     "pnl_sol": 15.161,
-     "trades": 39,
-     "wins": 14,
-     "win_rate": 0.359,
+     "realized_pnl_usd": 1638.88,
+     "pnl_sol": 15.691,
+     "trades": 21,
+     "wins": 6,
+     "win_rate": 0.2857,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2520,91 +2517,136 @@
    "active": true
   },
   {
-   "id": "cookdoc-dvbv",
-   "name": "CookDoc",
-   "handle": "CookDoc1993",
+   "id": "big-bags-bobby-8oqo",
+   "name": "big bags bobby",
+   "handle": "bigbagsbobby",
    "chain": "solana",
-   "address": "Dvbv5TdAyPpJk16X9mUxWFVicYtCUxTLhuof8TGuUaRv",
-   "source": "https://kolscan.io/account/Dvbv5TdAyPpJk16X9mUxWFVicYtCUxTLhuof8TGuUaRv",
+   "address": "8oQoMhfBQnRspn7QtNAq2aPThRE4q94kLSTwaaFQvRgs",
+   "source": "https://kolscan.io/account/8oQoMhfBQnRspn7QtNAq2aPThRE4q94kLSTwaaFQvRgs",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/CookDoc1993",
+   "x_url": "https://x.com/bigbagsbobby",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1588.34,
-     "pnl_sol": 14.828,
-     "trades": 3,
-     "wins": 3,
-     "win_rate": 1.0,
+     "realized_pnl_usd": 1515.31,
+     "pnl_sol": 14.507,
+     "trades": 15,
+     "wins": 10,
+     "win_rate": 0.6667,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 9673.19,
-     "pnl_sol": 90.302,
-     "trades": 23,
-     "wins": 17,
-     "win_rate": 0.7391,
+     "realized_pnl_usd": 25125.93,
+     "pnl_sol": 240.555,
+     "trades": 80,
+     "wins": 40,
+     "win_rate": 0.5,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 30566.09,
-     "pnl_sol": 285.344,
-     "trades": 76,
-     "wins": 47,
-     "win_rate": 0.6184,
+     "realized_pnl_usd": 25276.27,
+     "pnl_sol": 241.994,
+     "trades": 387,
+     "wins": 163,
+     "win_rate": 0.4212,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 31,
-    "7d": 26,
-    "30d": 37
+    "7d": 10,
+    "30d": 41
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "limfork-eth-bqvz",
-   "name": "Limfork.eth",
-   "handle": "Limfork",
+   "id": "coler-99xn",
+   "name": "Coler",
+   "handle": "ColerCooks",
    "chain": "solana",
-   "address": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
-   "source": "https://kolscan.io/account/BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "address": "99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
+   "source": "https://kolscan.io/account/99xnE2zEFi8YhmKDaikc1EvH6ELTQJppnqUwMzmpLXrs",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/Limfork",
-   "telegram": "https://t.me/limforkdiary",
+   "x_url": "https://x.com/ColerCooks",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1563.92,
-     "pnl_sol": 14.6,
-     "trades": 94,
-     "wins": 45,
-     "win_rate": 0.4787,
+     "realized_pnl_usd": 1506.82,
+     "pnl_sol": 14.426,
+     "trades": 49,
+     "wins": 17,
+     "win_rate": 0.3469,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 6040.58,
-     "pnl_sol": 56.391,
-     "trades": 529,
-     "wins": 264,
-     "win_rate": 0.4991,
+     "realized_pnl_usd": 6463.73,
+     "pnl_sol": 61.883,
+     "trades": 304,
+     "wins": 123,
+     "win_rate": 0.4046,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 112508.37,
-     "pnl_sol": 1050.302,
-     "trades": 1805,
-     "wins": 917,
-     "win_rate": 0.508,
+     "realized_pnl_usd": 44117.08,
+     "pnl_sol": 422.375,
+     "trades": 1196,
+     "wins": 466,
+     "win_rate": 0.3896,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 32,
-    "7d": 36,
-    "30d": 6
+    "7d": 37,
+    "30d": 25
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "trunoest-ardi",
+   "name": "trunoest",
+   "handle": "trunoest",
+   "chain": "solana",
+   "address": "ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "source": "https://kolscan.io/account/ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/trunoest",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 1482.08,
+     "pnl_sol": 14.189,
+     "trades": 117,
+     "wins": 45,
+     "win_rate": 0.3846,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": 37337.71,
+     "pnl_sol": 357.47,
+     "trades": 732,
+     "wins": 380,
+     "win_rate": 0.5191,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 211306.01,
+     "pnl_sol": 2023.035,
+     "trades": 3400,
+     "wins": 1833,
+     "win_rate": 0.5391,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "1d": 33,
+    "7d": 4,
+    "30d": 4
    },
    "rank_prev": {},
    "active": true
@@ -2622,8 +2664,8 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1507.82,
-     "pnl_sol": 14.076,
+     "realized_pnl_usd": 1469.97,
+     "pnl_sol": 14.073,
      "trades": 3,
      "wins": 1,
      "win_rate": 0.3333,
@@ -2647,118 +2689,74 @@
     }
    },
    "rank": {
-    "1d": 33
+    "1d": 34
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "dali-cvni",
-   "name": "Dali",
-   "handle": "SolanaDali",
+   "id": "korean-6kr7",
+   "name": "KOREAN",
+   "handle": "Korean_bags",
    "chain": "solana",
-   "address": "CvNiezB8hofusHCKqu8irJ6t2FKY7VjzpSckofMzk5mB",
-   "source": "https://kolscan.io/account/CvNiezB8hofusHCKqu8irJ6t2FKY7VjzpSckofMzk5mB",
+   "address": "6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
+   "source": "https://kolscan.io/account/6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/SolanaDali",
-   "telegram": null,
+   "x_url": "https://x.com/Korean_bags",
+   "telegram": "https://t.me/korean_money",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1468.74,
-     "pnl_sol": 13.711,
-     "trades": 45,
-     "wins": 19,
-     "win_rate": 0.4222,
+     "realized_pnl_usd": 1271.63,
+     "pnl_sol": 12.175,
+     "trades": 90,
+     "wins": 33,
+     "win_rate": 0.3667,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 11806.3,
-     "pnl_sol": 110.216,
-     "trades": 372,
-     "wins": 130,
-     "win_rate": 0.3495,
+     "realized_pnl_usd": 7623.65,
+     "pnl_sol": 72.988,
+     "trades": 772,
+     "wins": 308,
+     "win_rate": 0.399,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "1d": 34,
-    "7d": 23
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "ban-eqif",
-   "name": "ban",
-   "handle": "Ban_Val",
-   "chain": "solana",
-   "address": "EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
-   "source": "https://kolscan.io/account/EqiFgyNw6kgrmYstWyrP8VjKhka7XEmKTZzHSmwpr1Zb",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Ban_Val",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 1369.47,
-     "pnl_sol": 12.784,
-     "trades": 116,
-     "wins": 53,
-     "win_rate": 0.4569,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 27002.87,
-     "pnl_sol": 252.081,
-     "trades": 856,
-     "wins": 369,
-     "win_rate": 0.4311,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 100640.7,
-     "pnl_sol": 939.514,
-     "trades": 3573,
-     "wins": 1503,
-     "win_rate": 0.4207,
+     "realized_pnl_usd": 58366.62,
+     "pnl_sol": 558.8,
+     "trades": 3347,
+     "wins": 1332,
+     "win_rate": 0.398,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 35,
-    "7d": 6,
-    "30d": 9
+    "7d": 35,
+    "30d": 20
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "nad-363s",
-   "name": "nad",
-   "handle": "NADGEMS",
+   "id": "rambo-2net",
+   "name": "rambo",
+   "handle": "goatedondsticks",
    "chain": "solana",
-   "address": "363sqMFaxZgvCoGzxKjXe1BqMGYkSVoCwmghZUndXuaT",
-   "source": "https://kolscan.io/account/363sqMFaxZgvCoGzxKjXe1BqMGYkSVoCwmghZUndXuaT",
+   "address": "2net6etAtTe3Rbq2gKECmQwnzcKVXRaLcHy2Zy1iCiWz",
+   "source": "https://kolscan.io/account/2net6etAtTe3Rbq2gKECmQwnzcKVXRaLcHy2Zy1iCiWz",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/NADGEMS",
-   "telegram": "https://t.me/NADSGEMS",
+   "x_url": "https://x.com/goatedondsticks",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1312.94,
-     "pnl_sol": 12.257,
-     "trades": 19,
-     "wins": 7,
-     "win_rate": 0.3684,
+     "realized_pnl_usd": 1269.65,
+     "pnl_sol": 12.156,
+     "trades": 15,
+     "wins": 6,
+     "win_rate": 0.4,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2785,51 +2783,6 @@
    "active": true
   },
   {
-   "id": "big-bags-bobby-8oqo",
-   "name": "big bags bobby",
-   "handle": "bigbagsbobby",
-   "chain": "solana",
-   "address": "8oQoMhfBQnRspn7QtNAq2aPThRE4q94kLSTwaaFQvRgs",
-   "source": "https://kolscan.io/account/8oQoMhfBQnRspn7QtNAq2aPThRE4q94kLSTwaaFQvRgs",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/bigbagsbobby",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": 1296.19,
-     "pnl_sol": 12.1,
-     "trades": 16,
-     "wins": 10,
-     "win_rate": 0.625,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "7d": {
-     "realized_pnl_usd": 25646.0,
-     "pnl_sol": 239.414,
-     "trades": 80,
-     "wins": 41,
-     "win_rate": 0.5125,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 28396.99,
-     "pnl_sol": 265.095,
-     "trades": 404,
-     "wins": 169,
-     "win_rate": 0.4183,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "1d": 37,
-    "7d": 8,
-    "30d": 39
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
    "id": "kyz-72yi",
    "name": "kyz",
    "handle": "kyzenill",
@@ -2842,11 +2795,54 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1296.19,
+     "realized_pnl_usd": 1263.88,
      "pnl_sol": 12.1,
      "trades": 8,
      "wins": 4,
      "win_rate": 0.5,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "1d": 37
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "leyko-ab2b",
+   "name": "leyko",
+   "handle": "0xleyko",
+   "chain": "solana",
+   "address": "Ab2baaggUWJMsVUtCvpRjq6iBRDk2Lxr5qzicHueHxM1",
+   "source": "https://kolscan.io/account/Ab2baaggUWJMsVUtCvpRjq6iBRDk2Lxr5qzicHueHxM1",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/0xleyko",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": 1153.71,
+     "pnl_sol": 11.046,
+     "trades": 49,
+     "wins": 16,
+     "win_rate": 0.3265,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2873,23 +2869,23 @@
    "active": true
   },
   {
-   "id": "deecayz-dv32",
-   "name": "deecayz ⌐◨-◨",
-   "handle": "deecayz",
+   "id": "zuki-922v",
+   "name": "Zuki",
+   "handle": "zukiweb3",
    "chain": "solana",
-   "address": "Dv32u9mvSXGVNshf7xM7afuMoPRifQxzuzEjfmfMysZY",
-   "source": "https://kolscan.io/account/Dv32u9mvSXGVNshf7xM7afuMoPRifQxzuzEjfmfMysZY",
+   "address": "922VvmmYDHV9KMTJJ71Y5Yd3Vn7cfJuFasLNSsZPygrG",
+   "source": "https://kolscan.io/account/922VvmmYDHV9KMTJJ71Y5Yd3Vn7cfJuFasLNSsZPygrG",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/deecayz",
-   "telegram": "https://t.me/summerprinter",
+   "x_url": "https://x.com/zukiweb3",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1288.35,
-     "pnl_sol": 12.027,
-     "trades": 2,
-     "wins": 1,
-     "win_rate": 0.5,
+     "realized_pnl_usd": 1129.61,
+     "pnl_sol": 10.815,
+     "trades": 52,
+     "wins": 18,
+     "win_rate": 0.3462,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -2928,79 +2924,79 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1204.08,
-     "pnl_sol": 11.24,
-     "trades": 101,
+     "realized_pnl_usd": 1123.06,
+     "pnl_sol": 10.752,
+     "trades": 102,
      "wins": 60,
-     "win_rate": 0.5941,
+     "win_rate": 0.5882,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 8113.18,
-     "pnl_sol": 75.739,
-     "trades": 517,
+     "realized_pnl_usd": 7858.14,
+     "pnl_sol": 75.233,
+     "trades": 518,
      "wins": 306,
-     "win_rate": 0.5919,
+     "win_rate": 0.5907,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 60886.97,
-     "pnl_sol": 568.4,
-     "trades": 2263,
+     "realized_pnl_usd": 59314.18,
+     "pnl_sol": 567.872,
+     "trades": 2264,
      "wins": 1363,
-     "win_rate": 0.6023,
+     "win_rate": 0.602,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 40,
-    "7d": 32,
-    "30d": 17
+    "7d": 34,
+    "30d": 19
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "milito-eexv",
-   "name": "milito",
-   "handle": "fnmilito",
+   "id": "latuche-gja1",
+   "name": "Latuche",
+   "handle": "Latuche95",
    "chain": "solana",
-   "address": "EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
-   "source": "https://kolscan.io/account/EeXvxkcGqMDZeTaVeawzxm9mbzZwqDUMmfG3bF7uzumH",
+   "address": "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
+   "source": "https://kolscan.io/account/GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/fnmilito",
+   "x_url": "https://x.com/Latuche95",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1190.11,
-     "pnl_sol": 11.11,
-     "trades": 40,
-     "wins": 16,
-     "win_rate": 0.4,
+     "realized_pnl_usd": 1088.75,
+     "pnl_sol": 10.424,
+     "trades": 12,
+     "wins": 11,
+     "win_rate": 0.9167,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 26155.97,
-     "pnl_sol": 244.175,
-     "trades": 568,
-     "wins": 220,
-     "win_rate": 0.3873,
+     "realized_pnl_usd": 4809.63,
+     "pnl_sol": 46.047,
+     "trades": 111,
+     "wins": 58,
+     "win_rate": 0.5225,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 102129.01,
-     "pnl_sol": 953.407,
-     "trades": 3531,
-     "wins": 1202,
-     "win_rate": 0.3404,
+     "realized_pnl_usd": 47663.73,
+     "pnl_sol": 456.331,
+     "trades": 835,
+     "wins": 418,
+     "win_rate": 0.5006,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 41,
-    "7d": 7,
-    "30d": 8
+    "7d": 44,
+    "30d": 24
    },
    "rank_prev": {},
    "active": true
@@ -3018,11 +3014,11 @@
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1164.98,
-     "pnl_sol": 10.875,
-     "trades": 13,
-     "wins": 4,
-     "win_rate": 0.3077,
+     "realized_pnl_usd": 1071.99,
+     "pnl_sol": 10.263,
+     "trades": 9,
+     "wins": 3,
+     "win_rate": 0.3333,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3049,77 +3045,77 @@
    "active": true
   },
   {
-   "id": "korean-6kr7",
-   "name": "KOREAN",
-   "handle": "Korean_bags",
+   "id": "limfork-eth-bqvz",
+   "name": "Limfork.eth",
+   "handle": "Limfork",
    "chain": "solana",
-   "address": "6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
-   "source": "https://kolscan.io/account/6KR7SorsUQtNH6CB6JpAnWCAKeTysa95iyXeWihdNeGT",
+   "address": "BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
+   "source": "https://kolscan.io/account/BQVz7fQ1WsQmSTMY3umdPEPPTm1sdcBcX9sP7o6kPRmB",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/Korean_bags",
-   "telegram": "https://t.me/korean_money",
+   "x_url": "https://x.com/Limfork",
+   "telegram": "https://t.me/limforkdiary",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1144.83,
-     "pnl_sol": 10.687,
-     "trades": 120,
-     "wins": 46,
-     "win_rate": 0.3833,
+     "realized_pnl_usd": 972.03,
+     "pnl_sol": 9.306,
+     "trades": 94,
+     "wins": 45,
+     "win_rate": 0.4787,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": 7827.17,
-     "pnl_sol": 73.069,
-     "trades": 774,
-     "wins": 309,
-     "win_rate": 0.3992,
+     "realized_pnl_usd": 8607.9,
+     "pnl_sol": 82.412,
+     "trades": 528,
+     "wins": 264,
+     "win_rate": 0.5,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 59893.24,
-     "pnl_sol": 559.123,
-     "trades": 3362,
-     "wins": 1337,
-     "win_rate": 0.3977,
+     "realized_pnl_usd": 108413.54,
+     "pnl_sol": 1037.947,
+     "trades": 1805,
+     "wins": 917,
+     "win_rate": 0.508,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "1d": 43,
-    "7d": 34,
-    "30d": 19
+    "7d": 31,
+    "30d": 5
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "leck-98t6",
-   "name": "Leck",
-   "handle": "LeckSol",
+   "id": "finn-bteq",
+   "name": "FINN",
+   "handle": "finnbags",
    "chain": "solana",
-   "address": "98T65wcMEjoNLDTJszBHGZEX75QRe8QaANXokv4yw3Mp",
-   "source": "https://kolscan.io/account/98T65wcMEjoNLDTJszBHGZEX75QRe8QaANXokv4yw3Mp",
+   "address": "BTeqNydtKyDaSxQNRm8ByaUDPK3cpQ1FsXMtaF1Hfaom",
+   "source": "https://kolscan.io/account/BTeqNydtKyDaSxQNRm8ByaUDPK3cpQ1FsXMtaF1Hfaom",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/LeckSol",
-   "telegram": "https://t.me/LeckSol",
+   "x_url": "https://x.com/finnbags",
+   "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1120.71,
-     "pnl_sol": 10.462,
+     "realized_pnl_usd": 959.47,
+     "pnl_sol": 9.186,
      "trades": 0,
      "wins": 0,
      "win_rate": null,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
+     "realized_pnl_usd": 2845.14,
+     "pnl_sol": 27.239,
      "trades": 0,
-     "wins": null,
+     "wins": 0,
      "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
      "realized_pnl_usd": null,
@@ -3131,29 +3127,30 @@
     }
    },
    "rank": {
-    "1d": 44
+    "1d": 44,
+    "7d": 50
    },
    "rank_prev": {},
    "active": false
   },
   {
-   "id": "leyko-ab2b",
-   "name": "leyko",
-   "handle": "0xleyko",
+   "id": "dame-8274",
+   "name": "Dame",
+   "handle": "TrenchDame",
    "chain": "solana",
-   "address": "Ab2baaggUWJMsVUtCvpRjq6iBRDk2Lxr5qzicHueHxM1",
-   "source": "https://kolscan.io/account/Ab2baaggUWJMsVUtCvpRjq6iBRDk2Lxr5qzicHueHxM1",
+   "address": "8274EUKEHK9t9yoNHx9BVpsk8SR8va6wg6aoAiaARBMC",
+   "source": "https://kolscan.io/account/8274EUKEHK9t9yoNHx9BVpsk8SR8va6wg6aoAiaARBMC",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/0xleyko",
+   "x_url": "https://x.com/TrenchDame",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1107.05,
-     "pnl_sol": 10.335,
-     "trades": 52,
-     "wins": 17,
-     "win_rate": 0.3269,
+     "realized_pnl_usd": 934.99,
+     "pnl_sol": 8.952,
+     "trades": 92,
+     "wins": 49,
+     "win_rate": 0.5326,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3180,23 +3177,23 @@
    "active": true
   },
   {
-   "id": "qtdegen-7tir",
-   "name": "Qtdegen",
-   "handle": "qtdegen",
+   "id": "leviilol-a4kx",
+   "name": "leviilol",
+   "handle": "leviixbt",
    "chain": "solana",
-   "address": "7tiRXPM4wwBMRMYzmywRAE6jveS3gDbNyxgRrEoU6RLA",
-   "source": "https://kolscan.io/account/7tiRXPM4wwBMRMYzmywRAE6jveS3gDbNyxgRrEoU6RLA",
+   "address": "A4KxLRntS2V6giboMyfDtwoysmsKPaz8Juw6CwHYxVXn",
+   "source": "https://kolscan.io/account/A4KxLRntS2V6giboMyfDtwoysmsKPaz8Juw6CwHYxVXn",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/qtdegen",
+   "x_url": "https://x.com/leviixbt",
    "telegram": null,
    "stats": {
     "1d": {
-     "realized_pnl_usd": 1073.85,
-     "pnl_sol": 10.025,
-     "trades": 35,
-     "wins": 9,
-     "win_rate": 0.2571,
+     "realized_pnl_usd": 924.14,
+     "pnl_sol": 8.848,
+     "trades": 50,
+     "wins": 22,
+     "win_rate": 0.44,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3223,23 +3220,23 @@
    "active": true
   },
   {
-   "id": "profit-g5nx",
-   "name": "Profit",
-   "handle": "FlippingProfits",
+   "id": "leck-98t6",
+   "name": "Leck",
+   "handle": "LeckSol",
    "chain": "solana",
-   "address": "G5nxEXuFMfV74DSnsrSatqCW32F34XUnBeq3PfDS7w5E",
-   "source": "https://kolscan.io/account/G5nxEXuFMfV74DSnsrSatqCW32F34XUnBeq3PfDS7w5E",
+   "address": "98T65wcMEjoNLDTJszBHGZEX75QRe8QaANXokv4yw3Mp",
+   "source": "https://kolscan.io/account/98T65wcMEjoNLDTJszBHGZEX75QRe8QaANXokv4yw3Mp",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/FlippingProfits",
-   "telegram": "https://t.me/ProfitsPlays",
+   "x_url": "https://x.com/LeckSol",
+   "telegram": "https://t.me/LeckSol",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 951.07,
-     "pnl_sol": 8.879,
-     "trades": 1,
-     "wins": 1,
-     "win_rate": 1.0,
+     "realized_pnl_usd": 921.99,
+     "pnl_sol": 8.827,
+     "trades": 0,
+     "wins": 0,
+     "win_rate": null,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3263,69 +3260,71 @@
     "1d": 47
    },
    "rank_prev": {},
-   "active": true
+   "active": false
   },
   {
-   "id": "clown-edxh",
-   "name": "Clown",
-   "handle": "ClownsTrenches",
+   "id": "zef-ejtq",
+   "name": "Zef",
+   "handle": "zefwashere",
    "chain": "solana",
-   "address": "EDXHdSFdadFbYFFjxPXBqMe1kCEDFqpPu552uvp48HR8",
-   "source": "https://kolscan.io/account/EDXHdSFdadFbYFFjxPXBqMe1kCEDFqpPu552uvp48HR8",
+   "address": "EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
+   "source": "https://kolscan.io/account/EjtQrPTbcMevStBkpnjsH23NfUCMhGHusTYsHuGVQZp2",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/ClownsTrenches",
-   "telegram": null,
+   "x_url": "https://x.com/zefwashere",
+   "telegram": "https://t.me/SefaPVP",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 948.67,
-     "pnl_sol": 8.856,
-     "trades": 59,
-     "wins": 20,
-     "win_rate": 0.339,
+     "realized_pnl_usd": 877.26,
+     "pnl_sol": 8.399,
+     "trades": 87,
+     "wins": 31,
+     "win_rate": 0.3563,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
+     "realized_pnl_usd": 10791.51,
+     "pnl_sol": 103.318,
+     "trades": 408,
+     "wins": 152,
+     "win_rate": 0.3725,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
+     "realized_pnl_usd": 40564.16,
+     "pnl_sol": 388.36,
+     "trades": 1029,
+     "wins": 409,
+     "win_rate": 0.3975,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "1d": 48
+    "1d": 48,
+    "7d": 23,
+    "30d": 30
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "leviilol-a4kx",
-   "name": "leviilol",
-   "handle": "leviixbt",
+   "id": "loopierr-9yyy",
+   "name": "Loopierr",
+   "handle": "Loopierr",
    "chain": "solana",
-   "address": "A4KxLRntS2V6giboMyfDtwoysmsKPaz8Juw6CwHYxVXn",
-   "source": "https://kolscan.io/account/A4KxLRntS2V6giboMyfDtwoysmsKPaz8Juw6CwHYxVXn",
+   "address": "9yYya3F5EJoLnBNKW6z4bZvyQytMXzDcpU5D6yYr4jqL",
+   "source": "https://kolscan.io/account/9yYya3F5EJoLnBNKW6z4bZvyQytMXzDcpU5D6yYr4jqL",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/leviixbt",
-   "telegram": null,
+   "x_url": "https://x.com/Loopierr",
+   "telegram": "https://t.me/loopierrsjourney",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 934.58,
-     "pnl_sol": 8.725,
-     "trades": 50,
-     "wins": 22,
-     "win_rate": 0.44,
+     "realized_pnl_usd": 653.02,
+     "pnl_sol": 6.252,
+     "trades": 12,
+     "wins": 8,
+     "win_rate": 0.6667,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3352,23 +3351,23 @@
    "active": true
   },
   {
-   "id": "chairman-be24",
-   "name": "Chairman ²",
-   "handle": "Chairman_DN",
+   "id": "the-doc-dyan",
+   "name": "The Doc",
+   "handle": "KayTheDoc",
    "chain": "solana",
-   "address": "Be24Gbf5KisDk1LcWWZsBn8dvB816By7YzYF5zWZnRR6",
-   "source": "https://kolscan.io/account/Be24Gbf5KisDk1LcWWZsBn8dvB816By7YzYF5zWZnRR6",
+   "address": "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
+   "source": "https://kolscan.io/account/DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/Chairman_DN",
-   "telegram": null,
+   "x_url": "https://x.com/KayTheDoc",
+   "telegram": "https://t.me/+9OnlKXERe9hkODBh",
    "stats": {
     "1d": {
-     "realized_pnl_usd": 929.71,
-     "pnl_sol": 8.679,
-     "trades": 11,
-     "wins": 2,
-     "win_rate": 0.1818,
+     "realized_pnl_usd": 545.05,
+     "pnl_sol": 5.218,
+     "trades": 17,
+     "wins": 10,
+     "win_rate": 0.5882,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "7d": {
@@ -3380,60 +3379,17 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "1d": 50
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "schoen-5hag",
-   "name": "Schoen",
-   "handle": "Schoen_xyz",
-   "chain": "solana",
-   "address": "5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
-   "source": "https://kolscan.io/account/5hAgYC8TJCcEZV7LTXAzkTrm7YL29YXyQQJPCNrG84zM",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Schoen_xyz",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 25618.48,
-     "pnl_sol": 239.157,
-     "trades": 740,
-     "wins": 387,
-     "win_rate": 0.523,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 35359.92,
-     "pnl_sol": 330.096,
-     "trades": 2807,
-     "wins": 1507,
-     "win_rate": 0.5369,
+     "realized_pnl_usd": 27147.7,
+     "pnl_sol": 259.911,
+     "trades": 554,
+     "wins": 237,
+     "win_rate": 0.4278,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "7d": 9,
-    "30d": 35
+    "1d": 50,
+    "30d": 38
    },
    "rank_prev": {},
    "active": true
@@ -3459,25 +3415,25 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 23198.33,
-     "pnl_sol": 216.564,
+     "realized_pnl_usd": 20127.05,
+     "pnl_sol": 192.696,
      "trades": 157,
      "wins": 50,
      "win_rate": 0.3185,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 27803.28,
-     "pnl_sol": 259.553,
-     "trades": 407,
+     "realized_pnl_usd": 24153.72,
+     "pnl_sol": 231.247,
+     "trades": 406,
      "wins": 120,
-     "win_rate": 0.2948,
+     "win_rate": 0.2956,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "7d": 12,
-    "30d": 41
+    "7d": 11,
+    "30d": 42
    },
    "rank_prev": {},
    "active": true
@@ -3503,69 +3459,25 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 19828.14,
-     "pnl_sol": 185.102,
-     "trades": 54,
-     "wins": 14,
-     "win_rate": 0.2593,
+     "realized_pnl_usd": 19456.32,
+     "pnl_sol": 186.274,
+     "trades": 77,
+     "wins": 23,
+     "win_rate": 0.2987,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 16435.13,
-     "pnl_sol": 153.427,
-     "trades": 569,
-     "wins": 166,
-     "win_rate": 0.2917,
+     "realized_pnl_usd": 15859.62,
+     "pnl_sol": 151.839,
+     "trades": 578,
+     "wins": 170,
+     "win_rate": 0.2941,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "7d": 14,
+    "7d": 12,
     "30d": 49
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "johnson-j9ty",
-   "name": "Johnson",
-   "handle": "johnsoncooks101",
-   "chain": "solana",
-   "address": "J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
-   "source": "https://kolscan.io/account/J9TYAsWWidbrcZybmLSfrLzryANf4CgJBLdvwdGuC8MB",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/johnsoncooks101",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 18924.85,
-     "pnl_sol": 176.67,
-     "trades": 116,
-     "wins": 56,
-     "win_rate": 0.4828,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 60563.53,
-     "pnl_sol": 565.38,
-     "trades": 603,
-     "wins": 279,
-     "win_rate": 0.4627,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "7d": 15,
-    "30d": 18
    },
    "rank_prev": {},
    "active": true
@@ -3591,11 +3503,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 15910.29,
-     "pnl_sol": 148.528,
-     "trades": 346,
+     "realized_pnl_usd": 18175.8,
+     "pnl_sol": 174.014,
+     "trades": 345,
      "wins": 77,
-     "win_rate": 0.2225,
+     "win_rate": 0.2232,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -3608,7 +3520,51 @@
     }
    },
    "rank": {
-    "7d": 17
+    "7d": 15
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "ogantd-215n",
+   "name": "OGAntD",
+   "handle": "0GAntD",
+   "chain": "solana",
+   "address": "215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP",
+   "source": "https://kolscan.io/account/215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/0GAntD",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 17759.38,
+     "pnl_sol": 170.028,
+     "trades": 80,
+     "wins": 20,
+     "win_rate": 0.25,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 248319.99,
+     "pnl_sol": 2377.405,
+     "trades": 263,
+     "wins": 90,
+     "win_rate": 0.3422,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 17,
+    "30d": 3
    },
    "rank_prev": {},
    "active": true
@@ -3634,25 +3590,113 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 12108.81,
-     "pnl_sol": 113.04,
-     "trades": 482,
+     "realized_pnl_usd": 11988.89,
+     "pnl_sol": 114.781,
+     "trades": 479,
      "wins": 146,
-     "win_rate": 0.3029,
+     "win_rate": 0.3048,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 67125.45,
-     "pnl_sol": 626.638,
-     "trades": 2124,
-     "wins": 660,
-     "win_rate": 0.3107,
+     "realized_pnl_usd": 63506.22,
+     "pnl_sol": 608.006,
+     "trades": 2112,
+     "wins": 654,
+     "win_rate": 0.3097,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "7d": 22,
-    "30d": 16
+    "30d": 17
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "cookdoc-dvbv",
+   "name": "CookDoc",
+   "handle": "CookDoc1993",
+   "chain": "solana",
+   "address": "Dvbv5TdAyPpJk16X9mUxWFVicYtCUxTLhuof8TGuUaRv",
+   "source": "https://kolscan.io/account/Dvbv5TdAyPpJk16X9mUxWFVicYtCUxTLhuof8TGuUaRv",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/CookDoc1993",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 10392.42,
+     "pnl_sol": 99.497,
+     "trades": 22,
+     "wins": 16,
+     "win_rate": 0.7273,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 29420.79,
+     "pnl_sol": 281.673,
+     "trades": 76,
+     "wins": 47,
+     "win_rate": 0.6184,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 25,
+    "30d": 36
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "putrick-avje",
+   "name": "Putrick",
+   "handle": "Putrickk",
+   "chain": "solana",
+   "address": "AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "source": "https://kolscan.io/account/AVjEtg2ECYKXYeqdRQXvaaAZBjfTjYuSMTR4WLhKoeQN",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Putrickk",
+   "telegram": "https://t.me/cryptoputro",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 9830.08,
+     "pnl_sol": 94.113,
+     "trades": 400,
+     "wins": 133,
+     "win_rate": 0.3325,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 38487.63,
+     "pnl_sol": 368.479,
+     "trades": 2029,
+     "wins": 668,
+     "win_rate": 0.3292,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 27,
+    "30d": 31
    },
    "rank_prev": {},
    "active": true
@@ -3678,7 +3722,7 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 9659.75,
+     "realized_pnl_usd": 9418.97,
      "pnl_sol": 90.177,
      "trades": 409,
      "wins": 197,
@@ -3686,7 +3730,7 @@
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 80751.24,
+     "realized_pnl_usd": 78738.49,
      "pnl_sol": 753.839,
      "trades": 2261,
      "wins": 1420,
@@ -3695,22 +3739,22 @@
     }
    },
    "rank": {
-    "7d": 27,
-    "30d": 11
+    "7d": 28,
+    "30d": 10
    },
    "rank_prev": {},
    "active": true
   },
   {
-   "id": "doji-5zuv",
-   "name": "Doji",
-   "handle": "Humanevolvd",
+   "id": "dali-cvni",
+   "name": "Dali",
+   "handle": "SolanaDali",
    "chain": "solana",
-   "address": "5ZuV8eqkvzYFVEKbLvGBdexL2tFv7E5BCd2HZpjqbdg",
-   "source": "https://kolscan.io/account/5ZuV8eqkvzYFVEKbLvGBdexL2tFv7E5BCd2HZpjqbdg",
+   "address": "CvNiezB8hofusHCKqu8irJ6t2FKY7VjzpSckofMzk5mB",
+   "source": "https://kolscan.io/account/CvNiezB8hofusHCKqu8irJ6t2FKY7VjzpSckofMzk5mB",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/Humanevolvd",
+   "x_url": "https://x.com/SolanaDali",
    "telegram": null,
    "stats": {
     "1d": {
@@ -3722,11 +3766,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 9394.58,
-     "pnl_sol": 87.701,
-     "trades": 277,
-     "wins": 141,
-     "win_rate": 0.509,
+     "realized_pnl_usd": 8111.14,
+     "pnl_sol": 77.656,
+     "trades": 370,
+     "wins": 123,
+     "win_rate": 0.3324,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -3739,7 +3783,7 @@
     }
    },
    "rank": {
-    "7d": 28
+    "7d": 32
    },
    "rank_prev": {},
    "active": true
@@ -3765,8 +3809,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 8639.84,
-     "pnl_sol": 80.656,
+     "realized_pnl_usd": 8027.99,
+     "pnl_sol": 76.86,
      "trades": 218,
      "wins": 31,
      "win_rate": 0.1422,
@@ -3782,137 +3826,7 @@
     }
    },
    "rank": {
-    "7d": 31
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "king-69z4",
-   "name": "King",
-   "handle": "thekryptoking_",
-   "chain": "solana",
-   "address": "69z4qTgQ5DBRTJvnQzx2h8jZhNsv5UgADotEwwKUm2JS",
-   "source": "https://kolscan.io/account/69z4qTgQ5DBRTJvnQzx2h8jZhNsv5UgADotEwwKUm2JS",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/thekryptoking_",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 6408.24,
-     "pnl_sol": 59.823,
-     "trades": 135,
-     "wins": 22,
-     "win_rate": 0.163,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "7d": 35
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "pikalosi-9cdz",
-   "name": "Pikalosi",
-   "handle": "pikalosi",
-   "chain": "solana",
-   "address": "9cdZg6xR4c9kZiqKSzqjn4QHCXNQuC9HEWBzzMJ3mzqw",
-   "source": "https://kolscan.io/account/9cdZg6xR4c9kZiqKSzqjn4QHCXNQuC9HEWBzzMJ3mzqw",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/pikalosi",
-   "telegram": "https://t.me/PikalosiCalls",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 5767.95,
-     "pnl_sol": 53.846,
-     "trades": 79,
-     "wins": 38,
-     "win_rate": 0.481,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 18475.85,
-     "pnl_sol": 172.478,
-     "trades": 248,
-     "wins": 133,
-     "win_rate": 0.5363,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "7d": 37,
-    "30d": 44
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "kev-btf4",
-   "name": "Kev",
-   "handle": "Kevsznx",
-   "chain": "solana",
-   "address": "BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd",
-   "source": "https://kolscan.io/account/BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Kevsznx",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 5637.07,
-     "pnl_sol": 52.624,
-     "trades": 591,
-     "wins": 246,
-     "win_rate": 0.4162,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "7d": 38
+    "7d": 33
    },
    "rank_prev": {},
    "active": true
@@ -3938,8 +3852,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 5256.79,
-     "pnl_sol": 49.074,
+     "realized_pnl_usd": 7286.68,
+     "pnl_sol": 69.762,
      "trades": 0,
      "wins": 0,
      "win_rate": null,
@@ -3955,22 +3869,22 @@
     }
    },
    "rank": {
-    "7d": 40
+    "7d": 36
    },
    "rank_prev": {},
    "active": false
   },
   {
-   "id": "jdn-2ipg",
-   "name": "Jdn",
-   "handle": "JadenOnChain",
+   "id": "king-69z4",
+   "name": "King",
+   "handle": "thekryptoking_",
    "chain": "solana",
-   "address": "2iPgNgss7ow3v5YFkTpzABStfjFSyG3BGvP5sZqADtFM",
-   "source": "https://kolscan.io/account/2iPgNgss7ow3v5YFkTpzABStfjFSyG3BGvP5sZqADtFM",
+   "address": "69z4qTgQ5DBRTJvnQzx2h8jZhNsv5UgADotEwwKUm2JS",
+   "source": "https://kolscan.io/account/69z4qTgQ5DBRTJvnQzx2h8jZhNsv5UgADotEwwKUm2JS",
    "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
    "avatar": null,
-   "x_url": "https://x.com/JadenOnChain",
-   "telegram": "http://t.me/jadendegens",
+   "x_url": "https://x.com/thekryptoking_",
+   "telegram": null,
    "stats": {
     "1d": {
      "realized_pnl_usd": null,
@@ -3981,11 +3895,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 5225.87,
-     "pnl_sol": 48.785,
-     "trades": 392,
-     "wins": 107,
-     "win_rate": 0.273,
+     "realized_pnl_usd": 6013.81,
+     "pnl_sol": 57.576,
+     "trades": 150,
+     "wins": 21,
+     "win_rate": 0.14,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -3998,7 +3912,137 @@
     }
    },
    "rank": {
-    "7d": 41
+    "7d": 38
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "doji-5zuv",
+   "name": "Doji",
+   "handle": "Humanevolvd",
+   "chain": "solana",
+   "address": "5ZuV8eqkvzYFVEKbLvGBdexL2tFv7E5BCd2HZpjqbdg",
+   "source": "https://kolscan.io/account/5ZuV8eqkvzYFVEKbLvGBdexL2tFv7E5BCd2HZpjqbdg",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Humanevolvd",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 5995.54,
+     "pnl_sol": 57.401,
+     "trades": 284,
+     "wins": 143,
+     "win_rate": 0.5035,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "7d": 39
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "pikalosi-9cdz",
+   "name": "Pikalosi",
+   "handle": "pikalosi",
+   "chain": "solana",
+   "address": "9cdZg6xR4c9kZiqKSzqjn4QHCXNQuC9HEWBzzMJ3mzqw",
+   "source": "https://kolscan.io/account/9cdZg6xR4c9kZiqKSzqjn4QHCXNQuC9HEWBzzMJ3mzqw",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/pikalosi",
+   "telegram": "https://t.me/PikalosiCalls",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 5861.65,
+     "pnl_sol": 56.119,
+     "trades": 79,
+     "wins": 38,
+     "win_rate": 0.481,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 17823.98,
+     "pnl_sol": 170.646,
+     "trades": 248,
+     "wins": 133,
+     "win_rate": 0.5363,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 40,
+    "30d": 44
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "west-jdd3",
+   "name": "West",
+   "handle": "ratwizardx",
+   "chain": "solana",
+   "address": "JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN",
+   "source": "https://kolscan.io/account/JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/ratwizardx",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 4900.57,
+     "pnl_sol": 46.918,
+     "trades": 111,
+     "wins": 37,
+     "win_rate": 0.3333,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    }
+   },
+   "rank": {
+    "7d": 42
    },
    "rank_prev": {},
    "active": true
@@ -4024,25 +4068,69 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 5213.88,
-     "pnl_sol": 48.673,
-     "trades": 916,
-     "wins": 328,
-     "win_rate": 0.3581,
+     "realized_pnl_usd": 4835.78,
+     "pnl_sol": 46.298,
+     "trades": 881,
+     "wins": 321,
+     "win_rate": 0.3644,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
-     "realized_pnl_usd": 37724.93,
-     "pnl_sol": 352.175,
-     "trades": 4335,
-     "wins": 1212,
-     "win_rate": 0.2796,
+     "realized_pnl_usd": 37326.98,
+     "pnl_sol": 357.367,
+     "trades": 4312,
+     "wins": 1215,
+     "win_rate": 0.2818,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "7d": 42,
-    "30d": 34
+    "7d": 43,
+    "30d": 33
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "nyhrox-6s8g",
+   "name": "Nyhrox",
+   "handle": "nyhrox",
+   "chain": "solana",
+   "address": "6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
+   "source": "https://kolscan.io/account/6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/nyhrox",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 4640.76,
+     "pnl_sol": 44.43,
+     "trades": 68,
+     "wins": 30,
+     "win_rate": 0.4412,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 66466.47,
+     "pnl_sol": 636.347,
+     "trades": 498,
+     "wins": 142,
+     "win_rate": 0.2851,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 45,
+    "30d": 16
    },
    "rank_prev": {},
    "active": true
@@ -4068,8 +4156,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 4602.85,
-     "pnl_sol": 42.969,
+     "realized_pnl_usd": 4500.62,
+     "pnl_sol": 43.089,
      "trades": 36,
      "wins": 24,
      "win_rate": 0.6667,
@@ -4085,139 +4173,7 @@
     }
    },
    "rank": {
-    "7d": 44
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "latuche-gja1",
-   "name": "Latuche",
-   "handle": "Latuche95",
-   "chain": "solana",
-   "address": "GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
-   "source": "https://kolscan.io/account/GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Latuche95",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 3978.31,
-     "pnl_sol": 37.139,
-     "trades": 121,
-     "wins": 59,
-     "win_rate": 0.4876,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 48280.4,
-     "pnl_sol": 450.713,
-     "trades": 841,
-     "wins": 421,
-     "win_rate": 0.5006,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "7d": 45,
-    "30d": 25
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "rilsio-4fzf",
-   "name": "Rilsio",
-   "handle": "CryptoRilsio",
-   "chain": "solana",
-   "address": "4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
-   "source": "https://kolscan.io/account/4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/CryptoRilsio",
-   "telegram": "https://t.me/rilsio",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 3925.57,
-     "pnl_sol": 36.646,
-     "trades": 32,
-     "wins": 20,
-     "win_rate": 0.625,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 45273.55,
-     "pnl_sol": 422.643,
-     "trades": 316,
-     "wins": 159,
-     "win_rate": 0.5032,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "7d": 46,
-    "30d": 27
-   },
-   "rank_prev": {},
-   "active": true
-  },
-  {
-   "id": "toxic-weast-du32",
-   "name": "Toxic weast",
-   "handle": "Toxic_weast",
-   "chain": "solana",
-   "address": "DU323DieHUGPmYamp6A4Ai1V4YSYgRi35mGpzJGrjf7k",
-   "source": "https://kolscan.io/account/DU323DieHUGPmYamp6A4Ai1V4YSYgRi35mGpzJGrjf7k",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/Toxic_weast",
-   "telegram": "https://t.me/TOXICgambols",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 3485.99,
-     "pnl_sol": 32.543,
-     "trades": 87,
-     "wins": 41,
-     "win_rate": 0.4713,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": 17439.4,
-     "pnl_sol": 162.802,
-     "trades": 1321,
-     "wins": 261,
-     "win_rate": 0.1976,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "7d": 47,
-    "30d": 46
+    "7d": 46
    },
    "rank_prev": {},
    "active": true
@@ -4243,11 +4199,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 3468.93,
-     "pnl_sol": 32.384,
-     "trades": 223,
-     "wins": 115,
-     "win_rate": 0.5157,
+     "realized_pnl_usd": 4438.05,
+     "pnl_sol": 42.49,
+     "trades": 240,
+     "wins": 127,
+     "win_rate": 0.5292,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -4260,7 +4216,51 @@
     }
    },
    "rank": {
-    "7d": 48
+    "7d": 47
+   },
+   "rank_prev": {},
+   "active": true
+  },
+  {
+   "id": "toxic-weast-du32",
+   "name": "Toxic weast",
+   "handle": "Toxic_weast",
+   "chain": "solana",
+   "address": "DU323DieHUGPmYamp6A4Ai1V4YSYgRi35mGpzJGrjf7k",
+   "source": "https://kolscan.io/account/DU323DieHUGPmYamp6A4Ai1V4YSYgRi35mGpzJGrjf7k",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/Toxic_weast",
+   "telegram": "https://t.me/TOXICgambols",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": 3399.1,
+     "pnl_sol": 32.543,
+     "trades": 87,
+     "wins": 41,
+     "win_rate": 0.4713,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    },
+    "30d": {
+     "realized_pnl_usd": 17097.61,
+     "pnl_sol": 163.692,
+     "trades": 1300,
+     "wins": 261,
+     "win_rate": 0.2008,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "7d": 48,
+    "30d": 46
    },
    "rank_prev": {},
    "active": true
@@ -4286,11 +4286,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "7d": {
-     "realized_pnl_usd": 3055.16,
-     "pnl_sol": 28.521,
-     "trades": 93,
+     "realized_pnl_usd": 2880.4,
+     "pnl_sol": 27.577,
+     "trades": 94,
      "wins": 35,
-     "win_rate": 0.3763,
+     "win_rate": 0.3723,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     },
     "30d": {
@@ -4307,92 +4307,6 @@
    },
    "rank_prev": {},
    "active": true
-  },
-  {
-   "id": "finn-bteq",
-   "name": "FINN",
-   "handle": "finnbags",
-   "chain": "solana",
-   "address": "BTeqNydtKyDaSxQNRm8ByaUDPK3cpQ1FsXMtaF1Hfaom",
-   "source": "https://kolscan.io/account/BTeqNydtKyDaSxQNRm8ByaUDPK3cpQ1FsXMtaF1Hfaom",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/finnbags",
-   "telegram": null,
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": 2830.64,
-     "pnl_sol": 26.425,
-     "trades": 0,
-     "wins": 0,
-     "win_rate": null,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    },
-    "30d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    }
-   },
-   "rank": {
-    "7d": 50
-   },
-   "rank_prev": {},
-   "active": false
-  },
-  {
-   "id": "mitch-4be9",
-   "name": "Mitch",
-   "handle": "idrawline",
-   "chain": "solana",
-   "address": "4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
-   "source": "https://kolscan.io/account/4Be9CvxqHW6BYiRAxW9Q3xu1ycTMWaL5z8NX4HR3ha7t",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/idrawline",
-   "telegram": "https://t.me/whimsicalclown",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "30d": {
-     "realized_pnl_usd": 123094.84,
-     "pnl_sol": 1149.13,
-     "trades": 340,
-     "wins": 128,
-     "win_rate": 0.3765,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "30d": 5
-   },
-   "rank_prev": {},
-   "active": false
   },
   {
    "id": "sheep-78n1",
@@ -4423,16 +4337,16 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 82876.52,
-     "pnl_sol": 773.679,
-     "trades": 1223,
-     "wins": 674,
-     "win_rate": 0.5511,
+     "realized_pnl_usd": 79280.38,
+     "pnl_sol": 759.027,
+     "trades": 1210,
+     "wins": 668,
+     "win_rate": 0.5521,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "30d": 10
+    "30d": 9
    },
    "rank_prev": {},
    "active": false
@@ -4466,16 +4380,59 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 52335.69,
-     "pnl_sol": 488.571,
-     "trades": 1465,
-     "wins": 1228,
-     "win_rate": 0.8382,
+     "realized_pnl_usd": 52880.46,
+     "pnl_sol": 506.275,
+     "trades": 1450,
+     "wins": 1218,
+     "win_rate": 0.84,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "30d": 22
+   },
+   "rank_prev": {},
+   "active": false
+  },
+  {
+   "id": "rilsio-4fzf",
+   "name": "Rilsio",
+   "handle": "CryptoRilsio",
+   "chain": "solana",
+   "address": "4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
+   "source": "https://kolscan.io/account/4fZFcK8ms3bFMpo1ACzEUz8bH741fQW4zhAMGd5yZMHu",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/CryptoRilsio",
+   "telegram": "https://t.me/rilsio",
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": 44107.59,
+     "pnl_sol": 422.284,
+     "trades": 316,
+     "wins": 159,
+     "win_rate": 0.5032,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "30d": 26
    },
    "rank_prev": {},
    "active": false
@@ -4509,16 +4466,16 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 50287.2,
-     "pnl_sol": 469.447,
-     "trades": 300,
+     "realized_pnl_usd": 44000.47,
+     "pnl_sol": 421.259,
+     "trades": 304,
      "wins": 64,
-     "win_rate": 0.2133,
+     "win_rate": 0.2105,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "30d": 23
+    "30d": 27
    },
    "rank_prev": {},
    "active": false
@@ -4552,59 +4509,16 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 42916.04,
-     "pnl_sol": 400.635,
-     "trades": 347,
-     "wins": 166,
-     "win_rate": 0.4784,
+     "realized_pnl_usd": 43357.8,
+     "pnl_sol": 415.106,
+     "trades": 350,
+     "wins": 167,
+     "win_rate": 0.4771,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
-    "30d": 29
-   },
-   "rank_prev": {},
-   "active": false
-  },
-  {
-   "id": "the-doc-dyan",
-   "name": "The Doc",
-   "handle": "KayTheDoc",
-   "chain": "solana",
-   "address": "DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
-   "source": "https://kolscan.io/account/DYAn4XpAkN5mhiXkRB7dGq4Jadnx6XYgu8L5b3WGhbrt",
-   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
-   "avatar": null,
-   "x_url": "https://x.com/KayTheDoc",
-   "telegram": "https://t.me/+9OnlKXERe9hkODBh",
-   "stats": {
-    "1d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "7d": {
-     "realized_pnl_usd": null,
-     "pnl_sol": null,
-     "trades": 0,
-     "wins": null,
-     "win_rate": null,
-     "note": "Poza top 50 kolscan w tym okresie."
-    },
-    "30d": {
-     "realized_pnl_usd": 28407.99,
-     "pnl_sol": 265.198,
-     "trades": 549,
-     "wins": 234,
-     "win_rate": 0.4262,
-     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
-    }
-   },
-   "rank": {
-    "30d": 38
+    "30d": 28
    },
    "rank_prev": {},
    "active": false
@@ -4638,11 +4552,54 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 28080.46,
+     "realized_pnl_usd": 27380.51,
      "pnl_sol": 262.14,
-     "trades": 812,
+     "trades": 811,
      "wins": 129,
-     "win_rate": 0.1589,
+     "win_rate": 0.1591,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "30d": 37
+   },
+   "rank_prev": {},
+   "active": false
+  },
+  {
+   "id": "dov-7-8nqt",
+   "name": "dov 7",
+   "handle": "dovvvv7",
+   "chain": "solana",
+   "address": "8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
+   "source": "https://kolscan.io/account/8nqtxpFpuXwfXG4pBLsDkkuMMPK9FjSkBMCn542HiM3v",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/dovvvv7",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": 25806.13,
+     "pnl_sol": 247.067,
+     "trades": 373,
+     "wins": 183,
+     "win_rate": 0.4906,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
@@ -4681,11 +4638,11 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 22190.87,
-     "pnl_sol": 207.159,
-     "trades": 1633,
-     "wins": 546,
-     "win_rate": 0.3344,
+     "realized_pnl_usd": 20884.82,
+     "pnl_sol": 199.95,
+     "trades": 1606,
+     "wins": 538,
+     "win_rate": 0.335,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
@@ -4724,8 +4681,8 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 17508.33,
-     "pnl_sol": 163.446,
+     "realized_pnl_usd": 17362.1,
+     "pnl_sol": 166.224,
      "trades": 991,
      "wins": 339,
      "win_rate": 0.3421,
@@ -4767,16 +4724,59 @@
      "note": "Poza top 50 kolscan w tym okresie."
     },
     "30d": {
-     "realized_pnl_usd": 16595.86,
-     "pnl_sol": 154.928,
-     "trades": 1267,
-     "wins": 615,
-     "win_rate": 0.4854,
+     "realized_pnl_usd": 16448.76,
+     "pnl_sol": 157.48,
+     "trades": 1264,
+     "wins": 617,
+     "win_rate": 0.4881,
      "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
     }
    },
    "rank": {
     "30d": 48
+   },
+   "rank_prev": {},
+   "active": false
+  },
+  {
+   "id": "tom-ceua",
+   "name": "Tom",
+   "handle": "tdmilky",
+   "chain": "solana",
+   "address": "CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ",
+   "source": "https://kolscan.io/account/CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ",
+   "source_note": "Publiczny ranking kolscan.io (portfel i nazwa przypisane przez kolscan)",
+   "avatar": null,
+   "x_url": "https://x.com/tdmilky",
+   "telegram": null,
+   "stats": {
+    "1d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "7d": {
+     "realized_pnl_usd": null,
+     "pnl_sol": null,
+     "trades": 0,
+     "wins": null,
+     "win_rate": null,
+     "note": "Poza top 50 kolscan w tym okresie."
+    },
+    "30d": {
+     "realized_pnl_usd": 15813.48,
+     "pnl_sol": 151.398,
+     "trades": 512,
+     "wins": 83,
+     "win_rate": 0.1621,
+     "note": "Zrealizowany zysk wg publicznego rankingu kolscan.io (SOL → USD po bieżącym kursie)."
+    }
+   },
+   "rank": {
+    "30d": 50
    },
    "rank_prev": {},
    "active": false
