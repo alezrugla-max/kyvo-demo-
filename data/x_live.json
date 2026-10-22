@@ -1,6 +1,6 @@
 {
  "source": "FxTwitter public API (api.fxtwitter.com) — unofficial X mirror, no key; coins via DexScreener, candles via GeckoTerminal",
- "updated_at": "2026-10-22T14:21:21Z",
+ "updated_at": "2026-10-22T14:57:27Z",
  "accounts_read": 24,
  "accounts": [
   "orangie",
@@ -46,14 +46,14 @@
    "created_at": "2026-10-22T05:56:54Z",
    "ts": 1792648614,
    "metrics": {
-    "likes": 57,
+    "likes": 58,
     "reposts": 9,
     "replies": 8,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 5801
+    "views": 5941
    },
-   "metrics_at": "2026-10-22T14:20:56+00:00",
+   "metrics_at": "2026-10-22T14:56:46+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -75,11 +75,11 @@
      "match": "contract",
      "px_at_tweet": 0.00044207723208727255,
      "vol_1h_before": 64305,
-     "vol_after": 209776,
-     "hours_after": 8.41,
+     "vol_after": 220526,
+     "hours_after": 9.01,
      "chg_since_tweet": -3.8,
      "pumping": false,
-     "measured_at": 1792678831
+     "measured_at": 1792680961
     }
    ],
    "first_seen": 1792651161
@@ -99,14 +99,14 @@
    "created_at": "2026-10-21T19:34:10Z",
    "ts": 1792611250,
    "metrics": {
-    "likes": 612,
+    "likes": 618,
     "reposts": 117,
     "replies": 170,
     "quotes": 19,
     "bookmarks": 27,
-    "views": 88809
+    "views": 89493
    },
-   "metrics_at": "2026-10-22T14:20:38+00:00",
+   "metrics_at": "2026-10-22T14:56:15+00:00",
    "coin_match": "named",
    "coins": [
     {
@@ -133,95 +133,6 @@
      "chg_since_tweet": -3.5,
      "pumping": false,
      "measured_at": 1792653953
-    }
-   ],
-   "first_seen": 1792615788
-  },
-  {
-   "id": "2112917225854136635",
-   "url": "https://x.com/MarcellxMarcell/status/2112917225854136635",
-   "handle": "MarcellxMarcell",
-   "author_name": "Marcell",
-   "avatar": "https://pbs.twimg.com/profile_images/2093662909008052224/dw-EPEt7_200x200.jpg",
-   "author_followers": 151713,
-   "verified": true,
-   "role": "kol",
-   "wallet_id": null,
-   "text": "$MASK overtakes $PUMP $RAY $CAKE and $HYPE Becoming the 2nd highest protocol in buybacks in the space\n\nThey have bought back and burned 20% of supply with another 40% locked in dev wallet \n\nit doesn’t get any more bullish than this\n\nYou dont have long to get $MASK at these levels",
-   "is_reply": false,
-   "created_at": "2026-10-21T14:41:37Z",
-   "ts": 1792593697,
-   "metrics": {
-    "likes": 1210,
-    "reposts": 44,
-    "replies": 104,
-    "quotes": 2,
-    "bookmarks": 7,
-    "views": 48629
-   },
-   "metrics_at": "2026-10-22T14:20:55+00:00",
-   "coin_match": "named",
-   "coins": [
-    {
-     "chain": "solana",
-     "address": "HuAXPyDWDaMYFKuwQHpqL1oPnj93zdzWmtvFGzCeCUa7",
-     "symbol": "MASK",
-     "name": "Nullmask",
-     "image": "https://cdn.dexscreener.com/cms/images/PB5UxIQwiLEbEuxL?width=800&height=800&quality=95&format=auto",
-     "mcap": 26790312,
-     "liquidity": 958414.85,
-     "price_usd": 0.04524,
-     "change_h24": 3.67,
-     "volume_h24": 715189.38,
-     "pair": "4GWh5saKgzoukhhj4Rh3p5FmPU6yPuAexV6FaH5JQYfm",
-     "dex": "raydium",
-     "pair_created_at": 1790161463000,
-     "dexscreener": "https://dexscreener.com/solana/4gwh5sakgzoukhhj4rh3p5fmpu6ypuaexv6fah5jqyfm",
-     "kyvo": true,
-     "match": "cashtag",
-     "px_at_tweet": 0.04720427719455197,
-     "vol_1h_before": 43362,
-     "vol_after": 154270,
-     "hours_after": 6.26,
-     "chg_since_tweet": -4.2,
-     "pumping": false,
-     "measured_at": 1792616045
-    },
-    {
-     "chain": "solana",
-     "address": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-     "symbol": "PUMP",
-     "name": "Pump",
-     "image": "https://cdn.dexscreener.com/cms/images/a0d07b12d0c34be414b8ac98a827ff862cfd684554c8da4c63fa647eef0af501?width=800&height=800&quality=95&format=auto",
-     "mcap": 2369289655,
-     "liquidity": 25286483.02,
-     "price_usd": 0.00513,
-     "change_h24": 7.47,
-     "volume_h24": 5798959.8,
-     "pair": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
-     "dex": "pumpswap",
-     "pair_created_at": 1752512149000,
-     "dexscreener": "https://dexscreener.com/solana/2uf4xh61rdwxng9woyxsvqp7zua6klfpb3nvnrqeoisd",
-     "kyvo": true,
-     "match": "cashtag"
-    },
-    {
-     "chain": "bsc",
-     "address": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
-     "symbol": "Cake",
-     "name": "PancakeSwap Token",
-     "image": null,
-     "mcap": 754578268,
-     "liquidity": 6562370.59,
-     "price_usd": 2.25,
-     "change_h24": 1.6,
-     "volume_h24": 638404.55,
-     "pair": "0x7f51c8AaA6B0599aBd16674e2b17FEc7a9f674A1",
-     "dex": "pancakeswap",
-     "pair_created_at": 1680354384000,
-     "dexscreener": "https://dexscreener.com/bsc/0x7f51c8aaa6b0599abd16674e2b17fec7a9f674a1",
-     "kyvo": true,
-     "match": "cashtag"
     }
    ],
    "first_seen": 1792615788
