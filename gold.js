@@ -63,9 +63,11 @@
   }
   const isAddr = (q) => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(q) || /^0x[0-9a-fA-F]{40}$/.test(q);
   function bestPair(pairs, addr) {
+    // v8.13: shared rule (pairs.js) — exact CA, main pool by liquidity, curve pair only while not migrated
     const ok = (pairs || []).filter((p) => p && p.baseToken && ['solana', 'bsc'].includes(p.chainId) && (!addr || String(p.baseToken.address).toLowerCase() === addr.toLowerCase()));
-    ok.sort((a, b) => ((b.liquidity || {}).usd || 0) - ((a.liquidity || {}).usd || 0));
-    return ok[0] || null;
+    if (!ok.length) return null;
+    const bm = window.KyvoPairs.bestMap(ok);
+    return Object.values(bm).filter(Boolean).sort((a, b) => window.KyvoPairs.liq(b) - window.KyvoPairs.liq(a) || ((b.volume || {}).h24 || 0) - ((a.volume || {}).h24 || 0))[0] || null;
   }
   async function resolve(q) {
     q = String(q || '').trim().replace(/^\$/, '');
@@ -87,7 +89,16 @@
     // and even "$50M liquidity" on a pool that trades $2 a day
     const w = (p) => vol[p.baseToken.address] + Math.min((p.liquidity || {}).usd || 0, 2e5) * 0.1;
     const list = Object.values(byTok).sort((a, b) => w(b) - w(a));
-    return { pair: list[0], alts: list.slice(1, 6) };
+    // v8.13: a search answer can hold only part of a coin's pools (often just the dead pump.fun curve pair) → full pair list by CA
+    try {
+      const top = list[0];
+      const d2 = await getJson(DS + '/latest/dex/tokens/' + top.baseToken.address, 15000);
+      const p2 = bestPair(d2 && d2.pairs, top.baseToken.address);
+      if (p2 && p2.chainId === top.chainId) list[0] = p2;
+    } catch (e) {}
+    // v8.13: alternatives only if they are real coins (some liquidity or trading, an MC) — not dust pairs showing "—" / "$1"
+    const realAlt = (p) => (p.marketCap || p.fdv || 0) >= 1000 && (((p.liquidity || {}).usd || 0) >= 1000 || vol[p.baseToken.address] >= 20000);
+    return { pair: list[0], alts: list.slice(1).filter(realAlt).slice(0, 5) };
   }
   function linksOf(p) {
     const info = p.info || {}, x = [], web = [], tg = [];
@@ -140,6 +151,8 @@
       if (x.chainId !== p.chainId || !t.address || t.address === b.address) continue;
       if (String(t.symbol || '').trim().toLowerCase() !== sym && String(t.name || '').trim().toLowerCase() !== name) continue;
       const mc = x.marketCap || x.fdv || 0; if (mc < 10000) continue;
+      // v8.13: a pool with no liquidity and no trading is not a real coin (e.g. a launchpad pair showing "$2M MC" on $1.7k volume)
+      if (((x.liquidity || {}).usd || 0) < 1000 && ((x.volume || {}).h24 || 0) < 20000) continue;
       if (!best[t.address] || mc > best[t.address].mcap) best[t.address] = { address: t.address, symbol: t.symbol, name: t.name, mcap: mc, created: x.pairCreatedAt, vol24: (x.volume || {}).h24, url: x.url };
     }
     const mine = p.pairCreatedAt || Date.now(), mc0 = p.marketCap || p.fdv || 0;

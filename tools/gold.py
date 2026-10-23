@@ -25,6 +25,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import kol_coins  # noqa: E402
 from discord_calls import pairs_for, to_coin, fmt_usd  # noqa: E402
+import pairs as pairs_mod  # noqa: E402  (v8.13 main-pool rule)
 
 ROOT = Path(__file__).resolve().parents[1]
 GT, DS = kol_coins.GT, kol_coins.DS
@@ -144,6 +145,7 @@ def copies(c, cache):
         if str(b.get("symbol", "")).strip().lower() != sym and str(b.get("name", "")).strip().lower() != name: continue
         mc = p.get("marketCap") or p.get("fdv") or 0
         if mc < 10_000: continue
+        if ((p.get("liquidity") or {}).get("usd") or 0) < 1000 and ((p.get("volume") or {}).get("h24") or 0) < 20_000: continue   # v8.13: no pool, no trading = not a real copy
         e = best.get(b["address"])
         if not e or mc > e["mcap"]:
             best[b["address"]] = {"address": b["address"], "symbol": b.get("symbol"), "name": b.get("name"), "mcap": mc, "created": p.get("pairCreatedAt"),
@@ -349,11 +351,8 @@ def main() -> int:
         if ch not in ("solana", "bsc"): continue
         src_of = {ad.lower(): s for ad, s in xs}
         raw = {}
-        for i in range(0, len(xs), 30):
-            for p in kol_coins._get(f"{DS}/tokens/v1/{ch}/" + ",".join(ad for ad, _ in xs[i:i + 30])) or []:
-                b = (p.get("baseToken") or {}).get("address")
-                if not b or p.get("chainId") != ch: continue
-                if b.lower() not in raw or ((p.get("liquidity") or {}).get("usd") or 0) > ((raw[b.lower()].get("liquidity") or {}).get("usd") or 0): raw[b.lower()] = p
+        for i in range(0, len(xs), 30):   # v8.13: tools/pairs.py main-pool rule
+            raw.update({k: v for k, v in pairs_mod.best_map(kol_coins._get(f"{DS}/tokens/v1/{ch}/" + ",".join(ad for ad, _ in xs[i:i + 30])) or [], ch).items() if v})
         for k_, p in raw.items():
             c = to_coin(p)
             if not c.get("price") or not c.get("mcap") or str(c["address"]).lower() in kol_coins.__dict__.get("QUOTES", ()): continue

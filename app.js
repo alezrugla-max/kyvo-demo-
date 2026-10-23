@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_12 — v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_13 — v8.13 launch sweep: one main-pool price rule (pairs.js), watchlist entry repair · v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +10,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_12';
+  const MVP_MARKER = 'KYVO_LIVE_v8_13';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -654,37 +654,50 @@
     return cid === 'solana' || cid === 'bsc' || cid === 'robinhood';
   }
 
+  // v8.13: ONE pair rule everywhere (pairs.js): exact CA + chain, real pool with the most liquidity (tie: 24 h volume),
+  // the pump.fun / four.meme curve pair only while there is no real pool yet. v8.12 and older preferred the curve pair,
+  // so a migrated coin showed the DEAD pump.fun pair (frozen price → e.g. $SHAVCOIN "MC $24.3K" while it was at $3M).
+  const KP = window.KyvoPairs;
   function pickBestPairs(pairs) {
-    const best = {};
-    for (const p of pairs || []) {
-      if (!p || !allowedChain(p.chainId) || !p.baseToken) continue;
-      if (activeChain !== 'all' && p.chainId !== activeChain) continue;
-      const k = coinKey(p.chainId, p.baseToken.address);
-      const liq = (p.liquidity && p.liquidity.usd) || 0;
-      if (!best[k] || liq > ((best[k].liquidity && best[k].liquidity.usd) || 0)) best[k] = p;
-    }
-    return best;
+    return KP.bestMap(pairs, coinKey, (p) => allowedChain(p.chainId) && (activeChain === 'all' || p.chainId === activeChain));
   }
-
+  const rawPairs = new WeakMap(); // intoMap -> { key: { pairs: [...], meta } } (all pairs seen per coin)
   function ingestPairs(pairs, metaByAddr, intoMap) {
+    let raw = rawPairs.get(intoMap);
+    if (!raw) { raw = {}; rawPairs.set(intoMap, raw); }
+    const touched = new Set();
     for (const p of pairs || []) {
-      if (!p || !allowedChain(p.chainId) || !p.baseToken) continue;
-      const meta = metaByAddr && (metaByAddr[p.baseToken.address] || metaByAddr[coinKey(p.chainId, p.baseToken.address)]);
-      const c = pairToCoin(p, meta);
-      if (!c) continue;
-      if (p.info && p.info.imageUrl) rememberImg(c.chainId, c.address, p.info.imageUrl);
-      const k = keyOf(c);
-      const prev = intoMap[k];
-      if (!prev) {
-        intoMap[k] = c;
-        continue;
-      }
-      if (c.onCurve && !prev.onCurve) intoMap[k] = c;
-      else if (c.onCurve === prev.onCurve && (c.liquidity || 0) > (prev.liquidity || 0)) intoMap[k] = c;
-      else if (!c.onCurve && !prev.onCurve && (c.liquidity || 0) > (prev.liquidity || 0)) intoMap[k] = c;
-      if ((c.boost || 0) > (prev.boost || 0)) intoMap[k].boost = c.boost;
-      if (!intoMap[k].image && c.image) intoMap[k].image = c.image;
+      if (!p || !allowedChain(p.chainId) || !p.baseToken || !p.baseToken.address) continue;
+      const k = coinKey(p.chainId, p.baseToken.address);
+      const r = (raw[k] = raw[k] || { pairs: [], meta: null });
+      const meta = metaByAddr && (metaByAddr[p.baseToken.address] || metaByAddr[k]);
+      if (meta) r.meta = r.meta ? Object.assign({}, r.meta, meta) : meta;
+      const i = r.pairs.findIndex((q) => q.pairAddress === p.pairAddress);
+      if (i >= 0) r.pairs[i] = p; else r.pairs.push(p);
+      if (p.info && p.info.imageUrl) rememberImg(p.chainId, p.baseToken.address, p.info.imageUrl);
+      touched.add(k);
     }
+    for (const k of touched) {
+      const r = raw[k];
+      const bp = KP.choose(r.pairs);
+      const c = bp && pairToCoin(bp, r.meta);
+      if (!c) continue;
+      const prev = intoMap[k];
+      if (KP.migrated(r.pairs, c.chainId, c.address)) c.migratedFromCurve = true;
+      if (prev) {
+        c.boost = Math.max(c.boost || 0, prev.boost || 0);
+        if (!c.image && prev.image) c.image = prev.image;
+        if (!c.description && prev.description) c.description = prev.description;
+        if ((!c.socials || !c.socials.length) && prev.socials && prev.socials.length) { c.socials = prev.socials; c.hasSocials = true; }
+      }
+      intoMap[k] = c;
+    }
+  }
+  // v8.13: a ticker/keyword search often returns ONLY the pump.fun curve pair of a coin that already migrated (the real
+  // PumpSwap/Raydium pool is missing from that answer). Re-check every curve coin with its full pair list.
+  async function verifyCurveCoins(intoMap) {
+    const need = Object.values(intoMap).filter((c) => c && c.onCurve).map((c) => c.address);
+    if (need.length) await fetchTokenBatch(need.slice(0, 150), null, intoMap);
   }
 
   async function fetchTokenBatch(addrs, metaByAddr, intoMap) {
@@ -765,6 +778,8 @@
           ingestPairs(wanted, metaByAddr, into);
         } catch (e) {}
       }
+
+      try { await verifyCurveCoins(into); } catch (e) {}
 
       const newMap = {};
       await Promise.all([
@@ -1081,8 +1096,8 @@
             const d = await fetchJson(DS + '/tokens/v1/' + ch + '/' + grp.map((e) => e.addr).join(','));
             const pairs = Array.isArray(d) ? d : (d && d.pairs) || [];
             for (const e of grp) {
-              const ps = pairs.filter((p) => p.baseToken && p.baseToken.address && p.baseToken.address.toLowerCase() === e.addr.toLowerCase());
-              const p = ps.find((q) => q.pairAddress === e.pair) || ps.sort((a, b) => ((b.liquidity && b.liquidity.usd) || 0) - ((a.liquidity && a.liquidity.usd) || 0))[0];
+              const p = KP.best(pairs, ch, e.addr); // v8.13: the coin's main pool now (a stored curve pair dies at migration)
+              if (p && p.pairAddress && p.pairAddress !== e.pair && !KP.isCurve(p)) { e.pair = p.pairAddress; e.ohAt = 0; }
               if (p && p.priceUsd) trackSample(e, +p.priceUsd, p.marketCap || p.fdv);
             }
           } catch (err) {}
@@ -1903,10 +1918,8 @@
       try {
         const d = await fetchJson(DS + '/latest/dex/tokens/' + addrs.slice(i, i + 30).join(','));
         const best = {};
-        for (const p of d.pairs || []) {
-          const k = coinKey(p.chainId, p.baseToken && p.baseToken.address);
-          const liq = (p.liquidity && p.liquidity.usd) || 0;
-          if (!best[k] || liq > best[k].liq) best[k] = { liq, price: p.priceUsd != null ? +p.priceUsd : null, mcap: p.marketCap || p.fdv, change24: p.priceChange && p.priceChange.h24, image: p.info && p.info.imageUrl };
+        for (const [k, p] of Object.entries(KP.bestMap(d.pairs || [], coinKey))) {
+          if (p) best[k] = { liq: KP.liq(p), price: p.priceUsd != null ? +p.priceUsd : null, mcap: p.marketCap || p.fdv, change24: p.priceChange && p.priceChange.h24, image: p.info && p.info.imageUrl };
         }
         Object.assign(liveCoin, best);
       } catch (e) { /* snapshot values stay */ }
@@ -2445,12 +2458,12 @@
       return;
     }
     if (v === 'good') {
-      const smNote = goodSortSmart ? 'sortowanie: konsensus smart money' : 'sortowanie: popularność × potencjał';
-      const gl = listGood();
       const en = window.KyvoI18n && window.KyvoI18n.isEn();
+      const smNote = goodSortSmart ? (en ? 'sort: smart money consensus' : 'sortowanie: konsensus smart money') : (en ? 'sort: popularity × upside' : 'sortowanie: popularność × potencjał');
+      const gl = listGood();
       const fewNote = gl.length < 3 ? `<div class="card" style="font-size:12.5px;color:var(--warn)" translate="no">${en ? 'Few good setups right now' : 'Teraz mało dobrych setupów'} — ${en ? 'only coins that are popular right now, with a safe Kyvo Check, more buyers than sellers, healthy volume and a positive base estimate for 1h, 3h and 8h are shown. We don\u2019t fill the list with falling coins.' : 'pokazujemy tylko coiny popularne teraz, z bezpiecznym Kyvo Check, przewagą kupujących, zdrowym wolumenem i dodatnim szacunkiem bazowym na 1h, 3h i 8h. Nie dopychamy listy spadającymi coinami.'}</div>` : '';
       const pendNote = goodPending ? `<div class="mut" style="font-size:11.5px;margin:6px 2px" translate="no">⏳ ${en ? 'Checking contracts of ' + goodPending + ' more coins (RugCheck / GoPlus)…' : 'Sprawdzam kontrakty jeszcze ' + goodPending + ' coinów (RugCheck / GoPlus)…'}</div>` : '';
-      renderList(gl, 'Good Coins', 'Popularne teraz + szansa na wzrost w 8h · ' + smNote, {
+      renderList(gl, 'Good Coins', (en ? 'Hot now + chance to rise in 8h · ' : 'Popularne teraz + szansa na wzrost w 8h · ') + smNote, {
         filtTab: 'good',
         emptyHtml: `<div class="empty" translate="no">${goodPending ? (en ? 'Checking contracts — Good Coins will appear here in a moment.' : 'Sprawdzam kontrakty — Good Coins pojawią się tu za chwilę.') : (en ? 'Right now no coin passes all Kyvo checks (safety, popularity, upside). We re-check every 45 s and never pad the list with weak coins.' : 'Teraz żaden coin nie przechodzi wszystkich testów Kyvo (bezpieczeństwo, popularność, potencjał). Sprawdzamy ponownie co 45 s i nie dopychamy listy słabymi coinami.')}<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="pill" style="padding:8px 14px;font-size:12.5px" href="#new">${en ? 'See New Pairs' : 'Zobacz New Pairs'}</a><a class="pill" style="padding:8px 14px;font-size:12.5px" href="#runner">🏃 Runner</a></div></div>`,
         footnote: pendNote + (!gl.length || (goodPending && gl.length < 3) ? '' : fewNote) + `<div class="mut" style="font-size:11px;margin:6px 2px" translate="no">${en ? 'Good Coins = popular right now × chance to rise in 8h, after safety filters. This is not a forecast or financial advice — memecoins can go to zero.' : 'Good Coins = popularne teraz × szansa na wzrost w 8h, po filtrach bezpieczeństwa. To nie prognoza ani porada finansowa — memecoiny mogą spaść do zera.'}</div>` + `<div class="filtbar" style="margin:8px 0"><button type="button" class="fbtn ${goodSortSmart ? 'on' : ''}" id="goodSmartSort">🧠 Konsensus SM</button>
@@ -2473,7 +2486,7 @@
         renderList(listStretch('stretch'), 'Final Stretch', stretchTip(), {
           filtTab: 'stretch',
           rowOpts: { showCurve: true },
-          footnote: qualityNote('stretch') + '<div class="mut" style="font-size:11px;margin:6px 2px">* Procent krzywej to estymacja Kyvo</div>',
+          footnote: qualityNote('stretch') + '<div class="mut" style="font-size:11px;margin:6px 2px" translate="no">' + (window.KyvoI18n && window.KyvoI18n.isEn() ? '* Curve % is a Kyvo estimate' : '* Procent krzywej to estymacja Kyvo') + '</div>',
         });
       }
       location.hash = 'stretch';

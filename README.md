@@ -79,6 +79,21 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.13 (KYVO_LIVE_v8_13 · SW kyvo-v8-13) — one pair rule, correct watchlist entry
+- **pairs.js / tools/pairs.py** — one rule for "which pool is the price of this coin": exact CA + chain (never the ticker),
+  real pool with the most USD liquidity (tie: 24 h volume), pump.fun / four.meme curve pair only while the coin is still
+  on its curve, dust pools (< $1k liq) only as a last resort. Used by lists, coin page, chart, watchlist, Runner, Gold,
+  New Pairs, New Tweet, Wyniki and the backend tools (discord_calls, gold, x_live, track_record, update_x_viral).
+- Fixed: after a migration DexScreener keeps the dead pump.fun pair (frozen price) — v8.12 picked it, e.g. $SHAVCOIN
+  showed "MC $24.3K → $3.38M, +14041%" on the watchlist and a 1-candle chart. Curve coins are re-checked with their full
+  pair list (verifyCurveCoins), so migrated coins also leave Final Stretch.
+- Watchlist entry check: an entry > 5× off the main pool's GeckoTerminal OHLCV at the add time is re-derived from the
+  candles (peak / low rebuilt, pct alerts re-armed) and marked "✓ wejście poprawione z wykresu głównej puli". Existing
+  localStorage entries are repaired once (ENTRY_V=1, ≤ 3 GT calls / 30 s).
+- Gold: ticker search re-resolves the top token by CA; dust copies (no liquidity, no trading) are ignored in the copy
+  check and in "other coins with this ticker". Profile: SOL price from the WSOL main pool (was: any Solana pair).
+- EN: Good Coins subtitle and Final Stretch footnote translated; Regulamin §2 now names Gold / Runner / alerts.
+
 ## v8.12 (KYVO_LIVE_v8_12 · SW kyvo-v8-12) — 🥇 Gold
 Orangie-style coin DD ("Grok bot" + "Memecoin Digester") as a new tab **🥇 Gold** (bottom bar + seg bar, `#gold`, `#gold/<chain>:<CA>`).
 - **Sprawdź coin** (gold.js + gold-rules.js, in the browser): paste a CA / pump.fun / DexScreener link / `$ticker` (ticker → the pool with the most liquidity + volume, other coins with that ticker listed). Verdict 🥇 Gold / 🟡 Hazard / 🔴 Trzymaj się z daleka + DD checklist in Polish (EN via L2): avg trade size (≈$10–15 = volume bots), share of < $5 trades, MC vs liquidity, holder counter vs wallets that traded in 24 h (holder farm), top 1 / top 10, single buy that filled the pump.fun curve, bundle / insiders, mint / freeze / LP lock (RugCheck; GoPlus on BSC), borrowed celebrity name vs official (linked X handle / tweeted by that handle), copies / vamps (which one is the original), age + migration, buy/sell pressure, 5m / 1h / 6h change, links, KOL holding / tweeting (can be the narrative), news (from the Gold feed).

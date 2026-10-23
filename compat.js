@@ -1,4 +1,4 @@
-/* Kyvo v8.12 — tiny polyfills for older desktop/mobile browsers + forced update check (version.json, no-store). */
+/* Kyvo v8.13 — tiny polyfills for older desktop/mobile browsers + forced update check (version.json, no-store). */
 (function () {
   if (!Object.fromEntries) Object.fromEntries = function (it) { var o = {}; Array.from(it).forEach(function (p) { o[p[0]] = p[1]; }); return o; };
   if (!Array.prototype.flat) Object.defineProperty(Array.prototype, 'flat', { configurable: true, writable: true, value: function (d) { d = d === undefined ? 1 : d; return this.reduce(function (a, x) { return a.concat(Array.isArray(x) && d > 0 ? x.flat(d - 1) : x); }, []); } });
@@ -6,7 +6,7 @@
   if (typeof globalThis === 'undefined') window.globalThis = window;
   if (window.Promise && !Promise.allSettled) Promise.allSettled = function (ps) { return Promise.all(Array.from(ps).map(function (p) { return Promise.resolve(p).then(function (v) { return { status: 'fulfilled', value: v }; }, function (r) { return { status: 'rejected', reason: r }; }); })); };
 
-  var APP_VERSION = '8.12';
+  var APP_VERSION = '8.13';
   window.KYVO_VERSION = APP_VERSION;
   // drop logo caches written by older versions (could hold the Kyvo mascot or pump.fun placeholder URLs)
   try { ['kyvo_img_v1'].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}

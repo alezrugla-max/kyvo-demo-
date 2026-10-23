@@ -62,14 +62,14 @@ def coin_from_pair(p: dict) -> dict:
     }
 
 def best_pair_per_token(pairs: list[dict]) -> dict[tuple, dict]:
-    best: dict[tuple, dict] = {}
+    from pairs import choose   # v8.13: main-pool rule (tools/pairs.py)
+    g: dict[tuple, list] = {}
     for p in pairs or []:
         b = p.get("baseToken") or {}
         k = (p.get("chainId"), (b.get("address") or "").lower())
         if not k[1]: continue
-        liq = (p.get("liquidity") or {}).get("usd") or 0
-        if k not in best or liq > ((best[k].get("liquidity") or {}).get("usd") or 0): best[k] = p
-    return best
+        g.setdefault(k, []).append(p)
+    return {k: choose(v) for k, v in g.items()}
 
 def resolve_address(addr: str) -> dict | None:
     d = ds_get("/latest/dex/tokens/" + addr)

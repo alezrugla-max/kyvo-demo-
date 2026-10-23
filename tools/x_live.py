@@ -211,12 +211,10 @@ def refresh_prices(tweets: list[dict]) -> None:
         addrs = list(dict.fromkeys(c["address"] for c in cs))
         for i in range(0, len(addrs), 30):
             d = get(f"https://api.dexscreener.com/tokens/v1/{ch}/" + ",".join(addrs[i:i + 30]))
-            best: dict[str, dict] = {}
-            for p in d or []:
-                a = (p.get("baseToken") or {}).get("address")
-                if a and ((p.get("liquidity") or {}).get("usd") or 0) >= ((best.get(a, {}).get("liquidity") or {}).get("usd") or -1): best[a] = p
+            from pairs import best_map   # v8.13: main-pool rule (tools/pairs.py)
+            best = best_map(d or [], ch)
             for c in cs:
-                p = best.get(c["address"])
+                p = best.get(c["address"].lower())
                 if not p or not p.get("priceUsd"): continue
                 c.update({"price_usd": float(p["priceUsd"]), "mcap": p.get("marketCap") or p.get("fdv") or c.get("mcap"),
                           "change_h24": (p.get("priceChange") or {}).get("h24"), "liquidity": (p.get("liquidity") or {}).get("usd"),

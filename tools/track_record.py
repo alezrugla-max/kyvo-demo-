@@ -14,6 +14,9 @@ Usage: python3 tools/track_record.py --flags .kyvo_calls/flags.json --out data/t
 from __future__ import annotations
 import argparse, json, os, time, urllib.request
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from pairs import choose, is_curve  # noqa: E402  (v8.13 main-pool rule)
 
 UA = {"User-Agent": "kyvo-track-record/8.3 (+https://github.com/alezrugla-max/kyvo-demo-)", "Accept": "application/json"}
 DS = "https://api.dexscreener.com"
@@ -60,7 +63,8 @@ def main() -> int:
             d = get(f"{DS}/tokens/v1/{ch}/" + ",".join(e["addr"] for e in grp[i:i + 30]))
             for e in grp[i:i + 30]:
                 ps = [p for p in (d or []) if ((p.get("baseToken") or {}).get("address") or "").lower() == e["addr"].lower()]
-                p = next((q for q in ps if q.get("pairAddress") == e.get("pair")), None) or (max(ps, key=lambda q: (q.get("liquidity") or {}).get("usd") or 0) if ps else None)
+                p = choose(ps)   # v8.13: the coin's main pool NOW (a stored pump.fun curve pair is dead after migration)
+                if p and p.get("pairAddress") and p["pairAddress"] != e.get("pair") and not is_curve(p): e["pair"] = p["pairAddress"]; e.pop("ohFinal", None)
                 if p and p.get("priceUsd"):
                     px = float(p["priceUsd"]); e["last"] = px; e["lastAt"] = now_ms; e["mcNow"] = p.get("marketCap") or p.get("fdv") or e.get("mcNow")
                     if px > (e.get("max") or 0): e["max"], e["maxAt"] = px, now_ms

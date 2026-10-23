@@ -267,13 +267,13 @@
     if (watch[k]) { delete watch[k]; saveWatch(); D.toast('Usunięto z watchlisty'); return false; }
     if (Object.keys(watch).length >= 60) { D.toast('Watchlista: max 60 coinów'); return false; }
     watch[k] = { chain: c.chainId || 'solana', address: c.address, symbol: c.symbol, name: c.name, image: c.image || null,
-      addedAt: Date.now(), entryAt: null, addedPrice: null, addedMcap: c.mcap || null, peakPct: 0, lowPct: 0, alerts: [] };
+      addedAt: Date.now(), entryAt: null, addedPrice: null, addedMcap: c.mcap || null, peakPct: 0, lowPct: 0, alerts: [], pair: c.pairAddress || null };
     const px = c.priceUsd != null ? +c.priceUsd : NaN;
     if (px > 0 && isFinite(px)) { watch[k].addedPrice = px; watch[k].entryAt = watch[k].addedAt; }
     else watch[k].entryPending = 'add'; // no price on this coin object → first live DexScreener price (≤ 30 s)
     saveWatch();
     D.toast('⭐ Dodano do watchlisty');
-    ensurePoll();
+    if (pollT) pollLive(); else ensurePoll(); // v8.13: main-pool price at once (entry cross-check in updateEntries)
     return true;
   }
   function updateBadge() {
@@ -295,22 +295,84 @@
     const keys = Object.keys(watch);
     if (!keys.length) return;
     const addrs = [...new Set(keys.map((k) => watch[k].address))];
+    const KP = window.KyvoPairs;
+    const lcKey = {}; for (const k of keys) lcKey[(watch[k].chain || 'solana') + ':' + String(watch[k].address).toLowerCase()] = k;
     for (let i = 0; i < addrs.length; i += 30) {
       try {
         const d = await getJson('https://api.dexscreener.com/latest/dex/tokens/' + addrs.slice(i, i + 30).join(','), 20000);
-        const best = {};
-        for (const p of (d && d.pairs) || []) {
-          if (!p || !p.baseToken) continue;
-          const k = (p.chainId || 'solana') + ':' + p.baseToken.address;
-          const liq = (p.liquidity && p.liquidity.usd) || 0;
-          if (!best[k] || liq > best[k].liquidity) best[k] = { priceUsd: p.priceUsd != null ? +p.priceUsd : null, mcap: p.marketCap || p.fdv || null, liquidity: liq, change: p.priceChange || {}, image: p.info && p.info.imageUrl };
+        // v8.13: the coin's MAIN pool by exact CA + chain (most liquidity; a dead pump.fun curve pair never wins after migration)
+        const bm = KP.bestMap((d && d.pairs) || [], (ch, a) => ch + ':' + String(a).toLowerCase());
+        for (const [lk, p] of Object.entries(bm)) {
+          const k = lcKey[lk];
+          if (!k || !p) continue;
+          live[k] = { priceUsd: p.priceUsd != null ? +p.priceUsd : null, mcap: p.marketCap || p.fdv || null, liquidity: KP.liq(p), change: p.priceChange || {},
+            image: p.info && p.info.imageUrl, pair: p.pairAddress || null, dexId: p.dexId || '', curve: KP.isCurve(p), pairCreatedAt: p.pairCreatedAt || null };
         }
-        Object.assign(live, best);
       } catch (e) { /* keep last */ }
     }
     updateEntries();
     checkAlerts();
+    verifyEntries().then((ch) => { if (ch && document.querySelector('#s-watch.on')) renderWatch(document.querySelector('#watchBody')); });
     if (document.querySelector('#watchBody') && document.querySelector('#s-watch.on')) renderWatch(document.querySelector('#watchBody'));
+  }
+  /* v8.13: entry-price sanity check (+ one-time repair of entries saved by v8.12 and older).
+     The entry is compared with the MAIN pool's own candles (GeckoTerminal OHLCV) at the moment of adding. If it is off by
+     more than 5× (it came from a dead curve pair / copy coin) it is re-derived from that candle and marked "poprawiona".
+     Peak / low since added are then rebuilt from the same candles. Every entry is checked once (entryChecked). */
+  const ENTRY_V = 1;
+  let verifyBusy = false;
+  async function entryFromOhlcv(w, Lv, t0) {
+    const net = GTN[w.chain];
+    if (!net || !Lv.pair) return null;
+    const ageMin = (Date.now() - t0) / 60000;
+    const [tf, agg, step] = ageMin <= 80 * 60 ? ['minute', 5, 300] : ageMin <= 40 * 1440 ? ['hour', 1, 3600] : ['day', 1, 86400];
+    const lim = Math.min(1000, Math.ceil((ageMin * 60) / step) + 3);
+    const url = `https://api.geckoterminal.com/api/v2/networks/${net}/pools/${encodeURIComponent(Lv.pair)}/ohlcv/${tf}?aggregate=${agg}&limit=${lim}&currency=usd&token=${encodeURIComponent(w.address)}`;
+    const d = window.KyvoGT ? await window.KyvoGT.fetch(url, 300000) : await getJson(url, 300000);
+    const ol = ((d && d.data && d.data.attributes && d.data.attributes.ohlcv_list) || []).map((r) => r.map(Number)).sort((a, b) => a[0] - b[0]);
+    if (!ol.length) return null;
+    const ts = t0 / 1000;
+    if (ol[0][0] > ts) return { before: true }; // the pool has no candle that old (pool newer than the entry, or history cut)
+    const inC = ol.find((r) => r[0] <= ts && ts < r[0] + step);
+    const prev = ol.filter((r) => r[0] <= ts).pop();
+    const px = inC ? inC[1] : prev ? prev[4] : null;
+    if (!(px > 0)) return null;
+    const after = ol.filter((r) => r[0] + step > ts);
+    return { px, hi: Math.max(...after.map((r) => r[2])), lo: Math.min(...after.map((r) => r[3])) };
+  }
+  async function verifyEntries() {
+    if (verifyBusy) return false;
+    verifyBusy = true;
+    let changed = false, n = 0;
+    try {
+      for (const [k, w] of Object.entries(watch)) {
+        if ((w.entryChecked || 0) >= ENTRY_V || w.entryPending || !(w.addedPrice > 0)) continue;
+        const Lv = live[k];
+        if (!Lv || !Lv.pair || !(Lv.priceUsd > 0)) continue;
+        const t0 = w.entryAt || w.addedAt;
+        if (!t0 || Date.now() - t0 < 3 * 60e3) continue; // the candle of the entry minute is not final yet
+        if (n++ >= 3) break; // ≤ 3 GeckoTerminal calls per 30-s refresh (shared public rate limit)
+        // pool created after the entry → the coin was on its curve then; the curve price was the real price
+        if (Lv.pairCreatedAt && Lv.pairCreatedAt > t0 && !Lv.curve) { w.entryChecked = ENTRY_V; changed = true; continue; }
+        let r = null;
+        try { r = await entryFromOhlcv(w, Lv, t0); } catch (e) { r = null; }
+        if (!r) { w.entryTries = (w.entryTries || 0) + 1; if (w.entryTries >= 4) w.entryChecked = ENTRY_V; changed = true; continue; }
+        if (r.before) { w.entryChecked = ENTRY_V; changed = true; continue; }
+        const ratio = w.addedPrice / r.px;
+        if (ratio > 5 || ratio < 0.2) {
+          w.entryFix = { oldPrice: w.addedPrice, oldMcap: w.addedMcap || null, at: Date.now(), pool: Lv.pair };
+          w.addedPrice = r.px;
+          w.addedMcap = Lv.mcap > 0 ? (Lv.mcap * r.px) / Lv.priceUsd : null;
+          w.peakPct = Math.max(0, (r.hi / r.px - 1) * 100); w.lowPct = Math.min(0, (r.lo / r.px - 1) * 100);
+          delete lastCh[k];
+          // alerts that fired only because of the wrong entry are re-armed
+          for (const a of w.alerts || []) if (a.type === 'pct') a.fired = null;
+        }
+        w.entryChecked = ENTRY_V; w.pair = Lv.pair; changed = true;
+      }
+    } finally { verifyBusy = false; }
+    if (changed) saveWatch();
+    return changed;
   }
   // v8.7: fill missing entry prices + track peak / low "since added" from every live refresh (only while Kyvo is open)
   function sincePct(w, L) { return w && w.addedPrice > 0 && L && L.priceUsd > 0 ? (L.priceUsd / w.addedPrice - 1) * 100 : null; }
@@ -324,6 +386,12 @@
         w.addedPrice = L.priceUsd; w.addedMcap = L.mcap || w.addedMcap || null; w.entryAt = Date.now();
         if (w.entryPending === 'update') w.entryFrom = 'update';
         delete w.entryPending; w.peakPct = 0; w.lowPct = 0; dirty = true;
+        continue;
+      }
+      // v8.13: within 2 min after adding, the entry must match the coin's main pool (the coin object could carry a stale pair)
+      if (!w.entryFix && Date.now() - (w.entryAt || w.addedAt) < 120e3 && (w.addedPrice / L.priceUsd > 3 || L.priceUsd / w.addedPrice > 3)) {
+        w.entryFix = { oldPrice: w.addedPrice, oldMcap: w.addedMcap || null, at: Date.now(), pool: L.pair };
+        w.addedPrice = L.priceUsd; w.addedMcap = L.mcap || null; w.peakPct = 0; w.lowPct = 0; delete lastCh[k]; dirty = true;
         continue;
       }
       if (!(w.addedMcap > 0) && L.mcap > 0) { w.addedMcap = L.mcap * w.addedPrice / L.priceUsd; dirty = true; }
@@ -449,7 +517,7 @@
             ${D.imgTag ? D.imgTag({ chainId: w.chain, address: w.address, symbol: w.symbol, image: lv.image || w.image }, 'tok', 38) : ''}
             <span class="nm"><b><span class="cbadge c-${E(w.chain)}">${E(w.chain === 'solana' ? 'SOL' : w.chain === 'bsc' ? 'BSC' : 'RH')}</span> $${E(w.symbol)}</b>
               <small>MC <span class="wmc0">${D.fmtUsd(w.addedMcap)}</span> → <b class="${cls}">${D.fmtUsd(mcNow)}</b></small>
-              <small>${timeTxt}</small></span>
+              <small>${timeTxt}</small>${w.entryFix ? `<small class="wfix" title="${E(L('Stara cena wejścia', 'Old entry price') + ': ' + D.fmtUsd(w.entryFix.oldPrice) + ' · MC ' + D.fmtUsd(w.entryFix.oldMcap))}">✓ ${L('wejście poprawione (główna pula)', 'entry fixed (main pool)')}</small>` : ''}</span>
             <span class="rt"><b class="wpct ${cls}">${since != null ? D.fmtPct(since) : '—'}</b><small class="mut">${mig ? L('od startu', 'since start') : L('od dodania', 'since added')}</small></span>
           </a>
           ${since != null ? `<div class="wpl">

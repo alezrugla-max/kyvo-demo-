@@ -109,7 +109,7 @@
     if (!out.cur) {
       try {
         const d = await (await fetch('https://api.dexscreener.com/latest/dex/tokens/' + WSOL)).json();
-        const p = (d.pairs || []).find((x) => x.chainId === 'solana' && x.priceUsd);
+        const p = window.KyvoPairs.best(d.pairs || [], 'solana', WSOL); // v8.13: SOL as the BASE token (a SOL-quoted pair's priceUsd is the other coin)
         out.cur = p ? +p.priceUsd : null;
       } catch (e) {}
     }
@@ -264,12 +264,11 @@
       for (let i = 0; i < need.length; i += 30) {
         try {
           const d = await (await fetch('https://api.dexscreener.com/latest/dex/tokens/' + need.slice(i, i + 30).join(','))).json();
-          for (const p of d.pairs || []) {
-            if (p.chainId !== chain || !p.baseToken) continue;
-            const k = mk(chain, p.baseToken.address);
-            const liq = (p.liquidity && p.liquidity.usd) || 0;
-            if (tokMeta[k] && tokMeta[k]._liq >= liq) continue;
-            tokMeta[k] = { symbol: p.baseToken.symbol, name: p.baseToken.name, price: p.priceUsd && liq >= 500 ? +p.priceUsd : null, image: p.info && p.info.imageUrl, _liq: liq };
+          // v8.13: main pool per token (pairs.js) — a coin still on its pump.fun curve has no pool liquidity but a real price
+          for (const [k, p] of Object.entries(window.KyvoPairs.bestMap(d.pairs || [], mk, (x) => x.chainId === chain))) {
+            if (!p) continue;
+            const liq = window.KyvoPairs.liq(p), curve = window.KyvoPairs.isCurve(p);
+            tokMeta[k] = { symbol: p.baseToken.symbol, name: p.baseToken.name, price: p.priceUsd && (liq >= 500 || curve) ? +p.priceUsd : null, image: p.info && p.info.imageUrl, _liq: liq };
           }
         } catch (e) {}
         for (const m of need.slice(i, i + 30)) if (!tokMeta[mk(chain, m)]) tokMeta[mk(chain, m)] = { symbol: null, name: null, price: null };

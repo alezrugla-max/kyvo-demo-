@@ -108,13 +108,11 @@ def candidates(chain: str) -> list[str]:
     return out[:210]
 
 def pairs_for(chain: str, addrs: list[str]) -> list[dict]:
+    # v8.13: tools/pairs.py rule (exact CA, main pool by liquidity, dead pump.fun curve pair never wins after migration)
+    from pairs import best_map
     best: dict[str, dict] = {}
     for i in range(0, len(addrs), 30):
-        for p in get(f"{DS}/tokens/v1/{chain}/" + ",".join(addrs[i:i + 30])) or []:
-            b = (p.get("baseToken") or {}).get("address")
-            if not b or p.get("chainId") != chain: continue
-            liq = (p.get("liquidity") or {}).get("usd") or 0
-            if b.lower() not in best or liq > ((best[b.lower()].get("liquidity") or {}).get("usd") or 0): best[b.lower()] = p
+        best.update({k: v for k, v in best_map(get(f"{DS}/tokens/v1/{chain}/" + ",".join(addrs[i:i + 30])) or [], chain).items() if v})
         time.sleep(0.3)
     return list(best.values())
 
