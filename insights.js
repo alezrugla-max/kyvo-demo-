@@ -444,6 +444,19 @@
     if (!b) return;
     b.onclick = () => { const on = toggleWatch(c); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '★ Obserwujesz' : '☆ Obserwuj'; };
   }
+  // v8.14: alerts from the coin page (same watchlist alert logic: stored in w.alerts, checked every 30 s)
+  function addAlert(c, type, value) {
+    if (!['mcAbove', 'mcBelow', 'pct'].includes(type) || !isFinite(value) || value <= 0) return { ok: false, msg: L('Podaj liczbę większą od 0', 'Enter a number above 0') };
+    const k = D.keyOf(c);
+    if (!watch[k] && !toggleWatch(c)) return { ok: false, msg: L('Nie udało się dodać do watchlisty', 'Could not add to the watchlist') };
+    const w = watch[k];
+    if ((w.alerts || []).length >= 5) return { ok: false, msg: L('Max 5 alertów na coin', 'Max 5 alerts per coin') };
+    (w.alerts = w.alerts || []).push({ type, value, fired: null, createdAt: Date.now() });
+    saveWatch(); ensurePoll(); checkAlerts();
+    return { ok: true, msg: L('Alert zapisany', 'Alert saved') };
+  }
+  function alertsOf(c) { const w = watch[D.keyOf(c)]; return w && w.alerts ? w.alerts.map((a) => ({ ...a, label: alertLabel(a) })) : []; }
+  function removeAlert(c, i) { const w = watch[D.keyOf(c)]; if (w && w.alerts) { w.alerts.splice(i, 1); saveWatch(); } }
   function alertLabel(a) {
     return a.type === 'mcAbove' ? `MC ≥ ${D.fmtUsd(a.value)}` : a.type === 'mcBelow' ? `MC ≤ ${D.fmtUsd(a.value)}` : `ruch ±${a.value}% od dodania`;
   }
@@ -1440,7 +1453,7 @@
   window.KyvoInsights = {
     init(deps) { D = deps; updateBadge(); ensurePoll(); },
     mountCheck, localChecks, scoreOf, cloneCheck, whyHtml,
-    watchButtonHtml, wireWatchButton, renderWatch, isWatched, toggleWatch, getWatch: () => watch, checkAlerts, _live: live,
+    watchButtonHtml, wireWatchButton, renderWatch, addAlert, alertsOf, removeAlert, isWatched, toggleWatch, getWatch: () => watch, checkAlerts, _live: live,
     fillTweetSince, priceAtTweet, fullScore,
     analyze, runnerList, runnerOf, tweetRunners, goodOutlook, goodRowHtml, contractFacts, gatesHtml, estimateUpside, estimatePopularity, goodCoinRule, UPSIDE_HORIZONS, upsideRowHtml, upsideCardHtml, mountUpside, openUpInfo, tweetLinks,
   };

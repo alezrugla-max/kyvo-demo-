@@ -6,6 +6,11 @@ GitHub fires "*/5" schedules only every ~30–40 min in practice, so one workflo
   * every TWEET_EVERY (~2.5 min, v8.10): New Tweet feed -> data/x_live.json (FxTwitter, ~43 accounts, 2 at a time, ≤ ~3 min)
   * every GOLD_EVERY (~5 min, v8.12): 🥇 Gold feed -> data/gold.json (tools/gold.py: DD verdict for ~14 hot coins, news,
     KOL tweets; runs in the background like x_live, stops itself at ~200 s) + .kyvo_push/gold_alerts.json for the push step
+  * every PF_EVERY (~6 min, v8.14): pump.fun callouts + top-trader trades for hot coins -> data/pf_social.json
+    (tools/pump_social.py, public pump.fun reads; the app cannot call pump.fun itself because of CORS). Rides along in
+    feed commits; on its own it only marks a commit when nothing else changed for a while (low priority).
+  * every TK_EVERY (~4 min, v8.14): 👀 Tracker — top Ranking wallets' public pump.fun trades -> data/tracker_feed.json
+    (tools/pump_tracker.py; ≥3 top traders buying one coin in 30 min -> Premium push via smart_alerts.json + kyvo_push.py).
   * after every step: OneSignal push for genuinely new items (tools/kyvo_push.py: sent-ids dedupe + free 2/day cap)
   * data commits only when a feed's CONTENT changed (new tweet / new flag) or as a 30-min heartbeat, at most one commit per
     COMMIT_GAP (3 min) and at most COMMIT_MAX_H (7) per rolling hour — GitHub Pages (branch build) has a soft limit of
@@ -18,7 +23,7 @@ import argparse, json, os, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FEEDS = ["data/x_live.json", "data/kol_live.json", "data/gold.json"]
+FEEDS = ["data/x_live.json", "data/kol_live.json", "data/gold.json", "data/pf_social.json", "data/tracker_feed.json"]
 
 def log(*a):
     print(time.strftime("%H:%M:%S"), *a, flush=True)
@@ -97,6 +102,8 @@ def main() -> int:
     ap.add_argument("--scan-every", type=float, default=90)
     ap.add_argument("--tweet-every", type=float, default=150)
     ap.add_argument("--gold-every", type=float, default=300, help="v8.12 🥇 Gold feed refresh (s); 0 = off")
+    ap.add_argument("--pf-every", type=float, default=360, help="v8.14 pump.fun callouts/traders refresh (s); 0 = off")
+    ap.add_argument("--tk-every", type=float, default=240, help="v8.14 Tracker feed refresh (s); 0 = off")
     ap.add_argument("--commit-gap", type=float, default=180)
     ap.add_argument("--commit-max-h", type=int, default=7)
     ap.add_argument("--heartbeat", type=float, default=1800, help="commit refreshed metrics at least this often (s) even without new items")
@@ -114,10 +121,24 @@ def main() -> int:
     next_scan = next_tw = time.time(); pending = []; n_scan = n_tw = n_gold = 0
     next_gold = time.time() + 40                # v8.12: let the first Runner scan / tweet read start first (GeckoTerminal ~30 req/min)
     use_git = not (a.dry_run or a.no_git) and shutil.which("git")
-    push_cmd = [py, "tools/kyvo_push.py", "--flags", f"{a.state_dir}/flags.json", "--state", f"{a.state_dir}/sent.json"] + (["--dry-run"] if a.dry_run else [])
-    tw = None; gd = None
-    while time.time() < end - 20 or tw is not None or gd is not None:
+    push_cmd = [py, "tools/kyvo_push.py", "--flags", f"{a.state_dir}/flags.json", "--state", f"{a.state_dir}/sent.json", "--smart", f"{a.state_dir}/smart_alerts.json"] + (["--dry-run"] if a.dry_run else [])
+    tw = None; gd = None; pf = None; n_pf = 0; tk = None; n_tk = 0
+    next_tk = time.time() + 40
+    next_pf = time.time() + 75                  # v8.14: after the first scan + gold start
+    while time.time() < end - 20 or tw is not None or gd is not None or pf is not None or tk is not None:
         did = False
+        if tk is not None and tk.done():
+            o = tk.result(); tk = None
+            if o.get("tracker_commit") == "true" and not pending and time.time() - last_commit > 900: pending.append("tracker feed")
+        if a.tk_every > 0 and tk is None and time.time() >= next_tk and time.time() < end - 200:
+            next_tk = time.time() + a.tk_every; n_tk += 1
+            tk = Bg([py, "tools/pump_tracker.py", "--state-dir", a.state_dir] + (["--dry-run"] if a.dry_run else []))
+        if pf is not None and pf.done():
+            o = pf.result(); pf = None
+            if o.get("pf_commit") == "true" and not pending and time.time() - last_commit > 900: pending.append("pump.fun callouts")
+        if a.pf_every > 0 and pf is None and time.time() >= next_pf and time.time() < end - 200:
+            next_pf = time.time() + a.pf_every; n_pf += 1
+            pf = Bg([py, "tools/pump_social.py", "--state-dir", a.state_dir] + (["--dry-run"] if a.dry_run else []))
         if gd is not None and gd.done():
             o = gd.result(); gd = None; did = True
             if o.get("gold_commit") == "true": pending.append("gold")
@@ -145,10 +166,12 @@ def main() -> int:
             last_commit = now; pending = []            # also after "nothing to commit" -> no hot loop
             lt.write_text(json.dumps({"commits": commits, "last_commit": last_commit}))
         wait = min(next_scan, next_tw, next_gold if a.gold_every > 0 else next_scan) - time.time()
-        if tw is not None or gd is not None: wait = min(wait, 3)
+        if a.pf_every > 0: wait = min(wait, next_pf - time.time())
+        if a.tk_every > 0: wait = min(wait, next_tk - time.time())
+        if tw is not None or gd is not None or pf is not None or tk is not None: wait = min(wait, 3)
         if wait > 0: time.sleep(min(wait, max(1, end - time.time())))
-        if time.time() >= end - 20 and tw is None and gd is None: break
-    log(f"loop done: {n_scan} scans, {n_tw} tweet reads, {n_gold} gold runs, {len(commits)} commits in the last hour, pending={pending}")
+        if time.time() >= end - 20 and tw is None and gd is None and pf is None and tk is None: break
+    log(f"loop done: {n_scan} scans, {n_tw} tweet reads, {n_gold} gold runs, {n_pf} pump.fun reads, {n_tk} tracker reads, {len(commits)} commits in the last hour, pending={pending}")
     if use_git and pending and len(commits) < a.commit_max_h + 1:   # leave nothing important uncommitted for the next run
         if commit_feeds("feeds: " + ", ".join(dict.fromkeys(pending)) + " [kyvo-loop]"): commits.append(time.time()); last_commit = time.time()
     lt.write_text(json.dumps({"commits": commits, "last_commit": last_commit}))

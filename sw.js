@@ -2,9 +2,9 @@
 /* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
    Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
 const PUSH = !!self.KYVO_ONESIGNAL;
-const C = 'kyvo-v8-13';
+const C = 'kyvo-v8-14';
 const A = [
-  './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js', 'gold-rules.js', 'gold.js', 'pairs.js',
+  './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js', 'gold-rules.js', 'gold.js', 'pairs.js', 'coinpage.js', 'tracker.js',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js', 'privacy.html',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',

@@ -565,8 +565,23 @@
       root, kind: 'trader', back: true, title: L.name, handle: L.handle, x_url: L.x_url, address: L.address,
       avatar: L.avatar ? { type: 'url', v: L.avatar } : { type: 'ghost', v: (L.name || 'a').charCodeAt(0) % GHOSTS.length },
       model,
-      footNote: (!L.coverage && meta && meta.version >= 2) ? `Wynik z publicznego rankingu kolscan.io (Solana), zaktualizowano ${meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Lista transakcji tylko dla portfeli śledzonych przez Kyvo on-chain.` : `Dane z ostatnich ${cov.sigs != null ? cov.sigs : '—'} transakcji portfela (${cov.window_days != null ? cov.window_days + ' dni' : '—'}), zaktualizowano ${meta && meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Przypisanie portfela: publiczne źródło${L.source ? ' (' + L.source.replace(/^https?:\/\/(www\.)?/, '').split('/')[0] + ')' : ''}.`,
+      footNote: (L.sources && L.sources.length === 1 && L.sources[0] === 'pumpfun') ? `Wynik z publicznego rankingu PnL pump.fun (Solana; PnL = zrealizowany + niezrealizowany), zaktualizowano ${meta && meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Lista transakcji — zobacz 👀 Tracker lub profil pump.fun.` : (!L.coverage && meta && meta.version >= 2) ? `Wynik z publicznego rankingu kolscan.io (Solana), zaktualizowano ${meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Lista transakcji tylko dla portfeli śledzonych przez Kyvo on-chain.` : `Dane z ostatnich ${cov.sigs != null ? cov.sigs : '—'} transakcji portfela (${cov.window_days != null ? cov.window_days + ' dni' : '—'}), zaktualizowano ${meta && meta.updated_at ? H.agoLabel(meta.updated_at) : '—'}. Przypisanie portfela: publiczne źródło${L.source ? ' (' + L.source.replace(/^https?:\/\/(www\.)?/, '').split('/')[0] + ')' : ''}.`,
     });
+    traderExtras(root, L);
+  }
+  // v8.14: pump.fun stats + profile links (kolscan / pump.fun / GMGN) + 👀 follow in the Tracker
+  function traderExtras(root, L) {
+    const pf = L.pf, pr = L.profiles || {}, TR = window.KyvoTracker;
+    const E2 = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    const fm = (v) => (v == null ? '—' : `<b class="${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '+' : '−'}$${Math.abs(v) >= 1e6 ? (Math.abs(v) / 1e6).toFixed(2) + 'M' : Math.abs(v) >= 1e3 ? (Math.abs(v) / 1e3).toFixed(1) + 'K' : Math.round(Math.abs(v))}</b>`);
+    const EN = !!(window.KyvoI18n && window.KyvoI18n.isEn()), T = (pl, en) => (EN ? en : pl);
+    const per = [['1d', T('Dzień', 'Day')], ['7d', T('Tydzień', 'Week')], ['30d', T('Miesiąc', 'Month')]];
+    const pfH = pf ? `<div class="pf-pfst" translate="no"><div class="mut" style="font-size:11px;margin-bottom:4px">${T('pump.fun PnL (zrealizowany + niezrealizowany)', 'pump.fun PnL (realized + unrealized)')}${pf.verified ? ' · ✓ ' + T('zweryfikowany', 'verified') : ''}</div>
+      <div class="pf-pfg">${per.map(([k, n]) => `<div><small>${n}${pf.rank && pf.rank[k] ? ' · #' + pf.rank[k] : ''}</small>${fm(pf.pnl_usd && pf.pnl_usd[k])}${pf.positions && pf.positions[k] ? `<small class="mut">${pf.positions[k]} ${T('poz.', 'pos.')}</small>` : ''}</div>`).join('')}</div></div>` : '';
+    const links = [pr.kolscan && ['kolscan', pr.kolscan], ['pump.fun', pr.pumpfun || 'https://pump.fun/profile/' + L.address], ['GMGN', pr.gmgn || 'https://gmgn.ai/sol/address/' + L.address], ['Solscan', 'https://solscan.io/account/' + L.address]].filter(Boolean);
+    const html = `<div class="card pf-xtra">${pfH}<div class="pf-xl">${TR && TR.enabled() ? TR.btnHtml({ address: L.address, name: L.name, img: L.avatar, src: (L.sources || ['kolscan'])[0] }) : ''}${links.map(([n, u]) => `<a class="pill" href="${E2(u)}" target="_blank" rel="noopener noreferrer">${n} ↗</a>`).join('')}</div></div>`;
+    const tgt = root.querySelector('.pf-head, .pf-top, .pf-hdr');
+    if (tgt) tgt.insertAdjacentHTML('afterend', html); else root.insertAdjacentHTML('afterbegin', html);
   }
 
   /* ---------------- own profile: many wallets (Solana + EVM) ---------------- */

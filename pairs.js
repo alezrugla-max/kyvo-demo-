@@ -1,4 +1,4 @@
-/* Kyvo v8.13 — ONE rule for "which pool is the real price of this coin" (used by every list, the coin page, the chart,
+/* Kyvo v8.14 (rule unchanged since v8.13) — ONE rule for "which pool is the real price of this coin" (used by every list, the coin page, the chart,
    the watchlist, Runner / Gold / New Pairs / New Tweet / Wyniki). Before v8.13 some places preferred the pump.fun curve
    pair or the first pair returned — after a migration that pair is dead (frozen price, no liquidity), and a ticker search
    could even return a copy coin. Rules:

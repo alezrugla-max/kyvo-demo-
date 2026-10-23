@@ -28,6 +28,18 @@ window.KYVO_GOLD_CONFIG = {
   watchVampMc: 500000,         // in-app vamp alert: a copy of a watchlist coin's ticker above this MC
 };
 
+/* v8.14 👀 Tracker (wallet tracker like Axiom / pump.fun "following"). Client-side gate (data is public).
+   Free: follow up to freeFollows wallets; Premium: unlimited + phone push when ≥3 top traders buy one coin in 30 min
+   (server: tools/pump_tracker.py + tools/kyvo_push.py). Public wallet addresses only — the app never asks for keys / seed. */
+window.KYVO_TRACKER_CONFIG = {
+  enabled: true,
+  freeFollows: 3,
+  premiumPush: true,
+  rpc: 'https://solana-rpc.publicnode.com',   // free public Solana RPC (CORS *) for pasted wallets outside the server feed
+  customPollSec: 60,
+  customMaxTxPerPoll: 6,     // getTransaction calls per pasted wallet per poll (spam airdrops eat some of them)
+};
+
 /* v8.4: entitlement hook used by notifications (free = 2/day, Premium = all). Until a real backend exists
    nobody is Premium. Later: set from Firebase/Stripe entitlement (never trust a value the user can type).
    v8.11: also gates Runners (free = 1 Runner per Warsaw day) + OWNER unlock:
