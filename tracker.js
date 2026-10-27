@@ -4,7 +4,7 @@
        Ranking wallets (kolscan + pump.fun), coin info from DexScreener, cluster buys (≥2 top traders within 30 min), fresh-coin buys.
      * pasted wallets outside that set — read in the browser from a free public Solana RPC (publicnode, getSignaturesForAddress +
        getTransaction), only while this view is open, ~every 60 s, ≤ 4 new tx per wallet per poll; coin info from DexScreener.
-   Gate (KYVO_TRACKER_CONFIG): free = follow 3 wallets, Premium = unlimited + phone push (≥3 top traders buy one coin in 30 min).
+   Gate (KYVO_TRACKER_CONFIG): free = follow 3 wallets, Premium = unlimited, 🏃 Runners (v8.14.1) = unlimited + phone push (≥3 top traders buy one coin in 30 min).
    The app NEVER asks for a private key or seed phrase — only a public address. Not financial advice. */
 (function () {
   'use strict';
@@ -16,6 +16,7 @@
   const E = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   let D = {};
   const isPrem = () => !!(window.KyvoPremium && window.KyvoPremium.isActive && window.KyvoPremium.isActive());
+  const isRun = () => !!(window.KyvoPremium && window.KyvoPremium.isRunners && window.KyvoPremium.isRunners()); // v8.14.1: smart-money push = 🏃 Runners tier
   const short = (a) => (a ? a.slice(0, 4) + '…' + a.slice(-4) : '');
   const usd = (n) => (D.fmtUsd ? D.fmtUsd(n) : '$' + Math.round(n));
   const mcS = (n) => (!n ? '—' : n >= 1e9 ? '$' + (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? '$' + (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? '$' + (n / 1e3).toFixed(1) + 'K' : '$' + Math.round(n));
@@ -40,8 +41,8 @@
     const s = st();
     if (s.wallets.some((x) => x.address === w.address)) return true;
     if (s.wallets.length >= limit()) {
-      toast(L(`Darmowy plan: max ${CFG.freeFollows} obserwowane portfele · Premium = bez limitu + push`, `Free plan: max ${CFG.freeFollows} followed wallets · Premium = unlimited + push`));
-      if (D.openPremium) setTimeout(D.openPremium, 900);
+      toast(L(`Darmowy plan: max ${CFG.freeFollows} obserwowane portfele · Premium = bez limitu · 🏃 Runners = + push smart money`, `Free plan: max ${CFG.freeFollows} followed wallets · Premium = unlimited · 🏃 Runners = + smart money push`));
+      if (D.openPremium) setTimeout(() => D.openPremium('premium'), 900);
       return false;
     }
     s.wallets.push({ address: w.address, name: (w.name || '').slice(0, 32) || short(w.address), img: w.img || null, src: w.src || null, url: w.url || null, custom: !!w.custom, addedAt: Date.now() });
@@ -55,16 +56,19 @@
   function toast(m) { if (D.toast) D.toast(m); }
 
   /* follow button used on Ranking rows, chart marker popups and coin-page Callouts people */
+  // v8.15: line icons instead of the 👀 emoji (Ranking rows, popups, Callouts)
+  const CHK = '<svg class="kyi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const fLabel = (on) => (on ? CHK : ((window.KyvoIcons && window.KyvoIcons.eye) || '👀')) + `<span>${on ? L('Obserwujesz', 'Following') : L('Obserwuj', 'Follow')}</span>`;
   function btnHtml(w, cls) {
     if (!CFG.enabled || !w || !validAddr(w.address || '')) return '';
     const on = isFollowed(w.address);
-    return `<button type="button" class="trk-f${on ? ' on' : ''}${cls ? ' ' + cls : ''}" data-noop="1" data-fw="${E(w.address)}" data-fn="${E(w.name || '')}" data-fi="${E(w.img || '')}" data-fs="${E(w.src || '')}" title="${on ? L('Obserwujesz — kliknij, aby przestać', 'Following — tap to unfollow') : L('Obserwuj w 👀 Trackerze', 'Follow in 👀 Tracker')}">${on ? '👀✓' : '👀 ' + L('Obserwuj', 'Follow')}</button>`;
+    return `<button type="button" class="trk-f${on ? ' on' : ''}${cls ? ' ' + cls : ''}" data-noop="1" data-fw="${E(w.address)}" data-fn="${E(w.name || '')}" data-fi="${E(w.img || '')}" data-fs="${E(w.src || '')}" title="${on ? L('Obserwujesz — kliknij, aby przestać', 'Following — tap to unfollow') : L('Obserwuj w Trackerze', 'Follow in Tracker')}" aria-label="${on ? L('Obserwujesz', 'Following') : L('Obserwuj w Trackerze', 'Follow in Tracker')}">${fLabel(on)}</button>`;
   }
   function refreshButtons() {
     document.querySelectorAll('.trk-f[data-fw]').forEach((b) => {
       const on = isFollowed(b.dataset.fw);
       b.classList.toggle('on', on);
-      b.textContent = on ? '👀✓' : '👀 ' + L('Obserwuj', 'Follow');
+      b.innerHTML = fLabel(on);
     });
   }
   // one delegated handler for every follow button anywhere in the app
@@ -148,7 +152,7 @@
           cust.seen.add(s.signature);
           await sleep(250);
           try {
-            const tx = await rpc('getTransaction', [s.signature, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }]);
+            const tx = await rpc('getTransaction', [s.signature, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 1, commitment: 'confirmed' }]);
             const t = parseSwap(tx, w.address, solPx);
             if (t) cust.trades.set(t.tx + t.w, t);
           } catch (e) { cust.errs++; cust.seen.delete(s.signature); }
@@ -279,7 +283,7 @@
       <div class="sub">${L('Obserwuj portfele top traderów (kolscan + pump.fun) albo wklej dowolny publiczny adres Solany i patrz, co kupują i sprzedają.', 'Follow top traders’ wallets (kolscan + pump.fun) or paste any public Solana address and see what they buy and sell.')}</div>
       <div class="card trk-me">
         <div class="trk-meh"><b>${L('Obserwowane', 'Following')} ${ws.length}${lim === Infinity ? '' : '/' + lim}</b>
-          <span class="mut">${prem ? '✦ Premium · ' + L('bez limitu + push', 'unlimited + push') : L('Darmowy plan', 'Free plan') + ` · <a href="#premium" class="trk-up">✦ Premium: ${L('bez limitu + push', 'unlimited + push')}</a>`}</span>
+          <span class="mut">${prem ? (isRun() ? '🏃 Runners · ' + L('bez limitu + push', 'unlimited + push') : '✦ Premium · ' + L('bez limitu', 'unlimited') + ` · <a href="#premium" class="trk-up">🏃 Runners: + push</a>`) : L('Darmowy plan', 'Free plan') + ` · <a href="#premium" class="trk-up">✦ Premium: ${L('bez limitu', 'unlimited')} · 🏃 Runners: + push</a>`}</span>
           <button type="button" class="pill" id="trkAdd">${adding ? '×' : '+ ' + L('Dodaj adres', 'Add address')}</button></div>
         ${adding ? `<form class="trk-form" id="trkForm" autocomplete="off">
           <input id="trkAddr" inputmode="text" spellcheck="false" autocapitalize="off" placeholder="${L('Publiczny adres portfela Solany', 'Public Solana wallet address')}" maxlength="120">

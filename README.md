@@ -31,14 +31,14 @@ Marker: `KYVO_LIVE_v8_0` (meta `kyvo-build`, hidden `#mvpMarker`, `window.__KYVO
 | Jak korzystać | `#help` — FAQ for every tab, filter, "na liście od", SM badges, PnL windows/limits, login, Premium |
 | Legal (PL) | `#legal/regulamin`, `#legal/prywatnosc`, `#legal/zrodla`, `#legal/ryzyko`; links in footer, Więcej, Profil |
 | Login | `auth.js` + `auth-config.js`. **Wallet sign-in works now**: Phantom / Solflare (`signMessage`) and MetaMask / any EIP-1193 wallet (`personal_sign`). Only a readable text message is signed (never a transaction); signature verified client-side with `vendor/kyvo-crypto` (tweetnacl ed25519 + noble secp256k1/keccak, licenses included). Session = `kyvo_session_v1` in localStorage, re-verified on load; the address is added to Profil. No injected wallet on mobile → deep link (`phantom.app/ul/browse/…`, `solflare.com/ul/v1/browse/…`, `metamask.app.link/dapp/…`). **Google + e-mail link** (Firebase Auth, SDK loaded from gstatic only when enabled) are code-ready but OFF (`enabled:false`, placeholder config) → buttons show "Wkrótce". Apple = "Wkrótce". Guests keep full access ("Kontynuuj bez logowania") |
-| Premium | `#premium`, `premium-config.js` (`enabled:false`, Stripe Payment Link placeholders, `trialDays:3`). Regular $9.99/mies., launch price $3.99/mies. ("Cena startowa dla pierwszych użytkowników", no deadline/seat count), trial requires card / Apple Pay / Google Pay (no BLIK for subscriptions). Requires login. CTA shows "Wkrótce" → Kontakt. Every Premium feature is labelled "wkrótce" — none is claimed as working |
+| Premium | `#premium`, `premium-config.js` (`enabled:false`, Stripe Payment Link placeholders per plan, `trialDays:3`). Two tiers (v8.14.1), launch price -50% ("Cena startowa -50%", no deadline/seat count): **✦ Premium** ~~$9.99~~ $4.99/mies. (3 Runners/day, full Gold, unlimited Tracker and notifications) and **🏃 Runners** ~~$49.99~~ $24.99/mies. (everything in Premium + all Runners unlimited + Runner / Tweet runner / smart-money push). Free = 1 Runner/day. `KyvoPremium.tier()` → `free`/`premium`/`runners`; owner unlock = `runners`. Trial requires card / Apple Pay / Google Pay (no BLIK for subscriptions). Requires login. CTA shows "Wkrótce" → Kontakt. No purchase works yet |
 | Kontakt | `#kontakt`, `contact-config.js` (`DISCORD_HANDLE:'TODO'` → shows "pojawi się tu wkrótce"; set the handle to show a copy button; optional invite URL) |
 | Share | `<title>`, meta description, Open Graph + Twitter `summary_large_image` (`og-image.png` 1200×630), icons 16–512 + maskable, apple-touch icons, 8 iOS splash screens (`icons/splash/`), manifest shortcuts |
 | Data reset | Więcej → "Wyczyść dane Kyvo" removes every `kyvo_*` localStorage key and SW caches |
 
 ### To enable later
 - **Google / e-mail login**: follow `firebase_setup_pl.md` (repo root, Polish step-by-step), paste the 4 public web-config values into `auth-config.js`, set `google.enabled` / `email.enabled` to `true`.
-- **Payments**: Stripe account of an adult (parent/guardian) or a company. Create two subscription Payment Links (promo $3.99, regular $9.99, 3-day trial, card required), paste them into `premium-config.js`, set `enabled:true`. Real Premium entitlement needs a backend (e.g. Firebase + Stripe webhook/extension) — not built yet. Never put a Stripe secret key (`sk_…`) in this repo.
+- **Payments**: Stripe account of an adult (parent/guardian) or a company. Create subscription Payment Links per plan (Premium promo $4.99 / regular $9.99, Runners promo $24.99 / regular $49.99, 3-day trial, card required), paste them into `plans.premium` / `plans.runners` in `premium-config.js`, set `enabled:true`. Real Premium entitlement needs a backend (e.g. Firebase + Stripe webhook/extension) — not built yet. Never put a Stripe secret key (`sk_…`) in this repo.
 - **Discord**: set `DISCORD_HANDLE` (and optionally `DISCORD_INVITE_URL`) in `contact-config.js`.
 
 ### ⚠️ Legal — owner to-do (not shown in the UI)
@@ -78,6 +78,54 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 ## Legal
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
+
+## v8.15 (KYVO_LIVE_v8_15 · SW kyvo-v8-15) — 📓 Journal + Obsidian design
+
+**Design pass 2 (same v8.15):**
+- Header is calmer: a scrollable tab row with line icons instead of emoji, plus one control row holding the chain segmented control and the Filtry button. That row is hidden on detail views (coin, journal, premium, profil).
+- Leading emoji in section titles are swapped for SVG icons in fx.js, after i18n runs. Long helper paragraphs are clamped to 2 lines; tap to expand.
+- Coin rows get a sparkline built from the real 24h/6h/1h/5m changes, plus press states.
+- Runner: the hero now reads "Runnerów oznaczonych dziś" (server log). The live list is "Aktywne teraz" (live bar). A new "Oznaczone dziś" section lists the same set the hero counts, with max% and now% since the flag, using the same tier gate.
+- Restyled: Gold, Tracker and Journal (calendar heatmap and KPI tiles). Premium plan cards are now glass, with a check-icon feature list.
+- **Journal (Premium)** `journal.js` / `journal.css`: `#journal` (dashboard), `#journal/log`, `/stats`, `/coach`, `/trade/<id>`. Read-only sync of a PUBLIC wallet address (private keys / seed phrases are rejected, never stored). Trade view chart opens on a timeframe that fits the trade (`chart.js` `focus` option: finest TF that covers entry→exit, visible range zoomed to the trade).
+- **Design layer** `theme.css` (loaded last, tokens + components) and `fx.js` (inline SVG icon set for the bottom dock and Journal, section enter animation, count-up numbers — all off under `prefers-reduced-motion`).
+- **Self-hosted fonts** `fonts/` — Inter + Space Grotesk variable woff2 (latin + latin-ext), SIL OFL 1.1 (`fonts/OFL-*.txt`). No external font requests.
+- `tracker.js`: `getTransaction(..., { maxSupportedTransactionVersion: 1 })` (same as profile.js / journal.js).
+
+**Design pass 3 (same v8.15) — cinematic art:**
+- `img/`: original Kyvo renders (molten chrome, chrome K emblem, horizon arc, cliff + chart aurora, obsidian texture) plus real 360px Kyvo screen captures, all as AVIF + WebP at fixed widths. `KyvoArt.pic(name, sizes, {eager, alt, cls})` in `compat.js` builds the responsive `<picture>` (lazy unless `eager`).
+- Used in: welcome card 0 (layered hero + one-liner), welcome card 1 (two 3D-tilted phones), Premium hero (emblem over arc, chrome flow, textured plan cards), Runner/Pulse hero (arc behind the chrome numbers, big hero one-liner), Journal locked + no-wallet view (cliff band).
+- `fx.js` depth3d(): `[data-ky-par]` containers move their `[data-depth]` layers with scroll, pointer (hover devices) and device tilt where the browser gives it without a permission prompt (Android; iOS falls back to scroll). Pointer tilt on `.pl-card`, `.kyhero`, phones. All off under `prefers-reduced-motion`.
+- `sw.js`: `img/` is not precached; it is cached on first use, cache-first (same rule as `vendor/`). Cache name unchanged.
+
+**Pass 4 (same v8.15): trader-discipline tools in Journal, plus final polish:**
+- Journal → new **Plan** tab (premium):
+  - **Circuit breaker / Bezpiecznik.** Your own limits: trades per day, daily loss in SOL, losses in a row, max position size, quiet hours.
+    - When a fresh breach (under 3 h old) shows up in your synced swaps, Kyvo shows a full-screen timed break (5–60 min) with a countdown. An optional SW notification needs push permission.
+    - It does NOT block the wallet or transactions. It works while the app is open, and re-syncs every ~3 min.
+  - **Discipline** grade (A+–F): streak, adherence and breaks kept/ended early. It feeds the Discipline part of Kyvo Score.
+  - **Goals** (day/week), **pre-session checklist** (editable) and **plan for today**.
+  - **After-session note** with mood, and a **weekly reflection** with a 1–10 score and streaks. All of this is stored only on the device.
+- Analytics adds four insight cards:
+  - cost of mistake tags
+  - "if you had kept your rules" (what-if)
+  - break-even win rate
+  - P&L by trade number of the day
+- Trade view: **Kyvo Scale** (0–100 execution score), pin to **Showcase** (pins + auto A+), and a **P&L card**.
+- `share.js` (new): 1080×1920 PNG share card for a trade or a period/day, drawn on canvas. Uses the Web Share API with a file when available, otherwise a PNG download.
+- Tags: calm 🧘 / fear 😨. Premium page: comparison rows for Journal and Plan, plus the **Founding member #001–#100** wording.
+  - This is copy only. Payment logic is unchanged.
+- Polish:
+  - the desktop welcome hero has no visible box edge
+  - the coin page stats grid sits right under the chart
+  - the Ranking follow button uses an icon instead of 👀
+- `sw.js` precaches `share.js`. Cache name unchanged.
+
+**Pass 5 (same v8.15): cinematic break screen (Bezpiecznik lock):**
+- Full-screen black overlay with a breathing red edge vignette and a chrome shield-alert tile. Headline depends on the rule (loss limit / streak / trades / size / quiet hours), with a red "step back" line, a calm grey line, and a reason pill showing the red number.
+- Big chrome countdown inside a ring that fills as the break runs, then turns green with "Gotowe / Ready".
+- The confirm button only unlocks at zero. Ending early is still possible (text link + confirm) and counts as "przerwane".
+- An honest note stays: Kyvo does not block the wallet. Breaks that ended over 30 min ago are cleared silently. Reduced motion turns off all animation.
 
 ## v8.13 (KYVO_LIVE_v8_13 · SW kyvo-v8-13) — one pair rule, correct watchlist entry
 - **pairs.js / tools/pairs.py** — one rule for "which pool is the price of this coin": exact CA + chain (never the ticker),
@@ -174,3 +222,27 @@ A coin named in a tracked account's tweet (New Tweet feed: x_live / KOL) that cl
 a push (`🐦 Tweet runner: $X +NN% po tweecie @handle`, same OneSignal path, dedupe `twr:<coin>`, free cap 2/day, Premium unlimited),
 a 🐦 badge plus a tweet link in Runner, and a highlighted card in New Tweet. The rule needs a strong price rise since the tweet, rising volume and buyers, and no dump in progress.
 Only hard rugs and copycats are blocked, the same as v8.8. It is checked in every loop scan (about 90 s). Thresholds live only in `tools/kol_coins.py` (TW_T) and are not shown in the app.
+
+### v8.15 — Pass 6 (simpler + new welcome stage)
+- Circuit breaker / break screen ("Bezpiecznik") switched off: `BREAKER = false` in journal.js. Rules form, lock overlay, discipline card, "what if you followed rules" insight and its Kyvo Score effect are gone from the UI; a leftover `plan.cool` is cleared on load. Plan keeps the checklist, goals and reflections. Premium comparison row now reads "Daily plan, goals, reflections, P&L card".
+- New welcome "Kyvo stage" (`.ks-*` in theme.css, `stage()` in launch.js): real Kyvo screens (Runner, coin chart, Journal dashboard, P&L card) captured at 3x as chrome-bezel 3D phones on a green horizon glow, with CSS-only edit-style motion (fly-in, P&L card stamp, focus punch + light sweep per phone, overlay chips, cut flash). Static under reduced motion.
+- Assets: `img/scr-{runner,coin,journal}-{pl,en}-{420,780}` and `img/scr-pnl-{pl,en}-{360,640}` (AVIF + WebP, registered in KyvoArt). Card 1 loads 3×420w AVIF + 1×360w (~80 KB); cards 2 and 4 are lazy.
+
+### v8.15 — Pass 7 (one chrome 3D model, Liquid-style simplicity)
+- Liquid's "3D model" is not live 3D: the hero is a raw WebGL chrome-silk fragment shader, and the chrome object is a pre-rendered image (`/reviews/ring.webp`, a 2508px liquid-chrome ring). No three.js, Spline or glb.
+- Kyvo now does the same: welcome card 1 shows one chrome 3D Kyvo mark (rendered offline with three.js: physical chrome, studio reflections, 6 s seamless loop) on pure black with the chrome headline.
+- Assets: `img/kyvo-model.mp4` (~445 KB) / `.webm` (~486 KB), plus posters `img/kyvo-model-{380,760}.{avif,webp}` (5–19 KB). The poster shows first. The video loads on idle, fades in, and pauses off-screen or in a hidden tab. Reduced motion or Save-Data shows the poster only.
+- Cards 2 and 4 show a single floating device (coin screen / P&L card) with no chips. The pass-6 phone stage is kept in `launch.js` behind `STAGE = false`.
+- CSS class `.kym` (`.km` is already used by chart whale markers).
+
+### v8.15 — design pass 8 (menu + all screens, Liquid-calm)
+- Pure black base, chrome/silver accents, one accent pair (green up / red down); violet→cyan gradients retired (primary = white, active chip = white, panels = hairline glass).
+- Nav: mono uppercase tab row with an underline on the active tab (desktop + mobile); bottom dock of rounded hairline tiles with line icons and a dot under the active tab. Menu/Profile tiles use line SVG icons instead of emoji.
+- Runner hero = one huge chrome number + a row of smaller stats. Coin-row signal pills are hairline mono.
+- Journal → Coach is a frosted-glass chat panel (Coach / Tips / Tilt guard): 3 suggested questions + free text, answered by rules from the journal data (no paid AI); private-key-shaped input is rejected.
+- Welcome: card 2 = real desktop Pulse inside an app window with callouts; new card 5 = Kyvo Coach preview (6 cards total). Assets: img/scr-desk-pulse-{pl,en}-{640,1060}.{avif,webp}.
+
+### v8.15 — design pass 9 (Kyvo w liczbach + "Dane z")
+- Welcome card 2 (7 cards now) = one huge chrome number + a row of small stats, computed at load time from data/ only: coins in data/track_record.json (rolling 14-day log; caption says "od <first date>" until it is 14 days old), Runner-rule flags, coins whose max ≥ 2× flag price (same >50x sanity cut as the Runner hero), data/leaderboard.json wallets_count, data/tracker_feed.json wallets. Missing file → that stat hides. Count-up via rAF, static under prefers-reduced-motion.
+- "Dane z / Data from" strip: greyscale favicons in img/brands/ (pump.fun, Axiom, GMGN, kolscan, DEX Screener, GeckoTerminal, Solscan, RugCheck, Phantom, Solana — only platforms the code reads from or links to) + "Kyvo nie jest powiązane z tymi platformami". Slow CSS marquee (46 s, pause on hover); reduced motion = static wrapped list. Also on desktop Pulse under the hero (≥900 px).
+- Visitor counter (launch.js `KYN_VISITS`, flag `on`): Abacus public counter (abacus.jasoncameron.dev, no account, no key). Only on alezrugla-max.github.io; one /hit per browser (localStorage kyvo_vc1), then /get; 4 s timeout; hidden on any error or below 100. SW never caches it. Set `on:false` to disable.

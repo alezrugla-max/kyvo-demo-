@@ -2,9 +2,9 @@
 /* v8.4: with push on, OneSignalSDKWorker.js loads OneSignal's worker and then this file (one SW for /kyvo-demo-/).
    Then OneSignal handles 'push'/'notificationclick' for its messages; our generic push handler stays off. */
 const PUSH = !!self.KYVO_ONESIGNAL;
-const C = 'kyvo-v8-14';
+const C = 'kyvo-v8-15';
 const A = [
-  './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js', 'gold-rules.js', 'gold.js', 'pairs.js', 'coinpage.js', 'tracker.js',
+  './', 'index.html', 'compat.js', 'i18n.js', 'app.js', 'insights.js', 'chart.js', 'evm.js', 'profile.js', 'launch.js', 'auth.js', 'auth-config.js', 'premium-config.js', 'contact-config.js', 'push-config.js', 'notify.js', 'gold-rules.js', 'gold.js', 'pairs.js', 'coinpage.js', 'tracker.js', 'journal.js', 'journal.css', 'theme.css', 'fx.js', 'share.js', 'fonts/inter-latin-wght-normal.woff2', 'fonts/inter-latin-ext-wght-normal.woff2', 'fonts/space-grotesk-latin-wght-normal.woff2', 'fonts/space-grotesk-latin-ext-wght-normal.woff2',
   'vendor/lightweight-charts/lightweight-charts.standalone.production.js', 'vendor/kyvo-crypto/kyvo-crypto.min.js', 'manifest.json',
   'kyvo_mark.svg', 'kyvo_logo.svg', 'OneSignalSDKWorker.js', 'privacy.html',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png',
@@ -35,7 +35,12 @@ self.addEventListener('fetch', e => {
   }
   // v8.9: vendor libraries (chart library ~160 kB) = CACHE-FIRST. Network-first with a 5-s abort could leave a slow first
   // visit without the chart library, so every chart fell back to the DexScreener embed. They change only with a new cache name.
-  if (u.origin === self.location.origin && /\/vendor\//.test(u.pathname)) {
+  // v8.15 pass 3: art in img/ is NOT precached (loaded lazily on the screens that show it), then cache-first — files are
+  // width-suffixed and never change in place.
+  // v8.15 pass 7: video (welcome 3D model loop) goes straight to the network so the browser's Range requests work (Safari).
+  if (/\.(mp4|webm)$/.test(u.pathname)) return;
+  if (/jasoncameron\.dev$/.test(u.hostname)) return; // pass 9: visitor counter — never cached
+  if (u.origin === self.location.origin && /\/(vendor|img)\//.test(u.pathname)) {
     e.respondWith(caches.open(C).then((cache) => cache.match(e.request, { ignoreSearch: true }).then((hit) => hit || fetch(e.request).then((r) => { if (r && r.ok) cache.put(e.request, r.clone()); return r; }))));
     return;
   }

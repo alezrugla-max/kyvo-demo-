@@ -4,17 +4,30 @@
    recurring payments). Payment Links are public URLs — NEVER put a Stripe secret key (sk_...) here.
    Entitlement check (who is Premium) needs a backend later, e.g. Firebase + Stripe webhook / extension. */
 window.KYVO_PREMIUM_CONFIG = {
-  enabled: false,
+  enabled: false,                       // payments are NOT live (no Stripe account yet) → every CTA shows "Wkrótce"
   currency: 'USD',
-  regularPrice: '$9.99',
-  promoPrice: '$3.99',
-  promoActive: true,                    // "Cena startowa dla pierwszych użytkowników" (no deadline / seat count)
+  /* v8.14.1 two paid tiers (launch price = -50 %, shown as a crossed-out regular price):
+       free     → 1 Runner / Warsaw day, Gold 3 checks + 1 card / day, Tracker 3 wallets, 2 notifications / day
+       premium  → 3 Runners / day + everything else unlimited (Gold full, Tracker unlimited, all notifications)
+       runners  → everything in Premium + ALL Runners (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner, 🔁 second leg)
+                  + Runner / Tweet runner / 👀 smart-money push (top tier; the owner link unlocks this tier) */
+  freeRunnersPerDay: 1,
+  plans: {
+    premium: { name: 'Premium', regularPrice: '$9.99', promoPrice: '$4.99', runnersPerDay: 3,
+               stripePaymentLinkPromo: '', stripePaymentLinkRegular: '' },        // e.g. https://buy.stripe.com/xxxx (only used when enabled:true)
+    runners: { name: '🏃 Runners', regularPrice: '$49.99', promoPrice: '$24.99', runnersPerDay: null,   // null = unlimited
+               stripePaymentLinkPromo: '', stripePaymentLinkRegular: '' },
+  },
+  regularPrice: '$9.99',                // legacy fields (= Premium plan) for older code paths
+  promoPrice: '$4.99',
+  promoActive: true,                    // "Cena startowa -50%" badge + crossed-out regular price (no deadline / seat count)
+  promoPct: 50,
   period: 'mies.',
   trialDays: 3,
-  stripePaymentLinkPromo: '',           // e.g. https://buy.stripe.com/xxxx  (only used when enabled:true)
-  stripePaymentLinkRegular: '',         // e.g. https://buy.stripe.com/yyyy
-  manageUrl: '',
-  popupAfterLogin: true,                // v8.2: show the Premium pop-up after login / "continue without login" (max once per session and per day)                        // Stripe customer portal link (cancel / change card)
+  stripePaymentLinkPromo: '',           // legacy (= Premium plan)
+  stripePaymentLinkRegular: '',
+  manageUrl: '',                        // Stripe customer portal link (cancel / change card)
+  popupAfterLogin: true,                // v8.2: show the Premium pop-up after login / "continue without login" (max once per session and per day)
 };
 
 /* v8.12 🥇 Gold tab (Orangie-style coin DD). Client-side gate like the Runner gate (bypassable by a technical user — data is public).
@@ -45,7 +58,7 @@ window.KYVO_TRACKER_CONFIG = {
    v8.11: also gates Runners (free = 1 Runner per Warsaw day) + OWNER unlock:
    opening the app with ?owner=<token> checks SHA-256(token) against KYVO_OWNER_SHA256 below (only the HASH is public,
    the token itself is never in the repo), stores the token in this device's localStorage (kyvo_owner_tok — survives
-   reloads, SW updates and "clear data"), strips the parameter from the URL and makes this device Premium.
+   reloads, SW updates and "clear data"), strips the parameter from the URL and makes this device Premium (v8.14.1: top tier 'runners').
    Client-side only (static PWA, public data/*.json) — a technical user can bypass any client gate. */
 (function () {
   'use strict';
@@ -77,7 +90,7 @@ window.KYVO_TRACKER_CONFIG = {
     if (tokUrl && r[0] === KYVO_OWNER_SHA256) {
       owner = true;
       try { localStorage.setItem('kyvo_owner_tok', tokUrl); } catch (e) {}
-      toast(en ? '✦ Premium active (owner)' : '✦ Premium aktywne (właściciel)');
+      toast(en ? '🏃 Runners plan active (owner)' : '🏃 Plan Runners aktywny (właściciel)');
     } else if (tokUrl) toast(en ? 'Invalid owner link' : 'Nieprawidłowy link właściciela');
     if (!owner && stored && r[1] === KYVO_OWNER_SHA256) owner = true;
     if (owner) {
@@ -87,12 +100,27 @@ window.KYVO_TRACKER_CONFIG = {
     }
     return owner;
   });
+  /* v8.14.1 tiers: 'free' | 'premium' | 'runners'. Owner = 'runners' (top tier). Until a real backend exists nobody else is paid
+     (enabled:false). Later the entitlement (kyvo_premium_until + kyvo_premium_tier) must come from the backend, never from user input. */
+  function tier() {
+    if (owner) return 'runners';
+    var C = window.KYVO_PREMIUM_CONFIG || {};
+    if (!C.enabled) return 'free';
+    try {
+      var until = +localStorage.getItem('kyvo_premium_until') || 0;
+      if (until <= Date.now()) return 'free';
+      return localStorage.getItem('kyvo_premium_tier') === 'runners' ? 'runners' : 'premium';
+    } catch (e) { return 'free'; }
+  }
   window.KyvoPremium = window.KyvoPremium || {
-    isActive: function () {
-      if (owner) return true;
-      var C = window.KYVO_PREMIUM_CONFIG || {};
-      if (!C.enabled) return false;
-      try { var until = +localStorage.getItem('kyvo_premium_until') || 0; return until > Date.now(); } catch (e) { return false; }
+    tier: tier,
+    isActive: function () { return tier() !== 'free'; },          // any paid tier (Premium or Runners)
+    isRunners: function () { return tier() === 'runners'; },      // top tier: all Runners + Runner / smart-money push
+    runnersPerDay: function () {                                  // Infinity = unlimited
+      var C = window.KYVO_PREMIUM_CONFIG || {}, P = C.plans || {}, t = tier();
+      if (t === 'runners') return Infinity;
+      if (t === 'premium') return Math.max(1, +((P.premium || {}).runnersPerDay) || 3);
+      return Math.max(1, +C.freeRunnersPerDay || 1);
     },
     isOwner: function () { return owner; },
   };

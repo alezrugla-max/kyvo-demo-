@@ -22,6 +22,22 @@
     return ALL_STEPS.find((x) => x.sec * 290 >= age) || ALL_STEPS[ALL_STEPS.length - 1];
   }
   const TF_KEY = 'kyvo_chart_tf2';
+  // v8.15: a chart opened for one trade (Journal) picks the finest candle whose ~280 candles still reach back to the entry,
+  // so the whole trade is visible; the choice is not saved as the user's default timeframe
+  function focusTf(f) {
+    const nowS = Date.now() / 1000, from = f.from || nowS, to = f.to || nowS, dur = Math.max(60, to - from);
+    const need = nowS - from + Math.max(dur * 0.6, 600);
+    return TFS.find((x) => !x.all && x.sec * 280 >= need && dur / x.sec <= 240) || TFS[TFS.length - 1];
+  }
+  function focusRange(me) {
+    const f = me.opts.focus, cs = me.data;
+    if (!f || !cs || cs.length < 3 || !me.chart) return;
+    const sec = curSec(me), nowS = Date.now() / 1000, from = f.from, to = f.to || nowS, dur = Math.max(60, to - from);
+    const pad = Math.max(dur * 0.6, sec * 12);
+    const a = Math.max(cs[0].time, from - pad), b = Math.min(cs[cs.length - 1].time, to + pad);
+    if (b - a < sec * 4) return;
+    try { me.chart.timeScale().setVisibleRange({ from: Math.floor(a), to: Math.ceil(b) }); } catch (e) {}
+  }
   const MODE_KEY = 'kyvo_chart_mode';     // 'line' (default, like pump.fun) | 'candle'
   const STREAM_KEY = 'kyvo_chart_stream'; // '0' = live trades stream hidden
   const L = (pl, en) => (window.KyvoI18n && window.KyvoI18n.isEn && window.KyvoI18n.isEn() ? en : pl);
@@ -183,7 +199,7 @@
     const root = document.createElement('div');
     root.className = 'kchart';
     const saved = localStorage.getItem(TF_KEY);
-    const tf = TFS.find((x) => x.id === saved) || TFS[4];
+    const tf = opts.focus ? focusTf(opts.focus) : TFS.find((x) => x.id === saved) || TFS[4];
     const mode = localStorage.getItem(MODE_KEY) === 'candle' ? 'candle' : 'line';
     const streamOn = localStorage.getItem(STREAM_KEY) !== '0';
     root.innerHTML = `
@@ -209,7 +225,7 @@
         const t = TFS.find((x) => x.id === b.dataset.tf);
         if (!t || me.dead) return;
         me.tf = t;
-        localStorage.setItem(TF_KEY, t.id);
+        if (!me.opts.focus) localStorage.setItem(TF_KEY, t.id);
         root.querySelectorAll('[data-tf]').forEach((x) => x.classList.toggle('on', x === b));
         load(me, true);
         schedule(me);
@@ -279,19 +295,19 @@
     const LC = window.LightweightCharts;
     const chart = LC.createChart(el, {
       autoSize: true,
-      layout: { background: { type: 'solid', color: '#0d0d13' }, textColor: '#8b8b9a', fontSize: 11, attributionLogo: true },
-      grid: { vertLines: { visible: false }, horzLines: { color: '#ffffff09' } },
+      layout: { background: { type: 'solid', color: 'rgba(0,0,0,0)' }, textColor: '#7d818b', fontSize: 11, fontFamily: "'KyvoInter', Inter, system-ui, sans-serif", attributionLogo: true },
+      grid: { vertLines: { visible: false }, horzLines: { color: '#ffffff07' } },
       rightPriceScale: { borderVisible: false, scaleMargins: { top: 0.12, bottom: 0.08 } },
       timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false, rightOffset: 4, fixRightEdge: false,
         tickMarkFormatter: (t) => fmtTime(t, curSec(me)) },
       localization: { locale: (window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL'), priceFormatter: (v) => fmtV(me)(v), timeFormatter: (t) => fmtTime(t, Math.min(curSec(me), 59)) },
-      crosshair: { mode: 0, vertLine: { color: '#ffffff30', labelBackgroundColor: '#2a2a35' }, horzLine: { color: '#ffffff30', labelBackgroundColor: '#2a2a35' } },
+      crosshair: { mode: 0, vertLine: { color: '#ffffff40', width: 1, style: 3, labelBackgroundColor: '#1c1c22' }, horzLine: { color: '#ffffff40', width: 1, style: 3, labelBackgroundColor: '#1c1c22' } },
       handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
     });
     const pf = { type: 'custom', formatter: (v) => fmtV(me)(v), minMove: 1e-12 };
-    me.area = chart.addAreaSeries({ lineColor: '#34E07A', topColor: '#34E07A38', bottomColor: '#34E07A00', lineWidth: 2, lineType: 2,
-      priceFormat: pf, priceLineStyle: 2, priceLineWidth: 1, crosshairMarkerRadius: 4 });
+    me.area = chart.addAreaSeries({ lineColor: '#3BE58A', topColor: '#3BE58A30', bottomColor: '#3BE58A00', lineWidth: 2, lineType: 2,
+      priceFormat: pf, priceLineStyle: 2, priceLineWidth: 1, crosshairMarkerRadius: 5, crosshairMarkerBorderColor: '#ffffff', crosshairMarkerBorderWidth: 2, lastPriceAnimation: 1 });
     me.candles = chart.addCandlestickSeries({
       upColor: '#34E07A', downColor: '#FF5468', borderVisible: false, wickUpColor: '#34E07A', wickDownColor: '#FF5468',
       priceFormat: pf, priceLineStyle: 2,
@@ -402,12 +418,12 @@
     const cs = me.data;
     if (!cs || !me.chart) return;
     const up = V(me, cs[cs.length - 1].close) >= V(me, cs[0].open);
-    const col = up ? '#34E07A' : '#FF5468';
-    me.area.applyOptions({ lineColor: col, topColor: col + '38', bottomColor: col + '00', priceLineColor: col });
+    const col = up ? '#3BE58A' : '#FF5A6E';
+    me.area.applyOptions({ lineColor: col, topColor: col + '30', bottomColor: col + '00', priceLineColor: col });
     me.area.setData(cs.map((c) => ({ time: c.time, value: V(me, c.close) })));
     me.candles.setData(cs.map(({ time, open, high, low, close }) => ({ time, open: V(me, open), high: V(me, high), low: V(me, low), close: V(me, close) })));
     me.vol.setData(cs.map((c) => ({ time: c.time, value: c.volume, color: c.close >= c.open ? '#34E07A55' : '#FF546855' })));
-    if (fit) me.chart.timeScale().fitContent();
+    if (fit) { me.chart.timeScale().fitContent(); focusRange(me); }
     applyMarkers(me);
   }
 

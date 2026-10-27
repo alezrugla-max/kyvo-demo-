@@ -101,7 +101,7 @@
     save(RKEY, st);
     if (S.runner === false || !added.length) return;
     const G = window.KyvoRunnerGate; // v8.11: free users get a Runner alert only for their 1 free daily Runner (Premium: all)
-    const open = G && !isPremium() ? added.filter((x) => G.unlocked(x.key)) : added;
+    const open = G && !(G.unlimited ? G.unlimited() : isPremium()) ? added.filter((x) => G.unlocked(x.key)) : added; // v8.14.1: Premium = its 3 daily Runners, 🏃 Runners = all
     for (const x of open.slice(0, 3)) {
       if (x.kind === 'coin' && x.leg2) {
         const c = x.c;
@@ -210,7 +210,7 @@
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
   function tags() {
     const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
-    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
+    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', tier: (window.KyvoPremium && window.KyvoPremium.tier && window.KyvoPremium.tier()) || 'free', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
   }
   function withOS(fn) { if (!started || !window.OneSignalDeferred) return Promise.resolve(false); return new Promise((res) => window.OneSignalDeferred.push(async (OneSignal) => { try { await fn(OneSignal); res(true); } catch (e) { res(false); } })); }
   function syncTags() { return withOS((OneSignal) => OneSignal.User.addTags(tags())); }

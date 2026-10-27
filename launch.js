@@ -7,17 +7,190 @@
   const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 
+  /* v8.15 pass 6: "Kyvo stage" — real Kyvo screens (captured from the app at 3x) as 3D chrome devices on a green horizon,
+     with edit-style motion (fly-in, focus punches, light sweeps, overlay chips). CSS-only motion; off with reduced motion. */
+  function stage(l, mode, line) {
+    const A = window.KyvoArt;
+    if (!A) return '';
+    const T = (pl, en) => (l === 'en' ? en : pl);
+    const ph = (cls, n, sizes, depth, eager) => `<div class="ks-dev ${cls}" data-depth="${depth}"><div class="ks-in"><div class="ks-fx"><div class="ks-ph"><div class="ks-scr">${A.pic('scr-' + n + '-' + l, sizes, eager ? { eager: 1 } : {})}</div></div></div></div></div>`;
+    const card = (cls, depth) => `<div class="ks-card ${cls}" data-depth="${depth}"><div class="ks-in"><div class="ks-cfx">${A.pic('scr-pnl-' + l, '(min-width:900px) 160px, 96px')}</div></div></div>`;
+    const chip = (cls, dot, txt) => `<span class="ks-chip ${cls}"><i class="${dot}"></i>${txt}</span>`;
+    const SZ = '(min-width:900px) 250px, 44vw', SS = '(min-width:900px) 210px, 36vw';
+    let body = '';
+    if (mode === 'hero') body = ph('ks-l', 'runner', SS, '0.45', 1) + ph('ks-r', 'coin', SS, '0.45', 1) + ph('ks-c', 'journal', SZ, '1', 1) + card('ks-k1', '1.4')
+      + chip('ks-ch1', 'g', 'Runner · LIVE') + chip('ks-ch2', 'w', T('Wykres na żywo', 'Live chart')) + chip('ks-ch3', 'g', 'Journal · P&amp;L');
+    else if (mode === 'duo') body = ph('ks-l', 'runner', SS, '0.5') + ph('ks-c', 'coin', SZ, '1') + chip('ks-ch4', 'g', 'Pulse · LIVE');
+    else body = ph('ks-c', 'journal', SZ, '0.6') + card('ks-k2', '1.2') + chip('ks-ch5', 'g', T('Karta P&amp;L', 'P&amp;L card'));
+    return `<div class="ks ks-${mode}" data-ky-par aria-hidden="true"><span class="ks-glow"></span><span class="ks-hz"></span><span class="ks-flash"></span>${body}${line ? `<div class="obh-line ks-line">${line}</div>` : ''}</div>`;
+  }
+
+  /* v8.15 pass 7: Liquid-style simplicity. One chrome 3D Kyvo mark (pre-rendered three.js loop, 760px, ~450 KB mp4,
+     12 KB AVIF poster) on black with the chrome headline. The pass-6 phone stage stays behind STAGE. */
+  const STAGE = false;
+  function model(line) {
+    const A = window.KyvoArt;
+    const pic = A ? A.pic('kyvo-model', '(min-width:900px) 400px, 72vw', { eager: 1 }) : '';
+    return `<div class="kym" aria-hidden="true"><span class="kym-glow"></span><div class="kym-obj">${pic}<video class="kym-vid" data-kym muted playsinline loop preload="none" disablepictureinpicture></video></div><div class="obh-line kym-line">${line}</div></div>`;
+  }
+  function solo(l, kind) {
+    const A = window.KyvoArt;
+    if (!A) return '';
+    const inner = kind === 'pnl'
+      ? `<div class="kso-dev ks-cfx">${A.pic('scr-pnl-' + l, '(min-width:900px) 180px, 40vw')}</div>`
+      : `<div class="kso-dev"><div class="ks-ph"><div class="ks-scr">${A.pic('scr-' + kind + '-' + l, '(min-width:900px) 210px, 46vw')}</div></div></div>`;
+    return `<div class="kso kso-${kind}" aria-hidden="true"><span class="kso-glow"></span>${inner}</div>`;
+  }
+  /* v8.15 pass 8 (ref: Alez 3_app_window): the real desktop Pulse inside a dark app window with grey callouts, on the horizon arc */
+  function win(l) {
+    const A = window.KyvoArt;
+    if (!A) return '';
+    const T2 = (pl, en) => (l === 'en' ? en : pl);
+    return `<div class="kwin" aria-hidden="true"><span class="kwin-hz"></span><div class="kwin-w"><div class="kwin-bar"><i></i><i></i><i></i><span>kyvo · pulse</span></div>
+      <div class="kwin-body"><div class="kwin-side"><b></b><b class="on"></b><b></b><b></b><b></b></div><div class="kwin-scr">${A.pic('scr-desk-pulse-' + l, '(min-width:900px) 520px, 86vw')}</div></div></div>
+      <span class="kwin-tip t1">${T2('Zakładki: Pulse · Gold · Runner · Ranking', 'Tabs: Pulse · Gold · Runner · Leaderboard')}</span>
+      <span class="kwin-tip t2">${T2('Runnery oznaczone dziś — na żywo', 'Runners flagged today — live')}</span>
+      <span class="kwin-tip t3">${T2('New Pairs · Final Stretch · Migrated', 'New Pairs · Final Stretch · Migrated')}</span></div>`;
+  }
+  /* v8.15 pass 8 (ref: Alez 1_coach_panel): a static preview of the Journal coach panel */
+  function coachArt(l) {
+    const T2 = (pl, en) => (l === 'en' ? en : pl);
+    const ic = (d) => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    const q = [[ic('<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16h.01"/>'), T2('Czy gram na tilcie?', 'Am I tilt trading?')], [ic('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'), T2('Który setup daje mi najwięcej?', 'Which setup pays me the most?')], [ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'), T2('Oceń moją psychikę w tym tygodniu', 'Grade my psychology this week')]];
+    return `<div class="kcoa" aria-hidden="true"><span class="kwin-hz"></span><div class="kcoa-p"><div class="kcoa-seg"><b class="on">Coach</b><b>${T2('Wskazówki', 'Tips')}</b><b>Tilt guard</b></div>
+      <svg class="kcoa-mark" viewBox="0 0 399 406"><defs><linearGradient id="kcoaG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#9aa0aa"/><stop offset="1" stop-color="#e9ebef"/></linearGradient></defs><polygon fill="url(#kcoaG)" points="0,145 164,0 164,182 0,322"/><polygon fill="url(#kcoaG)" points="165,182 399,0 399,88 215,222 215,406 165,406"/></svg>
+      <div class="kcoa-t">${T2('O co chcesz zapytać?', 'What do you want to know?')}</div><div class="kcoa-s">${T2('Coach przeczytał każdy Twój trade.', 'Your coach has read every trade you logged.')}</div>
+      <div class="kcoa-q">${q.map((x) => `<span>${x[0]}${x[1]}</span>`).join('')}</div>
+      <div class="kcoa-in"><span>${T2('Zapytaj o swoje trade’y…', 'Ask about your trades…')}</span><em>${T2('Reguły · bez AI', 'Rules · no AI')}</em><i>↑</i></div></div></div>`;
+  }
+  /* v8.15 pass 9 (ref: Alez 2_big_counter): "Kyvo w liczbach" — one huge chrome number + a row of small stats, all computed
+     at load time from the public data/ files (no made-up numbers; a missing file hides its stat), plus a slow "DANE Z / DATA FROM"
+     strip of the platforms Kyvo really reads from or links to (greyscale favicons in img/brands/, not affiliated). */
+  const KYN_BRANDS = [['pumpfun', 'pump.fun'], ['axiom', 'Axiom'], ['gmgn', 'GMGN'], ['kolscan', 'kolscan'], ['dexscreener', 'DEX Screener'], ['geckoterminal', 'GeckoTerminal'], ['solscan', 'Solscan'], ['rugcheck', 'RugCheck'], ['phantom', 'Phantom'], ['solana', 'Solana']];
+  // Visitor counter: Abacus (free, no account, no key in the repo; CORS). One /hit per browser ever (= unique browsers, approx.),
+  // only on the live site, shown only from VISITS.min up. Unavailable / blocked → the line stays hidden.
+  const KYN_VISITS = { on: true, host: 'alezrugla-max.github.io', api: 'https://abacus.jasoncameron.dev', ns: 'alezrugla-max.github.io', key: 'kyvo-visits', min: 100 };
+  const kynEN = () => !!(window.KyvoI18n && window.KyvoI18n.isEn());
+  function kynStrip(mod) {
+    const en = kynEN();
+    const row = KYN_BRANDS.map((b) => `<span class="kyn-b"><img src="img/brands/${b[0]}.webp" width="20" height="20" alt="" loading="lazy" decoding="async">${b[1]}</span>`).join('');
+    return `<div class="kyn-strip ${mod || ''}" translate="no"><div class="kyn-lbl">${en ? 'Data from' : 'Dane z'}</div><div class="kyn-mq" aria-label="${KYN_BRANDS.map((b) => b[1]).join(', ')}"><div class="kyn-track">${row}<span class="kyn-dup" aria-hidden="true">${row}</span></div></div><div class="kyn-aff">${en ? 'Kyvo is not affiliated with these platforms.' : 'Kyvo nie jest powiązane z tymi platformami.'}</div></div>`;
+  }
+  function kynArt(l) {
+    const T2 = (pl, en) => (l === 'en' ? en : pl);
+    const st = (k, lbl) => `<div class="kyn-s" data-kyn-s="${k}" hidden><b data-kyn="${k}">0</b><small>${lbl}</small></div>`;
+    return `<div class="kyn" data-kyn-root translate="no">
+      <div class="kyn-main" data-kyn-s="flag" hidden><b class="kyn-big" data-kyn="flag">0</b><small data-kyn-cap>${T2('coinów oznaczonych przez Kyvo', 'coins flagged by Kyvo')}</small></div>
+      <div class="kyn-row">${st('run', T2('Runnerów', 'Runners'))}${st('x2', T2('doszło do 2x', 'reached 2x'))}${st('trd', T2('traderów w Rankingu', 'traders in Ranking'))}${st('wal', T2('portfeli śledzonych', 'wallets tracked'))}</div>
+      <div class="kyn-vis" data-kyn-s="vis" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.8 4-5.6 7.5-5.6s6.3 1.8 7.5 5.6"/></svg><b data-kyn="vis">0</b> ${T2('osób odwiedziło Kyvo', 'people have visited Kyvo')}</div>
+      ${kynStrip('kyn-in')}</div>`;
+  }
+  let kynData = null;
+  async function kynLoad() {
+    if (kynData) return kynData;
+    const j = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+    const h = Math.floor(Date.now() / 600000);
+    const [tr, lb, tf] = await Promise.all([j('data/track_record.json?t=' + h), j('data/leaderboard.json?d=' + h), j('data/tracker_feed.json?t=' + h)]);
+    const o = {};
+    const it = (tr && tr.items) || [];
+    if (it.length) {
+      o.flag = it.length;
+      o.since = Math.min(...it.map((e) => e.at || Date.now()));
+      o.run = it.filter((e) => e.kinds && e.kinds.runner).length;
+      // same sanity rule as the Runner hero: >50x = suspect price sample, skipped
+      o.x2 = it.filter((e) => e.px0 > 0 && e.max > 0 && e.max / e.px0 >= 2 && e.max / e.px0 < 51).length;
+    }
+    const nt = lb && (lb.wallets_count || (lb.leaders && lb.leaders.length));
+    if (nt) o.trd = nt;
+    if (tf && tf.wallets && tf.wallets.length) o.wal = tf.wallets.length;
+    kynData = o;
+    return o;
+  }
+  async function kynVisits() {
+    const V = KYN_VISITS;
+    if (!V.on || location.hostname !== V.host || !window.fetch) return null;
+    let seen = false; try { seen = !!localStorage.getItem('kyvo_vc1'); } catch (e) {}
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 4000);
+      const r = await fetch(`${V.api}/${seen ? 'get' : 'hit'}/${V.ns}/${V.key}`, { signal: ctl.signal, credentials: 'omit', referrerPolicy: 'no-referrer' });
+      clearTimeout(t);
+      if (!r.ok) return null;
+      const d = await r.json();
+      if (!seen) try { localStorage.setItem('kyvo_vc1', '1'); } catch (e) {}
+      return d && typeof d.value === 'number' && d.value >= V.min ? d.value : null;
+    } catch (e) { return null; }
+  }
+  const kynFmt = (n) => Math.round(n).toLocaleString(kynEN() ? 'en-US' : 'pl-PL');
+  function kynCount(el, to) {
+    const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (rm || to < 10) { el.textContent = kynFmt(to); return; }
+    const t0 = performance.now(), dur = 1400;
+    const step = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = kynFmt(to * e); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  async function kynMount(root) {
+    const box = root.querySelector('[data-kyn-root]'); if (!box) return;
+    const o = await kynLoad();
+    const en = kynEN();
+    if (o.since) {
+      const cap = box.querySelector('[data-kyn-cap]');
+      const d = new Date(o.since), recent = Date.now() - o.since < 13.5 * 864e5;
+      const ds = d.toLocaleDateString(en ? 'en-GB' : 'pl-PL', { day: 'numeric', month: 'short' });
+      if (cap) cap.textContent = en ? `coins flagged by Kyvo ${recent ? 'since ' + ds : 'in the last 14 days'}` : `coinów oznaczonych przez Kyvo ${recent ? 'od ' + ds : 'w ostatnich 14 dniach'}`;
+    }
+    const show = (k, v) => { const s = box.querySelector(`[data-kyn-s="${k}"]`), b = box.querySelector(`[data-kyn="${k}"]`); if (!s || !b || v == null) return; s.hidden = false; b.dataset.to = v; b.textContent = kynFmt(v); };
+    ['flag', 'run', 'x2', 'trd', 'wal'].forEach((k) => show(k, o[k]));
+    const go = () => box.querySelectorAll('[data-kyn]').forEach((b) => { if (b.dataset.to && !b.dataset.done) { b.dataset.done = '1'; kynCount(b, +b.dataset.to); } });
+    if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { go(); io.disconnect(); } }, { threshold: 0.4 }); io.observe(box); } else go();
+    kynVisits().then((v) => { if (v != null) { show('vis', v); const b = box.querySelector('[data-kyn="vis"]'); if (b) { b.dataset.done = '1'; } } });
+  }
+  window.KyvoNumbers = { strip: kynStrip, load: kynLoad };
+  function hero(l, line) { return STAGE ? stage(l, 'hero', line) : model(line); }
+  function art2(l) { return STAGE ? stage(l, 'duo') : win(l); }   // pass 8: app-window showcase (solo(l, 'coin') stays as fallback)
+  function art4(l) { return STAGE ? stage(l, 'pnl') : solo(l, 'pnl'); }
+  function kmMount(root) {
+    const v = root.querySelector('video[data-kym]');
+    if (!v) return;
+    const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sd = navigator.connection && navigator.connection.saveData;
+    if (rm || sd) { v.remove(); return; } // static poster only
+    const start = () => {
+      if (v.dataset.on || !v.isConnected) return;
+      v.dataset.on = '1';
+      v.innerHTML = '<source src="img/kyvo-model.mp4?v=8.15" type="video/mp4"><source src="img/kyvo-model.webm?v=8.15" type="video/webm">';
+      v.addEventListener('playing', () => v.classList.add('on'), { once: true });
+      v.load();
+      const pr = v.play(); if (pr && pr.catch) pr.catch(() => {});
+    };
+    (window.requestIdleCallback || ((f) => setTimeout(f, 400)))(start, { timeout: 1500 });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([e]) => {
+        if (!v.isConnected) { io.disconnect(); return; }
+        if (!v.dataset.on) return;
+        if (e.isIntersecting && !document.hidden) { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } else v.pause();
+      }, { threshold: 0.15 });
+      io.observe(v);
+    }
+    document.addEventListener('visibilitychange', () => { if (document.hidden && v.isConnected) v.pause(); });
+  }
+
   /* ---------------- Onboarding ---------------- */
   const CARDS_PL = [
     {
-      art: '<img src="icons/icon-192.png" width="112" height="112" alt="" class="ob-logo">',
+      art: hero('pl', 'Zobacz ruch, zanim zobaczy go tłum.'),
       t: 'Witaj w Kyvo',
       p: 'Smart money i viralowe memecoiny w jednym miejscu. Dane na żywo z Solany, BSC i Robinhood Chain.',
       li: ['Za darmo, logowanie opcjonalne', 'Kyvo nie trzyma Twoich pieniędzy', 'Nigdy nie prosimy o seed ani klucz prywatny'],
       lang: true,
     },
     {
-      art: '<div class="ob-art"><span>New Pairs</span><span>Final Stretch</span><span>Migrated</span><span>Good Coins</span></div>',
+      art: kynArt('pl'),
+      t: 'Kyvo w liczbach',
+      p: 'Prawdziwe liczby z publicznego logu Kyvo — liczone przy każdym otwarciu, bez zaokrąglania w górę.',
+      li: [],
+    },
+    {
+      art: art2('pl'),
       t: 'Pulse: coiny na żywo',
       p: 'Pulse pokazuje nowe pary, coiny blisko końca krzywej (Final Stretch) i te, które właśnie przeszły na DEX (Migrated). Good Coins to coiny po mocniejszych filtrach.',
       li: ['Przełącz sieć u góry: Solana · BSC · Robin · Wszystkie', '„Filtry” — ustaw MC, płynność, wolumen, wiek', '⏱ wiek coina i „na liście od” przy każdym wierszu'],
@@ -29,10 +202,16 @@
       li: ['Cytaty z linkiem do oryginału na X', 'Coiny dopasowane po adresie albo jednoznacznym $tickerze', 'Ten sam ticker może mieć kopie — sprawdzaj adres'],
     },
     {
-      art: '<div class="ob-art"><span>🏆 Ranking</span><span>👤 Profil</span><span>PnL</span></div>',
+      art: art4('pl'),
       t: 'Ranking i Twój Profil',
       p: 'Ranking traderów z publicznych transakcji on-chain: PnL, win rate, ostatnie trade’y. W Profilu wklejasz publiczny adres portfela i widzisz swój PnL, pozycje i kartę do udostępnienia.',
       li: ['Tylko publiczne adresy (Solana, BSC, Robinhood)', 'Dane zostają w Twojej przeglądarce', 'Do 8 portfeli naraz'],
+    },
+    {
+      art: coachArt('pl'),
+      t: 'Kyvo Coach w Journal',
+      p: 'Zapytaj o swoje trade’y: czy grasz na tilcie, który setup daje Ci najwięcej, jak wygląda Twoja psychika w tym tygodniu. Odpowiedzi liczone z Twojego dziennika — na regułach, bez płatnego AI.',
+      li: ['Journal i Coach — w Premium', 'Wystarczy publiczny adres portfela, nigdy klucz', 'To wskazówki, nie porada finansowa'],
     },
     {
       art: '<div class="ob-art ob-ios"><span>Safari</span><span>⬆︎ Udostępnij</span><span>➕ Do ekranu początk.</span></div>',
@@ -77,6 +256,8 @@
       </div>`;
     document.body.appendChild(el);
     document.documentElement.classList.add('ob-lock');
+    kmMount(el);
+    kynMount(el);
     const track = el.querySelector('#obTrack');
     const next = el.querySelector('#obNext');
     let idx = 0;
@@ -145,9 +326,63 @@
     setTimeout(() => { const b = el.querySelector('.lp-btn.sug') || el.querySelector('.lp-btn'); if (b) b.focus({ preventScroll: true }); }, 50);
   }
 
+  /* ---------------- v8.14.1: two paid tiers (Premium · 🏃 Runners), launch price -50 % ---------------- */
+  function planCfg() {
+    const C = Object.assign({ enabled: false, promoActive: true, promoPct: 50, period: 'mies.', trialDays: 3, freeRunnersPerDay: 1, popupAfterLogin: true }, window.KYVO_PREMIUM_CONFIG || {});
+    const P = C.plans || {};
+    const mk = (id, d) => {
+      const x = Object.assign({}, d, P[id] || {});
+      x.id = id;
+      x.link = (C.promoActive ? x.stripePaymentLinkPromo : x.stripePaymentLinkRegular) || '';
+      x.live = !!(C.enabled && /^https:\/\//.test(x.link));
+      return x;
+    };
+    C.premium = mk('premium', { name: 'Premium', regularPrice: C.regularPrice || '$9.99', promoPrice: C.promoPrice || '$4.99', runnersPerDay: 3, stripePaymentLinkPromo: C.stripePaymentLinkPromo, stripePaymentLinkRegular: C.stripePaymentLinkRegular });
+    C.runners = mk('runners', { name: '🏃 Runners', regularPrice: '$49.99', promoPrice: '$24.99', runnersPerDay: null });
+    return C;
+  }
+  const curTier = () => { try { return (window.KyvoPremium && window.KyvoPremium.tier && window.KyvoPremium.tier()) || 'free'; } catch (e) { return 'free'; } };
+  function planPriceHtml(C, x, per) {
+    return C.promoActive
+      ? `<span class="pm-old">${esc(x.regularPrice)}</span><b>${esc(x.promoPrice)}</b><span>/ ${esc(per)}</span>`
+      : `<b>${esc(x.regularPrice)}</b><span>/ ${esc(per)}</span>`;
+  }
+  function planFeats(id) {
+    const L = (pl, en) => (EN ? en : pl);
+    return id === 'runners' ? [
+      L('✦ Wszystko z Premium', '✦ Everything in Premium'),
+      L('🏃 Wszystkie Runnery bez limitu (👑 KOL coin, 🚀 Moon run, 📈 Duży runner, 🐦 Tweet runner, 🔁 Kolejna fala)', '🏃 All Runners, no limit (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner, 🔁 Second leg)'),
+      L('🔔 Push o każdym Runnerze i Tweet runnerze', '🔔 Push for every Runner and Tweet runner'),
+      L('👀 Push smart money (≥3 top traderów kupuje jeden coin)', '👀 Smart money push (≥3 top traders buy one coin)'),
+    ] : [
+      L('🏃 3 Runnery dziennie (darmowo: 1)', '🏃 3 Runners a day (free: 1)'),
+      L('🥇 Pełny Gold: feed, sprawdzanie bez limitu, alerty Gold', '🥇 Full Gold: feed, unlimited checks, Gold alerts'),
+      L('👀 Tracker: obserwuj portfele bez limitu (darmowo: 3)', '👀 Tracker: follow unlimited wallets (free: 3)'),
+      L('🔔 Wszystkie powiadomienia bez limitu (darmowo: 2 dziennie)', '🔔 All notifications, no limit (free: 2 a day)'),
+    ];
+  }
+  function planCardHtml(C, x, opts) {
+    const L = (pl, en) => (EN ? en : pl);
+    const per = EN ? 'mo' : C.period;
+    const top = x.id === 'runners';
+    const mine = opts && opts.tier === x.id;
+    const cta = mine ? L('✓ Twój plan', '✓ Your plan')
+      : x.live ? L(`Rozpocznij ${C.trialDays} dni za darmo`, `Start ${C.trialDays}-day free trial`)
+      : L('Wkrótce — zapisz się przez Kontakt', 'Coming soon — join via Contact');
+    return `<div class="pl-card${top ? ' top' : ''}${opts && opts.focus === x.id ? ' focus' : ''}" data-plan="${esc(x.id)}">
+        ${top ? `<div class="pl-ribbon">${L('NAJWIĘCEJ SYGNAŁÓW', 'MOST SIGNALS')}</div>` : ''}
+        <div class="pl-name">${esc(x.name).replace(/^([^A-Za-z]*)(.*)$/, '$1<span class="chrome">$2</span>')}</div>
+        ${C.promoActive ? `<div class="pl-off">${L('Cena startowa', 'Launch price')} -${esc(C.promoPct)}%</div>` : ''}
+        <div class="pm-price">${planPriceHtml(C, x, per)}</div>
+        ${C.promoActive ? `<div class="pl-later">${L('potem', 'later')} ${esc(x.regularPrice)} / ${esc(per)}</div>` : ''}
+        <ul class="pl-li">${planFeats(x.id).map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+        <button type="button" class="pm-cta${top ? '' : ' alt'}" data-plango="${esc(x.id)}"${mine ? ' disabled' : ''}>${cta}</button>
+      </div>`;
+  }
+
   /* ---------------- v8.2: Premium pop-up after login / "continue without login" (max once per session and per day) ---------------- */
-  function maybePremiumPopup(force) {
-    const C = Object.assign({ enabled: false, regularPrice: '$9.99', promoPrice: '$3.99', promoActive: true, period: 'mies.', trialDays: 3, popupAfterLogin: true }, window.KYVO_PREMIUM_CONFIG || {});
+  function maybePremiumPopup(force, focus) {
+    const C = planCfg();
     if (!force && C.popupAfterLogin === false) return false;
     const day = new Date().toISOString().slice(0, 10);
     try {
@@ -157,8 +392,8 @@
     } catch (e) {}
     if (document.getElementById('kyvoPmPop')) return false;
     const L = (pl, en) => (EN ? en : pl);
-    const per = EN ? 'mo' : C.period;
-    const live = !!(C.enabled && /^https:\/\//.test((C.promoActive ? C.stripePaymentLinkPromo : C.stripePaymentLinkRegular) || ''));
+    const live = C.premium.live || C.runners.live;
+    const tier = curTier();
     const el = document.createElement('div');
     el.id = 'kyvoPmPop';
     el.className = 'pmpop';
@@ -168,19 +403,12 @@
     el.innerHTML = `
       <div class="pmpop-card">
         <button type="button" class="pmpop-x" data-pmclose aria-label="${L('Zamknij', 'Close')}">✕</button>
-        <img src="icons/icon-192.png" width="56" height="56" alt="">
-        <div class="pm-badge">${L('✦ PREMIUM · WKRÓTCE', '✦ PREMIUM · COMING SOON')}</div>
+        <img src="icons/icon-192.png" width="48" height="48" alt="">
+        <div class="pm-badge">${live ? L('✦ KYVO PREMIUM', '✦ KYVO PREMIUM') : L('✦ PREMIUM · WKRÓTCE', '✦ PREMIUM · COMING SOON')}</div>
         <h2>${L('Więcej sygnałów, mniej szumu', 'More signals, less noise')}</h2>
-        <div class="pm-price">${C.promoActive ? `<span class="pm-old">${esc(C.regularPrice)}</span><b>${esc(C.promoPrice)}</b>` : `<b>${esc(C.regularPrice)}</b>`}<span>/ ${esc(per)}</span></div>
-        ${C.promoActive ? `<div class="pm-promo">${L('Cena startowa dla pierwszych użytkowników', 'Launch price for early users')} · ${L('potem', 'later')} ${esc(C.regularPrice)} / ${esc(per)}</div>` : ''}
-        <div class="pm-trial">${L(esc(C.trialDays) + ' dni za darmo na start', esc(C.trialDays) + '-day free trial')} · ${L('anulujesz kiedy chcesz', 'cancel anytime')}</div>
-        <ul class="pmpop-li">
-          <li>${L('🏃 Wszystkie Runnery na żywo + push (darmowo: 1 dziennie)', '🏃 All Runners live + push (free: 1 a day)')}</li>
-          <li>${L('🔔 Alerty push, także gdy apka jest zamknięta', '🔔 Push alerts, even when the app is closed')}</li>
-          <li>${L('🧠 Więcej portfeli smart money i szybsze odświeżanie', '🧠 More smart money wallets and faster refresh')}</li>
-          <li>${L('𝕏 Viral z X częściej niż 3× dziennie', '𝕏 Viral from X more often than 3× a day')}</li>
-        </ul>
-        <button type="button" class="pm-cta" data-pmgo>${live ? L('Rozpocznij okres próbny', 'Start free trial') : L('Wkrótce — zapisz się przez Kontakt', 'Coming soon — join via Contact')}</button>
+        ${C.promoActive ? `<div class="pm-promo">🔥 ${L('Cena startowa', 'Launch price')} -${esc(C.promoPct)}% · ${L('dla pierwszych użytkowników', 'for early users')}</div>` : ''}
+        <div class="pl-grid">${planCardHtml(C, C.runners, { focus, tier })}${planCardHtml(C, C.premium, { focus, tier })}</div>
+        <div class="pm-trial">${L(esc(C.trialDays) + ' dni za darmo na start', esc(C.trialDays) + '-day free trial')} · ${L('anulujesz kiedy chcesz', 'cancel anytime')} · ${L('darmowo zawsze: 1 Runner dziennie', 'always free: 1 Runner a day')}</div>
         <a href="#premium" class="pmpop-more" data-pmclose>${L('Zobacz szczegóły i tabelę funkcji', 'See details and the feature table')}</a>
         <div class="pmpop-note">${live ? '' : L('Płatności jeszcze nie działają — nic nie sprzedajemy i niczego nie pobieramy.', 'Payments aren\'t live yet — we don\'t sell or charge anything.')} ${L('Premium to nie porada finansowa.', 'Premium is not financial advice.')}</div>
       </div>`;
@@ -191,7 +419,10 @@
     document.addEventListener('keydown', onKey);
     el.addEventListener('click', (e) => { if (e.target === el) close(); });
     el.querySelectorAll('[data-pmclose]').forEach((b) => b.addEventListener('click', close));
-    el.querySelector('[data-pmgo]').onclick = () => { close(); location.hash = live ? 'premium' : 'kontakt'; };
+    el.querySelectorAll('[data-plango]').forEach((b) => (b.onclick = () => { // no payment is ever taken here: live plan → Premium page (Stripe link there), else → Kontakt (waitlist)
+      const x = C[b.dataset.plango];
+      close(); location.hash = x && x.live ? 'premium' : 'kontakt';
+    }));
     setTimeout(() => el.querySelector('.pmpop-x').focus({ preventScroll: true }), 50);
     return true;
   }
@@ -211,7 +442,7 @@
       ['Co jeśli portfel prosi o zatwierdzenie transakcji?', 'Odrzuć ją. Kyvo nigdy nie wysyła transakcji do podpisu — tylko wiadomość tekstową. Nikt z Kyvo nie poprosi też o seed phrase ani klucz prywatny.'],
       ['Google, e-mail i Apple', 'Logowanie przez Google i e-mail (link logowania wysyłany na maila — bez hasła) włączymy wkrótce; Apple — później. Do tego czasu przyciski są oznaczone „Wkrótce”.'],
       ['Jak się wylogować?', 'Profil → „Wyloguj”. Adres zostaje w Profilu, możesz go usunąć osobno. Więcej → „Wyczyść dane Kyvo” usuwa wszystko z tej przeglądarki.'],
-      ['Kyvo Premium', 'Plan Premium jest w przygotowaniu — funkcje oznaczone „wkrótce” jeszcze nie działają i nic nie jest sprzedawane. Planowana cena: $9.99 / mies., cena startowa dla pierwszych użytkowników $3.99 / mies., 3 dni za darmo (z podpiętą kartą, Apple Pay lub Google Pay; BLIK nie działa dla subskrypcji). Premium będzie wymagać logowania. Wszystko, co działa dziś, zostaje za darmo — poza Runnerami: darmowo 1 Runner dziennie (pierwszy oznaczony danego dnia), wszystkie Runnery i ich push w Premium.'],
+      ['Kyvo Premium', 'Plan Premium jest w przygotowaniu — funkcje oznaczone „wkrótce” jeszcze nie działają i nic nie jest sprzedawane. Planowane są dwa plany: Premium — $9.99 / mies. (cena startowa -50%: $4.99 / mies.) oraz 🏃 Runners — $49.99 / mies. (cena startowa -50%: $24.99 / mies.). Oba z 3 dniami za darmo (z podpiętą kartą, Apple Pay lub Google Pay; BLIK nie działa dla subskrypcji) i wymagają logowania. Runnery: darmowo 1 dziennie (pierwszy oznaczony danego dnia), Premium 3 dziennie, Runners — wszystkie + push o Runnerach i push smart money. Premium daje też pełny Gold, Tracker bez limitu i wszystkie powiadomienia. Wszystko inne, co działa dziś, zostaje za darmo.'],
       ['Kontakt', 'Chcesz pogadać, pomóc albo współpracować? Więcej → Kontakt (Discord).'],
     ]],
     ['Zakładki z coinami', [
@@ -276,7 +507,7 @@
         ['7. Treści z X', 'Pokazujemy krótkie cytaty publicznych postów wraz z autorem i linkiem do oryginału, w celu informacyjnym. Prawa do treści należą do ich autorów. Jeśli jesteś autorem i chcesz usunięcia cytatu, skontaktuj się z nami — usuniemy go.'],
         ['7a. Logowanie', 'Logowanie jest dobrowolne — bez niego masz pełny dostęp. Logowanie portfelem polega wyłącznie na podpisaniu wiadomości tekstowej; to nie jest transakcja i nic nie kosztuje. Kyvo nigdy nie poprosi o podpisanie transakcji, seed phrase ani klucz prywatny. Sesja jest zapisana tylko w Twojej przeglądarce. Logowanie przez Google lub e-mail (gdy zostanie włączone) działa przez usługę Google Firebase. Wylogujesz się w Profilu; konto Kyvo (Google / e-mail) możesz tam też usunąć.'],
         ['7b. Kyvo Premium', 'Kyvo Premium jest w przygotowaniu i obecnie nie jest sprzedawane — nie pobieramy żadnych płatności. Ceny i funkcje pokazane na stronie Premium mają charakter zapowiedzi i mogą się zmienić. Premium będzie wymagało zalogowania.'],
-        ['7c. Warunki subskrypcji (po uruchomieniu płatności)', 'Premium będzie subskrypcją miesięczną: cena regularna $9.99 / mies., dla pierwszych użytkowników cena startowa $3.99 / mies. Na start 3 dni za darmo — okres próbny wymaga podania metody płatności (karta, Apple Pay lub Google Pay; BLIK nie jest dostępny dla płatności cyklicznych). Jeśli nie anulujesz przed końcem okresu próbnego, subskrypcja zamieni się w płatną i będzie się automatycznie odnawiać co miesiąc. Anulować możesz w każdej chwili — Premium działa wtedy do końca opłaconego okresu. Płatności obsłuży zewnętrzny operator (Stripe); Kyvo nie widzi danych Twojej karty. Szczegóły, w tym prawo odstąpienia od umowy, podamy przed uruchomieniem płatności.'],
+        ['7c. Warunki subskrypcji (po uruchomieniu płatności)', 'Premium będzie subskrypcją miesięczną w dwóch planach: Premium — cena regularna $9.99 / mies., cena startowa dla pierwszych użytkowników $4.99 / mies. (-50%); 🏃 Runners — cena regularna $49.99 / mies., cena startowa $24.99 / mies. (-50%). Na start 3 dni za darmo — okres próbny wymaga podania metody płatności (karta, Apple Pay lub Google Pay; BLIK nie jest dostępny dla płatności cyklicznych). Jeśli nie anulujesz przed końcem okresu próbnego, subskrypcja zamieni się w płatną i będzie się automatycznie odnawiać co miesiąc. Anulować możesz w każdej chwili — Premium działa wtedy do końca opłaconego okresu. Płatności obsłuży zewnętrzny operator (Stripe); Kyvo nie widzi danych Twojej karty. Szczegóły, w tym prawo odstąpienia od umowy, podamy przed uruchomieniem płatności.'],
         ['8. Zasady korzystania', 'Nie wolno używać Kyvo do działań niezgodnych z prawem, do manipulacji rynkiem, oszustw ani do przeciążania usług, z których Kyvo korzysta. Kyvo jest przeznaczone dla osób pełnoletnich (18+).'],
         ['9. Odpowiedzialność', 'W najszerszym zakresie dopuszczalnym przez prawo twórca Kyvo nie odpowiada za straty finansowe wynikające z decyzji podjętych na podstawie treści w aplikacji ani za przerwy w działaniu lub błędy danych. Nie wyłącza to praw, których nie można wyłączyć na mocy przepisów, w tym praw konsumenta.'],
         ['10. Zmiany', 'Regulamin może się zmieniać wraz z rozwojem aplikacji. Aktualna wersja jest zawsze dostępna w Kyvo (Więcej → Regulamin).'],
@@ -286,13 +517,13 @@
     prywatnosc: {
       t: 'Polityka prywatności',
       body: [
-        ['W skrócie', 'Logowanie jest opcjonalne. Bez logowania Kyvo nie zbiera żadnych danych osobowych. Kyvo nie używa cookies reklamowych, analityki, pikseli ani trackingu i nie ma własnego serwera z bazą użytkowników. Logowanie portfelem zostaje na Twoim urządzeniu; logowanie Google / e-mail (gdy zostanie włączone) obsługuje Google Firebase.'],
+        ['W skrócie', 'Logowanie jest opcjonalne. Bez logowania Kyvo nie zbiera żadnych danych osobowych. Kyvo nie używa cookies reklamowych, analityki, pikseli ani trackingu (jedyny wyjątek: anonimowy licznik odwiedzin — opis niżej) i nie ma własnego serwera z bazą użytkowników. Logowanie portfelem zostaje na Twoim urządzeniu; logowanie Google / e-mail (gdy zostanie włączone) obsługuje Google Firebase.'],
         ['Co zapisuje się na Twoim urządzeniu', 'W pamięci przeglądarki (localStorage i pamięć podręczna aplikacji) zapisujemy tylko: wybraną sieć i filtry, ostatnie dane coinów (żeby apka szybciej startowała), informację „od kiedy coin jest na liście”, wybrane zakładki, publiczne adresy portfeli dodane w Profilu, nick i avatar (zdjęcie avatara zostaje na telefonie), pobraną historię transakcji tych adresów, wybrany język, watchlistę i alerty oraz to, że wprowadzenie zostało już pokazane. Te dane nie są nigdzie wysyłane przez Kyvo. Usuniesz je przyciskiem „Wyczyść dane Kyvo” (Więcej) albo czyszcząc dane strony w przeglądarce.'],
         ['Logowanie portfelem', 'Gdy logujesz się portfelem, Twój portfel podpisuje wiadomość tekstową. Podpis sprawdzamy na Twoim urządzeniu; sesja (publiczny adres, treść wiadomości i podpis) zostaje tylko w localStorage tej przeglądarki i nie trafia na żaden serwer Kyvo. Nie dostajemy dostępu do środków ani kluczy.'],
         ['Logowanie przez Google lub e-mail', 'GOOGLE_STATUS Gdy jest włączone, korzystamy z Firebase Authentication (Google): przy logowaniu Google przetwarzane są Twoje imię, adres e-mail, zdjęcie profilowe i identyfikator konta, a przy logowaniu e-mailem — adres e-mail (wysyłamy na niego jednorazowy link logowania); dane konta są przechowywane w projekcie Firebase Kyvo, a w Twojej przeglądarce — dane sesji. Używamy ich tylko do logowania (i w przyszłości do obsługi Premium). Konto usuniesz w Profilu („Usuń konto Kyvo”), a wylogujesz się przyciskiem „Wyloguj”.'],
         ['Płatności (w przyszłości)', 'Kyvo Premium nie jest jeszcze sprzedawane. Po uruchomieniu płatności obsłuży je Stripe — dane karty trafią bezpośrednio do Stripe, a Kyvo zobaczy tylko status subskrypcji.'],
         ['Nie sprzedajemy danych', 'Nie sprzedajemy, nie udostępniamy i nie wykorzystujemy Twoich danych do reklam.'],
-        ['Zapytania do zewnętrznych API', 'Żeby pokazać dane na żywo, Twoja przeglądarka łączy się bezpośrednio z publicznymi usługami: DexScreener, GeckoTerminal, RugCheck i GoPlus (tylko adres oglądanego coina), OneSignal (tylko gdy włączysz powiadomienia systemowe), publiczne węzły RPC Solany (publicnode), BSC (bloXroute, 48 Club, BNB Chain) i Robinhood Chain, Blockscout (Robinhood Chain) oraz Binance (publiczne kursy). Gdy logowanie Google jest włączone — także z serwerami Google (Firebase). Obrazki coinów ładują się z serwerów tych usług. Jak przy każdym połączeniu w internecie, te serwisy widzą Twój adres IP i dane przeglądarki, a gdy sprawdzasz portfel w Profilu — także ten publiczny adres. Działają według własnych polityk prywatności.'],
+        ['Zapytania do zewnętrznych API', 'Żeby pokazać dane na żywo, Twoja przeglądarka łączy się bezpośrednio z publicznymi usługami: DexScreener, GeckoTerminal, RugCheck i GoPlus (tylko adres oglądanego coina), OneSignal (tylko gdy włączysz powiadomienia systemowe), publiczne węzły RPC Solany (publicnode), BSC (bloXroute, 48 Club, BNB Chain) i Robinhood Chain, Blockscout (Robinhood Chain) oraz Binance (publiczne kursy). Gdy logowanie Google jest włączone — także z serwerami Google (Firebase). Obrazki coinów ładują się z serwerów tych usług. Jak przy każdym połączeniu w internecie, te serwisy widzą Twój adres IP i dane przeglądarki, a gdy sprawdzasz portfel w Profilu — także ten publiczny adres. Działają według własnych polityk prywatności. Licznik odwiedzin: raz na przeglądarkę strona wysyła jedno zapytanie do publicznego licznika Abacus (abacus.jasoncameron.dev), które zwiększa jedną wspólną liczbę; później tylko ją odczytuje. Nie wysyłamy żadnego identyfikatora, cookies ani adresu portfela (serwer licznika widzi adres IP, jak każda usługa).'],
         ['Powiadomienia', 'Powiadomienia w apce (gdy Kyvo jest otwarte) tworzy lokalnie Twoja przeglądarka. Powiadomienia systemowe (gdy Kyvo jest zamknięte) są opcjonalne i włączają się dopiero, gdy klikniesz „Włącz powiadomienia systemowe” i zaakceptujesz prośbę przeglądarki. Wysyła je OneSignal (OneSignal, Inc., USA): przechowuje anonimowy identyfikator subskrypcji push Twojej przeglądarki, typ urządzenia/przeglądarki, język, strefę czasową i znacznik planu (free/Premium), żeby wysłać alert. Nie przekazujemy OneSignal imienia, e-maila ani adresów portfeli. Wyłączysz to w ustawieniach powiadomień Kyvo lub w ustawieniach przeglądarki/telefonu — wtedy subskrypcja jest usuwana.'],
         ['Hosting', 'Strona jest hostowana na GitHub Pages (GitHub, Inc.). GitHub może przetwarzać adres IP odwiedzających w logach serwera w celach bezpieczeństwa, zgodnie ze swoją polityką prywatności. Kyvo nie ma dostępu do tych logów.'],
         ['Kontakt przez Discord', 'Jeśli napiszesz do nas na Discordzie, rozmowa odbywa się w serwisie Discord według jego zasad. Kyvo nie ma formularzy kontaktowych ani newslettera.'],
@@ -344,34 +575,45 @@
     if (b) b.onclick = () => (history.length > 1 ? history.back() : ctx && ctx.home ? ctx.home() : (location.hash = 'pulse'));
   }
   /* ---------------- Premium ---------------- */
-  const PREMIUM_ROWS_PL = [
-    ['Pulse na żywo (Solana · BSC · Robinhood)', 'free', 'free'],
-    ['Good Coins, Final Stretch, Migrated + filtry', 'free', 'free'],
-    ['Viral z X (aktualizacja kilka razy dziennie)', 'free', 'free'],
-    ['Ranking traderów i profile', 'free', 'free'],
-    ['Profil: do 8 portfeli + karta PnL', 'free', 'free'],
-    ['Kyvo Check, watchlista + alerty (gdy apka otwarta)', 'free', 'free'],
-    ['🏃 Runnery (👑 KOL coin, 🚀 Moon run, 📈 Duży runner, 🐦 Tweet runner) + push', '1 / dzień', 'all'],
-    ['🥇 Gold: Sprawdź coin (DD jak u pro tradera)', '3 / dzień', 'bez limitu'],
-    ['🥇 Feed Gold + alerty Gold (cena ±15–20%, wampiry, artykuły)', '1 karta / dzień', 'all'],
-    ['Alerty smart money na żywo (push, apka zamknięta)', '—', 'soon'],
-    ['Do 25 portfeli w Profilu', '—', 'soon'],
-    ['Dłuższa historia PnL (90 dni)', '—', 'soon'],
-    ['Własne zapisane filtry i presety Pulse', '—', 'soon'],
-    ['Viral z X częściej + wcześniejszy dostęp', '—', 'soon'],
+  const PREMIUM_ROWS_PL = [ // v8.14.1: [feature, Free, Premium, 🏃 Runners]
+    ['Pulse na żywo (Solana · BSC · Robinhood)', 'free', 'free', 'free'],
+    ['Good Coins, Final Stretch, Migrated + filtry', 'free', 'free', 'free'],
+    ['Viral z X (aktualizacja kilka razy dziennie)', 'free', 'free', 'free'],
+    ['Ranking traderów i profile', 'free', 'free', 'free'],
+    ['Profil: do 8 portfeli + karta PnL', 'free', 'free', 'free'],
+    ['Kyvo Check, watchlista + alerty (gdy apka otwarta)', 'free', 'free', 'free'],
+    ['🏃 Runnery (👑 KOL coin, 🚀 Moon run, 📈 Duży runner, 🐦 Tweet runner)', '1 / dzień', '3 / dzień', 'all'],
+    ['🔔 Push o Runnerach i Tweet runnerach', '1 / dzień', '3 / dzień', 'all'],
+    ['🥇 Gold: Sprawdź coin (DD jak u pro tradera)', '3 / dzień', 'bez limitu', 'bez limitu'],
+    ['🥇 Feed Gold + alerty Gold (cena ±15–20%, wampiry, artykuły)', '1 karta / dzień', 'all', 'all'],
+    ['👀 Tracker: obserwowane portfele', '3', 'bez limitu', 'bez limitu'],
+    ['👀 Push smart money (≥3 top traderów kupuje 1 coin)', '—', '—', 'all'],
+    ['🔔 Powiadomienia (Good Coins, Viral, Gold)', '2 / dzień', 'bez limitu', 'bez limitu'],
+    ['📓 Journal: dziennik z portfela, Kyvo Score, analityka, coach', '—', 'free', 'free'],
+    ['📋 Plan dnia, cele, refleksje, karta P&L', '—', 'free', 'free'],
+    ['Do 25 portfeli w Profilu', '—', 'soon', 'soon'],
+    ['Dłuższa historia PnL (90 dni)', '—', 'soon', 'soon'],
+    ['Własne zapisane filtry i presety Pulse', '—', 'soon', 'soon'],
+    ['Viral z X częściej + wcześniejszy dostęp', '—', 'soon', 'soon'],
   ];
   /* ---------------- English content (translation; for legal pages the Polish version prevails) ---------------- */
   const EN = !!(window.KyvoI18n && window.KyvoI18n.isEn());
   const CARDS_EN = [
     {
-      art: '<img src="icons/icon-192.png" width="112" height="112" alt="" class="ob-logo">',
+      art: hero('en', 'See the move before the crowd does.'),
       t: 'Welcome to Kyvo',
       p: 'Smart money and viral memecoins in one place. Live data from Solana, BSC and Robinhood Chain.',
       li: ['Free, sign-in optional', 'Kyvo never holds your money', 'We never ask for your seed phrase or private key'],
       lang: true,
     },
     {
-      art: '<div class="ob-art"><span>New Pairs</span><span>Final Stretch</span><span>Migrated</span><span>Good Coins</span></div>',
+      art: kynArt('en'),
+      t: 'Kyvo in numbers',
+      p: 'Real numbers from Kyvo’s public log — computed every time you open the app, never rounded up.',
+      li: [],
+    },
+    {
+      art: art2('en'),
       t: 'Pulse: live coins',
       p: 'Pulse shows new pairs, coins close to finishing their bonding curve (Final Stretch) and coins that just moved to a DEX (Migrated). Good Coins are coins that pass stricter filters.',
       li: ['Switch network at the top: Solana · BSC · Robin · All', '“Filters” — set MC, liquidity, volume, age', '⏱ coin age and “on list for” on every row'],
@@ -383,10 +625,16 @@
       li: ['Quotes with a link to the original on X', 'Coins matched by address or an unambiguous $ticker', 'The same ticker can have copies — check the address'],
     },
     {
-      art: '<div class="ob-art"><span>🏆 Leaderboard</span><span>👤 Profile</span><span>PnL</span></div>',
+      art: art4('en'),
       t: 'Leaderboard and your Profile',
       p: 'A trader leaderboard built from public on-chain transactions: PnL, win rate, recent trades. In Profile you paste a public wallet address and see your PnL, positions and a shareable card.',
       li: ['Public addresses only (Solana, BSC, Robinhood)', 'Your data stays in your browser', 'Up to 8 wallets at once'],
+    },
+    {
+      art: coachArt('en'),
+      t: 'Kyvo Coach in the Journal',
+      p: 'Ask about your trades: are you tilt trading, which setup pays you the most, how your psychology looks this week. Answers are computed from your own journal — rule-based, no paid AI.',
+      li: ['Journal and Coach — in Premium', 'A public wallet address is enough, never a key', 'Tips, not financial advice'],
     },
     {
       art: '<div class="ob-art ob-ios"><span>Safari</span><span>⬆︎ Share</span><span>➕ Add to Home Screen</span></div>',
@@ -410,7 +658,7 @@
       ['What if my wallet asks me to approve a transaction?', 'Reject it. Kyvo never sends a transaction to sign — only a text message. Nobody from Kyvo will ever ask for your seed phrase or private key either.'],
       ['Google, email and Apple', 'Google and email sign-in (a sign-in link sent to your email — no password) are coming soon; Apple later. Until then the buttons are marked “Coming soon”.'],
       ['How do I sign out?', 'Profile → “Sign out”. The address stays in Profile and you can remove it separately. More → “Clear Kyvo data” removes everything from this browser.'],
-      ['Kyvo Premium', 'The Premium plan is in preparation — features marked “coming soon” don\'t work yet and nothing is being sold. Planned price: $9.99 / month, launch price for early users $3.99 / month, 3 days free (with a card, Apple Pay or Google Pay attached; BLIK doesn\'t work for subscriptions). Premium will require signing in. Everything that works today stays free — except Runners: 1 free Runner a day (the first one flagged that day), all Runners and their push with Premium.'],
+      ['Kyvo Premium', 'The Premium plans are in preparation — features marked “coming soon” don\'t work yet and nothing is being sold. Two plans are planned: Premium — $9.99 / month (launch price -50%: $4.99 / month) and 🏃 Runners — $49.99 / month (launch price -50%: $24.99 / month). Both come with 3 days free (with a card, Apple Pay or Google Pay attached; BLIK doesn\'t work for subscriptions) and require signing in. Runners: free 1 a day (the first one flagged that day), Premium 3 a day, Runners plan — all of them + Runner push and smart money push. Premium also gives the full Gold tab, unlimited Tracker and all notifications. Everything else that works today stays free.'],
       ['Contact', 'Want to chat, help out or collaborate? More → Contact (Discord).'],
     ]],
     ['Coin tabs', [
@@ -461,7 +709,7 @@
         ['7. Content from X', 'We show short quotes of public posts with the author and a link to the original, for information purposes. Rights to the content belong to its authors. If you are the author and want a quote removed, contact us — we\'ll remove it.'],
         ['7a. Sign-in', 'Signing in is voluntary — you have full access without it. Wallet sign-in consists only of signing a text message; it isn\'t a transaction and costs nothing. Kyvo will never ask you to sign a transaction or for a seed phrase or private key. The session is stored only in your browser. Google or email sign-in (once enabled) works through the Google Firebase service. You can sign out in Profile; you can also delete your Kyvo account (Google / email) there.'],
         ['7b. Kyvo Premium', 'Kyvo Premium is in preparation and is not currently being sold — we don\'t take any payments. Prices and features shown on the Premium page are an announcement and may change. Premium will require signing in.'],
-        ['7c. Subscription terms (once payments launch)', 'Premium will be a monthly subscription: regular price $9.99 / month, launch price for early users $3.99 / month. 3 days free to start — the trial requires a payment method (card, Apple Pay or Google Pay; BLIK isn\'t available for recurring payments). If you don\'t cancel before the trial ends, the subscription becomes paid and renews automatically every month. You can cancel at any time — Premium then works until the end of the paid period. Payments will be handled by an external operator (Stripe); Kyvo doesn\'t see your card details. Details, including the right of withdrawal, will be provided before payments launch.'],
+        ['7c. Subscription terms (once payments launch)', 'Premium will be a monthly subscription in two plans: Premium — regular price $9.99 / month, launch price for early users $4.99 / month (-50%); 🏃 Runners — regular price $49.99 / month, launch price $24.99 / month (-50%). 3 days free to start — the trial requires a payment method (card, Apple Pay or Google Pay; BLIK isn\'t available for recurring payments). If you don\'t cancel before the trial ends, the subscription becomes paid and renews automatically every month. You can cancel at any time — Premium then works until the end of the paid period. Payments will be handled by an external operator (Stripe); Kyvo doesn\'t see your card details. Details, including the right of withdrawal, will be provided before payments launch.'],
         ['8. Rules of use', 'You may not use Kyvo for unlawful activity, market manipulation, fraud or to overload the services Kyvo relies on. Kyvo is intended for adults (18+).'],
         ['9. Liability', 'To the fullest extent permitted by law, the creator of Kyvo is not liable for financial losses resulting from decisions made based on content in the app, or for interruptions or data errors. This does not exclude rights that cannot be excluded by law, including consumer rights.'],
         ['10. Changes', 'These terms may change as the app develops. The current version is always available in Kyvo (More → Terms).'],
@@ -472,13 +720,13 @@
       t: 'Privacy policy',
       body: [
         PL_PREVAILS,
-        ['In short', 'Signing in is optional. Without signing in, Kyvo collects no personal data. Kyvo uses no advertising cookies, analytics, pixels or tracking and has no server of its own with a user database. Wallet sign-in stays on your device; Google / email sign-in (once enabled) is handled by Google Firebase.'],
+        ['In short', 'Signing in is optional. Without signing in, Kyvo collects no personal data. Kyvo uses no advertising cookies, analytics, pixels or tracking (one exception: an anonymous visit counter — see below) and has no server of its own with a user database. Wallet sign-in stays on your device; Google / email sign-in (once enabled) is handled by Google Firebase.'],
         ['What is stored on your device', 'In browser storage (localStorage and the app cache) we only store: the selected network and filters, recent coin data (so the app starts faster), “how long a coin has been on the list”, selected tabs, your language, the public wallet addresses added in Profile, your nickname and avatar (the avatar photo stays on your phone), the fetched transaction history of those addresses, your watchlist and alerts, and the fact that the intro was already shown. Kyvo doesn\'t send this data anywhere. Delete it with “Clear Kyvo data” (More) or by clearing site data in your browser.'],
         ['Wallet sign-in', 'When you sign in with a wallet, your wallet signs a text message. We verify the signature on your device; the session (public address, message text and signature) stays only in this browser\'s localStorage and never reaches any Kyvo server. We get no access to funds or keys.'],
         ['Sign-in with Google or email', 'GOOGLE_STATUS When enabled, we use Firebase Authentication (Google): Google sign-in processes your name, email address, profile photo and account ID, and email sign-in processes your email address (we send a one-time sign-in link to it); account data is stored in the Kyvo Firebase project and session data in your browser. We use it only for signing in (and in the future for Premium). Delete the account in Profile (“Delete Kyvo account”) and sign out with “Sign out”.'],
         ['Payments (in the future)', 'Kyvo Premium isn\'t sold yet. Once payments launch, Stripe will handle them — card details go directly to Stripe and Kyvo only sees the subscription status.'],
         ['We don\'t sell data', 'We don\'t sell, share or use your data for advertising.'],
-        ['Requests to external APIs', 'To show live data, your browser connects directly to public services: DexScreener, GeckoTerminal, RugCheck and GoPlus (only the address of the coin you\'re viewing), OneSignal (only if you enable system notifications), public RPC nodes for Solana (publicnode), BSC (bloXroute, 48 Club, BNB Chain) and Robinhood Chain, Blockscout (Robinhood Chain) and Binance (public prices). When Google sign-in is enabled — also Google servers (Firebase). Coin images load from those services\' servers. As with any internet connection, these services see your IP address and browser data, and when you check a wallet in Profile — also that public address. They operate under their own privacy policies.'],
+        ['Requests to external APIs', 'To show live data, your browser connects directly to public services: DexScreener, GeckoTerminal, RugCheck and GoPlus (only the address of the coin you\'re viewing), OneSignal (only if you enable system notifications), public RPC nodes for Solana (publicnode), BSC (bloXroute, 48 Club, BNB Chain) and Robinhood Chain, Blockscout (Robinhood Chain) and Binance (public prices). When Google sign-in is enabled — also Google servers (Firebase). Coin images load from those services\' servers. As with any internet connection, these services see your IP address and browser data, and when you check a wallet in Profile — also that public address. They operate under their own privacy policies. Visit counter: once per browser the site sends one request to the public Abacus counter (abacus.jasoncameron.dev), which adds 1 to a single shared number; after that it only reads it. No identifier, cookie or wallet address is sent (the counter\'s server sees your IP address, like any service).'],
         ['Notifications', 'In-app notifications (while Kyvo is open) are created locally by your browser. System notifications (while Kyvo is closed) are optional and only turn on when you tap “Enable system notifications” and accept the browser prompt. They are sent by OneSignal (OneSignal, Inc., USA), which stores an anonymous push-subscription ID for your browser, device/browser type, language, time zone and a plan tag (free/Premium) in order to deliver alerts. We don\'t give OneSignal your name, email or wallet addresses. Turn it off in Kyvo notification settings or in your browser/phone settings — the subscription is then removed.'],
         ['Hosting', 'The site is hosted on GitHub Pages (GitHub, Inc.). GitHub may process visitors\' IP addresses in server logs for security purposes, in line with its privacy policy. Kyvo has no access to those logs.'],
         ['Contact via Discord', 'If you message us on Discord, the conversation takes place on Discord under its rules. Kyvo has no contact forms or newsletter.'],
@@ -514,20 +762,25 @@
     },
   };
   const PREMIUM_ROWS_EN = [
-    ['Live Pulse (Solana · BSC · Robinhood)', 'free', 'free'],
-    ['Good Coins, Final Stretch, Migrated + filters', 'free', 'free'],
-    ['Viral from X (updated a few times a day)', 'free', 'free'],
-    ['Trader leaderboard and profiles', 'free', 'free'],
-    ['Profile: up to 8 wallets + PnL card', 'free', 'free'],
-    ['Kyvo Check, watchlist + alerts (while the app is open)', 'free', 'free'],
-    ['🏃 Runners (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner) + push', '1 / day', 'all'],
-    ['🥇 Gold: Check a coin (pro-trader DD)', '3 / day', 'unlimited'],
-    ['🥇 Gold feed + Gold alerts (price ±15–20%, vamps, articles)', '1 card / day', 'all'],
-    ['Live smart money alerts (push, app closed)', '—', 'soon'],
-    ['Up to 25 wallets in Profile', '—', 'soon'],
-    ['Longer PnL history (90 days)', '—', 'soon'],
-    ['Saved custom filters and Pulse presets', '—', 'soon'],
-    ['Viral from X more often + early access', '—', 'soon'],
+    ['Live Pulse (Solana · BSC · Robinhood)', 'free', 'free', 'free'],
+    ['Good Coins, Final Stretch, Migrated + filters', 'free', 'free', 'free'],
+    ['Viral from X (updated a few times a day)', 'free', 'free', 'free'],
+    ['Trader leaderboard and profiles', 'free', 'free', 'free'],
+    ['Profile: up to 8 wallets + PnL card', 'free', 'free', 'free'],
+    ['Kyvo Check, watchlist + alerts (while the app is open)', 'free', 'free', 'free'],
+    ['🏃 Runners (👑 KOL coin, 🚀 Moon run, 📈 Big runner, 🐦 Tweet runner)', '1 / day', '3 / day', 'all'],
+    ['🔔 Runner and Tweet runner push', '1 / day', '3 / day', 'all'],
+    ['🥇 Gold: Check a coin (pro-trader DD)', '3 / day', 'unlimited', 'unlimited'],
+    ['🥇 Gold feed + Gold alerts (price ±15–20%, vamps, articles)', '1 card / day', 'all', 'all'],
+    ['👀 Tracker: followed wallets', '3', 'unlimited', 'unlimited'],
+    ['👀 Smart money push (≥3 top traders buy 1 coin)', '—', '—', 'all'],
+    ['🔔 Notifications (Good Coins, Viral, Gold)', '2 / day', 'unlimited', 'unlimited'],
+    ['📓 Journal: wallet journal, Kyvo Score, analytics, coach', '—', 'free', 'free'],
+    ['📋 Daily plan, goals, reflections, P&L card', '—', 'free', 'free'],
+    ['Up to 25 wallets in Profile', '—', 'soon', 'soon'],
+    ['Longer PnL history (90 days)', '—', 'soon', 'soon'],
+    ['Saved custom filters and Pulse presets', '—', 'soon', 'soon'],
+    ['Viral from X more often + early access', '—', 'soon', 'soon'],
   ];
   const CARDS = EN ? CARDS_EN : CARDS_PL;
   const FAQ = EN ? FAQ_EN : FAQ_PL;
@@ -535,43 +788,49 @@
   const PREMIUM_ROWS = EN ? PREMIUM_ROWS_EN : PREMIUM_ROWS_PL;
   const T = (x) => (window.KyvoI18n ? window.KyvoI18n.t(x) : x);
   function renderPremium(root, ctx) {
-    const C = Object.assign({ enabled: false, regularPrice: '$9.99', promoPrice: '$3.99', promoActive: true, period: 'mies.', trialDays: 3 }, window.KYVO_PREMIUM_CONFIG || {});
-    const link = C.promoActive ? C.stripePaymentLinkPromo : C.stripePaymentLinkRegular;
-    const live = !!(C.enabled && /^https:\/\//.test(link || ''));
+    const C = planCfg();
+    const L = (pl, en) => (EN ? en : pl);
+    const per = EN ? 'mo' : C.period;
+    const live = C.premium.live || C.runners.live;
     const S = window.KyvoAuth && window.KyvoAuth.session();
-    const cell = (v) => (v === 'free' ? '<span class="pm-ok">✓</span>' : v === 'soon' ? '<span class="pm-soon">wkrótce</span>' : v === 'all' ? '<span class="pm-ok">✓ ' + (EN ? 'all' : 'wszystkie') + '</span>' : v === '—' ? '<span class="mut">—</span>' : '<span class="mut">' + esc(v) + '</span>'); // v8.11: text cells (e.g. Runner 1 / day)
-    const price = C.promoActive
-      ? `<span class="pm-old">${esc(C.regularPrice)}</span><b>${esc(C.promoPrice)}</b><span>/ ${esc(C.period)}</span>`
-      : `<b>${esc(C.regularPrice)}</b><span>/ ${esc(C.period)}</span>`;
+    const tier = curTier();
+    const owner = !!(window.KyvoPremium && window.KyvoPremium.isOwner && window.KyvoPremium.isOwner());
+    const cell = (v) => (v === 'free' ? '<span class="pm-ok">✓</span>' : v === 'soon' ? `<span class="pm-soon">${L('wkrótce', 'soon')}</span>` : v === 'all' ? '<span class="pm-ok">✓ ' + L('wszystkie', 'all') + '</span>' : v === '—' ? '<span class="mut">—</span>' : '<span class="mut">' + esc(v) + '</span>');
+    const tierName = tier === 'runners' ? '🏃 Runners' : tier === 'premium' ? '✦ Premium' : L('Darmowy', 'Free');
     root.innerHTML = `
-      <div class="lg-head"><button type="button" class="back" data-back aria-label="Wstecz">‹</button><div class="h" style="margin:0">Kyvo Premium</div></div>
-      <div class="pm-hero">
-        <img src="icons/icon-192.png" width="64" height="64" alt="">
-        <div class="pm-badge">✦ PREMIUM · WKRÓTCE</div>
-        <h1>Więcej sygnałów, mniej szumu</h1>
-        ${C.promoActive ? '<div class="pm-promo">Cena startowa dla pierwszych użytkowników</div>' : ''}
-        <div class="pm-price">${price}</div>
-        <div class="pm-trial">${esc(C.trialDays)} dni za darmo, potem ${esc(C.promoActive ? C.promoPrice : C.regularPrice)} / ${esc(C.period)} · anulujesz kiedy chcesz</div>
-        ${S ? `<button type="button" class="pm-cta" id="pmCta">Rozpocznij ${esc(C.trialDays)} dni za darmo</button>`
-            : `<button type="button" class="pm-cta" id="pmCta" disabled style="opacity:.55">Rozpocznij ${esc(C.trialDays)} dni za darmo</button><a class="pm-login" href="#login">🔑 Zaloguj się, żeby włączyć Premium</a>`}
-        <div class="pm-note" id="pmNote">${live ? 'Płatność obsługuje zewnętrzny operator płatności (Stripe).' : 'Premium jeszcze nie ruszyło — nic nie sprzedajemy i niczego nie pobieramy.'}</div>
-        <div class="pm-pay">Okres próbny wymaga podpięcia karty, Apple Pay lub Google Pay. BLIK nie jest dostępny dla subskrypcji. Bez anulowania przed końcem ${esc(C.trialDays)} dni subskrypcja odnowi się automatycznie co miesiąc.</div>
+      <div class="lg-head"><button type="button" class="back" data-back aria-label="${L('Wstecz', 'Back')}">‹</button><div class="h" style="margin:0">Kyvo Premium</div></div>
+      <div class="pm-hero" translate="no" data-ky-par>
+        <div class="pm-bg" aria-hidden="true" data-depth="-0.5">${window.KyvoArt ? KyvoArt.pic('chrome', '(min-width:700px) 420px, 80vw') : ''}</div>
+        <div class="pm-art" data-depth="0.8">${window.KyvoArt ? KyvoArt.pic('arc', '(min-width:700px) 640px, 100vw', { cls: 'pm-arc' }) + KyvoArt.pic('emblem', '120px', { cls: 'pm-emb', eager: 1, alt: 'Kyvo' }) : '<img src="icons/icon-192.png" width="56" height="56" alt="">'}</div>
+        <div class="pm-badge">${live ? '✦ KYVO PREMIUM' : L('✦ PREMIUM · WKRÓTCE', '✦ PREMIUM · COMING SOON')}</div>
+        <h1>${L('Więcej sygnałów, mniej szumu', 'More signals, less noise')}</h1>
+        <p class="pm-line">${L('Szum jest za darmo. Przewaga nie.', 'Noise is free. An edge isn’t.')}</p>
+        ${C.promoActive ? `<div class="pm-promo">🔥 ${L('Cena startowa', 'Launch price')} -${esc(C.promoPct)}% · ${L('dla pierwszych użytkowników', 'for early users')}</div>` : ''}
+        <div class="pm-cur">${L('Twój plan', 'Your plan')}: <b>${esc(tierName)}</b>${owner ? ` <span class="mut">(${L('właściciel', 'owner')})</span>` : ''}</div>
+        <div class="pl-grid">${planCardHtml(C, C.runners, { tier })}${planCardHtml(C, C.premium, { tier })}</div>
+        <div class="pm-trial">${L(`${esc(C.trialDays)} dni za darmo, potem cena z planu · anulujesz kiedy chcesz`, `${esc(C.trialDays)} days free, then the plan price · cancel anytime`)}</div>
+        <div class="pm-found"><span class="pm-fb"><small>Founding</small><b>#001</b><i>–#100</i></span><div><b>${L('Founding member — pierwsza setka', 'Founding member — the first hundred')}</b><small>${L('Cena startowa na zawsze, dopóki masz aktywną subskrypcję (bez przerwy, na tym samym planie). Pierwszych 100 subskrybentów dostaje numerowaną odznakę #001–#100, która zostaje z Tobą niezależnie od planu.', 'Launch price for good, as long as your subscription stays active (no gap, same plan). The first 100 subscribers get a numbered #001–#100 badge that stays with you whatever your plan.')}${live ? '' : ' ' + L('Ruszy razem z płatnościami.', 'Starts when payments go live.')}</small></div></div>
+        ${S || tier !== 'free' ? '' : `<a class="pm-login" href="#login">🔑 ${L('Zaloguj się, żeby włączyć Premium', 'Sign in to enable Premium')}</a>`}
+        <div class="pm-note" id="pmNote">${live ? L('Płatność obsługuje zewnętrzny operator płatności (Stripe).', 'Payment is handled by an external payment operator (Stripe).') : L('Premium jeszcze nie ruszyło — nic nie sprzedajemy i niczego nie pobieramy.', 'Premium hasn\'t launched yet — we don\'t sell anything and don\'t charge anything.')}</div>
+        <div class="pm-pay">${L(`Okres próbny wymaga podpięcia karty, Apple Pay lub Google Pay. BLIK nie jest dostępny dla subskrypcji. Bez anulowania przed końcem ${esc(C.trialDays)} dni subskrypcja odnowi się automatycznie co miesiąc.`, `The trial requires a card, Apple Pay or Google Pay. BLIK isn't available for subscriptions. Unless you cancel before the end of the ${esc(C.trialDays)}-day trial, the subscription renews automatically every month.`)}</div>
       </div>
-      <div class="card pm-tbl">
-        <div class="pm-row pm-h"><div>Funkcja</div><div>Free</div><div class="pm-pcol">Premium</div></div>
-        ${PREMIUM_ROWS.map(([f, a, b]) => `<div class="pm-row"><div>${esc(f)}</div><div>${cell(a)}</div><div class="pm-pcol">${cell(b)}</div></div>`).join('')}
+      <div class="card pm-tbl pm-tbl3" translate="no">
+        <div class="pm-row pm-h"><div>${L('Funkcja', 'Feature')}</div><div>Free</div><div class="pm-pcol">Premium<small>${esc(C.promoActive ? C.premium.promoPrice : C.premium.regularPrice)}</small></div><div class="pm-rcol">🏃 Runners<small>${esc(C.promoActive ? C.runners.promoPrice : C.runners.regularPrice)}</small></div></div>
+        ${PREMIUM_ROWS.map(([f, a, b, c]) => `<div class="pm-row"><div>${esc(f)}</div><div>${cell(a)}</div><div class="pm-pcol">${cell(b)}</div><div class="pm-rcol">${cell(c)}</div></div>`).join('')}
       </div>
-      <div class="mut" style="font-size:11.5px;line-height:1.5;margin:6px 2px 12px">„Wkrótce” = funkcja w przygotowaniu, jeszcze nie działa. Wszystko z kolumny Free działa już dziś i zostaje za darmo. Cena i lista funkcji mogą się zmienić przed startem. Premium to nie porada finansowa.</div>`;
+      <div class="mut" style="font-size:11.5px;line-height:1.5;margin:6px 2px 12px" translate="no">${L(`Ceny w USD za miesiąc. Przekreślona cena = cena regularna po okresie startowym (Premium ${esc(C.premium.regularPrice)}, Runners ${esc(C.runners.regularPrice)}). „Wkrótce” = funkcja w przygotowaniu, jeszcze nie działa. Wszystko z kolumny Free działa już dziś i zostaje za darmo. Ceny i lista funkcji mogą się zmienić przed startem. Premium to nie porada finansowa.`, `Prices in USD per month. Crossed-out price = regular price after the launch period (Premium ${esc(C.premium.regularPrice)}, Runners ${esc(C.runners.regularPrice)}). “Coming soon” = feature in preparation, doesn't work yet. Everything in the Free column works today and stays free. Prices and the feature list may change before launch. Premium is not financial advice.`)}</div>`;
     wireBack(root, ctx);
-    const cta = root.querySelector('#pmCta');
-    if (S && cta) cta.onclick = () => {
-      if (live) { window.open(link, '_blank', 'noopener'); return; }
+    root.querySelectorAll('[data-plango]').forEach((b) => (b.onclick = () => {
+      const x = C[b.dataset.plango];
+      if (!x) return;
+      if (x.live && S) { window.open(x.link, '_blank', 'noopener'); return; } // only when payments are switched on (enabled:true + https Stripe link)
+      if (x.live && !S) { location.hash = 'login'; return; }
       const n = root.querySelector('#pmNote');
-      n.innerHTML = '<b>Wkrótce — zapisz się na listę.</b> Napisz na Discordzie, a dam znać, gdy Premium ruszy.';
+      n.innerHTML = `<b>${L('Wkrótce — zapisz się na listę.', 'Coming soon — join the list.')}</b> ${L(`Napisz na Discordzie, że chcesz plan ${esc(x.name)}, a dam znać, gdy ruszy.`, `Message me on Discord that you want the ${esc(x.name)} plan and I'll let you know when it launches.`)}`;
       n.classList.add('on');
-      cta.textContent = 'Wkrótce';
+      b.textContent = L('Wkrótce', 'Coming soon');
       setTimeout(() => (location.hash = 'kontakt'), 1600);
-    };
+    }));
   }
 
   /* ---------------- Kontakt ---------------- */
@@ -607,5 +866,5 @@
     return true;
   }
 
-  window.KyvoLaunch = { maybePremiumPopup, openLangPicker, renderPremium, renderContact, openOnboard, maybeOnboard, closeOnboard, renderHelp, renderLegal, legalLinks, clearData, isIOS, standalone };
+  window.KyvoLaunch = { planCfg, maybePremiumPopup, openLangPicker, renderPremium, renderContact, openOnboard, maybeOnboard, closeOnboard, renderHelp, renderLegal, legalLinks, clearData, isIOS, standalone };
 })();

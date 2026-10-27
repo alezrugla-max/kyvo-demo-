@@ -1,4 +1,5 @@
-/* KYVO_LIVE_v8_14 — v8.14 pump.fun-style coin page (live trades stream, area/candle chart with MC axis, KOL/whale markers, Callouts/Holders/About/Pairs tabs, alerts, pump.fun CTA), pump.fun traders in Ranking (source chips), 👀 Tracker (follow wallets, live swaps, cluster buys, Premium push) · v8.13 launch sweep: one main-pool price rule (pairs.js), watchlist entry repair · v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
+/* KYVO_LIVE_v8_15 — v8.15: 📓 Journal (Premium) + Obsidian design layer (theme.css, fx.js, self-hosted fonts) on top of
+   KYVO_LIVE_v8_14_1 — v8.14.1 pricing: two paid tiers (Premium $9.99→$4.99 launch -50%: 3 Runners/day + full Gold/Tracker/notifications · 🏃 Runners $49.99→$24.99: all Runners + Runner/smart-money push; free 1 Runner/day; owner = Runners; payments not live) · v8.14 pump.fun-style coin page (live trades stream, area/candle chart with MC axis, KOL/whale markers, Callouts/Holders/About/Pairs tabs, alerts, pump.fun CTA), pump.fun traders in Ranking (source chips), 👀 Tracker (follow wallets, live swaps, cluster buys, Premium push) · v8.13 launch sweep: one main-pool price rule (pairs.js), watchlist entry repair · v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
 
@@ -10,7 +11,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_14';
+  const MVP_MARKER = 'KYVO_LIVE_v8_15';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -1156,11 +1157,11 @@
     const hit50 = done1.filter((e) => (maxP(e) || 0) >= 50).length, hit100 = done1.filter((e) => (maxP(e) || 0) >= 100).length;
     const pc = (v) => (v == null || !isFinite(v) ? '<span class="mut">—</span>' : `<b class="${pctClass(v)}">${fmtPct(v)}</b>`);
     const tm = (ms) => new Date(ms).toLocaleString(window.KyvoI18n ? window.KyvoI18n.locale() : 'pl-PL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const tkPrem = isPremiumUser(), tkFree = tkPrem ? null : String(RunnerGate.freeKey() || '').replace(/^leg2:/, '');
+    const tkPrem = isRunnersUser(), tkOpen = tkPrem ? [] : (RunnerGate.openKeys() || []).map((k) => String(k).replace(/^leg2:/, ''));
     const row = (e) => {
       const rAt = e.kinds && Math.max(e.kinds.runner || 0, e.kinds.leg2 || 0);
-      if (!tkPrem && rAt && Date.now() - rAt < 24 * 3.6e6 && e.k !== tkFree) // v8.11: Runners from the last 24 h stay locked for free users (no name / CA)
-        return `<div class="row trk rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div><div class="nm"><b>🏃 Runner <span class="mut" style="font-weight:600">· ${L2('Oznaczony', 'Flagged')} ${esc(tm(rAt))}</span></b><small class="rlock-t">🔒 ${L2('Wynik widoczny w Premium (darmowo po 24 h)', 'Result visible with Premium (free after 24 h)')}</small></div></div>`;
+      if (!tkPrem && rAt && Date.now() - rAt < 24 * 3.6e6 && !tkOpen.includes(e.k)) // v8.11: Runners from the last 24 h stay locked for free users (no name / CA)
+        return `<div class="row trk rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div><div class="nm"><b>🏃 Runner <span class="mut" style="font-weight:600">· ${L2('Oznaczony', 'Flagged')} ${esc(tm(rAt))}</span></b><small class="rlock-t">🔒 ${L2('Wynik widoczny w planie 🏃 Runners (darmowo po 24 h)', 'Result visible with the 🏃 Runners plan (free after 24 h)')}</small></div></div>`;
       const st = stageOf(e.mc0);
       const kinds = Object.keys(e.kinds || {}).map((k) => (k === 'runner' ? (e.badge === 'kol' ? '👑 KOL coin' : e.badge === 'moon' ? '🚀 Moon run' : '🏃 Runner') : k === 'leg2' ? '🔁 ' + L2('Kolejna fala', 'Second leg') : '✅ Good')).join(' · ');
       const p1 = e.p1 != null ? pctOf(e.p1, e.px0) : null, p8 = e.p8 != null ? pctOf(e.p8, e.px0) : null;
@@ -1247,10 +1248,13 @@
      🚀 Moon run, 📈 Big runner, 🐦 Tweet runner, 🔁 second leg) renders as a locked card without name / CA / chart / links.
      CLIENT-SIDE gate only: Kyvo is a static PWA and data/*.json is public, so a technical user can bypass it. Real
      enforcement later = login (Supabase/Firebase) + entitlement + a server-filtered Runner feed. */
-  const FREE_RK = 'kyvo_free_runner_v1';
+  const FREE_RK = 'kyvo_free_runner_v1', OPEN_RK = 'kyvo_open_runners_v2';
   let trackTried = false;
   const warsawDay = (ms) => { try { return new Date(ms).toLocaleDateString('en-CA', { timeZone: 'Europe/Warsaw' }); } catch (e) { return new Date(ms).toISOString().slice(0, 10); } };
   const isPremiumUser = () => { try { return !!(window.KyvoPremium && window.KyvoPremium.isActive()); } catch (e) { return false; } };
+  /* v8.14.1 tiers: free = 1 Runner / Warsaw day, Premium = 3 / day, 🏃 Runners = all (owner = Runners). */
+  const isRunnersUser = () => { try { return !!(window.KyvoPremium && (window.KyvoPremium.isRunners ? window.KyvoPremium.isRunners() : window.KyvoPremium.isActive())); } catch (e) { return false; } };
+  const runnerQuota = () => { try { const q = window.KyvoPremium && window.KyvoPremium.runnersPerDay ? window.KyvoPremium.runnersPerDay() : (isPremiumUser() ? Infinity : 1); return q > 0 ? q : 1; } catch (e) { return 1; } };
   function runnerFlagAt(x) {
     if (x.srv && x.srv.at) return x.srv.at;
     const tr = track.items[x.leg2 ? String(x.key).replace(/^leg2:/, '') : x.key] || track.items[x.c ? keyOf(x.c) : ''];
@@ -1262,23 +1266,72 @@
     if (sAt && (!at || sAt < at)) at = sAt;
     return at;
   }
-  function freeRunnerKey(coins) {
+  /* The first N Runners flagged today (Europe/Warsaw) are open, N = runnerQuota(). Picks are remembered for the whole day on this
+     device; a higher quota (Free → Premium) keeps the earlier picks and adds the next ones. */
+  function openRunnerKeys(coins) {
+    const q = runnerQuota();
+    if (!isFinite(q)) return null; // unlimited
     const day = warsawDay(Date.now());
-    let st = {}; try { st = JSON.parse(localStorage.getItem(FREE_RK) || '{}') || {}; } catch (e) {}
-    if (st.day === day && st.key) return st.key;
-    const today = (coins || []).map((x) => ({ x, at: runnerFlagAt(x) })).filter((o) => o.at && warsawDay(o.at) === day).sort((a, b) => a.at - b.at);
-    if (!today.length) return null;
-    if (!kolLiveAt || trackTried !== true) return today[0].x.key; // server Runner feed not loaded yet → don't lock in a pick that an earlier server Runner should win
-    try { localStorage.setItem(FREE_RK, JSON.stringify({ day, key: today[0].x.key, at: today[0].at })); } catch (e) {}
-    return today[0].x.key;
+    let st = {}; try { st = JSON.parse(localStorage.getItem(OPEN_RK) || '{}') || {}; } catch (e) {}
+    let keys = st.day === day && Array.isArray(st.keys) ? st.keys.slice() : [];
+    if (!keys.length) { try { const v1 = JSON.parse(localStorage.getItem(FREE_RK) || '{}') || {}; if (v1.day === day && v1.key) keys = [v1.key]; } catch (e) {} } // v8.11 pick survives the update
+    if (keys.length >= q) return keys.slice(0, q);
+    const today = (coins || []).map((x) => ({ x, at: runnerFlagAt(x) })).filter((o) => o.at && warsawDay(o.at) === day && !keys.includes(o.x.key)).sort((a, b) => a.at - b.at);
+    for (const o of today) { if (keys.length >= q) break; keys.push(o.x.key); }
+    if (!kolLiveAt || trackTried !== true) return keys; // server Runner feed not loaded yet → don't lock in picks that an earlier server Runner should win
+    if (keys.length) try { localStorage.setItem(OPEN_RK, JSON.stringify({ day, keys })); } catch (e) {}
+    return keys;
+  }
+  function freeRunnerKey(coins) { const k = openRunnerKeys(coins); return k ? k[0] || null : null; } // legacy helper (first open Runner)
+  /* v8.14.1 ✦ chrome hero stats (big metallic numerals). REAL data only: server log data/track_record.json
+     (same for everyone, numbers only — no names/CA, so it never reveals a locked Runner). Missing data → nothing is shown. */
+  function runnerHeroStats() {
+    const items = (trackServer && trackServer.items) || [];
+    if (!items.length) return null;
+    const day = warsawDay(Date.now());
+    const rs = items.filter((e) => e.kinds && e.kinds.runner && e.px0 > 0);
+    let win = rs.filter((e) => warsawDay(e.kinds.runner) === day), today = true;
+    if (!win.length) { win = rs.filter((e) => Date.now() - e.kinds.runner < 24 * 3.6e6); today = false; }
+    if (!win.length) return null;
+    const mx = win.map((e) => (e.max > 0 ? (e.max / e.px0 - 1) * 100 : null)).filter((v) => v != null && isFinite(v) && v < 5000); // >50x = suspect price sample, skipped
+    return { n: win.length, today, win, best: mx.length ? Math.max(...mx) : null, x2: mx.length ? mx.filter((v) => v >= 100).length : null };
+  }
+  function runnerHeroHtml(big) {
+    const S = runnerHeroStats();
+    if (!S) return '';
+    const en = window.KyvoI18n && window.KyvoI18n.isEn();
+    const L2 = (pl, e) => (en ? e : pl);
+    const nLbl = S.today ? L2(S.n === 1 ? 'Runner oznaczony dziś' : 'Runnerów oznaczonych dziś', S.n === 1 ? 'Runner flagged today' : 'Runners flagged today') : L2('Oznaczonych w 24 h', 'Flagged in 24 h');
+    const stat = (v, l, cls) => `<div class="kh-s${cls ? ' ' + cls : ''}"><b class="chrome">${v}</b><small>${l}</small></div>`;
+    const art = window.KyvoArt ? `<span class="kh-bg" aria-hidden="true" data-depth="-0.5">${KyvoArt.pic('arc', '(min-width:900px) 900px, 100vw')}</span>` : '';
+    return `<a class="kyhero ky-tilt${big ? ' big' : ''}" href="#runner" translate="no" data-ky-par>${art}
+      <div class="kh-k">${L2('Kyvo · log serwera', 'Kyvo · server log')}</div>
+      ${(() => { // v8.15 pass 8: big counter = one huge number + a row of smaller stats beneath (Liquid-style)
+        const sub = `${S.best != null && S.best > 0 ? stat('+' + Math.round(S.best) + '%', L2('najlepszy (max po oznaczeniu)', 'best (max after flag)')) : ''}${S.x2 ? stat(String(S.x2), L2('doszło do 2x', 'reached 2x')) : ''}`;
+        return big ? `<div class="kh-main">${stat(String(S.n), nLbl, 'main')}</div>${sub ? `<div class="kh-row kh-sub">${sub}</div>` : ''}` : `<div class="kh-row">${stat(String(S.n), nLbl, 'main')}${sub}</div>`;
+      })()}
+      ${big ? `<div class="kh-line">${L2('Wcześnie to nie szczęście. To filtr.', 'Early isn’t luck. It’s a filter.')}</div>` : ''}
+    </a>`;
+  }
+  function updatePulseHero() {
+    const el = $('#kyHero'); if (!el) return;
+    const on = view === 'pulse';
+    document.body.classList.toggle('hero-on', on);
+    if (!on) return;
+    const fill = () => { if (view === 'pulse') el.innerHTML = runnerHeroHtml(false) + (window.KyvoNumbers ? window.KyvoNumbers.strip('kyn-desk') : ''); }; // pass 9: 'Dane z' strip (desktop only, CSS)
+    fill();
+    if (!trackServer || Date.now() - trackServerAt > 10 * 60e3) loadTrackServer().then(fill).catch(() => {});
   }
   const RunnerGate = {
     premium: isPremiumUser,
+    unlimited: isRunnersUser,
+    quota: runnerQuota,
+    openKeys: () => openRunnerKeys(runnerItems().coins), // null = unlimited
     freeKey: () => freeRunnerKey(runnerItems().coins),
-    unlocked(key) { if (isPremiumUser()) return true; const f = this.freeKey(); return !!f && key === f; },
+    unlocked(key) { if (isRunnersUser()) return true; const ks = this.openKeys(); return !ks || ks.includes(key); },
   };
   window.KyvoRunnerGate = RunnerGate;
-  function openPremium() { if (window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(true)) return; location.hash = 'premium'; }
+  function openPremium(plan) { if (window.KyvoLaunch && window.KyvoLaunch.maybePremiumPopup && window.KyvoLaunch.maybePremiumPopup(true, typeof plan === 'string' ? plan : 'runners')) return; location.hash = 'premium'; }
   function runnerItems() {
     if (!trackTried) { trackTried = 'busy'; loadTrackServer().finally(() => { trackTried = true; if (view === 'runner') renderRunner(); }); }
     const base = window.KyvoInsights ? window.KyvoInsights.runnerList(activeChain) : { coins: [], tweets: [] };
@@ -1312,18 +1365,18 @@
     items.coins.sort((a, b) => pri(b) - pri(a) || (a.c.mcap || 0) - (b.c.mcap || 0)); // v8.8: 👑 KOL coins first
     const stCount = {}; for (const x of items.coins) { const st = stageOf(x.c.mcap); if (st) stCount[st.n] = (stCount[st.n] || 0) + 1; }
     if (runnerStage && !stCount[runnerStage]) runnerStage = 0;
-    const prem = isPremiumUser(), freeK = prem ? null : freeRunnerKey(items.coins);
-    const isOpen = (x) => prem || x.key === freeK;
+    const prem = isRunnersUser(), paid = isPremiumUser(), quota = runnerQuota(), openK = prem ? [] : (openRunnerKeys(items.coins) || []);
+    const isOpen = (x) => prem || openK.includes(x.key);
     if (!prem) items.coins.sort((a, b) => (isOpen(b) ? 1 : 0) - (isOpen(a) ? 1 : 0)); // v8.11: the free Runner first
     const shown = runnerStage ? items.coins.filter((x) => (stageOf(x.c.mcap) || {}).n === runnerStage) : items.coins;
-    const freeLeft = !prem && freeK && items.coins.some((x) => x.key === freeK);
+    const freeLeft = !prem && openK.length && items.coins.some((x) => openK.includes(x.key)), openN = openK.length, nLeft = Math.max(0, quota - openN);
     const flagAgo = (ms) => { const m = Math.max(1, Math.round((Date.now() - ms) / 60e3)); return m < 60 ? L2(m + ' min temu', m + ' min ago') : L2(Math.round(m / 60) + ' h temu', Math.round(m / 60) + ' h ago'); };
     const kindLabel = (x) => { const b = x.srv && x.srv.badge; return b === 'kol' ? '👑 KOL coin' : b === 'moon' ? '🚀 Moon run' : b === 'tweet' ? '🐦 Tweet runner' : b === 'big' || x.big ? '📈 ' + L2('Duży runner', 'Big runner') : x.leg2 ? '🔁 ' + L2('Kolejna fala', 'Second leg') : x.early ? '⚡ ' + L2('Zaczyna pompować', 'Starting to pump') : '🏃 Runner'; };
     const lockCard = (x) => { const at = runnerFlagAt(x); // v8.11: no name / ticker / CA / logo / chart / links for locked Runners
       return `<div class="row runner rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div>
         <div class="nm"><b>${kindLabel(x)}${at ? ` <span class="mut" style="font-weight:600">· ${esc(flagAgo(at))}</span>` : ''}</b>
           <div class="rlock-bars" aria-hidden="true"><i style="width:62%"></i><i style="width:44%"></i><i style="width:74%"></i></div>
-          <small class="rlock-t">🔒 +1 Runner — Premium</small></div>
+          <small class="rlock-t">🔒 ${paid ? L2('Wszystkie Runnery — plan 🏃 Runners', 'All Runners — 🏃 Runners plan') : L2('+1 Runner — Premium (3/dzień) lub 🏃 Runners (wszystkie)', '+1 Runner — Premium (3/day) or 🏃 Runners (all)')}</small></div>
         <div class="rt"><span class="rlock-cta">${L2('Odblokuj', 'Unlock')}</span></div></div>`; };
     const coinCard = (x) => {
       if (!isOpen(x)) return lockCard(x);
@@ -1340,10 +1393,10 @@
           <small>Liq ${fmtLiq(c)} · ⏱ ${esc(ageFrom(c.pairCreatedAt))}</small>
           <div class="rwhy" translate="no">${sv && sv.badge === 'kol' ? '👑 ' + L2('Dlaczego KOL coin', 'Why KOL coin') : sv && sv.badge === 'moon' ? '🚀 ' + L2('Dlaczego moon run', 'Why moon run') : sv && sv.badge === 'tweet' ? '🐦 ' + L2('Dlaczego tweet runner', 'Why tweet runner') : (sv && sv.badge === 'big') || x.big ? '📈 ' + L2('Dlaczego duży runner', 'Why big runner') : x.leg2 ? '🔁 ' + L2('Dlaczego kolejna fala', 'Why second leg') : '🏃 ' + L2('Dlaczego runner', 'Why runner')}: ${x.why.join(' · ')}</div>
           ${c._snap ? '' : window.KyvoInsights.upsideRowHtml(c)}</div>
-        <div class="rt"><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small><small class="rtmc" translate="no">MC ${fmtUsd(c.mcap)}</small></div></div>`;
+        <div class="rt">${sparkSvg(c)}<b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b><small class="mut">1h</small><small class="rtmc" translate="no">MC ${fmtUsd(c.mcap)}</small></div></div>`;
     };
     const twCard = (x) => {
-      if (!prem) return `<div class="card runner-tw rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rtw-h"><span class="rlock-ic sm" aria-hidden="true">🔒</span> <b>${L2('Super-ważny tweet z coinem', 'Super-important tweet with a coin')}</b> <span class="mut">${esc(agoLabel(x.at))}</span></div><div class="rlock-bars" aria-hidden="true"><i style="width:80%"></i><i style="width:56%"></i></div><small class="rlock-t">🔒 Premium · <span class="rlock-cta">${L2('Odblokuj', 'Unlock')}</span></small></div>`;
+      if (!prem) return `<div class="card runner-tw rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rtw-h"><span class="rlock-ic sm" aria-hidden="true">🔒</span> <b>${L2('Super-ważny tweet z coinem', 'Super-important tweet with a coin')}</b> <span class="mut">${esc(agoLabel(x.at))}</span></div><div class="rlock-bars" aria-hidden="true"><i style="width:80%"></i><i style="width:56%"></i></div><small class="rlock-t">🔒 🏃 Runners · <span class="rlock-cta">${L2('Odblokuj', 'Unlock')}</span></small></div>`;
       const k = coinKey(x.coin.chain, x.coin.address);
       return `<div class="card runner-tw" translate="no">
         <div class="rtw-h">${imgTag(x.t.avatar, 'av', 32)} <b>@${esc(x.t.handle)}</b> <span class="mut">${esc(agoLabel(x.at))} · ${x.views ? fmtInt(x.views) + ' views' : fmtInt(x.likes) + ' ♥'}${x.vel ? ' · ' + fmtInt(Math.round(x.vel)) + ' views/h' : ''}</span></div>
@@ -1354,13 +1407,30 @@
         <a href="${esc(x.t.url)}" target="_blank" rel="noopener noreferrer" style="font-size:12px">${L2('Otwórz tweet', 'Open tweet')} ↗</a>
       </div>`;
     };
-    $('#listBody').innerHTML = `<div class="h">🏃 Runner <span class="badge live">LIVE</span></div>
-      <div class="sub" translate="no">${L2('Tylko najmocniejsze sygnały: ogromny i rosnący wolumen, bardzo dużo transakcji, szybki ruch po filtrach bezpieczeństwa — oraz super-ważne tweety z coinem.', 'Only the strongest signals: huge and accelerating volume, very many txns, a fast move after safety filters — plus super-important tweets with a coin.')}</div>
-      ${prem ? `<div class="rplan prem" translate="no">✦ ${L2('Premium: wszystkie Runnery i push bez limitu.', 'Premium: all Runners and push, no limit.')}${window.KyvoPremium && window.KyvoPremium.isOwner && window.KyvoPremium.isOwner() ? ' <span class="mut">(' + L2('właściciel', 'owner') + ')</span>' : ''}</div>`
-        : `<div class="rplan" translate="no"><div class="rplan-t"><b>${L2('Plan darmowy: 1 Runner dziennie', 'Free plan: 1 Runner a day')}</b><small>${freeLeft ? L2('Twój darmowy Runner na dziś jest odblokowany poniżej — pierwszy oznaczony dziś (czas PL). Pozostałe Runnery są w Premium.', 'Your free Runner for today is unlocked below — the first one flagged today (Polish time). All other Runners are Premium.') : freeK ? L2('Dzisiejszy darmowy Runner już minął. Kolejny jutro — albo wszystkie od razu w Premium.', 'Today\u2019s free Runner has passed. Next one tomorrow — or all of them now with Premium.') : L2('Darmowy Runner na dziś odblokuje się przy pierwszym coinie oznaczonym dziś (czas PL). Pozostałe Runnery są w Premium.', 'Today\u2019s free Runner unlocks with the first coin flagged today (Polish time). All other Runners are Premium.')}</small></div><button type="button" class="rplan-cta" data-unlock>✦ ${L2('Odblokuj Premium', 'Unlock Premium')}</button></div>`}
-      <div class="h" style="font-size:14px;margin-top:10px">${L2('Coiny — od najmniejszego MC (najwcześniej)', 'Coins — smallest MC first (earliest)')} <span class="mut" style="font-size:12px">${items.coins.length}</span></div>
+    /* v8.15: hero = Runners FLAGGED today (server log data/track_record.json); "Aktywne teraz" = coins that meet the live bar now.
+       The section below lists the same flagged-today set the hero counts, so the two never contradict each other.
+       Gate: Runners plan sees all; Free/Premium see their open picks (first flagged today, up to the daily quota), others locked. */
+    const HS = runnerHeroStats(), todayList = HS ? HS.win.slice().sort((a, b) => b.kinds.runner - a.kinds.runner) : [], todayN = todayList.length;
+    const todayOpen = (() => { if (prem) return null; const o = openK.slice(); for (const e of todayList.slice().sort((a, b) => a.kinds.runner - b.kinds.runner)) { if (o.length >= quota) break; if (!o.includes(e.k)) o.push(e.k); } return o; })();
+    const todayRow = (e) => {
+      const maxP = e.max > 0 && e.px0 > 0 ? (e.max / e.px0 - 1) * 100 : null, nowP = e.last > 0 && e.px0 > 0 ? (e.last / e.px0 - 1) * 100 : null;
+      const ok = (v) => v != null && isFinite(v) && v < 5000;
+      const res = `<div class="rt td-rt">${ok(maxP) ? `<b class="chrome td-max">+${Math.round(Math.max(0, maxP))}%</b><small class="mut">${L2('max po oznacz.', 'max after flag')}</small>` : ''}${ok(nowP) ? `<small class="${pctClass(nowP)}">${L2('teraz', 'now')} ${fmtPct(nowP)}</small>` : ''}</div>`;
+      if (todayOpen && !todayOpen.includes(e.k)) return `<div class="row td-row rlock" role="button" tabindex="0" data-unlock translate="no"><div class="rlock-ic" aria-hidden="true">🔒</div><div class="nm"><b>🏃 Runner <span class="mut" style="font-weight:600">· ${esc(flagAgo(e.kinds.runner))}</span></b><div class="rlock-bars" aria-hidden="true"><i style="width:58%"></i><i style="width:40%"></i></div></div>${res}</div>`;
+      const c = kolCoinOf(e);
+      return `<div class="row td-row" data-key="${esc(e.k)}" role="button" tabindex="0" translate="no">${imgTag(c)}<div class="nm"><b><span class="cbadge c-${esc(e.chain || 'solana')}">${esc(chainBadge(c))}</span> ${esc(e.name || e.sym || '')} <span class="mut" style="font-weight:600">$${esc(e.sym || '')}</span></b><small class="td-sub">${esc(flagAgo(e.kinds.runner))} · MC ${fmtUsd(e.mc0)} → ${fmtUsd(e.mcNow || e.mc0)}</small></div>${res}</div>`;
+    };
+    const todayHtml = todayN ? `<div class="h" style="font-size:14px;margin-top:12px">${HS.today ? L2('Oznaczone dziś', 'Flagged today') : L2('Oznaczone w 24 h', 'Flagged in 24 h')} <span class="mut" style="font-size:12px">${todayN}</span> <span class="mut rh-note">${L2('log serwera · wynik od oznaczenia', 'server log · result since flag')}</span></div><div class="card td-card" style="padding:4px 10px">${todayList.map(todayRow).join('')}</div>` : '';
+    $('#listBody').innerHTML = `<div class="h">🏃 <span class="chrome">Runner</span> <span class="badge live">LIVE</span></div>
+      ${runnerHeroHtml(true)}
+      <div class="sub" translate="no">${L2('Najmocniejsze sygnały: rosnący wolumen, dużo transakcji, szybki ruch po filtrach bezpieczeństwa.', 'The strongest signals: rising volume, many txns, a fast move after safety filters.')}</div>
+      ${prem ? `<div class="rplan prem" translate="no">🏃 ${L2('Plan Runners: wszystkie Runnery i push bez limitu.', 'Runners plan: all Runners and push, no limit.')}${window.KyvoPremium && window.KyvoPremium.isOwner && window.KyvoPremium.isOwner() ? ' <span class="mut">(' + L2('właściciel', 'owner') + ')</span>' : ''}</div>`
+        : paid ? `<div class="rplan" translate="no"><div class="rplan-t"><b>✦ ${L2(`Premium: ${quota} Runnery dziennie`, `Premium: ${quota} Runners a day`)}</b><small>${freeLeft ? L2(`Twoje Runnery na dziś (${openN}/${quota}) są odblokowane poniżej — pierwsze oznaczone dziś (czas PL).${nLeft ? ` Jeszcze ${nLeft} odblokuje się przy kolejnych.` : ''} Wszystkie Runnery + push są w planie 🏃 Runners.`, `Your Runners for today (${openN}/${quota}) are unlocked below — the first ones flagged today (Polish time).${nLeft ? ` ${nLeft} more unlock with the next ones.` : ''} All Runners + push are in the 🏃 Runners plan.`) : L2(`Odblokujesz ${quota} pierwsze Runnery oznaczone dziś (czas PL). Wszystkie Runnery + push są w planie 🏃 Runners.`, `You unlock the first ${quota} Runners flagged today (Polish time). All Runners + push are in the 🏃 Runners plan.`)}</small></div><button type="button" class="rplan-cta" data-unlock>🏃 ${L2('Przejdź na Runners', 'Upgrade to Runners')}</button></div>`
+        : `<div class="rplan" translate="no"><div class="rplan-t"><b>${L2('Plan darmowy: 1 Runner dziennie', 'Free plan: 1 Runner a day')}</b><small>${freeLeft ? L2('Twój darmowy Runner na dziś jest odblokowany poniżej — pierwszy oznaczony dziś (czas PL).', 'Your free Runner for today is unlocked below — the first one flagged today (Polish time).') : openN ? L2('Dzisiejszy darmowy Runner już minął. Kolejny jutro.', 'Today\u2019s free Runner has passed. Next one tomorrow.') : L2('Darmowy Runner na dziś odblokuje się przy pierwszym coinie oznaczonym dziś (czas PL).', 'Today\u2019s free Runner unlocks with the first coin flagged today (Polish time).')} ${L2('Premium: 3 Runnery dziennie · 🏃 Runners: wszystkie + push.', 'Premium: 3 Runners a day · 🏃 Runners: all + push.')}</small></div><button type="button" class="rplan-cta" data-unlock>✦ ${L2('Zobacz plany', 'See plans')}</button></div>`}
+      <div class="h" style="font-size:14px;margin-top:10px">${L2('Aktywne teraz', 'Active now')} <span class="mut" style="font-size:12px">${items.coins.length}</span> <span class="mut rh-note">${L2('od najmniejszego MC', 'smallest MC first')}</span></div>
       ${items.coins.length ? `<div class="filtbar rstages" style="margin:6px 0" translate="no"><button type="button" class="fbtn ${!runnerStage ? 'on' : ''}" data-rst="0">${L2('Wszystkie', 'All')}</button>${STAGES.map((s2) => `<button type="button" class="fbtn ${runnerStage === s2.n ? 'on' : ''}" data-rst="${s2.n}" ${stCount[s2.n] ? '' : 'disabled'}>${L2('Etap', 'Stage')} ${s2.n} <span class="mut">${esc(s2.range)}</span> ${stCount[s2.n] || 0}</button>`).join('')}</div>` : ''}
-      ${items.coins.length ? `<div class="card" style="padding:4px 10px">${shown.map(coinCard).join('')}</div>` : `<div class="empty" translate="no">${L2('Teraz brak runnerów — próg jest celowo wysoki (kilka–kilkanaście dziennie).', 'No runners right now — the bar is deliberately high (a handful to ~20 a day).')}</div>`}
+      ${items.coins.length ? `<div class="card" style="padding:4px 10px">${shown.map(coinCard).join('')}</div>` : `<div class="empty" translate="no">${L2('Żaden Runner nie spełnia teraz progu na żywo (celowo wysoki).', 'No Runner meets the live bar right now (deliberately high).') + (todayN ? ' ' + L2('Dzisiejsze oznaczenia są poniżej.', 'Today\u2019s flags are below.') : '')}</div>`}
+      ${todayHtml}
       <div class="h" style="font-size:14px;margin-top:12px">${L2('Super-ważne tweety', 'Super-important tweets')} <span class="mut" style="font-size:12px">${items.tweets.length}</span></div>
       ${items.tweets.length ? items.tweets.map(twCard).join('') : `<div class="empty" translate="no">${L2('Brak super-ważnych tweetów z ostatnich 24 h w migawce X.', 'No super-important tweets from the last 24 h in the X snapshot.')}</div>`}
       <div class="foot" translate="no">${L2('Runner to spekulacja, nie prognoza ani porada finansowa — memecoiny mogą spaść do zera. Migawka X odświeżana ok. 3× dziennie; powiadomienia działają przy otwartej apce (push w tle po włączeniu OneSignal).', 'Runner is speculation, not a forecast or financial advice — memecoins can go to zero. X snapshot refreshes about 3× a day; notifications work while the app is open (background push once OneSignal is enabled).')}</div>`;
@@ -1452,18 +1522,31 @@
     let flow = '';
     if (B != null && S != null && B + S > 0) {
       const share = Math.round((B / (B + S)) * 100);
-      flow = `<span class="sigpill ${share >= 60 ? 'up' : share <= 40 ? 'dn' : ''}" title="Udział kupujących (${useM5 ? '5 min' : '1 h'})">${share >= 50 ? '🟢' : '🔴'} ${share}% ${useM5 ? '5m' : '1h'}</span>`;
+      flow = `<span class="sigpill ${share >= 60 ? 'up' : share <= 40 ? 'dn' : ''}" title="Udział kupujących (${useM5 ? '5 min' : '1 h'})"><i class="sgd"></i>${share}% ${useM5 ? '5m' : '1h'}</span>`;
     }
     const tx = useM5 ? b5 + s5 : null;
-    const act = tx != null ? `<span class="sigpill" title="Transakcje w 5 min">⚡ ${tx} tx</span>` : '';
+    const act = tx != null ? `<span class="sigpill" title="Transakcje w 5 min">${tx} tx</span>` : '';
     const m5 = c.change && c.change.m5;
     const mom = m5 != null && isFinite(m5) && Math.abs(m5) >= 1 ? `<span class="sigpill ${m5 > 0 ? 'up' : 'dn'}" title="Zmiana ceny 5 min">${m5 > 0 ? '↗' : '↘'} ${m5 >= 1e5 ? '>+99 999' : (m5 > 0 ? '+' : '') + Math.round(m5)}% 5m</span>` : '';
     // "na liście od" only where it adds information (lists that are not sorted by age, after ≥ 10 min)
     const fs = /^(new|migrated|stretch|pulse):/.test(listId || '') ? null : seenSince(listId, keyOf(c));
     const onl = fs && Date.now() - fs >= 10 * 60e3 ? `<span class="onlist" title="Od kiedy coin jest w tej zakładce">${onListLabel(fs)}</span>` : '';
-    return `<span class="tm"><span class="agepill" title="${mig ? 'Czas od migracji (nowa pula na DEX)' : 'Wiek pary (od utworzenia)'}">⏱ ${mig ? 'migr. ' : ''}${esc(age)}</span>${flow}${act}${mom}${onl}</span>`;
+    return `<span class="tm"><span class="agepill" title="${mig ? 'Czas od migracji (nowa pula na DEX)' : 'Wiek pary (od utworzenia)'}">${mig ? 'migr. ' : ''}${esc(age)}</span>${flow}${act}${mom}${onl}</span>`;
   }
 
+  /* v8.15 sparkline from REAL DexScreener price changes (24h → 6h → 1h → 5m → now). Points are evenly spaced (a trend
+     shape, not a time-scaled chart); fewer than 3 known points → no sparkline. */
+  function sparkSvg(c) {
+    const ch = c && c.change; if (!ch) return '';
+    const seq = [ch.h24, ch.h6, ch.h1, ch.m5].map((v) => (v != null && isFinite(v) && v > -99.9 ? 1 / (1 + v / 100) : null));
+    const pts = seq.concat([1]).filter((v) => v != null);
+    if (pts.length < 3) return '';
+    const mn = Math.min(...pts), mx = Math.max(...pts), W = 56, H = 20, r = mx - mn || 1;
+    const xy = pts.map((v, i) => [(i / (pts.length - 1)) * W, H - 2 - ((v - mn) / r) * (H - 4)]);
+    const d = xy.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('');
+    const up = pts[pts.length - 1] >= pts[0], col = up ? '#3BE58A' : '#FF5A6E', last = xy[xy.length - 1];
+    return `<svg class="spark ${up ? 'up' : 'dn'}" viewBox="-2 0 ${W + 4} ${H}" width="${W + 4}" height="${H}" aria-hidden="true"><path d="${d}L${W} ${H}L0 ${H}Z" fill="${col}" fill-opacity=".10" stroke="none"/><path d="${d}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2" fill="${col}"/></svg>`;
+  }
   function coinRow(c, opts) {
     opts = opts || {};
     const ch = c.change.h1 != null ? c.change.h1 : c.change.h24;
@@ -1488,7 +1571,7 @@
       <div class="nm"><b>${star}${badge} ${esc(c.name)} <span class="mut" style="font-weight:600">$${esc(c.symbol)}</span></b>
         <small>MC ${fmtUsd(c.mcap)} · ${fmtLiq(c) === 'krzywa' ? 'Liq: krzywa' : 'Liq ' + fmtLiq(c)}${extra ? ' · ' + extra : ''}</small>
         ${rowTimeHtml(c, opts.listId)}${opts.upside && window.KyvoInsights ? (opts.good ? window.KyvoInsights.goodRowHtml(c) : window.KyvoInsights.upsideRowHtml(c)) : ''}</div>
-      <div class="rt"><b class="${pctClass(ch)}">${fmtPct(ch)}</b>
+      <div class="rt">${sparkSvg(c)}<b class="${pctClass(ch)}">${fmtPct(ch)}</b>
         <small class="mut">Vol ${fmtUsd(c.volume.h24)}</small></div>
     </div>`;
   }
@@ -1817,11 +1900,7 @@
     $('#coinBody').innerHTML = `
       ${CP ? CP.headerHtml(c) : `<span class="back" id="coinBack">‹</span> <b>${esc(c.name)}</b>`}
       <div id="chartSlot" class="chartslot"></div>
-      ${CP ? CP.tabsHtml() : ''}
-      <div id="kcheckSlot" class="card" style="margin-top:14px"></div>
-      <div id="upsideSlot" style="margin-top:10px"></div>
-      ${curveLine}
-      <div class="statg">
+      <div class="statg cp-statg">
         <div class="st"><small>Cena</small><b>${fmtUsd(c.priceUsd)}</b></div>
         <div class="st"><small>Płynność</small><b>${fmtLiq(c)}</b></div>
         <div class="st"><small>FDV</small><b>${fmtUsd(c.fdv)}</b></div>
@@ -1832,6 +1911,10 @@
         <div class="st"><small>Δ 1h</small><b class="${pctClass(c.change.h1)}">${fmtPct(c.change.h1)}</b></div>
         <div class="st"><small>Buy 1h</small><b>${c.buyRatioH1 != null ? Math.round(c.buyRatioH1 * 100) + '%' : '—'}</b></div>
       </div>
+      ${CP ? CP.tabsHtml() : ''}
+      <div id="kcheckSlot" class="card" style="margin-top:14px"></div>
+      <div id="upsideSlot" style="margin-top:10px"></div>
+      ${curveLine}
       ${smHtml}
       <div class="card" style="margin-top:10px"><div class="h" style="font-size:13px;margin:0 0 6px">Socials</div><div class="socials">${socials || '<span class="mut">Brak</span>'} ${webs}</div></div>
       ${platButtonsHtml(urls)}
@@ -2024,7 +2107,7 @@
     const twRun = {};
     for (const e of (kolLive && kolLive.items) || []) if (e.tweet && e.tweet.id && Date.now() - e.at < 24 * 3.6e6) twRun[String(e.tweet.id)] = e;
     const isNew = (t) => twSeen.size && !twSeen.has(String(t.id));
-    const twPrem = isPremiumUser(); let twFree; const twOpen = (k) => twPrem || k === (twFree === undefined ? (twFree = RunnerGate.freeKey()) : twFree);
+    const twPrem = isRunnersUser(); let twKeys; const twOpen = (k) => twPrem || (twKeys === undefined ? (twKeys = RunnerGate.openKeys() || []) : twKeys).includes(k);
     const card = (t) => {
       const h = ageH(t);
       const tr0 = twRun[String(t.id)];
@@ -2319,15 +2402,18 @@
     window.KyvoProfile.renderTrader(body, L, leaderboard);
   }
 
+  // v8.15 pass 8: menu tiles get line-SVG icons instead of emoji (text stays as-is so i18n keys still match)
+  const mtile = (href, ic, t, d, hl) => `<a class="more-tile${hl ? ' hl' : ''}" href="${href}"><i class="mti">${(window.KyvoIcons && window.KyvoIcons[ic]) || ''}</i><b>${t}</b><small>${d}</small></a>`;
   function renderProfil() {
     document.body.classList.remove('pulse-on');
     if (window.KyvoAuth) window.KyvoAuth.renderBar($('#profilTop'));
     window.KyvoProfile.renderOwn($('#profilBody'));
     $('#profilLinks').innerHTML = `<div class="more-grid" style="margin-top:6px">
-        <a class="more-tile hl" href="#premium"><b>✦ Kyvo Premium</b><small>Cena startowa · wkrótce</small></a>
-        <a class="more-tile" href="#help"><b>❓ Jak korzystać</b><small>FAQ i wprowadzenie</small></a>
-        <a class="more-tile" href="#more"><b>⋯ Więcej</b><small>Ustawienia, regulamin, prywatność</small></a>
-        <a class="more-tile" href="#kontakt"><b>💬 Kontakt</b><small>Discord</small></a>
+        ${mtile('#premium', 'gem', 'Kyvo Premium', 'Cena startowa -50% · wkrótce', true)}
+        ${mtile('#journal', 'j_log', 'Journal', 'Twój dziennik tradingu')}
+        ${mtile('#help', 'book', 'Jak korzystać', 'FAQ i wprowadzenie')}
+        ${mtile('#more', 'sliders', 'Więcej', 'Ustawienia, regulamin, prywatność')}
+        ${mtile('#kontakt', 'users', 'Kontakt', 'Discord')}
       </div>
       <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px"><b style="font-size:13px">Język / Language</b>${window.KyvoI18n ? window.KyvoI18n.toggleHtml() : ''}</div>`;
   }
@@ -2341,13 +2427,14 @@
     $('#moreBody').innerHTML = `
       <div class="h">Więcej</div>
       <div class="more-grid">
-        ${tile('#premium', '✦ Kyvo Premium', 'Cena startowa · zobacz, co planujemy', true)}
-        ${tile('#login', S ? '👤 Konto' : '🔑 Zaloguj się', S ? 'Jesteś zalogowany' : 'Portfel, Google, e-mail — albo bez logowania')}
-        ${tile('#help', '❓ Jak korzystać', 'Zakładki, filtry, PnL, FAQ')}
-        ${tile('#watch', '⭐ Watchlista i alerty', 'Obserwowane coiny, alerty MC i % (gdy Kyvo jest otwarte)')}
-        ${tile('#rank', '🏆 Ranking traderów', 'PnL i win rate publicznych portfeli')}
-        ${tile('#kontakt', '💬 Kontakt', 'Discord — pogadaj, pomóż, współpracuj')}
-        ${tile('#legal/ryzyko', '⚠️ Ryzyko', 'Przeczytaj, zanim cokolwiek kupisz')}
+        ${mtile('#premium', 'gem', 'Kyvo Premium', 'Premium i Runners · cena startowa -50%', true)}
+        ${mtile('#login', S ? 'users' : 'lock', S ? 'Konto' : 'Zaloguj się', S ? 'Jesteś zalogowany' : 'Portfel, Google, e-mail — albo bez logowania')}
+        ${mtile('#help', 'book', 'Jak korzystać', 'Zakładki, filtry, PnL, FAQ')}
+        ${mtile('#watch', 'star', 'Watchlista i alerty', 'Obserwowane coiny, alerty MC i % (gdy Kyvo jest otwarte)')}
+        ${mtile('#journal', 'j_log', 'Journal', 'Dziennik transakcji, wyniki, analiza i coach — Premium')}
+        ${mtile('#rank', 'rank', 'Ranking traderów', 'PnL i win rate publicznych portfeli')}
+        ${mtile('#kontakt', 'users', 'Kontakt', 'Discord — pogadaj, pomóż, współpracuj')}
+        ${mtile('#legal/ryzyko', 'shield_alert', 'Ryzyko', 'Przeczytaj, zanim cokolwiek kupisz')}
       </div>
       <div class="card" style="padding:4px 12px">
         <div class="lg-links" style="margin:10px 0">
@@ -2395,17 +2482,18 @@
     const map = {
       pulse: 's-list', hot: 's-list', good: 's-list', new: 's-list', stretch: 's-list',
       migrated: 's-list', boosted: 's-list', search: 's-list', runner: 's-list', track: 's-list', viral: 's-viral', tweets: 's-tweets', more: 's-more', coin: 's-coin',
-      rank: 's-rank', trader: 's-trader', tracker: 's-tracker', profil: 's-profil', watch: 's-watch', gold: 's-gold',
+      rank: 's-rank', trader: 's-trader', tracker: 's-tracker', journal: 's-journal', profil: 's-profil', watch: 's-watch', gold: 's-gold',
       help: 's-help', legal: 's-legal', login: 's-login', premium: 's-premium', kontakt: 's-kontakt',
     };
     if (which !== 'login') document.body.classList.remove('chrome-off');
     $('#' + (map[which] || 's-list')).classList.add('on');
     $$('#seg button').forEach((b) => b.classList.toggle('on', b.dataset.view === (which === 'coin' ? view : which === 'trader' || which === 'tracker' ? 'rank' : which === 'search' ? 'hot' : which)));
-    const tabMap = { gold: 'gold', runner: 'runner', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', tweets: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', tracker: 'rank', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
+    const tabMap = { gold: 'gold', runner: 'runner', track: 'hot', pulse: 'hot', hot: 'hot', good: 'hot', new: 'hot', stretch: 'hot', migrated: 'hot', boosted: 'hot', search: 'search', viral: 'viral', tweets: 'viral', watch: 'hot', more: 'profil', rank: 'rank', trader: 'rank', tracker: 'rank', journal: 'profil', profil: 'profil', help: 'profil', legal: 'profil', login: 'profil', premium: 'profil', kontakt: 'profil' };
     $$('.tb button').forEach((b) => b.classList.toggle('on', b.dataset.tab === (tabMap[which] || 'hot')));
   }
 
   function setView(v, arg) {
+    view = v; try { updatePulseHero(); } catch (e) {} // v8.14.1 chrome hero on Pulse
     if (['help', 'legal', 'login', 'premium', 'kontakt'].includes(v)) {
       view = v;
       show(v);
@@ -2450,6 +2538,16 @@
       renderFilterPanel('more');
       renderRank();
       location.hash = 'rank';
+      return;
+    }
+    if (v === 'journal') {   // 📓 Journal (journal.js); arg = sub-route: dash|log|stats|coach|trade/<id>|add|edit/<id>
+      show('journal');
+      renderFilterPanel('more');
+      if (!leaderboard) loadLeaderboard().catch(() => {});
+      if (window.KyvoJournal) window.KyvoJournal.show($('#journalBody'), arg || '');
+      else $('#journalBody').innerHTML = '<div class="empty">Journal niedostępny.</div>';
+      const jh = 'journal' + (arg ? '/' + arg : '');
+      if (location.hash.slice(1) !== jh) history.replaceState(null, '', '#' + jh);
       return;
     }
     if (v === 'tracker') {   // v8.14 👀 Tracker (tracker.js)
@@ -2574,6 +2672,7 @@
       return;
     }
     if (a === 'gold') { setView('gold', b); return; }
+    if (a === 'journal') { setView('journal', h.slice(8)); return; }   // 📓 Journal: keep the full sub-route (trade/<id>)
     if (a === 'trader' && b) {
       view = 'rank';
       show('trader');
@@ -2732,6 +2831,7 @@
   if (window.KyvoInsights) window.KyvoInsights.init({ vl, esc, fmtUsd, fmtPct, pctClass, toast, keyOf, getUniverse: allUniverse, consensus: consensusOf, tabsFor, tweetsFor, topicFor, imgTag, getViral: () => viral, boostRank, onShape: () => { clearTimeout(shapeT); shapeT = setTimeout(() => { if (view === 'runner') renderRunner(); }, 1500); } });
   if (window.KyvoProfile) window.KyvoProfile.init({ esc, fmtUsd, agoLabel, shortCa, toast });
   if (window.KyvoCoinPage) window.KyvoCoinPage.init({ esc, fmtUsd, fmtPct, toast, keyOf, shortCa, ageFrom, imgTag, chainBadge, tweetsFor, consensus: consensusOf, smartBuys: (c) => ((c.chainId === 'solana' || !c.chainId) ? smartBuysForMint(c.address) : []), getLeaderboard: () => leaderboard, getSmartMoney: () => smartMoney, onPf: (c) => coinRemount && coinRemount(c) });
+  if (window.KyvoJournal) window.KyvoJournal.init({ fmtUsd, toast, openPremium, getLeaderboard: () => leaderboard });   // 📓 Journal
   if (window.KyvoTracker) window.KyvoTracker.init({ fmtUsd, toast, openPremium, getLeaderboard: () => leaderboard, segHtml: rankSegHtml, wireSeg: wireRankSeg });
   if (window.KyvoGold) window.KyvoGold.init({ fmtUsd, imgTag, toast, openPremium, getLeaderboard: () => leaderboard, getLive: () => xLive, getKolLive: () => kolLive, isView: (v) => view === v });
   loadCache();
@@ -2739,7 +2839,7 @@
   let earlyRouted = null;
   const pLb = loadLeaderboard().then(() => {
     const h = (location.hash || '').slice(1).split('/')[0];
-    if (['rank', 'trader', 'profil', 'leaderboard', 'gold'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
+    if (['rank', 'trader', 'profil', 'leaderboard', 'gold', 'journal'].includes(h)) { earlyRouted = location.hash; routeFromHash(); }
   });
   // v8.7: a cold start with a deep link (#watch, #coin/…, #tweets — e.g. from a push notification) used to land on Pulse,
   // because the first live render set location.hash = 'pulse' before this route ran. Restore the boot hash unless the user navigated.

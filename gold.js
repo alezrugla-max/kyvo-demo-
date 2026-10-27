@@ -232,7 +232,7 @@
     const c = cards[0]; const v = { day, k: c.k, snap: c, at: Date.now() };
     lsSet(FREE_KEY, v); return v;
   }
-  function openPremium() { if (D && D.openPremium) D.openPremium(); else location.hash = 'premium'; }
+  function openPremium() { if (D && D.openPremium) D.openPremium('premium'); else location.hash = 'premium'; }
 
   /* ---------------- render ---------------- */
   function verdictHead(level, v, c) {
