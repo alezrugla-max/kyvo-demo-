@@ -81,6 +81,7 @@
     const st = (k, lbl) => `<div class="kyn-s" data-kyn-s="${k}" hidden><b data-kyn="${k}">0</b><small>${lbl}</small></div>`;
     return `<div class="kyn" data-kyn-root translate="no">
       <div class="kyn-main" data-kyn-s="flag" hidden><b class="kyn-big" data-kyn="flag">0</b><small data-kyn-cap>${T2('coinów oznaczonych przez Kyvo', 'coins flagged by Kyvo')}</small></div>
+      <div class="kyn-top" data-kyn-s="top" hidden>${T2('Największy znaleziony coin', 'Biggest coin found')} <b data-kyn="top">0</b> <span data-kyn-topsym></span></div>
       <div class="kyn-row">${st('run', T2('Runnerów', 'Runners'))}${st('x2', T2('doszło do 2x', 'reached 2x'))}${st('trd', T2('traderów w Rankingu', 'traders in Ranking'))}${st('wal', T2('portfeli śledzonych', 'wallets tracked'))}</div>
       <div class="kyn-vis" data-kyn-s="vis" hidden><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.8 4-5.6 7.5-5.6s6.3 1.8 7.5 5.6"/></svg><b data-kyn="vis">0</b> ${T2('osób odwiedziło Kyvo', 'people have visited Kyvo')}</div>
       ${kynStrip('kyn-in')}</div>`;
@@ -99,6 +100,9 @@
       o.run = it.filter((e) => e.kinds && e.kinds.runner).length;
       // same sanity rule as the Runner hero: >50x = suspect price sample, skipped
       o.x2 = it.filter((e) => e.px0 > 0 && e.max > 0 && e.max / e.px0 >= 2 && e.max / e.px0 < 51).length;
+      // v8.18: biggest move of a flagged coin (peak vs price at flag), same >50x sanity rule
+      const ok = it.filter((e) => e.px0 > 0 && e.max > 0 && e.max / e.px0 < 51);
+      if (ok.length) { const b = ok.reduce((m, e) => (e.max / e.px0 > m.max / m.px0 ? e : m)); const pct = (b.max / b.px0 - 1) * 100; if (pct >= 50) { o.top = Math.round(pct); o.topSym = b.sym || ''; } }
     }
     const nt = lb && (lb.wallets_count || (lb.leaders && lb.leaders.length));
     if (nt) o.trd = nt;
@@ -120,12 +124,13 @@
       return d && typeof d.value === 'number' && d.value >= V.min ? d.value : null;
     } catch (e) { return null; }
   }
-  const kynFmt = (n) => Math.round(n).toLocaleString(kynEN() ? 'en-US' : 'pl-PL');
+  const kynFmt0 = (n) => Math.round(n).toLocaleString(kynEN() ? 'en-US' : 'pl-PL');
+  const kynFmt = (n, el) => (el && el.dataset.pre || '') + kynFmt0(n) + (el && el.dataset.suf || '');
   function kynCount(el, to) {
     const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (rm || to < 10) { el.textContent = kynFmt(to); return; }
+    if (rm || to < 10) { el.textContent = kynFmt(to, el); return; }
     const t0 = performance.now(), dur = 1400;
-    const step = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = kynFmt(to * e); if (p < 1) requestAnimationFrame(step); };
+    const step = (t) => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = kynFmt(to * e, el); if (p < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   }
   async function kynMount(root) {
@@ -138,8 +143,9 @@
       const ds = d.toLocaleDateString(en ? 'en-GB' : 'pl-PL', { day: 'numeric', month: 'short' });
       if (cap) cap.textContent = en ? `coins flagged by Kyvo ${recent ? 'since ' + ds : 'in the last 14 days'}` : `coinów oznaczonych przez Kyvo ${recent ? 'od ' + ds : 'w ostatnich 14 dniach'}`;
     }
-    const show = (k, v) => { const s = box.querySelector(`[data-kyn-s="${k}"]`), b = box.querySelector(`[data-kyn="${k}"]`); if (!s || !b || v == null) return; s.hidden = false; b.dataset.to = v; b.textContent = kynFmt(v); };
-    ['flag', 'run', 'x2', 'trd', 'wal'].forEach((k) => show(k, o[k]));
+    const show = (k, v) => { const s = box.querySelector(`[data-kyn-s="${k}"]`), b = box.querySelector(`[data-kyn="${k}"]`); if (!s || !b || v == null) return; s.hidden = false; b.dataset.to = v; b.textContent = kynFmt(v, b); };
+    { const tb = box.querySelector('[data-kyn="top"]'), ts = box.querySelector('[data-kyn-topsym]'); if (tb && o.top != null) { tb.dataset.pre = '+'; tb.dataset.suf = '%'; if (ts && o.topSym) ts.textContent = '(' + o.topSym + ')'; } }
+    ['flag', 'top', 'run', 'x2', 'trd', 'wal'].forEach((k) => show(k, o[k]));
     const go = () => box.querySelectorAll('[data-kyn]').forEach((b) => { if (b.dataset.to && !b.dataset.done) { b.dataset.done = '1'; kynCount(b, +b.dataset.to); } });
     if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { go(); io.disconnect(); } }, { threshold: 0.4 }); io.observe(box); } else go();
     kynVisits().then((v) => { if (v != null) { show('vis', v); const b = box.querySelector('[data-kyn="vis"]'); if (b) { b.dataset.done = '1'; } } });
