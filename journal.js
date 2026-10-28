@@ -1,4 +1,4 @@
-/* Kyvo v8.15 📓 Journal — memecoin trading journal (Premium).
+/* Kyvo v8.15 📓 Journal (v8.20: 🎴 Kreator P&L — pnlcard.js) — memecoin trading journal (Premium).
    Inspired by trading-journal apps, built for Solana memecoins: trades are auto-built from a PUBLIC wallet address.
    Data (free, public, no API keys, all in the browser):
      * swaps: free public Solana RPC (publicnode — same one as the 👀 Tracker): getSignaturesForAddress + getTransaction
@@ -883,6 +883,50 @@
       rows: [['Trades', String(d.n)], ['Win rate', d.wr == null ? '—' : fPct(d.wr)], ['Kyvo Score', S.score ? S.score.total + '/100' : '—'], [L('Dyscyplina', 'Discipline'), DISC && DISC.adh != null ? grade(Math.round(DISC.adh * 100)) : S.score ? grade(S.score.c.disc) : '—']],
       when: fDate(now()) });
   }
+  /* v8.20 🎴 Kreator P&L (pnlcard.js): card data built ONLY from Journal trades. Source label: wallet → on-chain,
+     hand-entered → "wpisane ręcznie", sample data → "demo". */
+  const fBigUsd = (n) => { if (n == null || !isFinite(n)) return ''; const a = Math.abs(n), s = n < 0 ? '−' : '+'; return s + '$' + (a >= 1e6 ? (a / 1e6).toFixed(2) + 'M' : a.toLocaleString('en-US', { maximumFractionDigits: a >= 100 ? 0 : 2, minimumFractionDigits: a >= 100 ? 0 : 2 })); };
+  const fFull = (t) => { try { return new Date(t * 1000).toLocaleDateString(isEn() ? 'en-GB' : 'pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return fDate(t); } };
+  const srcOf = (ps) => (DEMO || ps.some((p) => p.demo) ? 'demo' : ps.some((p) => p.manual) || !st.wallet ? 'manual' : 'wallet');
+  function myNick() { try { const o = window.KyvoProfile && window.KyvoProfile.own && window.KyvoProfile.own(); return (o && o.nick) || ''; } catch (e) { return ''; } }
+  function pnlCard(kind, arg) {
+    if (!isPrem()) { if (D.openPremium) D.openPremium(); else location.hash = 'premium'; return; }
+    if (!window.KyvoPnlCard) return;
+    const px = S.solPx || 0, base = { nick: myNick() };
+    if (kind === 'trade') {
+      const p = findP(arg);
+      if (!p || p.status === 'inc') { toast(L('Ten trade nie ma pełnego wyniku (brak kosztu wejścia).', 'This trade has no full result (no entry cost).')); return; }
+      const open = p.status === 'open', pnl = open ? p.unreal : p.realized, pct = open ? p.unrealPct : p.pnlPct, size = p.buySol || p.costSold;
+      if (pnl == null || !isFinite(pnl)) { toast(L('Brak wyniku dla tego trade’u.', 'No result for this trade yet.')); return; }
+      return KyvoPnlCard.open(Object.assign(base, { kind, sym: p.sym, pill: '$' + p.sym + ' · Trade', whoSub: '$' + p.sym + ' · Solana',
+        label: open ? L('Niezrealizowany P&L', 'Unrealized P&L') : pnl >= 0 ? L('Zrealizowany zysk', 'Realized profit') : L('Zrealizowana strata', 'Realized loss'),
+        usdTxt: px ? fBigUsd(pnl * px) : '', solTxt: fSol(pnl, 1), pctTxt: fPct(pct, 1), pos: pnl > 0 ? true : pnl < 0 ? false : null,
+        stats: [[px ? fUsd(size * px) : fSol(size), L('wkład', 'invested')], [fHold(p.hold), L('czas trzymania', 'hold time')], [fMc(p.entryMc), L('MC wejścia', 'entry MC')]],
+        statsNoUsd: [[fPct(pct, 1), L('wynik', 'result')], [fHold(p.hold), L('czas trzymania', 'hold time')], [fMc(p.entryMc), L('MC wejścia', 'entry MC')]],
+        when: fFull(p.closeAt || p.openAt), src: srcOf([p]) }));
+    }
+    let ps, label, pill, when;
+    if (kind === 'month') {
+      const [Y, M] = calM || [new Date().getFullYear(), new Date().getMonth()];
+      ps = calMonth(Y, M).closed;
+      const mn = new Date(Y, M, 1).toLocaleString(isEn() ? 'en-GB' : 'pl-PL', { month: 'long', year: 'numeric' });
+      label = L('Zysk za miesiąc', 'Month profit') + ' · ' + mn; pill = L('Miesiąc', 'Month'); when = mn;
+    } else {   // day: arg = 'YYYY-MM-DD' (calendar) or today
+      const k = arg || dKey(new Date());
+      ps = CALPS.filter((p) => p.status === 'closed' && p.costSold > 0 && p.closeAt && dKey(new Date(p.closeAt * 1000)) === k);
+      const isT = k === dKey(new Date());
+      label = isT ? L('Zysk dziś', 'Profit today') : L('Zysk dnia', 'Day profit'); pill = isT ? L('Dziś', 'Today') : L('Dzień', 'Day');
+      when = ps.length ? fFull(ps[0].closeAt) : fFull(now());
+    }
+    if (!ps.length) { toast(kind === 'month' ? L('Brak zamkniętych trade’ów w tym miesiącu.', 'No closed trades this month.') : L('Brak zamkniętych trade’ów tego dnia.', 'No closed trades that day.')); return; }
+    const pnl = ps.reduce((a, p) => a + p.realized, 0), cost = ps.reduce((a, p) => a + (p.costSold || 0), 0), w = ps.filter((p) => !isBE(p) && p.realized > 0).length, l = ps.filter((p) => !isBE(p) && p.realized < 0).length;
+    if (pnl < 0) label = kind === 'month' ? L('Wynik za miesiąc', 'Month result') + label.slice(label.indexOf(' · ')) : L('Wynik dnia', 'Day result');
+    const wr = fPct(ps.length ? w / ps.length : null);
+    KyvoPnlCard.open(Object.assign(base, { kind, pill, whoSub: L('Dziennik · Solana', 'Journal · Solana'), label,
+      usdTxt: px ? fBigUsd(pnl * px) : '', solTxt: fSol(pnl, 1), pctTxt: cost ? fPct(pnl / cost, 1) : '', pos: pnl > 0 ? true : pnl < 0 ? false : null,
+      stats: [[String(ps.length), L('trade’ów', 'trades')], [`${w}-${l}`, L('wygrane-przegrane', 'wins-losses')], [wr, 'win rate']],
+      when, src: srcOf(ps) }));
+  }
   const showcase = () => {
     const pins = PS.filter((p) => plan.pins.includes(p.id));
     const auto = PS.filter((p) => !plan.pins.includes(p.id) && (tradeScale(p, rulesOn() ? plan.rules : null) || 0) >= 85).sort((a, b) => b.realized - a.realized);
@@ -1150,7 +1194,7 @@
       : !DEMO && C.manual ? `<span class="jr-ver man">✍︎ ${L('zawiera ręczne trade’y', 'includes manual trades')}</span>` : '';
     return `<div class="card jr-cal" id="jrCal"><div class="jr-calh"><button type="button" class="jr-ib" data-cal="-1" aria-label="${L('Poprzedni miesiąc', 'Previous month')}">‹</button><div class="jr-calt"><small>${L('Kalendarz P&L', 'P&L calendar')}</small><b>${E(mn)}</b></div>${nC && !DEMO ? `<button type="button" class="jr-ib" data-act="share-month" aria-label="${L('Udostępnij miesiąc', 'Share month')}">${ICO('share', '↗')}</button>` : '<span></span>'}<button type="button" class="jr-ib" data-cal="1" aria-label="${L('Następny miesiąc', 'Next month')}">›</button></div>
       <div class="jr-calg">${wd.map((d) => `<span class="jr-cw">${d}</span>`).join('')}${cells}</div>
-      ${sel.length ? `<div class="jr-cdl"><div class="jr-cdlh"><b>${E(fDate(sel[0].closeAt))}</b><span class="${cls(sel.reduce((a, p) => a + p.realized, 0))}">${px ? fUsd(sel.reduce((a, p) => a + p.realized, 0) * px, 1) + ' · ' : ''}${fSol(sel.reduce((a, p) => a + p.realized, 0), 1)}</span><button type="button" class="jr-ib" data-cday="${calSel}" aria-label="${L('Zamknij', 'Close')}">×</button></div><div class="jr-list">${sel.map(rowHtml).join('')}</div></div>` : ''}
+      ${sel.length ? `<div class="jr-cdl"><div class="jr-cdlh"><b>${E(fDate(sel[0].closeAt))}</b><span class="${cls(sel.reduce((a, p) => a + p.realized, 0))}">${px ? fUsd(sel.reduce((a, p) => a + p.realized, 0) * px, 1) + ' · ' : ''}${fSol(sel.reduce((a, p) => a + p.realized, 0), 1)}</span><button type="button" class="jr-ib" data-act="card-cday" aria-label="${L('Karta P&L dnia', 'Day P&L card')}" title="${L('Karta P&L dnia', 'Day P&L card')}">🎴</button><button type="button" class="jr-ib" data-cday="${calSel}" aria-label="${L('Zamknij', 'Close')}">×</button></div><div class="jr-list">${sel.map(rowHtml).join('')}</div></div>` : ''}
       <div class="jr-calf">
         <div><small>${L('Rekord', 'Record')} <span class="mut">W-L-BE</span></small><b>${C.w}-${C.l}-${C.be}</b></div>
         <div><small>${L('Zysk za miesiąc', 'Month profit')}</small><b class="${cls(tot)}">${nC ? (px ? fUsd(tot * px, 1) : fSol(tot, 1)) : '—'}</b>${nC && px ? `<i>${fSol(tot, 1)}</i>` : ''}</div>
@@ -1171,6 +1215,7 @@
         <div class="jr-big jr-chrome">${fSol(S.pnl, 1)}</div>
         <div class="jr-hsub"><b class="${cls(S.pnl)}">${S.pnlUsd != null ? fUsd(S.pnlUsd, 1) : ''}</b>${S.nOpen ? `<span>· ${S.nOpen} ${L('otwarte', 'open')} ${S.unreal ? `<b class="${cls(S.unreal)}">${fSol(S.unreal, 1)}</b>` : ''}</span>` : ''}<span>· ${S.n} ${L('zamkniętych', 'closed')}</span></div>
         ${curveSvg(S.curve)}
+        <div class="jr-kpcr"><button type="button" class="jr-btn" data-act="card-day">🎴 ${L('Karta P&L dnia', 'Day P&L card')}</button><button type="button" class="jr-btn" data-act="card-month">🎴 ${L('Karta P&L miesiąca', 'Month P&L card')}</button></div>
       </div>
       ${sc ? `<div class="card jr-score">
         <div class="jr-sl">${ring(sc.total)}<div class="jr-sv"><b class="jr-chrome">${sc.total}</b><small>Kyvo Score</small></div></div>
@@ -1231,7 +1276,7 @@
         <div class="jr-thc">${coinImg(p, 46)}<div><b>$${E(p.sym)}</b><small>${E(p.name || '')}</small></div>
           <span class="jr-st-b ${p.status}">${p.status === 'open' ? L('otwarta', 'open') : p.status === 'inc' ? L('niepełna', 'partial') : L('zamknięta', 'closed')}</span></div>
         <div class="jr-tact">${tradeScale(p, rulesOn() ? plan.rules : null) != null ? `<span class="jr-scale" title="${L('Kyvo Scale: wynik, wyjście, proces (tagi)', 'Kyvo Scale: result, exit, process (tags)')}"><small>Kyvo Scale</small><b>${tradeScale(p, rulesOn() ? plan.rules : null)}</b><i>${grade(tradeScale(p, rulesOn() ? plan.rules : null))}</i></span>` : '<span></span>'}
-          <span class="jr-tab2">${p.demo ? '' : `<button type="button" class="jr-ib${plan.pins.includes(p.id) ? ' on' : ''}" data-act="pin" aria-pressed="${plan.pins.includes(p.id)}" aria-label="${L('Przypnij do Showcase', 'Pin to Showcase')}">${ICO('pin', '⭐')}</button>`}<button type="button" class="jr-btn jr-shr" data-act="share-trade">${ICO('share', '↗')} ${L('Karta P&L', 'P&L card')}</button></span></div>
+          <span class="jr-tab2">${p.demo ? '' : `<button type="button" class="jr-ib${plan.pins.includes(p.id) ? ' on' : ''}" data-act="pin" aria-pressed="${plan.pins.includes(p.id)}" aria-label="${L('Przypnij do Showcase', 'Pin to Showcase')}">${ICO('pin', '⭐')}</button>`}${p.status === 'inc' ? '' : `<button type="button" class="jr-btn on jr-kpc" data-act="card-trade">🎴 ${L('Karta P&L', 'P&L card')}</button>`}<button type="button" class="jr-btn jr-shr" data-act="share-trade" aria-label="${L('Udostępnij', 'Share')}">${ICO('share', '↗')}</button></span></div>
         <div class="jr-big jr-chrome">${p.status === 'inc' ? '—' : fPct(pct, 1)}</div>
         <div class="jr-hsub"><b class="${cls(pnl)}">${p.status === 'inc' ? '' : fSol(pnl, 1)}</b>${solPx && pnl ? `<span>${fUsd(pnl * solPx, 1)}</span>` : ''}${p.status === 'open' ? `<span>· ${L('niezrealizowane, wg ceny teraz', 'unrealized, at current price')}</span>` : ''}</div>
         <div class="jr-grid jr-g3">
@@ -1494,6 +1539,10 @@
       else if (a === 'share-all') shareDay('all');
       else if (a === 'share-month') shareMonth();
       else if (a === 'share-trade') shareTrade(findP(subArg));
+      else if (a === 'card-trade') pnlCard('trade', subArg);
+      else if (a === 'card-day') pnlCard('day');
+      else if (a === 'card-cday') pnlCard('day', calSel);
+      else if (a === 'card-month') pnlCard('month');
       else if (a === 'pin') { const id = subArg; plan.pins = plan.pins.includes(id) ? plan.pins.filter((x) => x !== id) : [id].concat(plan.pins).slice(0, 12); savePlan(); render(); }
       else if (a === 'edit') go('edit/' + b.dataset.id);
       else if (a === 'back') { if (history.length > 1) history.back(); else go('log'); }
@@ -1552,5 +1601,5 @@
   function init(deps) { D = deps || {}; }
   if (plan.cool) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountCool); else setTimeout(mountCool, 0); }
   window.addEventListener('kyvo-premium-change', () => { if (root && root.isConnected) { recompute(); render(); } });
-  Object.assign(window.KyvoJournal, { init, show, enabled: () => !!CFG.enabled, _state: () => st, _job: () => job, _positions: () => PS, _sync: sync, _plan: () => plan, _check: () => { recompute(); checkBreach(); return DISC; }, _share: shareTrade, _shareDay: shareDay, _mountCool: mountCool, _savePlan: savePlan });
+  Object.assign(window.KyvoJournal, { init, show, enabled: () => !!CFG.enabled, _state: () => st, _job: () => job, _positions: () => PS, _sync: sync, _plan: () => plan, _check: () => { recompute(); checkBreach(); return DISC; }, _share: shareTrade, _pnlCard: pnlCard, _shareDay: shareDay, _mountCool: mountCool, _savePlan: savePlan });
 })();

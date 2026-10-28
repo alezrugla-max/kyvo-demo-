@@ -98,23 +98,12 @@ window.KYVO_TRACKER_CONFIG = {
       // OneSignal tag premium=1 (only works once push was enabled on this device; notify.js also re-syncs on opt-in)
       setTimeout(function () { try { if (window.KyvoPush && window.KyvoPush.syncTags) window.KyvoPush.syncTags(); } catch (e) {} }, 4000);
     }
-    if (!owner && freeHour()) {
-      var hh = new Date(FREE_UNTIL).toLocaleTimeString(en ? 'en-GB' : 'pl-PL', { hour: '2-digit', minute: '2-digit' });
-      toast(en ? '🎁 Everything unlocked for free until ' + hh : '🎁 Wszystko odblokowane za darmo do ' + hh);
-    }
     return owner;
   });
   /* v8.14.1 tiers: 'free' | 'premium' | 'runners'. Owner = 'runners' (top tier). Until a real backend exists nobody else is paid
      (enabled:false). Later the entitlement (kyvo_premium_until + kyvo_premium_tier) must come from the backend, never from user input. */
-  /* v8.19 🎁 free hour: everyone gets the top tier until FREE_UNTIL (absolute time, expires on its own, no redeploy).
-     paidTier() ignores it, so the OneSignal tier tag never flips to 'runners' for free users. */
-  var FREE_UNTIL = Date.parse('2026-10-28T18:00:00Z');   // = 19:00 Europe/Warsaw
-  function freeHour() { return Date.now() < FREE_UNTIL; }
-  function tier() {
-    if (owner) return 'runners';
-    if (freeHour()) return 'runners';
-    return paidTier();
-  }
+  /* v8.20: the v8.19 🎁 free hour was removed — tier() is owner / paid only again. */
+  function tier() { return paidTier(); }
   function paidTier() {
     if (owner) return 'runners';
     var C = window.KYVO_PREMIUM_CONFIG || {};
@@ -137,6 +126,6 @@ window.KYVO_TRACKER_CONFIG = {
     },
     isOwner: function () { return owner; },
     paidTier: paidTier,
-    isFreeHour: freeHour,
+    isFreeHour: function () { return false; },   // v8.20: free hour removed (kept for API compatibility)
   };
 })();
