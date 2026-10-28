@@ -79,6 +79,14 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.16 (KYVO_LIVE_v8_16 · SW kyvo-v8-16) — tier-aware push
+- App (notify.js) tags every OneSignal subscriber `tier` = free | premium | runners (default free) on opt-in and again whenever
+  the tier changes (owner unlock / `kyvo-premium-change`, KyvoPremiumReady, a cheap check when the app comes back to the front).
+- Server (tools/kyvo_push.py `tiers_for` + `audience`): one notification per item, filtered by tier (no tier tag = free):
+  🐦 New Tweet → free (2/day cap) + Premium + Runners · 🏃 Runner family (KOL coin, Moon run, Big runner, Tweet runner) →
+  free: the day's 1st, Premium: the day's first 3, Runners: all · 🥇 Gold → Premium + Runners · 👀 Smart money → Runners only.
+- Tiers are still client-side until payments exist (a technical user could fake the tag).
+
 ## v8.15 (KYVO_LIVE_v8_15 · SW kyvo-v8-15) — 📓 Journal + Obsidian design
 
 **Design pass 2 (same v8.15):**

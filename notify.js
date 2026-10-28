@@ -168,7 +168,7 @@
       <label class="nrow"><input type="checkbox" data-nt="gold" ${S.gold !== false ? 'checked' : ''}><span><b>🥇 Gold</b><small>${L('alerty dla coinów z werdyktem Gold: cena ±15–20%, kopia (wampir) powyżej $500K MC, nowy artykuł o narracji · Premium', 'alerts for coins with a Gold verdict: price ±15–20%, a copy (vamp) above $500K MC, a new article about the narrative · Premium')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('znany trader, KOL lub celebryta tweetuje o coinie (New Tweet, sprawdzane co kilka minut)', 'a well-known trader, KOL or celebrity tweets about a coin (New Tweet, checked every few minutes)')}</small></span></label>
-      <div class="mut nnote ncap">${isPremium() ? '✦ ' + L('Premium: wszystkie powiadomienia bez limitu.', 'Premium: all notifications, no limit.') : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
+      <div class="mut nnote ncap">${isPremium() ? (window.KyvoPremium && window.KyvoPremium.isRunners && window.KyvoPremium.isRunners() ? '🏃 ' + L('Runners: wszystkie powiadomienia, każdy Runner i smart money.', 'Runners: all notifications, every Runner and smart money.') : '✦ ' + L('Premium: wszystkie powiadomienia i alerty Gold, Runnery 3 dziennie. <a href="#premium">🏃 Runners: każdy Runner + smart money</a>.', 'Premium: all notifications and Gold alerts, Runners 3 a day. <a href="#premium">🏃 Runners: every Runner + smart money</a>.')) : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
       <div class="mut nnote">${P.enabled ? L('Gdy Kyvo jest otwarte, dostajesz komunikat w apce. Po włączeniu powiadomień systemowych alerty przychodzą też, gdy apka jest zamknięta.', 'While Kyvo is open you get an in-app message. After you enable system notifications, alerts also arrive when the app is closed.') : L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
       ${p === 'default' ? `<button type="button" class="pf-btn" data-nperm>${L('Włącz powiadomienia systemowe', 'Enable system notifications')}</button>` : ''}
       ${p === 'granted' ? `<div class="nok">✓ ${L('Powiadomienia systemowe włączone', 'System notifications enabled')}</div><button type="button" class="pf-btn" data-ntest>${L('Wyślij test', 'Send a test')}</button>` : ''}
@@ -210,10 +210,21 @@
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
   function tags() {
     const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
-    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', tier: (window.KyvoPremium && window.KyvoPremium.tier && window.KyvoPremium.tier()) || 'free', lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
+    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', tier: curTier(), lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
   }
   function withOS(fn) { if (!started || !window.OneSignalDeferred) return Promise.resolve(false); return new Promise((res) => window.OneSignalDeferred.push(async (OneSignal) => { try { await fn(OneSignal); res(true); } catch (e) { res(false); } })); }
-  function syncTags() { return withOS((OneSignal) => OneSignal.User.addTags(tags())); }
+  /* v8.16: tier tag (free | premium | runners) routes server push per plan (tools/kyvo_push.py). Default 'free'.
+     Re-synced when the tier changes: owner unlock / entitlement event, KyvoPremiumReady, and a cheap check on focus. */
+  const TIERKEY = 'kyvo_push_tier';
+  function curTier() { try { const t = window.KyvoPremium && window.KyvoPremium.tier && window.KyvoPremium.tier(); return t === 'premium' || t === 'runners' ? t : 'free'; } catch (e) { return 'free'; } }
+  function syncTags() {
+    const tg = tags();
+    return withOS((OneSignal) => OneSignal.User.addTags(tg)).then((ok) => { if (ok) { try { localStorage.setItem(TIERKEY, tg.tier); } catch (e) {} } return ok; });
+  }
+  function syncTierIfChanged() { let last = null; try { last = localStorage.getItem(TIERKEY); } catch (e) {} return started && last !== curTier() ? syncTags() : Promise.resolve(false); }
+  window.addEventListener('kyvo-premium-change', () => { syncTags(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) syncTierIfChanged(); });
+  if (window.KyvoPremiumReady && window.KyvoPremiumReady.then) window.KyvoPremiumReady.then(() => syncTierIfChanged(), () => {});
   function optOut() { return withOS((OneSignal) => OneSignal.User.PushSubscription.optOut()); }
   async function init(force) {
     const C = window.KYVO_PUSH_CONFIG || {};
@@ -233,7 +244,9 @@
           const base = location.pathname.replace(/[^/]*$/, ''); // '/kyvo-demo-/' on GitHub Pages
           await OneSignal.init({ appId: C.onesignalAppId, serviceWorkerPath: C.swPath || base.replace(/^\//, '') + 'OneSignalSDKWorker.js', serviceWorkerParam: { scope: C.swScope || base }, autoResubscribe: true, notifyButton: { enable: false }, promptOptions: { autoPrompt: false } });
           await OneSignal.User.PushSubscription.optIn();
-          OneSignal.User.addTags(tags());
+          const tg = tags();
+          await OneSignal.User.addTags(tg);
+          try { localStorage.setItem(TIERKEY, tg.tier); } catch (e) {}
         });
         return true;
       }
@@ -250,5 +263,5 @@
     } catch (e) { started = false; }
     return false;
   }
-  window.KyvoPush = { init, syncTags, optOut, enabled: () => !!(window.KYVO_PUSH_CONFIG || {}).enabled };
+  window.KyvoPush = { init, syncTags, syncTierIfChanged, tier: curTier, tags, optOut, enabled: () => !!(window.KYVO_PUSH_CONFIG || {}).enabled };
 })();

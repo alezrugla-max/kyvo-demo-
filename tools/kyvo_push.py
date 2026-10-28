@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Kyvo v8.6 — server-side phone push via OneSignal (works while the app is CLOSED). Runs in GitHub Actions only.
+"""Kyvo v8.6 (v8.16 tier-aware) — server-side phone push via OneSignal (works while the app is CLOSED). Runs in GitHub Actions only.
 
 Sends one push per genuinely NEW item:
   * 🐦 New Tweet: a tracked account tweeted about a coin (data/x_live.json, built by tools/x_live.py), tweet ≤ 2 h old
@@ -13,10 +13,13 @@ Sends one push per genuinely NEW item:
     within 30 min. Premium only (never the free plan), tag "gold" opt-out respected, max SMART_PER_RUN per run, id smart:<mint> -> one push
     per coin per 3 days (sent-ids memory).
 Dedupe: sent ids live in the state file (restored/saved with actions/cache). First run only seeds (no blast of old items).
-Audience (tags set by the app in notify.js): premium=1 -> every alert; everyone else -> at most FREE_CAP alerts per
+Audience before v8.16 (kept for history; replaced by TIERS below): premium=1 -> every alert; everyone else -> at most FREE_CAP alerts per
 Europe/Warsaw day (one global counter = same broadcasts for all free users); v8.11: of those, at most FREE_RUNNERS (1)
 Runner push per day — the day's first Runner; every other Runner goes to premium=1 only. Users who switched a type off (tag tweets=0 /
 runner=0) are excluded. Quiet hours: none for now.
+v8.16 TIERS: the app tags every subscriber tier=free|premium|runners (notify.js; no tag = free) and each item goes out as ONE
+notification filtered to the tiers that get it (tiers_for): New Tweet -> free (2/day cap) + Premium + Runners; Runner family ->
+free 1st of the day, Premium first 3 of the day, Runners all; Gold -> Premium + Runners; 👀 Smart money -> Runners only.
 Secret: ONESIGNAL_REST_API_KEY (GitHub -> Settings -> Secrets -> Actions). Missing -> safe no-op. The key is never printed.
 """
 from __future__ import annotations
@@ -63,10 +66,40 @@ def send(key: str, payload: dict) -> bool:
         print(f"  OneSignal error: {type(e).__name__}")
     return False
 
-def audience(kind_tag: str, premium: bool) -> list[dict]:
-    f = [{"field": "tag", "key": kind_tag, "relation": "!=", "value": "0"}]
-    f.append({"operator": "AND"})
-    f.append({"field": "tag", "key": "premium", "relation": "=" if premium else "!=", "value": "1"})
+TIERS = ("free", "premium", "runners")
+PREMIUM_RUNNERS = 3   # v8.16: Premium = 3 Runners a day (premium-config.js plans.premium.runnersPerDay) -> the day's first 3 Runner pushes
+
+def tiers_for(it: dict, st: dict) -> list[str]:
+    """v8.16 tier routing (tag `tier` set by the app in notify.js; no tag = free). Mirrors the plan cards in launch.js:
+       New Tweet       -> free (inside the FREE_CAP 2/day) + premium + runners
+       Runner family   -> free: the day's 1st Runner (inside FREE_CAP) · premium: the day's first PREMIUM_RUNNERS · runners: all
+       Gold alert      -> premium + runners (free only if KYVO_GOLD_FREE_PUSH=1, inside FREE_CAP)
+       Smart money     -> runners only (plan card: "👀 Smart money push" is a 🏃 Runners feature; tracker.js gates it the same way)"""
+    free_left = st.get("free_n", 0) < FREE_CAP
+    k = it["kind"]
+    if it.get("smart"): return ["runners"]
+    if k == "gold": return (["free"] if GOLD_FREE_PUSH and free_left else []) + ["premium", "runners"]
+    if k == "runner":
+        out = ["free"] if free_left and st.get("free_runner_n", 0) < FREE_RUNNERS else []
+        if st.get("prem_runner_n", 0) < PREMIUM_RUNNERS: out.append("premium")
+        return out + ["runners"]
+    return (["free"] if free_left else []) + ["premium", "runners"]   # tweets + anything else = general
+
+def audience(kind_tag: str, tiers: list[str]) -> list[dict]:
+    """OneSignal filters: (kind not switched off) AND (tier in `tiers`), as OR branches so a missing tag is never ambiguous:
+       kind: tag = "1" OR tag missing (the app sets "0" when the user turns a type off);
+       free: tier = "free" OR tier missing (subscribers from before v8.14.1 / users who never got a tier tag)."""
+    kinds = [{"field": "tag", "key": kind_tag, "relation": "=", "value": "1"},
+             {"field": "tag", "key": kind_tag, "relation": "not_exists"}]
+    tconds = []
+    for t in tiers:
+        tconds.append({"field": "tag", "key": "tier", "relation": "=", "value": t})
+        if t == "free": tconds.append({"field": "tag", "key": "tier", "relation": "not_exists"})
+    f: list[dict] = []
+    for kc in kinds:
+        for tc in tconds:
+            if f: f.append({"operator": "OR"})
+            f += [kc, {"operator": "AND"}, tc]
     return f
 
 def payload(item: dict, filters: list[dict]) -> dict:
@@ -83,6 +116,7 @@ def main() -> int:
     ap.add_argument("--gold", type=Path, default=Path(".kyvo_push/gold_alerts.json"), help="v8.12 Gold alerts written by tools/gold.py")
     ap.add_argument("--smart", type=Path, default=Path(".kyvo_push/smart_alerts.json"), help="v8.14 Tracker cluster-buy alerts (tools/pump_tracker.py)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--full", action="store_true", help="dry run: print the whole payload (pretty)")
     a = ap.parse_args()
     key = os.environ.get("ONESIGNAL_REST_API_KEY", "").strip()
     if not key and not a.dry_run:
@@ -91,7 +125,7 @@ def main() -> int:
     st = load(a.state, {})
     seeding = not st.get("seeded")
     sent: dict = {k: t for k, t in st.get("sent", {}).items() if now - t < 3 * 86400}
-    if st.get("free_day") != day: st["free_day"], st["free_n"], st["free_runner_n"] = day, 0, 0
+    if st.get("free_day") != day: st["free_day"], st["free_n"], st["free_runner_n"], st["prem_runner_n"] = day, 0, 0, 0
 
     items = []
     for t in load(a.live, {}).get("tweets", []):
@@ -175,26 +209,23 @@ def main() -> int:
     items.sort(key=lambda it: 0 if it["title_en"].startswith(("👑", "🚀", "🐦")) else 1)
     for it in items[:MAX_PER_RUN]:
         print(f"- {it['id']}: {it['title_en']}")
-        targets = [audience(it["kind"], True)]
-        free_ok = st.get("free_n", 0) < FREE_CAP
-        if it["kind"] == "runner" and st.get("free_runner_n", 0) >= FREE_RUNNERS: free_ok = False   # v8.11: Runners are Premium — free users get only the day's first Runner
-        if it["kind"] == "gold" and not GOLD_FREE_PUSH: free_ok = False   # v8.12: Gold alerts are Premium
-        if it.get("smart"): free_ok = False                                # v8.14: Tracker push is Premium-only
-        if free_ok: targets.append(audience(it["kind"], False))
-        if a.dry_run:
-            for tg in targets: print(json.dumps(payload(it, tg), ensure_ascii=False)[:600])
-            print(f"  audience: premium=1{' + free' if free_ok else ' only'}")
-            if free_ok:   # dry run: count in memory (state is not written) so the free caps can be checked
-                st["free_n"] = st.get("free_n", 0) + 1
-                if it["kind"] == "runner": st["free_runner_n"] = st.get("free_runner_n", 0) + 1
-            continue
-        if not key: continue
-        ok = all([send(key, payload(it, tg)) for tg in targets])
-        if ok:
-            sent[it["id"]] = now
-            if free_ok:
+        tiers = tiers_for(it, st)            # v8.16: one notification per item, filtered to the tiers that get it
+        pl = payload(it, audience(it["kind"], tiers))
+        def count():                         # quota counters (Europe/Warsaw day)
+            if "free" in tiers:
                 st["free_n"] = st.get("free_n", 0) + 1
                 if it["kind"] == "runner": st["free_runner_n"] = st.get("free_runner_n", 0) + 1; st["free_runner_id"] = it["id"]
+            if "premium" in tiers and it["kind"] == "runner" and not it.get("smart"):
+                st["prem_runner_n"] = st.get("prem_runner_n", 0) + 1
+        if a.dry_run:
+            print(json.dumps(pl, ensure_ascii=False, indent=1) if a.full else json.dumps(pl, ensure_ascii=False)[:600])
+            print(f"  tiers: {', '.join(tiers)}")
+            count()   # dry run: count in memory (state is not written) so the caps can be checked
+            continue
+        if not key: continue
+        if send(key, pl):
+            sent[it["id"]] = now
+            count()
         time.sleep(1)
     st["sent"] = sent; st["seeded"] = True
     if not a.dry_run and (key or seeding):
