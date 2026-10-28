@@ -79,7 +79,7 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
-## v8.17 (KYVO_LIVE_v8_18 · SW kyvo-v8-17) — 📅 Kalendarz P&L (Journal)
+## v8.17 (KYVO_LIVE_v8_19 · SW kyvo-v8-17) — 📅 Kalendarz P&L (Journal)
 - The Journal dashboard calendar (since v8.15: month grid, SOL, Pn–Nd, arrows, today) now matches the TikTok "monthly P&L
   calendar": uppercase month title, compact $ per day (current SOL price; SOL when no price), muted green / red tiles,
   tap a day → that day's closed trades (tap a row → trade view), footer Rekord W-L-BE (closed trades; BE = |P&L| < 0.5 %),

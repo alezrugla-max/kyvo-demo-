@@ -216,7 +216,7 @@
   /* v8.16: tier tag (free | premium | runners) routes server push per plan (tools/kyvo_push.py). Default 'free'.
      Re-synced when the tier changes: owner unlock / entitlement event, KyvoPremiumReady, and a cheap check on focus. */
   const TIERKEY = 'kyvo_push_tier';
-  function curTier() { try { const t = window.KyvoPremium && window.KyvoPremium.tier && window.KyvoPremium.tier(); return t === 'premium' || t === 'runners' ? t : 'free'; } catch (e) { return 'free'; } }
+  function curTier() { try { const P = window.KyvoPremium; const t = P && (P.paidTier ? P.paidTier() : P.tier && P.tier()); return t === 'premium' || t === 'runners' ? t : 'free'; } catch (e) { return 'free'; } }
   function syncTags() {
     const tg = tags();
     return withOS((OneSignal) => OneSignal.User.addTags(tg)).then((ok) => { if (ok) { try { localStorage.setItem(TIERKEY, tg.tier); } catch (e) {} } return ok; });
