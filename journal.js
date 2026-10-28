@@ -479,6 +479,7 @@
     job = { busy: true, done: 0, total: 0, rl: 0, err: '', id: jid, phase: 'sigs' };
     render(true);
     const w = st.wallet, cut = now() - CFG.days * 86400;
+    if (st.at && cut > st.at / 1000) st.histFrom = 0;   // v8.17: away longer than the window -> older days can have gaps, restart calendar history
     try {
       // 1) new signatures (newest first, until the newest one we know)
       let fresh = [], before = null;
@@ -521,6 +522,7 @@
       };
       await Promise.all(Array.from({ length: CFG.conc }, worker));
       st.at = Date.now();
+      { const cf = coverFrom().from; st.histFrom = st.histFrom ? Math.min(st.histFrom, cf) : cf; }   // v8.17 calendar history start
       save();
     } catch (e) {
       if (jid === job.id) job.err = e && e.message === 'rate' ? 'rate' : 'net';
@@ -615,7 +617,8 @@
   }
 
   function allSwaps() { return Object.values(st.swaps).filter(Boolean); }
-  let PS = [], S = null, COACH = [], DEMO = false, demoMeta = {};
+  let PS = [], S = null, COACH = [], DEMO = false, demoMeta = {}, CALPS = [];
+  const findP = (id) => PS.find((x) => x.id === id) || CALPS.find((x) => x.id === id);   // v8.17: calendar can open trades older than the 7-day window
   function recompute() {
     let ps;
     if (!st.wallet && !st.manual.length) { ps = demoPositions(); DEMO = true; }
@@ -630,6 +633,16 @@
     enrich(ps, { coins: DEMO ? {} : coins, solPx, flags: flags || {}, gold: gold || {}, meta: DEMO ? demoMeta : st.meta, peaks: DEMO ? {} : peaks });
     DISC = !DEMO && rulesOn() ? discipline(ps, plan.rules, st.wallet ? coverFrom().from : 0, now()) : null;
     PS = ps; S = stats(ps, solPx, { adh: DISC ? DISC.adh : null }); COACH = coach(S, ps);
+    /* v8.17 P&L calendar: same synced wallet swaps, but every swap kept on this device since histFrom (the start of the
+       unbroken on-chain history; reset after a gap longer than the sync window) — not only the last CFG.days days. */
+    if (DEMO) CALPS = ps;
+    else {
+      if (st.wallet && st.at && !st.histFrom) st.histFrom = coverFrom().from;
+      const hf = st.histFrom || coverFrom().from;
+      const cps = (st.wallet ? buildPositions(allSwaps().filter((s) => s.at >= hf - 1)) : []).concat(st.manual.map(manualPos));
+      enrich(cps, { coins, solPx, flags: flags || {}, gold: gold || {}, meta: st.meta, peaks });
+      CALPS = cps;
+    }
   }
   function manualPos(t) {
     const r = t.entryMc && t.exitMc ? t.size * (t.exitMc / t.entryMc - 1) : t.pnl || 0;
@@ -664,7 +677,7 @@
   /* =====================================================================================================
      VIEW
      ===================================================================================================== */
-  let root = null, sub = 'dash', filt = 'all', calM = null;
+  let root = null, sub = 'dash', filt = 'all', calM = null, calSel = null;
   const TABS = [['dash', '📊', 'Dashboard', 'Dashboard'], ['plan', '📋', 'Plan', 'Plan'], ['log', '📓', 'Dziennik', 'Journal'], ['stats', '📈', 'Analityka', 'Analytics'], ['coach', '🤖', 'Coach', 'Coach']];
   const ICO = (k, fb) => (window.KyvoIcons && window.KyvoIcons[k]) || fb;   // v8.15 line icons (fx.js), emoji fallback
   const go = (h) => { location.hash = 'journal' + (h ? '/' + h : ''); };
@@ -846,6 +859,18 @@
       sub: fSol(pnl, 1) + (px && pnl ? '  ·  ' + fUsd(pnl * px, 1) : ''),
       rows: [[L('MC wejścia', 'Entry MC'), fMc(p.entryMc)], [p.status === 'open' ? L('MC teraz', 'MC now') : L('MC wyjścia', 'Exit MC'), fMc(p.status === 'open' ? p.mcNow : p.exitMc)], [L('Czas trzymania', 'Hold time'), fHold(p.hold)], ['Kyvo Scale', tradeScale(p, rulesOn() ? plan.rules : null) == null ? '—' : tradeScale(p, rulesOn() ? plan.rules : null) + '/100']],
       when: fDate(p.closeAt || p.openAt) });
+  }
+  function shareMonth() {   // v8.17: 1080×1920 card with the month's P&L calendar
+    if (!window.KyvoShare || !calM) return;
+    if (DEMO) { toast(L('Podłącz portfel albo dodaj trade, żeby udostępnić swój wynik.', 'Connect a wallet or add a trade to share your own result.')); return; }
+    const [Y, M] = calM, first = new Date(Y, M, 1), dim = new Date(Y, M + 1, 0).getDate(), C = calMonth(Y, M), px = S.solPx || 0;
+    const cells = [];
+    for (let d = 1; d <= dim; d++) { const r = C.days[dKey(new Date(Y, M, d))]; cells.push(r ? { d, v: r.pnl, t: (r.pnl < 0 && !isBE({ realized: r.pnl, costSold: 0 }) ? '−' : '') + fCompact(r.pnl, px), be: isBE({ realized: r.pnl, costSold: 0 }) } : { d }); }
+    KyvoShare.open({ kind: 'month', title: first.toLocaleString(isEn() ? 'en-GB' : 'pl-PL', { month: 'long', year: 'numeric' }).toUpperCase(),
+      big: px ? fUsd(C.pnl * px, 1) : fSol(C.pnl, 1), pos: C.pnl > 0 ? true : C.pnl < 0 ? false : null, sub: px ? fSol(C.pnl, 1) : '',
+      cal: { pad: (first.getDay() + 6) % 7, cells, wd: isEn() ? ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'] : ['PN', 'WT', 'ŚR', 'CZ', 'PT', 'SO', 'ND'] },
+      rows: [[L('Rekord W-L-BE', 'Record W-L-BE'), `${C.w}-${C.l}-${C.be}`], [L('Zysk za miesiąc', 'Month profit'), px ? fUsd(C.pnl * px, 1) : fSol(C.pnl, 1)]],
+      verified: !!(st.wallet && !C.manual), when: st.at ? L('Zaktualizowano', 'Updated') + ' ' + fDate(st.at / 1000, 1) : fDate(now()) });
   }
   function shareDay(period) {
     if (!window.KyvoShare) return;
@@ -1077,25 +1102,61 @@
       ${grid}<line x1="0" x2="${W}" y1="${y(0).toFixed(1)}" y2="${y(0).toFixed(1)}" stroke="#ffffff26" stroke-dasharray="2 5"/>
       <path d="${d} L${W} ${H} L0 ${H} Z" fill="url(#jrCa)"/><path d="${d}" fill="none" stroke="url(#jrCl)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg><i class="jr-cdot" style="left:100%;top:${((ly / H) * 100).toFixed(1)}%;background:${col};box-shadow:0 0 0 3px ${col}33,0 0 14px ${col}"></i></div>`;
   }
+  /* v8.17 📅 Kalendarz P&L (TikTok-style monthly P&L calendar): closed trades by close day (device time zone), $ at the
+     current SOL price (SOL when no price), Record W-L-BE, month profit, last sync time, "on-chain" badge only for wallet data. */
+  const dKey = (d) => d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  const isBE = (p) => Math.abs(p.realized) < Math.max(0.001, (p.costSold || 0) * 0.005);   // break-even: |P&L| < 0.5 % of size (min 0.001 SOL)
+  function fCompact(n, px) {
+    const a = Math.abs(px ? n * px : n);
+    if (!px) return (a >= 100 ? a.toFixed(0) : a >= 10 ? a.toFixed(1) : a.toFixed(2)) + '◎';
+    return '$' + (a >= 1e6 ? (a / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : a >= 1e4 ? Math.round(a / 1e3) + 'K' : a >= 1e3 ? (a / 1e3).toFixed(1).replace(/\.0$/, '') + 'K' : a >= 9.5 ? Math.round(a) : a >= 0.995 ? a.toFixed(1).replace(/\.0$/, '') : a.toFixed(2));
+  }
+  function calMonth(Y, M) {
+    const days = {}, closed = [];
+    CALPS.forEach((p) => {
+      if (p.status !== 'closed' || !(p.costSold > 0) || !p.closeAt) return;
+      const d = new Date(p.closeAt * 1000);
+      if (d.getFullYear() !== Y || d.getMonth() !== M) return;
+      closed.push(p);
+      const r = days[dKey(d)] || (days[dKey(d)] = { pnl: 0, n: 0 }); r.pnl += p.realized; r.n++;
+    });
+    const be = closed.filter(isBE), w = closed.filter((p) => !isBE(p) && p.realized > 0), l = closed.filter((p) => !isBE(p) && p.realized < 0);
+    return { days, closed, w: w.length, l: l.length, be: be.length, pnl: closed.reduce((a, p) => a + p.realized, 0), manual: closed.some((p) => p.manual) };
+  }
   function calendar() {
     const t = new Date();
     if (!calM) calM = [t.getFullYear(), t.getMonth()];
     const [Y, M] = calM, first = new Date(Y, M, 1), dim = new Date(Y, M + 1, 0).getDate(), pad = (first.getDay() + 6) % 7;
-    const days = S.days || {}, vals = Object.values(days).map((d) => Math.abs(d.pnl)), mx = Math.max(0.0001, ...vals);
-    let cells = '', tot = 0, nd = 0;
+    const C = calMonth(Y, M), px = S.solPx || 0, vals = Object.values(C.days).map((d) => Math.abs(d.pnl)), mx = Math.max(0.0001, ...vals);
+    const hf = DEMO ? 0 : st.wallet ? st.histFrom || coverFrom().from : 0;
+    let cells = '';
     for (let i = 0; i < pad; i++) cells += '<span class="jr-cd x"></span>';
     for (let d = 1; d <= dim; d++) {
-      const k = Y + '-' + ('0' + (M + 1)).slice(-2) + '-' + ('0' + d).slice(-2), r = days[k];
+      const day = new Date(Y, M, d), k = dKey(day), r = C.days[k];
       const today = Y === t.getFullYear() && M === t.getMonth() && d === t.getDate();
-      if (r) { tot += r.pnl; nd++; }
-      const a = r ? 0.18 + 0.62 * Math.min(1, Math.abs(r.pnl) / mx) : 0;
-      const bg = r ? (r.pnl >= 0 ? `rgba(52,224,122,${a.toFixed(2)})` : `rgba(255,84,104,${a.toFixed(2)})`) : '';
-      cells += `<span class="jr-cd${r ? ' h' : ''}${today ? ' td' : ''}" ${bg ? `style="background:${bg}"` : ''} title="${r ? E(fSol(r.pnl, 1) + ' · ' + r.n + ' trade') : ''}"><i>${d}</i>${r ? `<b>${r.pnl >= 0 ? '+' : '−'}${Math.abs(r.pnl) >= 10 ? Math.abs(r.pnl).toFixed(0) : Math.abs(r.pnl).toFixed(1)}</b>` : ''}</span>`;
+      const nod = !r && hf && st.wallet && !st.manual.length && day.getTime() / 1000 + 86400 <= hf;   // before the on-chain history on this device
+      const a = r ? 0.3 + 0.5 * Math.min(1, Math.abs(r.pnl) / mx) : 0;
+      const tone = r ? (isBE({ realized: r.pnl, costSold: 0 }) ? 'be' : r.pnl > 0 ? 'up' : 'dn') : '';
+      const tip = r ? `${fDate(day.getTime() / 1000)} · ${r.pnl >= 0 ? '+' : ''}${px ? fUsd(r.pnl * px, 1) + ' · ' : ''}${fSol(r.pnl, 1)} · ${r.n} trade` : '';
+      cells += r ? `<button type="button" class="jr-cd h ${tone}${today ? ' td' : ''}${calSel === k ? ' sel' : ''}" data-cday="${k}" style="--a:${a.toFixed(2)}" title="${E(tip)}" aria-label="${E(tip)}"><i>${d}</i><b>${tone === 'dn' ? '−' : ''}${fCompact(r.pnl, px)}</b></button>`
+        : `<span class="jr-cd${today ? ' td' : ''}${nod ? ' nod' : ''}"><i>${d}</i></span>`;
     }
     const mn = first.toLocaleString(isEn() ? 'en-GB' : 'pl-PL', { month: 'long', year: 'numeric' });
     const wd = isEn() ? ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] : ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd'];
-    return `<div class="card jr-cal"><div class="jr-calh"><button type="button" class="jr-ib" data-cal="-1">‹</button><b>${E(mn)}</b><span class="${cls(tot)}">${nd ? fSol(tot, 1) : ''}</span><button type="button" class="jr-ib" data-cal="1">›</button></div>
-      <div class="jr-calg">${wd.map((d) => `<span class="jr-cw">${d}</span>`).join('')}${cells}</div><small class="mut">${L('Dni pokolorowane wg P&L zamkniętych trade’ów (SOL).', 'Days colored by closed-trade P&L (SOL).')}</small></div>`;
+    const nC = C.closed.length, tot = C.pnl;
+    const sel = calSel && calSel.slice(0, 7) === dKey(first).slice(0, 7) ? CALPS.filter((p) => p.status === 'closed' && p.costSold > 0 && p.closeAt && dKey(new Date(p.closeAt * 1000)) === calSel).sort((a, b) => b.closeAt - a.closeAt) : [];
+    const upd = DEMO ? L('Przykładowe dane (podłącz portfel)', 'Sample data (connect a wallet)') : st.wallet && st.at ? `${L('Zaktualizowano', 'Updated')}: ${fDate(st.at / 1000, 1)}` : L('Trade’y wpisane ręcznie', 'Manually entered trades');
+    const badge = !DEMO && st.wallet && nC && !C.manual ? `<span class="jr-ver" title="${E(L('Wynik policzony z publicznych transakcji tego portfela na Solanie', 'Computed from this wallet’s public Solana transactions'))}">✓ ${L('Zweryfikowane on-chain', 'Verified on-chain')}</span>`
+      : !DEMO && C.manual ? `<span class="jr-ver man">✍︎ ${L('zawiera ręczne trade’y', 'includes manual trades')}</span>` : '';
+    return `<div class="card jr-cal" id="jrCal"><div class="jr-calh"><button type="button" class="jr-ib" data-cal="-1" aria-label="${L('Poprzedni miesiąc', 'Previous month')}">‹</button><div class="jr-calt"><small>${L('Kalendarz P&L', 'P&L calendar')}</small><b>${E(mn)}</b></div>${nC && !DEMO ? `<button type="button" class="jr-ib" data-act="share-month" aria-label="${L('Udostępnij miesiąc', 'Share month')}">${ICO('share', '↗')}</button>` : '<span></span>'}<button type="button" class="jr-ib" data-cal="1" aria-label="${L('Następny miesiąc', 'Next month')}">›</button></div>
+      <div class="jr-calg">${wd.map((d) => `<span class="jr-cw">${d}</span>`).join('')}${cells}</div>
+      ${sel.length ? `<div class="jr-cdl"><div class="jr-cdlh"><b>${E(fDate(sel[0].closeAt))}</b><span class="${cls(sel.reduce((a, p) => a + p.realized, 0))}">${px ? fUsd(sel.reduce((a, p) => a + p.realized, 0) * px, 1) + ' · ' : ''}${fSol(sel.reduce((a, p) => a + p.realized, 0), 1)}</span><button type="button" class="jr-ib" data-cday="${calSel}" aria-label="${L('Zamknij', 'Close')}">×</button></div><div class="jr-list">${sel.map(rowHtml).join('')}</div></div>` : ''}
+      <div class="jr-calf">
+        <div><small>${L('Rekord', 'Record')} <span class="mut">W-L-BE</span></small><b>${C.w}-${C.l}-${C.be}</b></div>
+        <div><small>${L('Zysk za miesiąc', 'Month profit')}</small><b class="${cls(tot)}">${nC ? (px ? fUsd(tot * px, 1) : fSol(tot, 1)) : '—'}</b>${nC && px ? `<i>${fSol(tot, 1)}</i>` : ''}</div>
+      </div>
+      <div class="jr-calm"><span>${E(upd)}</span>${badge}</div>
+      <small class="mut jr-caln">${nC ? '' : L('Brak zamkniętych trade’ów w tym miesiącu. ', 'No closed trades this month. ')}${L('Dzień = data zamknięcia trade’u (czas na tym urządzeniu).', 'Day = trade close date (this device’s time).')}${px ? ' ' + L(`$ wg obecnej ceny SOL (${fUsd(px)}).`, `$ at the current SOL price (${fUsd(px)}).`) : ''}${hf && !DEMO ? ' ' + L(`Historia portfela od ${fDate(hf)}.`, `Wallet history since ${fDate(hf)}.`) : ''}</small></div>`;
   }
   function stat(lbl, val, sub, c) { return `<div class="jr-st"><small>${lbl}</small><b class="${c || ''}">${val}</b>${sub ? `<i>${sub}</i>` : ''}</div>`; }
   function dash() {
@@ -1160,7 +1221,7 @@
 
   /* ----- trade view ----- */
   function tradeView(id) {
-    const p = PS.find((x) => x.id === id);
+    const p = findP(id);
     if (!p) return `<div class="card jr-empty">${L('Nie znaleziono trade’u.', 'Trade not found.')} <a href="#journal/log">‹ ${L('Dziennik', 'Journal')}</a></div>`;
     const pnl = p.status === 'open' ? p.unreal : p.realized, pct = p.status === 'open' ? p.unrealPct : p.pnlPct, solPx = S.solPx;
     const c = coins[p.m] || {};
@@ -1414,7 +1475,7 @@
     root.dataset.sub = sub + ':' + subArg;
     wire();
     if (sub === 'trade' && isPrem()) {
-      const p = PS.find((x) => x.id === subArg);
+      const p = findP(subArg);
       if (p) { if (chartEl && root.querySelector('#jrChart')) root.querySelector('#jrChart').appendChild(chartEl); else mountChart(p); }
     }
     if (same) window.scrollTo(0, y);
@@ -1422,7 +1483,8 @@
   function wire() {
     root.querySelectorAll('[data-sub]').forEach((b) => (b.onclick = () => go(b.dataset.sub === 'dash' ? '' : b.dataset.sub)));
     root.querySelectorAll('[data-f]').forEach((b) => (b.onclick = () => { filt = b.dataset.f; render(); }));
-    root.querySelectorAll('[data-cal]').forEach((b) => (b.onclick = () => { const d = new Date(calM[0], calM[1] + +b.dataset.cal, 1); calM = [d.getFullYear(), d.getMonth()]; render(); }));
+    root.querySelectorAll('[data-cal]').forEach((b) => (b.onclick = () => { const d = new Date(calM[0], calM[1] + +b.dataset.cal, 1); calM = [d.getFullYear(), d.getMonth()]; calSel = null; render(); }));
+    root.querySelectorAll('[data-cday]').forEach((b) => (b.onclick = () => { calSel = calSel === b.dataset.cday ? null : b.dataset.cday; render(); const l = root.querySelector('.jr-cdl'); if (l && l.scrollIntoView) l.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }));
     root.querySelectorAll('[data-act]').forEach((b) => (b.onclick = () => {
       const a = b.dataset.act;
       if (a === 'sync') sync(true);
@@ -1430,7 +1492,8 @@
       else if (a === 'add') go('add');
       else if (a === 'share-day') shareDay('day');
       else if (a === 'share-all') shareDay('all');
-      else if (a === 'share-trade') shareTrade(PS.find((x) => x.id === subArg));
+      else if (a === 'share-month') shareMonth();
+      else if (a === 'share-trade') shareTrade(findP(subArg));
       else if (a === 'pin') { const id = subArg; plan.pins = plan.pins.includes(id) ? plan.pins.filter((x) => x !== id) : [id].concat(plan.pins).slice(0, 12); savePlan(); render(); }
       else if (a === 'edit') go('edit/' + b.dataset.id);
       else if (a === 'back') { if (history.length > 1) history.back(); else go('log'); }
@@ -1450,7 +1513,7 @@
       recompute(); render(); sync(true);
     };
     root.querySelectorAll('[data-tag]').forEach((b) => (b.onclick = () => {
-      const p = PS.find((x) => x.id === subArg); if (!p) return;
+      const p = findP(subArg); if (!p) return;
       const m = (st.meta[p.id] = st.meta[p.id] || {}), id = b.dataset.tag;
       m.t = m.t || []; m.x = m.x || [];
       if (p.tags.includes(id)) { m.t = m.t.filter((x) => x !== id); if (p.autoTags.includes(id)) m.x.push(id); }
@@ -1458,7 +1521,7 @@
       save(); recompute(); render();
     }));
     const nt = root.querySelector('#jrNote');
-    if (nt) { let tt; nt.oninput = () => { clearTimeout(tt); tt = setTimeout(() => { const m = (st.meta[subArg] = st.meta[subArg] || {}); m.n = nt.value.slice(0, 2000); save(); const p = PS.find((x) => x.id === subArg); if (p) p.notes = m.n; const s = root.querySelector('#jrNoteS'); if (s) s.textContent = '✓ ' + L('zapisano', 'saved'); }, 500); }; }
+    if (nt) { let tt; nt.oninput = () => { clearTimeout(tt); tt = setTimeout(() => { const m = (st.meta[subArg] = st.meta[subArg] || {}); m.n = nt.value.slice(0, 2000); save(); const p = findP(subArg); if (p) p.notes = m.n; const s = root.querySelector('#jrNoteS'); if (s) s.textContent = '✓ ' + L('zapisano', 'saved'); }, 500); }; }
     if (sub === 'plan') wirePlan();
     if (sub === 'coach') kcoWire();
     const fm = root.querySelector('#jrForm');

@@ -79,6 +79,16 @@ python3 tools/build_snapshots.py && python3 tools/update_x_viral.py --stamp
 
 Memecoins are extremely risky. Kyvo shows public market data and public wallet activity attributed from public sources (Solana Tracker titles, Alez-confirmed KOL wallets). No custody, no trading bots, no private keys.
 
+## v8.17 (KYVO_LIVE_v8_17 · SW kyvo-v8-17) — 📅 Kalendarz P&L (Journal)
+- The Journal dashboard calendar (since v8.15: month grid, SOL, Pn–Nd, arrows, today) now matches the TikTok "monthly P&L
+  calendar": uppercase month title, compact $ per day (current SOL price; SOL when no price), muted green / red tiles,
+  tap a day → that day's closed trades (tap a row → trade view), footer Rekord W-L-BE (closed trades; BE = |P&L| < 0.5 %),
+  Zysk za miesiąc ($ + SOL), "Zaktualizowano" (last wallet sync) and "✓ Zweryfikowane on-chain" ONLY when the month is
+  100 % from the public wallet (manual trades → "zawiera ręczne trade’y", demo → "Przykładowe dane").
+- History: the calendar uses every swap kept on this device since `st.histFrom` (start of unbroken on-chain history), not only
+  the 7-day sync window; histFrom resets when the app was not synced for longer than the window (gap). Older days are dimmed.
+- "Udostępnij miesiąc" (share icon on the calendar) → 1080×1920 PNG with the month grid (share.js kind 'month').
+
 ## v8.16 (KYVO_LIVE_v8_16 · SW kyvo-v8-16) — tier-aware push
 - App (notify.js) tags every OneSignal subscriber `tier` = free | premium | runners (default free) on opt-in and again whenever
   the tier changes (owner unlock / `kyvo-premium-change`, KyvoPremiumReady, a cheap check when the app comes back to the front).

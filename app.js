@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_16 — v8.16: tier-aware push (OneSignal tag tier=free/premium/runners; server routes each push type per plan) · v8.15: 📓 Journal (Premium) + Obsidian design layer (theme.css, fx.js, self-hosted fonts) on top of
+/* KYVO_LIVE_v8_17 — v8.17: 📅 Kalendarz P&L in Journal (month grid in $, Record W-L-BE, month profit, on-chain badge, tap a day, share month card) · v8.16: v8.16: tier-aware push (OneSignal tag tier=free/premium/runners; server routes each push type per plan) · v8.15: 📓 Journal (Premium) + Obsidian design layer (theme.css, fx.js, self-hosted fonts) on top of
    KYVO_LIVE_v8_14_1 — v8.14.1 pricing: two paid tiers (Premium $9.99→$4.99 launch -50%: 3 Runners/day + full Gold/Tracker/notifications · 🏃 Runners $49.99→$24.99: all Runners + Runner/smart-money push; free 1 Runner/day; owner = Runners; payments not live) · v8.14 pump.fun-style coin page (live trades stream, area/candle chart with MC axis, KOL/whale markers, Callouts/Holders/About/Pairs tabs, alerts, pump.fun CTA), pump.fun traders in Ranking (source chips), 👀 Tracker (follow wallets, live swaps, cluster buys, Premium push) · v8.13 launch sweep: one main-pool price rule (pairs.js), watchlist entry repair · v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
@@ -11,7 +11,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_16';
+  const MVP_MARKER = 'KYVO_LIVE_v8_17';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -2899,7 +2899,7 @@
     const pushOn = !!(window.KYVO_PUSH_CONFIG && window.KYVO_PUSH_CONFIG.enabled);
     navigator.serviceWorker.getRegistration().then((r) => {
       const cur = r && (r.active || r.waiting || r.installing);
-      if (r) { try { r.update(); } catch (e) {} } // v8.5: check for a new release on every start (browsers may wait up to 24 h)
+      if (r) { try { const u = r.update(); if (u && u.catch) u.catch(() => {}); } catch (e) {} } // v8.5: check for a new release on every start (browsers may wait up to 24 h)
       if (pushOn && cur && /OneSignalSDK(Updater)?Worker\.js/.test(cur.scriptURL)) return; // OneSignal's registration (may carry ?appId=…)
       if (!pushOn && cur && /OneSignalSDK/.test(cur.scriptURL)) { r.unregister().then(() => navigator.serviceWorker.register('sw.js')); return; }
       return navigator.serviceWorker.register(pushOn ? 'OneSignalSDKWorker.js' : 'sw.js');
