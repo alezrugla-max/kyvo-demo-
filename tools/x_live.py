@@ -2,6 +2,9 @@
 """Kyvo v8.10 — "New Tweet" feed: EVERY fresh tweet from the tracked accounts -> data/x_live.json, with its coin when there is one.
 
 Source: the public FxTwitter API (api.fxtwitter.com/2/profile/<handle>/statuses, no key, ~20 newest posts per account).
+v8.23: accounts with "replies": true in x_accounts.json (Elon Musk, Donald Trump) are read with ?with_replies=1&count=40, and
+their replies are kept even without a coin (memecoins often launch off a single Elon / Trump reply). Each reply carries
+reply_to = {handle, id, url, text}; the parent text comes from /2/status/<id> (≤ REPLY_PARENT_BUDGET new lookups per run).
 It is an unofficial third-party mirror of X: free, but it can rate-limit, lag, answer a random 404 or stop working at any
 time. Each account gets up to 3 tries; when a read fails the account's tweets from the previous file are kept (nothing is
 invented).
@@ -27,6 +30,8 @@ from update_x_viral import ROOT, ACCOUNTS, KYVO_CHAINS, SKIP_TICKERS, extract_me
 
 OUT = ROOT / "data" / "x_live.json"
 FX = "https://api.fxtwitter.com/2/profile/{}/statuses"
+FX_STATUS = "https://api.fxtwitter.com/2/status/{}"
+REPLY_PARENT_BUDGET = int(os.environ.get("KYVO_LIVE_PARENT_BUDGET", "10"))   # v8.23: parent-text lookups per run
 GT = "https://api.geckoterminal.com/api/v2"
 GT_NET = {"solana": "solana", "bsc": "bsc", "robinhood": "robinhood"}
 KEEP_H = 12          # v8.10: the tab shows the last 12 h (was 24 h + coin-only)
@@ -34,7 +39,7 @@ MAX_ITEMS = 160
 REL_FROM, REL_TO = -120, 3600      # a 'powiązany coin' must launch between 2 min before and 60 min after the tweet
 REL_SEARCH_H = 1.5                 # keep looking for a related coin while the tweet is this young
 REL_CHAINS = ("solana", "bsc")
-UA = {"User-Agent": "Mozilla/5.0 (kyvo-live/8.10; +https://alezrugla-max.github.io/kyvo-demo-/)", "Accept": "application/json"}
+UA = {"User-Agent": "Mozilla/5.0 (kyvo-live/8.23; +https://alezrugla-max.github.io/kyvo-demo-/)", "Accept": "application/json"}
 T0 = time.time()
 
 def get(url: str, timeout: int = 20, tries: int = 2):
@@ -235,9 +240,41 @@ def _ts(iso) -> float:
 
 def read_account(acc: dict, deadline: float):
     if time.time() > deadline: return acc, None
+    if acc.get("replies"):                                       # v8.23: timeline with replies (Elon / Trump)
+        d = get(FX.format(acc["handle"]) + "?with_replies=1&count=40", tries=4)   # FxTwitter answers a random 404 now and then
+        if d and d.get("code") == 200: time.sleep(0.5); return acc, d
+        print(f"  ! @{acc['handle']}: with_replies read failed -> plain timeline")
     d = get(FX.format(acc["handle"]), tries=3)
     time.sleep(0.5)
     return acc, d if d and d.get("code") == 200 else None
+
+def reply_info(t: dict) -> dict | None:
+    """v8.23: who / what the post replies to. FxTwitter sometimes leaves replying_to empty on a real reply; then the text
+    starts with @handle(s) hidden by display_text_range -> handle only (no parent id). Self-replies (threads) -> self=True."""
+    r = t.get("replying_to") or {}
+    if r.get("screen_name"):
+        return {"handle": r.get("screen_name"), "id": str(r.get("status") or "") or None, "url": r.get("url"), "text": None,
+                "self": (r.get("screen_name") or "").lower() == ((t.get("author") or {}).get("screen_name") or "").lower()}
+    raw = t.get("raw_text") or {}
+    rng = raw.get("display_text_range") or [0, 0]
+    m = re.match(r"@(\w{1,15})", t.get("text") or "")
+    if m and rng and rng[0] > 0:
+        return {"handle": m.group(1), "id": None, "url": None, "text": None, "self": False}
+    return None
+
+def parent_text(rt: dict, budget: list[int]) -> None:
+    """fill reply_to.text / author name from FxTwitter /2/status/<id> (one call, cached in the feed file)."""
+    if not rt or not rt.get("id") or rt.get("text") is not None or budget[0] <= 0: return
+    budget[0] -= 1
+    d = get(FX_STATUS.format(rt["id"]), tries=2)
+    s = (d or {}).get("status") or (d or {}).get("tweet") or {}
+    if s.get("text") is not None:
+        rt["text"] = (s.get("text") or "")[:400]
+        au = s.get("author") or {}
+        rt["name"] = au.get("name"); rt["handle"] = au.get("screen_name") or rt.get("handle")
+        rt["url"] = rt.get("url") or s.get("url")
+    else:
+        rt["text"] = ""                                          # tried once; deleted / protected parent -> no retry
 
 def sig(tweets: list[dict]) -> list:
     return sorted((t["id"], tuple(c.get("address") or "" for c in t.get("coins") or [])) for t in tweets)
@@ -252,6 +289,7 @@ def main() -> int:
     except Exception: pass
     prev = {t["id"]: t for t in old.get("tweets", [])}
     now = time.time(); items: dict[str, dict] = {}
+    pbudget = [REPLY_PARENT_BUDGET]
     accs = accounts()[: a.max_accounts]; ok_reads = 0; read_ok = set()
     with ThreadPoolExecutor(a.workers) as ex:
         res = list(ex.map(lambda x: read_account(x, T0 + a.read_s), accs))
@@ -268,6 +306,7 @@ def main() -> int:
             metrics = {"likes": t.get("likes"), "reposts": t.get("reposts"), "replies": t.get("replies"), "quotes": t.get("quotes"), "bookmarks": t.get("bookmarks"), "views": t.get("views")}
             if tid in prev:
                 p = prev[tid]; p["metrics"] = metrics
+                if p.get("reply_to") and p["reply_to"].get("text") is None: parent_text(p["reply_to"], pbudget)
                 p["metrics_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds"); items[tid] = p; continue
             full = tweet_text(t)
             coins = []
@@ -275,19 +314,22 @@ def main() -> int:
                 c = resolve_address(val) if kind == "addr" else resolve_ticker(val)
                 if c and c.get("chain") in KYVO_CHAINS and not any(x["address"] == c["address"] for x in coins):
                     c["rel"] = "named"; c["mention"] = val if kind == "addr" else "$" + val; coins.append(c)
-            is_reply = bool(t.get("replying_to"))
-            if is_reply and not coins: continue                     # bare replies ("Yup", "True") only with a named coin
+            rinfo = reply_info(t)
+            is_reply = bool(rinfo) and not rinfo.get("self")        # v8.23: a self-reply (own thread) is a normal post
+            if is_reply and not coins and not acc.get("replies"): continue   # other accounts: bare replies only with a named coin
+            if rinfo and not rinfo.get("self"): parent_text(rinfo, pbudget)
             q = t.get("quote") or {}
             items[tid] = {
                 "id": tid, "url": t.get("url") or f"https://x.com/{acc['handle']}/status/{tid}", "handle": au.get("screen_name"), "author_name": au.get("name"),
                 "avatar": au.get("avatar_url"), "author_followers": au.get("followers"), "verified": bool((au.get("verification") or {}).get("verified")),
                 "role": acc.get("role", "kol"), "wallet_id": acc.get("wallet_id"), "text": t.get("text") or "", "is_reply": is_reply,
+                "reply_to": {k: v for k, v in rinfo.items() if k != "self"} if is_reply else None, "vip": bool(acc.get("vip")),
                 "quote": {"handle": (q.get("author") or {}).get("screen_name"), "text": (q.get("text") or "")[:280]} if q.get("text") else None,
                 "media": media_of(t),
                 "created_at": datetime.fromtimestamp(ts, timezone.utc).isoformat().replace("+00:00", "Z"), "ts": ts,
                 "metrics": metrics, "metrics_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "coin_match": "named" if coins else "none", "coins": coins[:3], "first_seen": int(now),
-                "kw": [] if coins else keywords(full + " " + " ".join(m["alt"] for m in media_of(t)), own=own_words(au, acc)),
+                "kw": [] if coins else keywords(full + " " + " ".join(m["alt"] for m in media_of(t)) + (" " + rinfo["text"] if is_reply and rinfo.get("text") else ""), own=own_words(au, acc)),
             }
     # keep still-fresh items from the last file (an account read failed this run, or a tweet slid out of its newest-20)
     for tid, p in prev.items():
@@ -325,6 +367,8 @@ def main() -> int:
     gh = os.environ.get("GITHUB_OUTPUT")
     if gh:
         with open(gh, "a") as f: f.write(f"commit={'true' if changed else 'false'}\n")
+    nrep = sum(1 for t in tweets if t.get("is_reply") and t.get("vip"))
+    print(f"x_live: {nrep} VIP replies (Elon / Trump) in the feed, {REPLY_PARENT_BUDGET - pbudget[0]} parent lookups")
     nn = sum(1 for t in tweets if t.get("coin_match") == "named"); nr = sum(1 for t in tweets if t.get("coin_match") == "related")
     print(f"x_live: {ok_reads}/{len(accs)} accounts read, {len(tweets)} tweets ≤{KEEP_H} h ({nn} named coin, {nr} related coin, +{n_rel} attached now) in {time.time() - T0:.0f}s -> {a.out}")
     return 0

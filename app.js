@@ -1,4 +1,4 @@
-/* KYVO_LIVE_v8_22 — v8.22: 🎁 free launch week (everyone gets the top tier Runners until 7.11 23:59 Warsaw, expires on its own; paid status + push tags unchanged) · v8.20: 🎴 Kreator P&L in Journal (9:16 card with your own photo / video background → PNG / MP4·WebM; v8.19 free hour removed) · v8.19: free hour (ended 19:00 Warsaw Oct 28) · v8.18: homepage "Największy znaleziony coin +X%" pill · v8.17: 📅 Kalendarz P&L in Journal (month grid in $, Record W-L-BE, month profit, on-chain badge, tap a day, share month card) · v8.16: v8.16: tier-aware push (OneSignal tag tier=free/premium/runners; server routes each push type per plan) · v8.15: 📓 Journal (Premium) + Obsidian design layer (theme.css, fx.js, self-hosted fonts) on top of
+/* KYVO_LIVE_v8_23 — v8.23: ⭐ New Tweet: Elon Musk + Donald Trump replies too (↪ Odpowiedź + the post they replied to) + VIP push for every new Elon / Trump post or reply (grouped, ≥10 min apart, ≤20/day per account; Premium + Runners, everyone during the free week) · v8.22: 🎁 free launch week (everyone gets the top tier Runners until 7.11 23:59 Warsaw, expires on its own; paid status + push tags unchanged) · v8.20: 🎴 Kreator P&L in Journal (9:16 card with your own photo / video background → PNG / MP4·WebM; v8.19 free hour removed) · v8.19: free hour (ended 19:00 Warsaw Oct 28) · v8.18: homepage "Największy znaleziony coin +X%" pill · v8.17: 📅 Kalendarz P&L in Journal (month grid in $, Record W-L-BE, month profit, on-chain badge, tap a day, share month card) · v8.16: v8.16: tier-aware push (OneSignal tag tier=free/premium/runners; server routes each push type per plan) · v8.15: 📓 Journal (Premium) + Obsidian design layer (theme.css, fx.js, self-hosted fonts) on top of
    KYVO_LIVE_v8_14_1 — v8.14.1 pricing: two paid tiers (Premium $9.99→$4.99 launch -50%: 3 Runners/day + full Gold/Tracker/notifications · 🏃 Runners $49.99→$24.99: all Runners + Runner/smart-money push; free 1 Runner/day; owner = Runners; payments not live) · v8.14 pump.fun-style coin page (live trades stream, area/candle chart with MC axis, KOL/whale markers, Callouts/Holders/About/Pairs tabs, alerts, pump.fun CTA), pump.fun traders in Ranking (source chips), 👀 Tracker (follow wallets, live swaps, cluster buys, Premium push) · v8.13 launch sweep: one main-pool price rule (pairs.js), watchlist entry repair · v8.12 🥇 Gold tab (Orangie-style coin DD: Sprawdź coin + Gold feed + Gold alerts) · v8.11 Runners = Premium (free: 1 Runner / Warsaw day) + owner unlock · v8.10 New Tweet = every fresh tweet of ~43 big accounts (Elon, Trump, CZ, KOLs) + mentioned / related coin · v8.9 continuous server feeds (~1-3 min) + 📈 Big runner ($1M–$100M) + robust charts · v8.8 👑 KOL coin + 🚀 Moon run · v8.7 watchlist P/L since added · multi-chain Pulse + smart money + leaderboard + Viral z X + onboarding/legal/login. Not financial advice. */
 (function () {
   'use strict';
@@ -11,7 +11,7 @@
   const REFRESH_MS = 45000;
   // v8.5: never the Kyvo mascot as a coin/trader picture — neutral grey dot instead
   const FALLBACK_IMG = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#2a2f3a"/></svg>');
-  const MVP_MARKER = 'KYVO_LIVE_v8_22';
+  const MVP_MARKER = 'KYVO_LIVE_v8_23';
   /** Pump.fun / four.meme graduation commonly cited ~$69k MC on bonding curve — estimate only. */
   const PUMP_GRAD_MCAP = 69000;
   const FOUR_GRAD_MCAP = 69000;
@@ -2076,7 +2076,8 @@
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     const hasCoin = (t) => (t.coins || []).length > 0;
     const pumps = (t) => (t.coins || []).some((c) => c.pumping);
-    const list = all.filter((t) => twFilter === 'coin' ? hasCoin(t) : twFilter === 'pump' ? pumps(t) : true);
+    const isVip = (t) => !!t.vip || /^(elonmusk|realdonaldtrump)$/i.test(t.handle || ''); // v8.23
+    const list = all.filter((t) => twFilter === 'coin' ? hasCoin(t) : twFilter === 'pump' ? pumps(t) : twFilter === 'vip' ? isVip(t) : twFilter === 'reply' ? !!t.is_reply : true);
     const ageH = (t) => (now - new Date(t.created_at).getTime()) / 3.6e6;
     const fresh = list.filter((t) => ageH(t) < 2), older = list.filter((t) => ageH(t) >= 2);
     const upd = xLive && xLive.updated_at;
@@ -2108,6 +2109,14 @@
     for (const e of (kolLive && kolLive.items) || []) if (e.tweet && e.tweet.id && Date.now() - e.at < 24 * 3.6e6) twRun[String(e.tweet.id)] = e;
     const isNew = (t) => twSeen.size && !twSeen.has(String(t.id));
     const twPrem = isRunnersUser(); let twKeys; const twOpen = (k) => twPrem || (twKeys === undefined ? (twKeys = RunnerGate.openKeys() || []) : twKeys).includes(k);
+    /* v8.23: Elon / Trump replies — "Odpowiedź" + what they replied to (parent post text from the server feed) */
+    const replyBox = (t) => {
+      const r = t.reply_to || {};
+      const who = r.handle ? `@${esc(r.handle)}` : L2('innego posta', 'another post');
+      const ptxt = r.text ? esc(r.text.length > 220 ? r.text.slice(0, 220) + '…' : r.text) : '';
+      const link = r.url || (r.handle && r.id ? `https://x.com/${encodeURIComponent(r.handle)}/status/${encodeURIComponent(r.id)}` : '');
+      return `<div class="twreply" translate="no"><span class="mut">↪ ${L2('Odpowiedź do', 'Reply to')} ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${who}</a>` : who}${r.name ? ` <span class="mut">(${esc(r.name)})</span>` : ''}${ptxt ? ':' : ''}</span>${ptxt ? `<div class="twrp">${ptxt}</div>` : ''}</div>`;
+    };
     const card = (t) => {
       const h = ageH(t);
       const tr0 = twRun[String(t.id)];
@@ -2116,9 +2125,9 @@
       return `<div class="card post vtweet${h < 2 ? ' fresh' : ''}${tr ? ' twrun' : ''}${isNew(t) ? ' newin' : ''}${hasCoin(t) ? '' : ' nocoin'}">${tr ? `<div class="twrunb" translate="no">🐦 Tweet runner · <b>$${esc(tr.sym)}</b> <b class="up">+${Math.round(tr.tweet.chg || 0)}%</b> ${L2('po tweecie', 'after the tweet')} · <a href="#runner">${L2('w Runnerach', 'in Runner')} →</a></div>` : ''}
         <div class="meta">${imgTag(t.avatar, 'av', 36)}
           <div style="flex:1;min-width:0"><b style="font-size:13.5px">${esc(t.author_name || t.handle)} <span class="mut">@${esc(t.handle)}</span> ${t.role === 'celebrity' ? '<span class="badge demo">VIP</span>' : t.role === 'news' ? '<span class="badge demo">NEWS</span>' : t.role === 'project' ? '<span class="badge demo">' + L2('projekt', 'project') + '</span>' : roleBadge(t.role)}</b>
-          <div class="mut" style="font-size:11.5px">${t.author_followers != null ? `👥 ${fmtInt(t.author_followers)} ${L2('obserwujących', 'followers')} · ` : ''}🕒 ${esc(exactTime(t.created_at))} · <b class="${h < 2 ? 'up' : ''}">${esc(ageLabelH(h))} ${L2('temu', 'ago')}</b>${t.is_reply ? ' · ' + L2('odpowiedź', 'reply') : ''}</div></div>
+          <div class="mut" style="font-size:11.5px">${t.author_followers != null ? `👥 ${fmtInt(t.author_followers)} ${L2('obserwujących', 'followers')} · ` : ''}🕒 ${esc(exactTime(t.created_at))} · <b class="${h < 2 ? 'up' : ''}">${esc(ageLabelH(h))} ${L2('temu', 'ago')}</b>${t.is_reply ? ` · <span class="badge twrb">↪ ${L2('Odpowiedź', 'Reply')}</span>` : ''}</div></div>
           <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="vx" aria-label="${L2('Otwórz na X', 'Open on X')}">𝕏</a></div>
-        <div class="txt vq${String(t.text || '').length > 190 ? ' long' : ''}">${tweetText(t.text)}</div>
+        ${t.is_reply ? replyBox(t) : ''}<div class="txt vq${String(t.text || '').length > 190 ? ' long' : ''}">${tweetText(t.is_reply ? String(t.text || '').replace(/^(@\w{1,15}\s+)+/, '') || t.text : t.text)}</div>
         ${q && q.text ? `<div class="twq"><span class="mut">↪ @${esc(q.handle || '')}:</span> ${esc(q.text.length > 200 ? q.text.slice(0, 200) + '…' : q.text)}</div>` : ''}
         ${m && m.url ? `<a class="twimg" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="${esc(m.url)}" alt="${esc(m.alt || '')}" onerror="this.parentNode.remove()">${m.type !== 'photo' ? '<span>▶</span>' : ''}</a>` : ''}
         ${coinPart(t)}
@@ -2128,9 +2137,9 @@
     const nCoin = all.filter(hasCoin).length, nPump = all.filter(pumps).length;
     const chip = (id, lb, n) => `<button type="button" class="twf${twFilter === id ? ' on' : ''}" data-twf="${id}">${lb} <span class="vcount">${n}</span></button>`;
     body.innerHTML = `<div class="h" translate="no">🐦 New Tweet <span class="badge live">${all.filter((t) => ageH(t) < 2).length} ${L2('z ostatnich 2 h', 'in the last 2 h')}</span></div>
-      <div class="sub" translate="no">${L2('Wszystkie świeże tweety Elona, Trumpa, CZ, KOL-i i dużych traderów — najnowsze na górze, z coinem, gdy jest. Sprawdzamy', 'Every fresh tweet from Elon, Trump, CZ, KOLs and big traders — newest first, with the coin when there is one. We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co kilka minut', 'every few minutes')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
+      <div class="sub" translate="no">${L2('Wszystkie świeże tweety Elona, Trumpa, CZ, KOL-i i dużych traderów — najnowsze na górze, z coinem, gdy jest. U Elona i Trumpa także odpowiedzi (coiny często startują od jednej odpowiedzi). Sprawdzamy', 'Every fresh tweet from Elon, Trump, CZ, KOLs and big traders — newest first, with the coin when there is one. For Elon and Trump also their replies (coins often launch off a single reply). We check')} ${((xLive && xLive.accounts) || []).length} ${L2(plFew(((xLive && xLive.accounts) || []).length) ? 'konta' : 'kont', 'accounts')} ${L2('co kilka minut', 'every few minutes')}${updMin != null ? ` · ${L2('ostatnio', 'last')} ${updMin} min ${L2('temu', 'ago')}` : ''}.</div>
       ${updMin != null && updMin > 45 ? `<div class="card" style="font-size:12.5px;color:var(--warn)" translate="no">${L2('Feed nie odświeżył się od', 'Feed has not refreshed for')} ${updMin} min — ${L2('źródło mogło chwilowo nie odpowiadać.', 'the source may be temporarily unavailable.')}</div>` : ''}
-      <div class="twfs" translate="no">${chip('all', L2('Wszystkie', 'All'), all.length)}${chip('coin', L2('Z coinem', 'With a coin'), nCoin)}${chip('pump', '🚀 ' + L2('Pompuje', 'Pumping'), nPump)}</div>
+      <div class="twfs" translate="no">${chip('all', L2('Wszystkie', 'All'), all.length)}${chip('coin', L2('Z coinem', 'With a coin'), nCoin)}${chip('pump', '🚀 ' + L2('Pompuje', 'Pumping'), nPump)}${chip('vip', '⭐ Elon & Trump', all.filter(isVip).length)}${chip('reply', '↪ ' + L2('Odpowiedzi', 'Replies'), all.filter((t) => t.is_reply).length)}</div>
       <div>${fresh.length ? fresh.map(card).join('') : `<div class="empty">${twFilter === 'all' ? L2('W ostatnich 2 h śledzone konta nic nie napisały.', 'The tracked accounts have not posted in the last 2 h.') : L2('Brak takich tweetów w ostatnich 2 h.', 'No such tweets in the last 2 h.')}</div>`}</div>
       ${older.length ? `<div class="h" style="font-size:14px;margin-top:14px" translate="no">${L2('Wcześniej (2–12 h)', 'Earlier (2–12 h)')} <span class="mut" style="font-size:12px">${older.length}</span></div><div>${older.map(card).join('')}</div>` : ''}
       <div class="mut" style="font-size:11px;margin-top:10px;line-height:1.45" translate="no">${L2('„Wspomniany coin” = tweet podaje adres kontraktu albo jednoznaczny $ticker. „Powiązany coin” = tweet nie podaje coina, ale do godziny po nim wystartował coin Solana/BSC o tej nazwie z prawdziwym handlem (bierzemy ten z największym wolumenem). „Pompuje po tweecie” = cena +30% od tweeta (albo od startu) lub wolumen po tweecie ≥3× godziny przed nim. Nie porada finansowa — wejście po tweecie bywa późne.', '“Mentioned coin” = the tweet gives a contract address or an unambiguous $ticker. “Related coin” = the tweet names no coin, but within an hour a Solana/BSC coin with that name launched and really trades (we take the one with the most volume). “Pumping after tweet” = price +30% since the tweet (or launch) or volume after it ≥3× the hour before. Not financial advice — buying after a tweet is often late.')}</div>

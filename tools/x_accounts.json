@@ -93,7 +93,9 @@
  "live_extra": [
   {
    "handle": "elonmusk",
-   "role": "celebrity"
+   "role": "celebrity",
+   "replies": true,
+   "vip": true
   },
   {
    "handle": "cz_binance",
@@ -105,7 +107,9 @@
   },
   {
    "handle": "realDonaldTrump",
-   "role": "celebrity"
+   "role": "celebrity",
+   "replies": true,
+   "vip": true
   },
   {
    "handle": "gainzy222",
@@ -219,5 +223,6 @@
    "role": "project"
   }
  ],
- "live_more_note": "v8.10 New Tweet only (tools/x_live.py; NOT used for 👑 KOL coin): big accounts whose tweets often spawn memecoins (Elon circle, politics, exchanges, news). Each verified to answer on api.fxtwitter.com/2/profile/<handle>/statuses on 2026-10-22."
+ "live_more_note": "v8.10 New Tweet only (tools/x_live.py; NOT used for 👑 KOL coin): big accounts whose tweets often spawn memecoins (Elon circle, politics, exchanges, news). Each verified to answer on api.fxtwitter.com/2/profile/<handle>/statuses on 2026-10-22.",
+ "note_replies": "v8.23: replies=true -> x_live.py reads the timeline WITH replies (FxTwitter ?with_replies=1) and keeps every reply, not only ones naming a coin; vip=true -> server push for every new post / reply (tools/kyvo_push.py VIP block)."
 }
