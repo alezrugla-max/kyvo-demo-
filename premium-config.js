@@ -93,6 +93,7 @@ window.KYVO_TRACKER_CONFIG = {
       toast(en ? '🏃 Runners plan active (owner)' : '🏃 Plan Runners aktywny (właściciel)');
     } else if (tokUrl) toast(en ? 'Invalid owner link' : 'Nieprawidłowy link właściciela');
     if (!owner && stored && r[1] === KYVO_OWNER_SHA256) owner = true;
+    if (!owner && freeHour()) toast(en ? '🎁 Premium free until ' + freeLabel() : '🎁 Premium za darmo do ' + freeLabel());
     if (owner) {
       try { window.dispatchEvent(new CustomEvent('kyvo-premium-change', { detail: { owner: true } })); } catch (e) {}
       // OneSignal tag premium=1 (only works once push was enabled on this device; notify.js also re-syncs on opt-in)
@@ -102,8 +103,17 @@ window.KYVO_TRACKER_CONFIG = {
   });
   /* v8.14.1 tiers: 'free' | 'premium' | 'runners'. Owner = 'runners' (top tier). Until a real backend exists nobody else is paid
      (enabled:false). Later the entitlement (kyvo_premium_until + kyvo_premium_tier) must come from the backend, never from user input. */
-  /* v8.20: the v8.19 🎁 free hour was removed — tier() is owner / paid only again. */
-  function tier() { return paidTier(); }
+  /* v8.22 🎁 free launch week (same mechanism as the v8.19 free hour): everyone gets the top tier until FREE_UNTIL
+     (absolute time, expires on its own, no redeploy needed). paidTier() ignores it, so the real paid status and the
+     OneSignal tier / premium tags never flip for free users. */
+  var FREE_UNTIL = Date.parse('2026-11-07T22:59:00Z');   // = 7.11.2026 23:59 Europe/Warsaw
+  function freeHour() { return Date.now() < FREE_UNTIL; }
+  function freeLabel() { return '7.11 23:59'; }
+  function tier() {
+    if (owner) return 'runners';
+    if (freeHour()) return 'runners';
+    return paidTier();
+  }
   function paidTier() {
     if (owner) return 'runners';
     var C = window.KYVO_PREMIUM_CONFIG || {};
@@ -126,6 +136,8 @@ window.KYVO_TRACKER_CONFIG = {
     },
     isOwner: function () { return owner; },
     paidTier: paidTier,
-    isFreeHour: function () { return false; },   // v8.20: free hour removed (kept for API compatibility)
+    isFreeHour: function () { return !owner && freeHour(); },   // v8.22: free launch week (owner keeps the 'owner' label)
+    freeUntil: FREE_UNTIL,
+    freeLabel: freeLabel,
   };
 })();

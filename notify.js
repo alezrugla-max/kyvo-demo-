@@ -210,9 +210,10 @@
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
   function tags() {
     const S = (window.KyvoNotify && window.KyvoNotify.settings()) || {};
-    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: window.KyvoNotify && window.KyvoNotify.isPremium() ? '1' : '0', tier: curTier(), lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
+    return { good: S.good ? '1' : '0', tweets: S.tweets ? '1' : '0', runner: S.runner !== false ? '1' : '0', gold: S.gold !== false ? '1' : '0', premium: curTier() !== 'free' ? '1' : '0', tier: curTier(), lang: window.KyvoI18n ? window.KyvoI18n.lang : 'pl' };
   }
   function withOS(fn) { if (!started || !window.OneSignalDeferred) return Promise.resolve(false); return new Promise((res) => window.OneSignalDeferred.push(async (OneSignal) => { try { await fn(OneSignal); res(true); } catch (e) { res(false); } })); }
+  /* v8.22: the legacy premium=1 tag also follows paidTier() (free launch week never changes push tags). */
   /* v8.16: tier tag (free | premium | runners) routes server push per plan (tools/kyvo_push.py). Default 'free'.
      Re-synced when the tier changes: owner unlock / entitlement event, KyvoPremiumReady, and a cheap check on focus. */
   const TIERKEY = 'kyvo_push_tier';
