@@ -1,7 +1,7 @@
 {
  "source": "FxTwitter public API (api.fxtwitter.com) — unofficial X mirror, no key; coins via DexScreener, candles via GeckoTerminal",
- "updated_at": "2026-10-31T15:17:37Z",
- "accounts_read": 42,
+ "updated_at": "2026-10-31T15:28:05Z",
+ "accounts_read": 40,
  "accounts": [
   "orangie",
   "Quanterty",
@@ -50,12 +50,243 @@
  "keep_hours": 12,
  "tweets": [
   {
+   "id": "2116552384151429464",
+   "url": "https://x.com/elonmusk/status/2116552384151429464",
+   "handle": "elonmusk",
+   "author_name": "Elon Musk",
+   "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
+   "author_followers": 241503426,
+   "verified": true,
+   "role": "celebrity",
+   "wallet_id": null,
+   "text": "@ICannot_Enough Yeah, Gates shorting Tesla was not wise",
+   "is_reply": true,
+   "reply_to": {
+    "handle": "ICannot_Enough",
+    "id": "2116283760513626268",
+    "url": "https://x.com/ICannot_Enough/status/2116283760513626268",
+    "text": "🫃😭",
+    "name": "James Stephenson"
+   },
+   "vip": true,
+   "quote": null,
+   "media": [],
+   "created_at": "2026-10-31T15:26:26Z",
+   "ts": 1793460386,
+   "metrics": {
+    "likes": 17,
+    "reposts": 0,
+    "replies": 0,
+    "quotes": 0,
+    "bookmarks": 0,
+    "views": null
+   },
+   "metrics_at": "2026-10-31T15:27:13+00:00",
+   "coin_match": "none",
+   "coins": [],
+   "first_seen": 1793460356,
+   "kw": [
+    "gates",
+    "tesla",
+    "icannot",
+    "enough"
+   ]
+  },
+  {
+   "id": "2116552252127428836",
+   "url": "https://x.com/KookCapitalLLC/status/2116552252127428836",
+   "handle": "KookCapitalLLC",
+   "author_name": "kook",
+   "avatar": "https://pbs.twimg.com/profile_images/1724383779307843584/YiFv8ORd_200x200.jpg",
+   "author_followers": 184880,
+   "verified": true,
+   "role": "kol",
+   "wallet_id": null,
+   "text": "we are in the very beginnings of $xmr szn\n\nthere are things happening in the ecosystem most dont even know exist (yet)\n\nsolana:Cy5TzDyJ4mo6MBAbpwUcAgdfNiXYKrYUPrvhPGVU6XMR already burned 30% of supply\n\niykyk",
+   "is_reply": false,
+   "reply_to": null,
+   "vip": false,
+   "quote": null,
+   "media": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HV9-m1lWkAEPhDP.jpg?name=orig",
+     "alt": ""
+    }
+   ],
+   "created_at": "2026-10-31T15:25:55Z",
+   "ts": 1793460355,
+   "metrics": {
+    "likes": 3,
+    "reposts": 1,
+    "replies": 1,
+    "quotes": 1,
+    "bookmarks": 0,
+    "views": 1526
+   },
+   "metrics_at": "2026-10-31T15:27:13+00:00",
+   "coin_match": "named",
+   "coins": [
+    {
+     "chain": "solana",
+     "address": "Cy5TzDyJ4mo6MBAbpwUcAgdfNiXYKrYUPrvhPGVU6XMR",
+     "symbol": "XMR20",
+     "name": "XMR20",
+     "image": "https://cdn.dexscreener.com/cms/images/XdDQFDoj7DvmBMEQ?width=800&height=800&quality=95&format=auto",
+     "mcap": 449078,
+     "liquidity": 66594.8,
+     "price_usd": 0.000449,
+     "change_h24": 99.1,
+     "volume_h24": 71594.49,
+     "pair": "B1w58REDpWVGjP5GmTymitxq4KHL11ytVkHBF2NLBnUw",
+     "dex": "raydium",
+     "pair_created_at": 1790695755000,
+     "dexscreener": "https://dexscreener.com/solana/b1w58redpwvgjp5gmtymitxq4khl11ytvkhbf2nlbnuw",
+     "kyvo": true,
+     "match": "contract",
+     "rel": "named",
+     "mention": "Cy5TzDyJ4mo6MBAbpwUcAgdfNiXYKrYUPrvhPGVU6XMR",
+     "pumping": false
+    }
+   ],
+   "first_seen": 1793460356,
+   "kw": []
+  },
+  {
+   "id": "2116551882219090231",
+   "url": "https://x.com/elonmusk/status/2116551882219090231",
+   "handle": "elonmusk",
+   "author_name": "Elon Musk",
+   "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
+   "author_followers": 241503426,
+   "verified": true,
+   "role": "celebrity",
+   "wallet_id": null,
+   "text": "Tesla and SpaceX have created meaningful wealth for hundreds of thousands of employees over time and improved the retirement savings of hundreds of millions of people",
+   "is_reply": false,
+   "reply_to": null,
+   "vip": true,
+   "quote": {
+    "handle": "TeslaLarry",
+    "text": "https://x.com/i/article/2105766271497175040"
+   },
+   "media": [],
+   "created_at": "2026-10-31T15:24:27Z",
+   "ts": 1793460267,
+   "metrics": {
+    "likes": 526,
+    "reposts": 99,
+    "replies": 95,
+    "quotes": 6,
+    "bookmarks": 21,
+    "views": 282910
+   },
+   "metrics_at": "2026-10-31T15:27:13+00:00",
+   "coin_match": "none",
+   "coins": [],
+   "first_seen": 1793460356,
+   "kw": [
+    "spacex",
+    "tesla",
+    "hundreds",
+    "meaningful"
+   ]
+  },
+  {
+   "id": "2116551206239694990",
+   "url": "https://x.com/elonmusk/status/2116551206239694990",
+   "handle": "elonmusk",
+   "author_name": "Elon Musk",
+   "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
+   "author_followers": 241503426,
+   "verified": true,
+   "role": "celebrity",
+   "wallet_id": null,
+   "text": "14 years ago",
+   "is_reply": false,
+   "reply_to": null,
+   "vip": true,
+   "quote": {
+    "handle": "teslaownersSV",
+    "text": "Elon Musk on 60 Minutes in 2012, inside the SpaceX factory, on Falcon 1 failing three times in a row and his own heroes testifying against commercial spaceflight.\n\nFalcon 1 failed on its first three launches. Elon said that if the fourth had failed too, SpaceX would not have had "
+   },
+   "media": [],
+   "created_at": "2026-10-31T15:21:45Z",
+   "ts": 1793460105,
+   "metrics": {
+    "likes": 704,
+    "reposts": 97,
+    "replies": 197,
+    "quotes": 11,
+    "bookmarks": 35,
+    "views": 319782
+   },
+   "metrics_at": "2026-10-31T15:27:13+00:00",
+   "coin_match": "none",
+   "coins": [],
+   "first_seen": 1793460356,
+   "kw": [
+    "spacex",
+    "nasa",
+    "cbs",
+    "cbsminutes"
+   ]
+  },
+  {
+   "id": "2116549896031576519",
+   "url": "https://x.com/Dior100x/status/2116549896031576519",
+   "handle": "Dior100x",
+   "author_name": "Dior",
+   "avatar": "https://pbs.twimg.com/profile_images/2044557055139172352/yOwOwull_200x200.jpg",
+   "author_followers": 128982,
+   "verified": true,
+   "role": "kol",
+   "wallet_id": null,
+   "text": "SLINGOR might be the most attention seeking loser of all time\n\nMonero privacy meme starts sending and instead of buying he gets 40% of the supply bundled of a random deploy and attempts to vamp\n\nthere’s actually no way he thinks anyone real cares about him\n\n🤣🤣🤣",
+   "is_reply": false,
+   "reply_to": null,
+   "vip": false,
+   "quote": null,
+   "media": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HV9-6IobUAAgpNs.jpg?name=orig",
+     "alt": ""
+    },
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HV9-6IlbAAAxZDT.jpg?name=orig",
+     "alt": ""
+    }
+   ],
+   "created_at": "2026-10-31T15:16:33Z",
+   "ts": 1793459793,
+   "metrics": {
+    "likes": 13,
+    "reposts": 0,
+    "replies": 8,
+    "quotes": 0,
+    "bookmarks": 1,
+    "views": 1743
+   },
+   "metrics_at": "2026-10-31T15:21:39+00:00",
+   "coin_match": "none",
+   "coins": [],
+   "first_seen": 1793459990,
+   "kw": [
+    "slingor",
+    "monero",
+    "pic",
+    "loser"
+   ]
+  },
+  {
    "id": "2116549725792997821",
    "url": "https://x.com/elonmusk/status/2116549725792997821",
    "handle": "elonmusk",
    "author_name": "Elon Musk",
    "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
-   "author_followers": 241504546,
+   "author_followers": 241503339,
    "verified": true,
    "role": "celebrity",
    "wallet_id": null,
@@ -74,17 +305,17 @@
    "created_at": "2026-10-31T15:15:52Z",
    "ts": 1793459752,
    "metrics": {
-    "likes": 27,
-    "reposts": 0,
-    "replies": 2,
-    "quotes": 0,
-    "bookmarks": 0,
-    "views": 10327
+    "likes": 311,
+    "reposts": 21,
+    "replies": 67,
+    "quotes": 4,
+    "bookmarks": 3,
+    "views": 29498
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793459776,
+   "first_seen": 1793459990,
    "kw": [
     "bot",
     "grok",
@@ -98,7 +329,7 @@
    "handle": "elonmusk",
    "author_name": "Elon Musk",
    "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
-   "author_followers": 241504546,
+   "author_followers": 241503339,
    "verified": true,
    "role": "celebrity",
    "wallet_id": null,
@@ -117,17 +348,17 @@
    "created_at": "2026-10-31T15:13:07Z",
    "ts": 1793459587,
    "metrics": {
-    "likes": 226,
-    "reposts": 20,
-    "replies": 64,
-    "quotes": 8,
-    "bookmarks": 10,
-    "views": 16226
+    "likes": 796,
+    "reposts": 49,
+    "replies": 135,
+    "quotes": 18,
+    "bookmarks": 20,
+    "views": 27749
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793459776,
+   "first_seen": 1793459990,
    "kw": [
     "gps",
     "maye",
@@ -141,7 +372,7 @@
    "handle": "Cobratate",
    "author_name": "Andrew Tate",
    "avatar": "https://pbs.twimg.com/profile_images/1887763323464146945/5HdM0_7C_200x200.jpg",
-   "author_followers": 10718617,
+   "author_followers": 10718597,
    "verified": true,
    "role": "celebrity",
    "wallet_id": null,
@@ -154,17 +385,17 @@
    "created_at": "2026-10-31T15:11:24Z",
    "ts": 1793459484,
    "metrics": {
-    "likes": 143,
-    "reposts": 28,
-    "replies": 10,
-    "quotes": 5,
-    "bookmarks": 8,
-    "views": 32927
+    "likes": 304,
+    "reposts": 47,
+    "replies": 20,
+    "quotes": 14,
+    "bookmarks": 14,
+    "views": 49536
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793459538,
+   "first_seen": 1793459990,
    "kw": [
     "united",
     "constitution",
@@ -178,7 +409,7 @@
    "handle": "elonmusk",
    "author_name": "Elon Musk",
    "avatar": "https://pbs.twimg.com/profile_images/2103567689515954176/aR-Kjpp4_200x200.jpg",
-   "author_followers": 241504439,
+   "author_followers": 241503339,
    "verified": true,
    "role": "celebrity",
    "wallet_id": null,
@@ -194,17 +425,17 @@
    "created_at": "2026-10-31T15:08:28Z",
    "ts": 1793459308,
    "metrics": {
-    "likes": 1038,
-    "reposts": 126,
-    "replies": 372,
-    "quotes": 31,
-    "bookmarks": 36,
-    "views": 393438
+    "likes": 1663,
+    "reposts": 180,
+    "replies": 539,
+    "quotes": 45,
+    "bookmarks": 55,
+    "views": 475257
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793459349,
+   "first_seen": 1793459990,
    "kw": [
     "super",
     "intelligent",
@@ -218,7 +449,7 @@
    "handle": "WatcherGuru",
    "author_name": "Watcher.Guru",
    "avatar": "https://pbs.twimg.com/profile_images/1641221212578754562/DfiC0KW2_200x200.png",
-   "author_followers": 4914230,
+   "author_followers": 4914286,
    "verified": true,
    "role": "news",
    "wallet_id": null,
@@ -242,17 +473,17 @@
    "created_at": "2026-10-31T15:05:14Z",
    "ts": 1793459114,
    "metrics": {
-    "likes": 742,
-    "reposts": 72,
-    "replies": 133,
-    "quotes": 10,
-    "bookmarks": 19,
-    "views": 78172
+    "likes": 1262,
+    "reposts": 123,
+    "replies": 198,
+    "quotes": 18,
+    "bookmarks": 28,
+    "views": 105470
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793459123,
+   "first_seen": 1793459990,
    "kw": [
     "north",
     "korea",
@@ -266,7 +497,7 @@
    "handle": "heyibinance",
    "author_name": "Yi He",
    "avatar": "https://pbs.twimg.com/profile_images/2044437684144291841/vDSm1Vh9_200x200.jpg",
-   "author_followers": 669204,
+   "author_followers": 669281,
    "verified": true,
    "role": "kol",
    "wallet_id": null,
@@ -282,17 +513,17 @@
    "created_at": "2026-10-31T15:02:02Z",
    "ts": 1793458922,
    "metrics": {
-    "likes": 304,
-    "reposts": 44,
-    "replies": 144,
-    "quotes": 23,
-    "bookmarks": 5,
-    "views": 22488
+    "likes": 474,
+    "reposts": 62,
+    "replies": 207,
+    "quotes": 37,
+    "bookmarks": 11,
+    "views": 36703
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793458951,
+   "first_seen": 1793459990,
    "kw": [
     "usd1",
     "rlusd",
@@ -306,7 +537,7 @@
    "handle": "heyibinance",
    "author_name": "Yi He",
    "avatar": "https://pbs.twimg.com/profile_images/2044437684144291841/vDSm1Vh9_200x200.jpg",
-   "author_followers": 669193,
+   "author_followers": 669281,
    "verified": true,
    "role": "kol",
    "wallet_id": null,
@@ -322,17 +553,17 @@
    "created_at": "2026-10-31T14:57:44Z",
    "ts": 1793458664,
    "metrics": {
-    "likes": 375,
-    "reposts": 64,
-    "replies": 143,
-    "quotes": 24,
-    "bookmarks": 6,
-    "views": 34222
+    "likes": 590,
+    "reposts": 95,
+    "replies": 181,
+    "quotes": 37,
+    "bookmarks": 19,
+    "views": 57852
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793458756,
+   "first_seen": 1793459990,
    "kw": [
     "proof",
     "utc",
@@ -346,7 +577,7 @@
    "handle": "MustStopMurad",
    "author_name": "Murad 💹🧲",
    "avatar": "https://pbs.twimg.com/profile_images/2084373240508510208/BCXFWGNA_200x200.jpg",
-   "author_followers": 727284,
+   "author_followers": 727283,
    "verified": true,
    "role": "kol",
    "wallet_id": null,
@@ -359,17 +590,17 @@
    "created_at": "2026-10-31T14:52:39Z",
    "ts": 1793458359,
    "metrics": {
-    "likes": 175,
-    "reposts": 33,
-    "replies": 69,
-    "quotes": 4,
-    "bookmarks": 7,
-    "views": 17232
+    "likes": 224,
+    "reposts": 40,
+    "replies": 85,
+    "quotes": 7,
+    "bookmarks": 10,
+    "views": 19497
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
-   "first_seen": 1793458514,
+   "first_seen": 1793459990,
    "kw": [
     "select",
     "memecoins",
@@ -399,14 +630,14 @@
    "created_at": "2026-10-31T14:49:20Z",
    "ts": 1793458160,
    "metrics": {
-    "likes": 2428,
-    "reposts": 329,
-    "replies": 324,
-    "quotes": 17,
-    "bookmarks": 87,
-    "views": 549096
+    "likes": 3238,
+    "reposts": 412,
+    "replies": 358,
+    "quotes": 22,
+    "bookmarks": 109,
+    "views": 619460
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793458333,
@@ -445,14 +676,14 @@
    "created_at": "2026-10-31T14:41:14Z",
    "ts": 1793457674,
    "metrics": {
-    "likes": 4117,
-    "reposts": 725,
-    "replies": 471,
-    "quotes": 53,
-    "bookmarks": 183,
-    "views": 538267
+    "likes": 5703,
+    "reposts": 957,
+    "replies": 551,
+    "quotes": 61,
+    "bookmarks": 253,
+    "views": 602717
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793457724,
@@ -482,14 +713,14 @@
    "created_at": "2026-10-31T14:32:56Z",
    "ts": 1793457176,
    "metrics": {
-    "likes": 81,
+    "likes": 101,
     "reposts": 4,
-    "replies": 27,
-    "quotes": 0,
-    "bookmarks": 10,
-    "views": 4994
+    "replies": 28,
+    "quotes": 1,
+    "bookmarks": 11,
+    "views": 5690
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793457312,
@@ -518,14 +749,14 @@
    "created_at": "2026-10-31T14:30:04Z",
    "ts": 1793457004,
    "metrics": {
-    "likes": 2218,
-    "reposts": 374,
-    "replies": 316,
-    "quotes": 165,
-    "bookmarks": 217,
-    "views": 297185
+    "likes": 2691,
+    "reposts": 442,
+    "replies": 356,
+    "quotes": 198,
+    "bookmarks": 261,
+    "views": 363687
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793457062,
@@ -560,12 +791,12 @@
    "metrics": {
     "likes": 65,
     "reposts": 8,
-    "replies": 28,
+    "replies": 29,
     "quotes": 1,
     "bookmarks": 5,
-    "views": 6498
+    "views": 7034
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -574,9 +805,9 @@
      "symbol": "Tesla",
      "name": "Tesla",
      "image": null,
-     "mcap": 1724,
-     "liquidity": 1734.14,
-     "price_usd": 1.724e-06,
+     "mcap": 1700,
+     "liquidity": 1735.37,
+     "price_usd": 1.725e-06,
      "change_h24": -95.66,
      "volume_h24": 34528.89,
      "pair": "7pWQyFChZXuzhMx9SgKbQnL3uZfCbVKdoU5w5K1riq3a",
@@ -590,9 +821,9 @@
      "alts": 0,
      "pre_launch": true,
      "px_at_launch": 0.00011418396090838296,
-     "vol_after": 34552,
-     "hours_after": 1.04,
-     "measured_at": 1793458951,
+     "vol_after": 21323,
+     "hours_after": 0.87,
+     "measured_at": 1793458333,
      "chg_since_launch": -98.5,
      "pumping": false
     }
@@ -627,14 +858,14 @@
    "created_at": "2026-10-31T13:59:41Z",
    "ts": 1793455181,
    "metrics": {
-    "likes": 8339,
-    "reposts": 1707,
-    "replies": 1645,
-    "quotes": 123,
-    "bookmarks": 96,
-    "views": 723579
+    "likes": 9038,
+    "reposts": 1849,
+    "replies": 1750,
+    "quotes": 139,
+    "bookmarks": 107,
+    "views": 763323
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -661,8 +892,8 @@
      "pre_launch": true,
      "px_at_launch": 4.268839693676042e-05,
      "vol_after": 10132,
-     "hours_after": 1.17,
-     "measured_at": 1793459349,
+     "hours_after": 1.47,
+     "measured_at": 1793460356,
      "chg_since_launch": 10.4
     }
    ],
@@ -699,14 +930,14 @@
    "created_at": "2026-10-31T13:54:02Z",
    "ts": 1793454842,
    "metrics": {
-    "likes": 2217,
-    "reposts": 216,
-    "replies": 353,
-    "quotes": 73,
-    "bookmarks": 182,
-    "views": 177143
+    "likes": 2380,
+    "reposts": 239,
+    "replies": 366,
+    "quotes": 80,
+    "bookmarks": 205,
+    "views": 188838
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793454898,
@@ -741,14 +972,14 @@
    "created_at": "2026-10-31T13:42:53Z",
    "ts": 1793454173,
    "metrics": {
-    "likes": 3181,
-    "reposts": 273,
-    "replies": 311,
-    "quotes": 50,
-    "bookmarks": 150,
-    "views": 166555
+    "likes": 3386,
+    "reposts": 287,
+    "replies": 321,
+    "quotes": 51,
+    "bookmarks": 158,
+    "views": 196903
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793454171,
@@ -781,14 +1012,14 @@
    "created_at": "2026-10-31T13:32:56Z",
    "ts": 1793453576,
    "metrics": {
-    "likes": 10639,
-    "reposts": 1145,
-    "replies": 1040,
-    "quotes": 105,
-    "bookmarks": 158,
-    "views": 884783
+    "likes": 11205,
+    "reposts": 1206,
+    "replies": 1074,
+    "quotes": 109,
+    "bookmarks": 165,
+    "views": 908440
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -814,9 +1045,9 @@
      "pumping": false,
      "pre_launch": true,
      "px_at_launch": 0.00011248335224959927,
-     "vol_after": 22515,
-     "hours_after": 1.67,
-     "measured_at": 1793459538,
+     "vol_after": 11976,
+     "hours_after": 0.98,
+     "measured_at": 1793457062,
      "chg_since_launch": -98.4
     }
    ],
@@ -853,14 +1084,14 @@
    "created_at": "2026-10-31T13:30:03Z",
    "ts": 1793453403,
    "metrics": {
-    "likes": 4821,
-    "reposts": 1101,
-    "replies": 658,
-    "quotes": 62,
-    "bookmarks": 159,
-    "views": 803656
+    "likes": 4986,
+    "reposts": 1142,
+    "replies": 670,
+    "quotes": 67,
+    "bookmarks": 161,
+    "views": 835778
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -886,8 +1117,8 @@
      "pre_launch": true,
      "px_at_launch": 2.877967442007996e-05,
      "vol_after": 21727,
-     "hours_after": 1.67,
-     "measured_at": 1793459349,
+     "hours_after": 1.15,
+     "measured_at": 1793457480,
      "chg_since_launch": -2.0,
      "pumping": false
     }
@@ -924,14 +1155,14 @@
    "created_at": "2026-10-31T13:29:54Z",
    "ts": 1793453394,
    "metrics": {
-    "likes": 1269,
-    "reposts": 143,
-    "replies": 226,
-    "quotes": 45,
-    "bookmarks": 87,
-    "views": 197077
+    "likes": 1311,
+    "reposts": 147,
+    "replies": 229,
+    "quotes": 47,
+    "bookmarks": 90,
+    "views": 205016
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -958,8 +1189,8 @@
      "pre_launch": true,
      "px_at_launch": 1.99292564123209e-05,
      "vol_after": 41634,
-     "hours_after": 1.79,
-     "measured_at": 1793459776,
+     "hours_after": 1.39,
+     "measured_at": 1793458333,
      "chg_since_launch": 1609593.8
     }
    ],
@@ -994,14 +1225,14 @@
    "created_at": "2026-10-31T13:16:13Z",
    "ts": 1793452573,
    "metrics": {
-    "likes": 8341,
-    "reposts": 1358,
-    "replies": 557,
-    "quotes": 116,
-    "bookmarks": 293,
-    "views": 203155
+    "likes": 8857,
+    "reposts": 1438,
+    "replies": 583,
+    "quotes": 113,
+    "bookmarks": 311,
+    "views": 215209
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "related",
    "coins": [
     {
@@ -1066,14 +1297,14 @@
    "created_at": "2026-10-31T13:09:40Z",
    "ts": 1793452180,
    "metrics": {
-    "likes": 496,
-    "reposts": 94,
+    "likes": 509,
+    "reposts": 95,
     "replies": 74,
     "quotes": 18,
     "bookmarks": 8,
-    "views": 22838
+    "views": 23395
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793453603,
@@ -1103,14 +1334,14 @@
    "created_at": "2026-10-31T13:01:05Z",
    "ts": 1793451665,
    "metrics": {
-    "likes": 154,
+    "likes": 155,
     "reposts": 17,
-    "replies": 62,
+    "replies": 64,
     "quotes": 2,
     "bookmarks": 3,
-    "views": 42822
+    "views": 43514
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793453603,
@@ -1137,14 +1368,14 @@
    "created_at": "2026-10-31T12:47:00Z",
    "ts": 1793450820,
    "metrics": {
-    "likes": 32,
+    "likes": 33,
     "reposts": 0,
     "replies": 21,
     "quotes": 0,
     "bookmarks": 2,
-    "views": 6739
+    "views": 6905
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793453603,
@@ -1174,14 +1405,14 @@
    "created_at": "2026-10-31T12:37:08Z",
    "ts": 1793450228,
    "metrics": {
-    "likes": 562,
-    "reposts": 81,
-    "replies": 126,
-    "quotes": 19,
+    "likes": 571,
+    "reposts": 86,
+    "replies": 128,
+    "quotes": 21,
     "bookmarks": 15,
-    "views": 36860
+    "views": 37654
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793453603,
@@ -1215,14 +1446,14 @@
    "created_at": "2026-10-31T12:11:47Z",
    "ts": 1793448707,
    "metrics": {
-    "likes": 930,
-    "reposts": 136,
-    "replies": 182,
-    "quotes": 20,
-    "bookmarks": 41,
-    "views": 30242
+    "likes": 970,
+    "reposts": 142,
+    "replies": 189,
+    "quotes": 28,
+    "bookmarks": 44,
+    "views": 30973
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793448681,
@@ -1255,14 +1486,14 @@
    "created_at": "2026-10-31T11:48:33Z",
    "ts": 1793447313,
    "metrics": {
-    "likes": 239,
+    "likes": 248,
     "reposts": 4,
     "replies": 38,
     "quotes": 0,
     "bookmarks": 7,
-    "views": 21708
+    "views": 22647
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793447509,
@@ -1303,9 +1534,9 @@
     "replies": 17,
     "quotes": 0,
     "bookmarks": 2,
-    "views": 5964
+    "views": 6047
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793447150,
@@ -1333,14 +1564,14 @@
    "created_at": "2026-10-31T10:58:55Z",
    "ts": 1793444335,
    "metrics": {
-    "likes": 1067,
-    "reposts": 116,
-    "replies": 251,
+    "likes": 1083,
+    "reposts": 117,
+    "replies": 253,
     "quotes": 22,
     "bookmarks": 21,
-    "views": 55628
+    "views": 56618
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793444412,
@@ -1373,14 +1604,14 @@
    "created_at": "2026-10-31T10:45:00Z",
    "ts": 1793443500,
    "metrics": {
-    "likes": 116,
+    "likes": 119,
     "reposts": 9,
     "replies": 39,
     "quotes": 1,
     "bookmarks": 9,
-    "views": 15616
+    "views": 15947
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793443851,
@@ -1419,14 +1650,14 @@
    "created_at": "2026-10-31T10:31:48Z",
    "ts": 1793442708,
    "metrics": {
-    "likes": 7109,
-    "reposts": 837,
-    "replies": 483,
-    "quotes": 173,
-    "bookmarks": 543,
-    "views": 417505
+    "likes": 7260,
+    "reposts": 851,
+    "replies": 485,
+    "quotes": 176,
+    "bookmarks": 553,
+    "views": 426052
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793443851,
@@ -1457,14 +1688,14 @@
    "created_at": "2026-10-31T10:06:01Z",
    "ts": 1793441161,
    "metrics": {
-    "likes": 106,
+    "likes": 107,
     "reposts": 12,
     "replies": 33,
     "quotes": 1,
     "bookmarks": 10,
-    "views": 50675
+    "views": 51825
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793441129,
@@ -1503,14 +1734,14 @@
    "created_at": "2026-10-31T09:55:55Z",
    "ts": 1793440555,
    "metrics": {
-    "likes": 6332,
-    "reposts": 437,
-    "replies": 496,
+    "likes": 6417,
+    "reposts": 438,
+    "replies": 501,
     "quotes": 73,
-    "bookmarks": 144,
-    "views": 329447
+    "bookmarks": 146,
+    "views": 333270
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793440716,
@@ -1541,14 +1772,14 @@
    "created_at": "2026-10-31T09:55:23Z",
    "ts": 1793440523,
    "metrics": {
-    "likes": 257,
+    "likes": 260,
     "reposts": 26,
-    "replies": 113,
+    "replies": 114,
     "quotes": 7,
     "bookmarks": 9,
-    "views": 52858
+    "views": 53311
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793440716,
@@ -1576,14 +1807,14 @@
    "created_at": "2026-10-31T09:54:52Z",
    "ts": 1793440492,
    "metrics": {
-    "likes": 673,
+    "likes": 682,
     "reposts": 129,
     "replies": 137,
-    "quotes": 21,
+    "quotes": 23,
     "bookmarks": 26,
-    "views": 37491
+    "views": 37948
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793440716,
@@ -1622,9 +1853,9 @@
     "replies": 39,
     "quotes": 1,
     "bookmarks": 5,
-    "views": 10622
+    "views": 10738
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793440716,
@@ -1658,14 +1889,14 @@
    "created_at": "2026-10-31T07:15:00Z",
    "ts": 1793430900,
    "metrics": {
-    "likes": 472,
-    "reposts": 32,
+    "likes": 478,
+    "reposts": 33,
     "replies": 265,
-    "quotes": 19,
+    "quotes": 18,
     "bookmarks": 93,
-    "views": 98172
+    "views": 99131
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793431246,
@@ -1701,14 +1932,14 @@
    "created_at": "2026-10-31T06:52:59Z",
    "ts": 1793429579,
    "metrics": {
-    "likes": 2831,
+    "likes": 2852,
     "reposts": 88,
-    "replies": 245,
-    "quotes": 13,
+    "replies": 246,
+    "quotes": 14,
     "bookmarks": 52,
-    "views": 151365
+    "views": 152703
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:21:39+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793444977,
@@ -1736,14 +1967,14 @@
    "created_at": "2026-10-31T06:28:22Z",
    "ts": 1793428102,
    "metrics": {
-    "likes": 610,
+    "likes": 624,
     "reposts": 25,
     "replies": 76,
     "quotes": 7,
-    "bookmarks": 420,
-    "views": 50316
+    "bookmarks": 425,
+    "views": 51091
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793428112,
@@ -1774,14 +2005,14 @@
    "created_at": "2026-10-31T06:19:41Z",
    "ts": 1793427581,
    "metrics": {
-    "likes": 26522,
-    "reposts": 3427,
-    "replies": 2086,
-    "quotes": 114,
-    "bookmarks": 996,
-    "views": 1892481
+    "likes": 25324,
+    "reposts": 3266,
+    "replies": 2050,
+    "quotes": 113,
+    "bookmarks": 938,
+    "views": 1836266
    },
-   "metrics_at": "2026-10-31T15:12:47+00:00",
+   "metrics_at": "2026-10-31T14:52:41+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793427727,
@@ -1815,14 +2046,14 @@
    "created_at": "2026-10-31T04:30:21Z",
    "ts": 1793421021,
    "metrics": {
-    "likes": 789,
-    "reposts": 101,
-    "replies": 71,
-    "quotes": 8,
+    "likes": 798,
+    "reposts": 103,
+    "replies": 72,
+    "quotes": 9,
     "bookmarks": 27,
-    "views": 35863
+    "views": 36192
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793421381,
@@ -1856,14 +2087,14 @@
    "created_at": "2026-10-31T04:09:45Z",
    "ts": 1793419785,
    "metrics": {
-    "likes": 296,
+    "likes": 298,
     "reposts": 14,
     "replies": 136,
     "quotes": 7,
-    "bookmarks": 40,
-    "views": 61882
+    "bookmarks": 41,
+    "views": 62129
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793421381,
@@ -1896,9 +2127,9 @@
     "replies": 33,
     "quotes": 0,
     "bookmarks": 0,
-    "views": 7092
+    "views": 7111
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:21:39+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793421381,
@@ -1941,9 +2172,9 @@
     "replies": 23,
     "quotes": 0,
     "bookmarks": 5,
-    "views": 6102
+    "views": 6170
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793418641,
@@ -1977,14 +2208,14 @@
    "created_at": "2026-10-31T03:30:16Z",
    "ts": 1793417416,
    "metrics": {
-    "likes": 446,
-    "reposts": 88,
-    "replies": 53,
+    "likes": 452,
+    "reposts": 90,
+    "replies": 54,
     "quotes": 9,
     "bookmarks": 16,
-    "views": 28208
+    "views": 28383
    },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
+   "metrics_at": "2026-10-31T15:27:13+00:00",
    "coin_match": "none",
    "coins": [],
    "first_seen": 1793418256,
@@ -1993,41 +2224,6 @@
     "ukraine",
     "kyiv",
     "sjgtaydqva"
-   ]
-  },
-  {
-   "id": "2116370688873218282",
-   "url": "https://x.com/Cented7/status/2116370688873218282",
-   "handle": "Cented7",
-   "author_name": "cented the hodler",
-   "avatar": "https://pbs.twimg.com/profile_images/2071467491918815232/0J-MZRTV_200x200.jpg",
-   "author_followers": 823683,
-   "verified": true,
-   "role": "kol",
-   "wallet_id": null,
-   "text": "HAPPY HALLOWEEKEND STAY SAFE FELLAS!",
-   "is_reply": false,
-   "quote": null,
-   "media": [],
-   "created_at": "2026-10-31T03:24:27Z",
-   "ts": 1793417067,
-   "metrics": {
-    "likes": 258,
-    "reposts": 1,
-    "replies": 16,
-    "quotes": 0,
-    "bookmarks": 3,
-    "views": 18188
-   },
-   "metrics_at": "2026-10-31T15:16:46+00:00",
-   "coin_match": "none",
-   "coins": [],
-   "first_seen": 1793418256,
-   "kw": [
-    "happy",
-    "halloweekend",
-    "stay",
-    "safe"
    ]
   }
  ]
