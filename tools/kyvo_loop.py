@@ -23,7 +23,8 @@ import argparse, json, os, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FEEDS = ["data/x_live.json", "data/kol_live.json", "data/gold.json", "data/pf_social.json", "data/tracker_feed.json"]
+FEEDS = ["data/x_live.json", "data/kol_live.json", "data/gold.json", "data/pf_social.json", "data/tracker_feed.json",
+         "data/early_shadow.json"]   # v8.24 early-rule shadow log (rides along with the normal feed commits, never its own commit)
 
 def log(*a):
     print(time.strftime("%H:%M:%S"), *a, flush=True)
@@ -153,7 +154,7 @@ def main() -> int:
             tw = Bg([py, "tools/x_live.py"])
         if time.time() >= next_scan and time.time() < end - 45:
             next_scan = time.time() + a.scan_every; n_scan += 1
-            o = run([py, "tools/discord_calls.py", "--flags-out", f"{a.state_dir}/flags.json", "--kol-out", "data/kol_live.json"],
+            o = run([py, "tools/discord_calls.py", "--flags-out", f"{a.state_dir}/flags.json", "--kol-out", "data/kol_live.json", "--early-out", "data/early_shadow.json"],
                     env_extra={"KYVO_CALLS_STATE": f"{a.state_dir}/calls_state.json", "KYVO_FACT_CACHE": f"{a.state_dir}/facts"}, timeout=240)
             if o.get("kol_commit") == "true": pending.append("runner coins")
             did = True

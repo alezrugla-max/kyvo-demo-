@@ -183,7 +183,12 @@ function goodCoinRule(x, T) {
 // v8.3 research (tools/runner_research.py, n=88 Solana/BSC pools, 2.8 days): first-hour rule vol ≥ $100k, Δ ≥ +30%,
 // volume accelerating (last-15-min pace ≥ first-45-min pace) → 14/17 did 2x+ within 25 h (precision 0.82 vs base 0.60,
 // recall 0.26, ~6/day from first-hour triggers alone). tx/buy-share thresholds are not testable on OHLCV (spec values).
-const RUNNER_T = { kc: 60, liq: 15000, liqMc: 0.05, ageMinH: 0.1, mcMax: 3e7, vol1h: 100000, acc: 1.0, tx1h: 1000, buyShare: 0.55, h1Min: 30, m5Min: 0 };
+// v8.24 young-pool filter (pool < youngH = 30 min old): its 'last hour' is really its whole life, so (1) the 5-min acceleration is
+// measured against the pace of the pool's whole life (like earlyRunnerRule) instead of the not-yet-full hour, which used to
+// inflate it ~2-3x, and (2) stricter floors: safety ≥ youngKc, liquidity ≥ youngLiq, buy share ≥ youngBuy, accel ≥ youngAcc.
+// Keep in sync: insights.js RUNNER_T  <->  tools/upside_estimate.js RUNNER_T (server rule).
+const RUNNER_T = { kc: 60, liq: 15000, liqMc: 0.05, ageMinH: 0.1, mcMax: 3e7, vol1h: 100000, acc: 1.0, tx1h: 1000, buyShare: 0.55, h1Min: 30, m5Min: 0,
+  youngH: 0.5, youngKc: 70, youngLiq: 20000, youngBuy: 0.58, youngAcc: 1.2 };
 function runnerRule(x, T) {
   T = Object.assign({}, RUNNER_T, T || {});
   const c01 = (v) => (isFinite(v) ? Math.max(0, Math.min(1, v)) : 0);
@@ -193,6 +198,8 @@ function runnerRule(x, T) {
   const acc5 = v5 != null && v1 > 0 ? (v5 * 12) / v1 : null;           // last 5 min pace vs last hour
   const acc24 = v1 != null && v24 > 0 ? v1 / (v24 / 24) : null;         // last hour vs 24 h average
   const accel = ageH != null && ageH < 2 ? (acc5 != null ? acc5 : T.acc) : Math.max(acc5 || 0, acc24 || 0); // brand-new pairs: no 24h baseline → 5-min pace only
+  const young = ageH != null && ageH < T.youngH;                       // v8.24
+  const accY = young && v5 != null && v1 > 0 ? (v5 * 12) / (v1 / Math.max(ageH, 1 / 12)) : null;   // 5-min pace vs whole-life pace
   const checks = [
     ['safety', (n(x.score) || 0) >= T.kc && !(n(x.redFlags) || 0)],
     ['liq', liq != null && liq >= T.liq && (!!x.onCurve || (mc > 0 && liq / mc >= T.liqMc && liq <= 2 * mc))],
@@ -203,10 +210,11 @@ function runnerRule(x, T) {
     ['tx', ntx >= T.tx1h],
     ['buys', br != null && br >= T.buyShare],
     ['move', h1 != null && h1 >= T.h1Min && (m5 == null || m5 >= T.m5Min)],
+    ['young', !young || ((n(x.score) || 0) >= T.youngKc && liq >= T.youngLiq && br >= T.youngBuy && accY != null && accY >= T.youngAcc)],
   ];
   const failed = checks.find((q) => !q[1]);
   const score = 0.35 * c01(Math.log10((v1 || 1) / T.vol1h) / 1.3 + 0.2) + 0.25 * c01((accel - 1) / 3) + 0.25 * c01(Math.log10((ntx || 1) / T.tx1h) / 1 + 0.2) + 0.15 * c01((h1 || 0) / 200);
-  return { ok: !failed, failed: failed ? failed[0] : null, score, accel, ntx, br };
+  return { ok: !failed, failed: failed ? failed[0] : null, score, accel, ntx, br, young, accY };
 }
 /**
  * secondLegRule(x, T) → { ok, pending, failed, score, acc, br5, why } — "🔁 Kolejna fala / Second leg": a coin that

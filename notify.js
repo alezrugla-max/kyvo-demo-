@@ -167,7 +167,7 @@
       <label class="nrow"><input type="checkbox" data-nt="runner" ${S.runner !== false ? 'checked' : ''}><span><b>🏃 Runner</b><small>${L('najmocniejsze sygnały: ogromny rosnący wolumen, tysiące transakcji, super-ważne tweety (kilka–kilkanaście dziennie)', 'strongest signals: huge rising volume, thousands of txns, super-important tweets (a handful to ~20 a day)')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="gold" ${S.gold !== false ? 'checked' : ''}><span><b>🥇 Gold</b><small>${L('alerty dla coinów z werdyktem Gold: cena ±15–20%, kopia (wampir) powyżej $500K MC, nowy artykuł o narracji · Premium', 'alerts for coins with a Gold verdict: price ±15–20%, a copy (vamp) above $500K MC, a new article about the narrative · Premium')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="good" ${S.good ? 'checked' : ''}><span><b>${L('Nowy coin w Good Coins', 'New coin in Good Coins')}</b><small>${L('tylko z wysokim wynikiem Kyvo Check', 'only with a high Kyvo Check score')}</small></span></label>
-      <label class="nrow"><input type="checkbox" data-nt="vip" ${S.vip !== false ? 'checked' : ''}><span><b>⭐ Elon & Trump</b><small>${L('każdy nowy post i odpowiedź Elona Muska i Donalda Trumpa (zbierane w 1 powiadomienie, max co 10 min) · Premium · w tygodniu z darmowym Premium dla wszystkich', 'every new post and reply by Elon Musk and Donald Trump (grouped into 1 notification, at most every 10 min) · Premium · free for everyone during the free Premium week')}</small></span></label>
+      <label class="nrow"><input type="checkbox" data-nt="vip" ${S.vip !== false ? 'checked' : ''}><span><b>⭐ ${L('Super ważne tweety', 'Super important tweets')}</b><small>${L('tylko naprawdę ważne posty: każdy nowy post Trumpa i Kimchiego, Elon i duże konta krypto (CZ, Vitalik, Saylor, Toly, Ansem…) tylko gdy chodzi o coina, rynek lub ma ogromny zasięg · max 5 dziennie na konto · Premium · w tygodniu z darmowym Premium dla wszystkich', 'only really important posts: every new Trump and Kimchi post; Elon and big crypto accounts (CZ, Vitalik, Saylor, Toly, Ansem…) only about a coin, the market, or going hugely viral · max 5 a day per account · Premium · free for everyone during the free Premium week')}</small></span></label>
       <label class="nrow"><input type="checkbox" data-nt="tweets" ${S.tweets ? 'checked' : ''}><span><b>${L('Nowy ważny tweet z coinem', 'New important tweet with a coin')}</b><small>${L('znany trader, KOL lub celebryta tweetuje o coinie (New Tweet, sprawdzane co kilka minut)', 'a well-known trader, KOL or celebrity tweets about a coin (New Tweet, checked every few minutes)')}</small></span></label>
       <div class="mut nnote ncap">${isPremium() ? (window.KyvoPremium && window.KyvoPremium.isRunners && window.KyvoPremium.isRunners() ? '🏃 ' + L('Runners: wszystkie powiadomienia, każdy Runner i smart money.', 'Runners: all notifications, every Runner and smart money.') : '✦ ' + L('Premium: wszystkie powiadomienia i alerty Gold, Runnery 3 dziennie. <a href="#premium">🏃 Runners: każdy Runner + smart money</a>.', 'Premium: all notifications and Gold alerts, Runners 3 a day. <a href="#premium">🏃 Runners: every Runner + smart money</a>.')) : `${L('Darmowo: maks.', 'Free: max')} ${FREE_CAP} ${L('powiadomienia dziennie', 'notifications a day')} (${L('dziś', 'today')}: ${Math.min(usedToday(), FREE_CAP)}/${FREE_CAP}). <a href="#premium">${L('Premium dostaje wszystkie alerty', 'Premium gets all alerts')}</a>.`}</div>
       <div class="mut nnote">${P.enabled ? L('Gdy Kyvo jest otwarte, dostajesz komunikat w apce. Po włączeniu powiadomień systemowych alerty przychodzą też, gdy apka jest zamknięta.', 'While Kyvo is open you get an in-app message. After you enable system notifications, alerts also arrive when the app is closed.') : L('Działa, gdy Kyvo jest otwarte (także w karcie w tle na komputerze): dostajesz komunikat w apce, a gdy patrzysz gdzie indziej — powiadomienie systemowe. Gdy apka jest zamknięta, nic nie przyjdzie.', 'Works while Kyvo is open (also in a background tab on a computer): you get an in-app message, and a system notification when you are looking elsewhere. When the app is closed, nothing arrives.')}</div>
@@ -266,4 +266,50 @@
     return false;
   }
   window.KyvoPush = { init, syncTags, syncTierIfChanged, tier: curTier, tags, optOut, enabled: () => !!(window.KYVO_PUSH_CONFIG || {}).enabled };
+})();
+
+/* ---- v8.24 🔔 "Włącz powiadomienia" banner on the home screen (installed PWA only, permission still 'default').
+   iOS / iPadOS allow the permission prompt ONLY from a tap inside the Home-Screen app, so the prompt is requested directly in
+   this click handler (no await before it), then OneSignal subscribes (KyvoPush.init). "×" hides it for 3 days. ---- */
+(function () {
+  'use strict';
+  const HIDE = 'kyvo_pushbanner_hide';
+  const L = (pl, en) => (window.KyvoI18n && window.KyvoI18n.lang === 'en' ? en : pl);
+  const standalone = () => (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  function want() {
+    const C = window.KYVO_PUSH_CONFIG || {};
+    if (!C.enabled || !standalone() || typeof Notification === 'undefined' || Notification.permission !== 'default') return false;
+    let h = 0; try { h = +localStorage.getItem(HIDE) || 0; } catch (e) {}
+    return Date.now() - h > 3 * 864e5;
+  }
+  function remove() { const b = document.getElementById('kyPushBanner'); if (b) b.remove(); }
+  function show() {
+    if (!want()) { remove(); return; }
+    if (document.getElementById('kyPushBanner')) return;
+    const host = document.getElementById('s-list'); if (!host) return;
+    const d = document.createElement('div');
+    d.id = 'kyPushBanner'; d.className = 'card';
+    d.setAttribute('translate', 'no');
+    d.style.cssText = 'display:flex;align-items:center;gap:10px;margin:10px 12px;padding:12px 14px;border:1px solid rgba(167,139,250,.45);background:rgba(167,139,250,.12)';
+    d.innerHTML = `<div style="flex:1;min-width:0"><b>🔔 ${L('Włącz powiadomienia', 'Turn on notifications')}</b><div class="mut" style="font-size:12px;margin-top:2px">${L('Runnery i super ważne tweety (Trump, Elon, Kimchi…) nawet gdy Kyvo jest zamknięte.', 'Runners and super important tweets (Trump, Elon, Kimchi…) even when Kyvo is closed.')}</div></div>
+      <button type="button" class="pf-btn" data-kpb-on style="white-space:nowrap">${L('Włącz', 'Turn on')}</button>
+      <button type="button" data-kpb-x aria-label="${L('Zamknij', 'Close')}" style="background:none;border:0;color:inherit;opacity:.6;font-size:18px;padding:0 2px">×</button>`;
+    d.querySelector('[data-kpb-on]').onclick = () => {
+      let p;
+      try { p = Notification.requestPermission(); } catch (e) { p = null; }   // called synchronously inside the tap (iOS requirement)
+      Promise.resolve(p).then(() => {
+        if (Notification.permission === 'granted') {
+          try { localStorage.setItem('kyvo_push_off', '0'); } catch (e) {}
+          if (window.KyvoPush) window.KyvoPush.init(true);
+        }
+        remove();
+      }, remove);
+    };
+    d.querySelector('[data-kpb-x]').onclick = () => { try { localStorage.setItem(HIDE, String(Date.now())); } catch (e) {} remove(); };
+    host.insertBefore(d, host.firstChild);
+  }
+  const later = () => setTimeout(show, 1200);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', later); else later();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) show(); });
+  window.addEventListener('hashchange', () => setTimeout(show, 300));
 })();

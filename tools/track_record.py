@@ -5,6 +5,7 @@ Runs in the GitHub Action right after tools/discord_calls.py --flags-out (same r
   1. merge new flags into data/track_record.json — only the FIRST flag of a coin is kept (time, price, MC), later flags
      only add the kind (good / runner);
   2. update performance for coins flagged in the last 7 days: exact max / 1 h / 8 h from GeckoTerminal 15-min candles
+     (v8.24: max counts only candles starting at / after the flag time, never the flag's own candle; maxV=2 marks fixed items)
      (≤ 50 h after the flag, at most 25 pools per run), current price from DexScreener;
   3. print commit=true to $GITHUB_OUTPUT only if there is a new flag or the last committed update is ≥ 60 min old,
      so GitHub Pages is rebuilt at most ~hourly.
@@ -68,17 +69,25 @@ def main() -> int:
                 if p and p.get("priceUsd"):
                     px = float(p["priceUsd"]); e["last"] = px; e["lastAt"] = now_ms; e["mcNow"] = p.get("marketCap") or p.get("fdv") or e.get("mcNow")
                     if px > (e.get("max") or 0): e["max"], e["maxAt"] = px, now_ms
+                    if px > (e.get("maxLive") or 0): e["maxLive"], e["maxLiveAt"] = px, now_ms   # v8.24: live price seen after the flag
             time.sleep(1)
     # exact max / 1 h / 8 h from 15-min candles while the flag is ≤ 50 h old
-    todo = sorted([e for e in live if e.get("pair") and now_ms - e["at"] < 50 * 3.6e6 and not e.get("ohFinal")], key=lambda e: e.get("ohAt", 0))[: a.max_ohlcv]
+    todo = sorted([e for e in live if e.get("pair") and now_ms - e["at"] < 50 * 3.6e6 and (not e.get("ohFinal") or e.get("maxV") != 2)],
+                  key=lambda e: (e.get("maxV") == 2, e.get("ohAt", 0)))[: a.max_ohlcv]   # v8.24: items not yet on the fixed max rule first
     for e in todo:
         d = get(f"{GT}/networks/{GT_NET.get(e['chain'], e['chain'])}/pools/{e['pair']}/ohlcv/minute?aggregate=15&limit=200&currency=usd&token={e['addr']}")
         time.sleep(2.1)
         ol = sorted(((d or {}).get("data") or {}).get("attributes", {}).get("ohlcv_list") or [])
-        after = [r for r in ol if r[0] * 1000 >= e["at"] - 15 * 60e3 + 1]
-        if not after: continue
-        mx = max(r[2] for r in after)
-        if mx > (e.get("max") or 0): e["max"], e["maxAt"] = mx, int(next(r for r in after if r[2] == mx)[0] * 1000)
+        # v8.24 max fix: only candles that START at / after the flag time. The 15-min candle containing the flag (its high is often
+        # the spike BEFORE the flag) no longer counts. Max = recomputed from scratch each time (not only raised), so maxes stored
+        # by the old rule get corrected while the flag is ≤ 50 h old: max(px0, highs after the flag, live prices seen after the flag).
+        after = [r for r in ol if r[0] * 1000 >= e["at"]]
+        if not after and not ol: continue
+        mx = max([r[2] for r in after], default=0)
+        best = max(e["px0"] or 0, mx, e.get("maxLive") or 0)
+        e["max"] = best
+        e["maxAt"] = int(next(r for r in after if r[2] == mx)[0] * 1000) if after and best == mx else (e.get("maxLiveAt") or e["at"]) if best == (e.get("maxLive") or 0) and best > (e["px0"] or 0) else e["at"]
+        e["maxV"] = 2
         for h, f in ((1, "p1"), (8, "p8")):
             t = (e["at"] + h * 3.6e6) / 1000
             c = next((r for r in ol if r[0] <= t < r[0] + 900), None)

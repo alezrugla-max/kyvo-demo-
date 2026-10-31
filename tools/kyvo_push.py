@@ -27,11 +27,22 @@ wait and are folded into the next one), ≤ VIP_DAY_CAP pushes per account per W
 web_push_topic vip-<handle> (a newer push replaces the older one on the phone). Tiers: Premium + Runners (VIP_TIERS);
 during the free launch week (PROMO_UNTIL, same instant as premium-config.js FREE_UNTIL) also free users, outside the free 2/day
 cap — the app's push tag stays the PAID tier during the promo, so without this free users would not get it.
+v8.24 ⭐ IMPORTANT-TWEET push (replaces "every post"): the New Tweet feed still shows everything, but a VIP push only goes out
+for an important post (important(); rules + keywords + thresholds live in x_accounts.json "vip_push", per-account "vip_rule"):
+  posts    (Trump, Kimchi)  every ORIGINAL post; a reply only if it is important by keywords / coin / engagement
+  keywords (Elon)           post or reply naming a coin / $CASHTAG / contract address, or a market-moving keyword in its text,
+                            its quoted post or the post it replies to, or very high early engagement (likes / likes-per-min / views)
+  crypto   (CZ, Vitalik, Saylor, Armstrong, Toly, Ansem, Murad, Cobie, Hsaka, Hayes, top memecoin traders …) coin / cashtag /
+                            CA, a strong crypto_keywords word (launch, listing, hack, ETF, SEC, airdrop, CA: …) or engagement_crypto
+  all                       old v8.23 behaviour (every post + reply)
+Caps: ≥ gap_s between two pushes for one account, ≤ day_cap (5) per account and ≤ total_day_cap (20) for all accounts per
+Warsaw day, ≤ per_run (2) VIP pushes per run. A post that is not important yet is re-checked every run while ≤ max_age_min old
+(engagement can still cross the line), then dropped. First v8.24 run seeds (no blast of the new accounts' recent posts).
 KYVO_PROMO_ALL=1 extends that promo routing to every push type (Runner / Gold / Smart money too).
 Secret: ONESIGNAL_REST_API_KEY (GitHub -> Settings -> Secrets -> Actions). Missing -> safe no-op. The key is never printed.
 """
 from __future__ import annotations
-import argparse, json, os, re, sys, time, urllib.request, urllib.error
+import argparse, json, os, re, sys, time, urllib.parse, urllib.request, urllib.error
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -48,19 +59,70 @@ GOLD_PER_RUN = 2
 MAX_GOLD_AGE_S = 3600
 SMART_PER_RUN = 1          # v8.14
 WARSAW = ZoneInfo("Europe/Warsaw")
-# v8.23 ⭐ VIP posts / replies
-VIP_MAX_AGE_S = 45 * 60
-VIP_GAP_S = int(os.environ.get("KYVO_VIP_GAP_S", "600"))          # ≥ 10 min between two pushes for the same account
-VIP_DAY_CAP = int(os.environ.get("KYVO_VIP_DAY_CAP", "20"))       # per account per Warsaw day
+# v8.23 ⭐ VIP posts / replies · v8.24 important-tweet filter (config: x_accounts.json "vip_push")
+ACCOUNTS = Path(__file__).resolve().parent / "x_accounts.json"
+def _acc_cfg() -> dict:
+    try: return json.loads(ACCOUNTS.read_text())
+    except Exception: return {}
+_VC = _acc_cfg().get("vip_push") or {}
+VIP_MAX_AGE_S = int(_VC.get("max_age_min", 45)) * 60
+VIP_GAP_S = int(os.environ.get("KYVO_VIP_GAP_S", _VC.get("gap_s", 600)))          # ≥ 10 min between two pushes for the same account
+VIP_DAY_CAP = int(os.environ.get("KYVO_VIP_DAY_CAP", _VC.get("day_cap", 5)))      # per account per Warsaw day (v8.23: 20)
+VIP_TOTAL_CAP = int(os.environ.get("KYVO_VIP_TOTAL_CAP", _VC.get("total_day_cap", 20)))   # v8.24: all VIP accounts together per day
+VIP_PER_RUN = int(_VC.get("per_run", 2))
+VIP_SEED_V = 824                                                                  # bump -> next run re-seeds the VIP block
 VIP_TIERS = [t for t in os.environ.get("KYVO_VIP_TIERS", "premium,runners").split(",") if t in ("free", "premium", "runners")]
 PROMO_UNTIL = datetime.fromisoformat(os.environ.get("KYVO_PROMO_UNTIL", "2026-11-07T22:59:00+00:00")).timestamp()   # = 7.11 23:59 Warsaw
 PROMO_ALL = os.environ.get("KYVO_PROMO_ALL", "0") == "1"
-ACCOUNTS = Path(__file__).resolve().parent / "x_accounts.json"
+DEF_KW = ["crypto", "bitcoin", "btc", "doge", "dogecoin", "memecoin", "coin", "token", "tariff", "tariffs", "fed", "interest rates",
+          "rate cut", "war", "ban", "etf", "launch", "buy", "sec", "executive order"]
+CASHTAG = re.compile(r"(?<![\w$])\$[A-Za-z][A-Za-z0-9]{1,9}\b")
+CA_RE = re.compile(r"\b(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})\b")
+
+def _kw_re(words) -> re.Pattern | None:
+    ws = sorted({str(w).lower().strip() for w in words or [] if str(w).strip()}, key=len, reverse=True)
+    return re.compile(r"(?<![\w$])(" + "|".join(re.escape(w) for w in ws) + r")(?!\w)", re.I) if ws else None
+KW_RE = _kw_re(_VC.get("keywords") or DEF_KW)
+CRYPTO_KW_RE = _kw_re(_VC.get("crypto_keywords") or [])
+ENG = _VC.get("engagement") or {"min_likes": 25000, "likes_per_min": 600, "min_views": 3000000}
+ENG_CRYPTO = _VC.get("engagement_crypto") or {"min_likes": 6000, "likes_per_min": 150, "min_views": 1000000}
 
 def vip_handles() -> dict:
-    try: d = json.loads(ACCOUNTS.read_text())
-    except Exception: return {"elonmusk": "Elon Musk", "realdonaldtrump": "Donald Trump"}
-    return {a["handle"].lower(): a.get("name") or a["handle"] for k in ("accounts", "live_extra", "live_more") for a in d.get(k, []) if a.get("vip")}
+    """handle(lower) -> {"name", "rule", "star"}. vip=true (Elon / Trump / Kimchi = ⭐ chip in the app) or any vip_rule."""
+    d = _acc_cfg()
+    if not d: return {"elonmusk": {"name": "Elon Musk", "rule": "keywords", "star": True}, "realdonaldtrump": {"name": "Donald Trump", "rule": "posts", "star": True}}
+    out = {}
+    for k in ("accounts", "live_extra", "live_more"):
+        for a in d.get(k, []):
+            if not (a.get("vip") or a.get("vip_rule")) or a["handle"].lower() in out: continue
+            out[a["handle"].lower()] = {"name": a.get("name") or a["handle"], "rule": a.get("vip_rule") or "keywords", "star": bool(a.get("vip"))}
+    return out
+
+def _eng_hit(t: dict, th: dict) -> str | None:
+    m = t.get("metrics") or {}
+    likes, views = m.get("likes") or 0, m.get("views") or 0
+    try: at = datetime.fromisoformat(str(t.get("metrics_at")).replace("Z", "+00:00")).timestamp()
+    except Exception: at = None
+    mins = (at - (t.get("ts") or 0)) / 60 if at else None
+    if th.get("min_likes") and likes >= th["min_likes"]: return f"{likes} likes"
+    if th.get("min_views") and views >= th["min_views"]: return f"{views} views"
+    if th.get("likes_per_min") and mins and mins >= 5 and likes / mins >= th["likes_per_min"]: return f"{round(likes / mins)} likes/min"
+    return None
+
+def important(t: dict, rule: str) -> str | None:
+    """v8.24: why this VIP post deserves a push (None = feed only, no push)."""
+    own = " ".join([t.get("text") or "", ((t.get("quote") or {}).get("text") or "")] + [m.get("alt") or "" for m in t.get("media") or []])
+    if rule == "all": return "all"
+    if t.get("coins") and any((c.get("rel", "named") == "named") for c in t["coins"]): return "coin"
+    if CASHTAG.search(own): return "cashtag " + CASHTAG.search(own).group(0)
+    if CA_RE.search(re.sub(r"https?://\S+", "", own)): return "contract address"
+    if rule == "posts" and not t.get("is_reply"): return "original post"
+    kre = CRYPTO_KW_RE if rule == "crypto" else KW_RE
+    txt = own + (" " + ((t.get("reply_to") or {}).get("text") or "") if t.get("is_reply") and rule != "crypto" else "")
+    m = kre.search(re.sub(r"https?://\S+", "", txt)) if kre else None
+    if m: return "keyword '" + m.group(1).lower() + "'"
+    e = _eng_hit(t, ENG_CRYPTO if rule == "crypto" else ENG)
+    return ("engagement " + e) if e else None
 
 def promo_on(now: float | None = None) -> bool:
     return (now or time.time()) < PROMO_UNTIL
@@ -70,29 +132,71 @@ def clip(s: str, n: int) -> str:
     return s if len(s) <= n else s[: n - 1].rstrip() + "…"
 
 def vip_item(handle: str, ts: list[dict], now: float) -> dict:
-    """one grouped push for one VIP account (newest post first)."""
+    """one grouped push for one VIP account (newest post first). v8.24 FOMO-style: title = author name + @handle,
+    body = the tweet text (+ ↪ what it replies to, + measured coin move), Kyvo branding at the end; avatar as icon."""
     ts = sorted(ts, key=lambda t: -(t.get("ts") or 0)); t = ts[0]
-    name = t.get("author_name") or "@" + t.get("handle", handle)
+    star = "⭐" if t.get("_star", True) else "📣"                       # 📣 = big crypto account (no ⭐ VIP chip)
+    head = f"{star} {author_line(t, handle)}"
     rt = t.get("reply_to") or {}
-    coin = next((c for c in t.get("coins") or [] if c.get("symbol")), None)
-    cpl = f" · 🔗 ${coin['symbol']}" if coin else ""
-    if len(ts) == 1:
-        if t.get("is_reply"):
-            title_pl = f"⭐ {name} odpowiedział @{rt.get('handle') or '?'}"; title_en = f"⭐ {name} replied to @{rt.get('handle') or '?'}"
-        else:
-            title_pl = f"⭐ {name}: nowy post"; title_en = f"⭐ {name}: new post"
+    coin = next((c for c in t.get("coins") or [] if c.get("symbol") and c.get("rel", "named") == "named"), None)
+    mv_pl, mv_en = coin_move(coin) if coin else ("", "")
+    n = len(ts); nr = sum(1 for x in ts if x.get("is_reply"))
+    if n == 1:
+        title_pl = head + (f" ↪ @{rt.get('handle') or '?'}" if t.get("is_reply") else ""); title_en = title_pl
     else:
-        nr = sum(1 for x in ts if x.get("is_reply")); n = len(ts)
         few = n % 10 in (2, 3, 4) and n % 100 not in (12, 13, 14)
-        title_pl = f"⭐ {name}: {n} {'nowe posty' if few else 'nowych postów'}" + (f" ({nr} odp.)" if nr else "")
-        title_en = f"⭐ {name}: {n} new posts" + (f" ({nr} {'reply' if nr == 1 else 'replies'})" if nr else "")
-    txt = clip(re.sub(r"^(@\w{1,15}\s+)+", "", t.get("text") or "") or t.get("text"), 110)   # drop the leading @reply handles
-    if t.get("is_reply") and rt.get("text"):
-        body_pl = f"„{txt}” ↪ na: „{clip(rt['text'], 70)}”{cpl}"; body_en = f"“{txt}” ↪ to: “{clip(rt['text'], 70)}”{cpl}"
-    else:
-        body_pl = f"„{txt}”{cpl}"; body_en = f"“{txt}”{cpl}"
+        title_pl = f"{head} · {n} {'nowe posty' if few else 'nowych postów'}"; title_en = f"{head} · {n} new posts"
+    txt = clip(re.sub(r"^(@\w{1,15}\s+)+", "", t.get("text") or "") or t.get("text") or "📷", 120)   # drop the leading @reply handles
+    rpl = f" ↪ „{clip(rt['text'], 60)}”" if t.get("is_reply") and rt.get("text") else ""
+    rpe = f" ↪ “{clip(rt['text'], 60)}”" if t.get("is_reply") and rt.get("text") else ""
+    body_pl = f"{txt}{rpl}" + (f" · {mv_pl}" if mv_pl else "") + " · Kyvo"
+    body_en = f"{txt}{rpe}" + (f" · {mv_en}" if mv_en else "") + " · Kyvo"
     return {"id": "vip:" + handle, "ids": ["vip:" + str(x["id"]) for x in ts], "kind": "vip", "vip_handle": handle, "topic": "vip-" + handle,
-            "hash": "#tweets", "title_pl": title_pl, "title_en": title_en, "body_pl": body_pl, "body_en": body_en}
+            "hash": "#tweets", "why": t.get("_why"), "title_pl": title_pl, "title_en": title_en, "body_pl": body_pl, "body_en": body_en,
+            "icon": big_avatar(t.get("avatar")), "image": tweet_photo(t)}
+
+def big_avatar(u: str | None) -> str | None:
+    """v8.24: X avatar as the notification icon (Chrome / Android / desktop; iOS always shows the Kyvo app icon)."""
+    return re.sub(r"_(normal|bigger|200x200|mini)\.(jpg|jpeg|png|webp)$", r"_400x400.\2", u) if u else None
+
+def tweet_photo(t: dict) -> str | None:
+    return next((m.get("url") for m in t.get("media") or [] if m.get("type") == "photo" and m.get("url")), None)
+
+def author_line(t: dict, handle: str = "") -> str:
+    h = t.get("handle") or handle
+    n = t.get("author_name")
+    return f"{n} @{h}" if n and n.lower() != str(h).lower() else f"@{h}"
+
+def coin_move(c: dict) -> tuple[str, str]:
+    """v8.24: '$SYM +42% od tweeta' only from the measured price (x_live.py apply_move: DexScreener price vs GeckoTerminal candle
+       at tweet time). Not measured yet / absurd value -> just the ticker, never an invented number."""
+    ch = c.get("chg_since_tweet") if not c.get("pre_launch") else None
+    sym = "$" + str(c.get("symbol") or "?")
+    if ch is None or not isinstance(ch, (int, float)) or abs(ch) > 100000: return sym, sym
+    v = f"{ch:+.1f}" if abs(ch) < 10 else f"{ch:+.0f}"
+    return f"{sym} {v}% od tweeta", f"{sym} {v}% since the tweet"
+
+def runner_style(items: list[dict], flags: list[dict]) -> None:
+    """v8.24: every Runner-family push -> title '<emoji> $SYM · Name +X% 1h' (X = DexScreener priceChange.h1 at the flag, real data;
+       omitted when unknown), coin logo (DexScreener imageUrl) as icon + big image, tap opens the coin page in Kyvo, '· Kyvo' at the end."""
+    fm = {str(f.get("k", "")).lower(): f for f in flags if f.get("kind") == "runner"}
+    for it in items:
+        if it.get("kind") != "runner" or it.get("smart"): continue
+        f = fm.get(it["id"].split(":", 1)[1])
+        if not f: continue
+        h1 = f.get("h1") if f.get("h1") is not None else (f.get("snap") or {}).get("h1")
+        if it["id"].startswith("twr:") and (f.get("tweet") or {}).get("chg") is not None: h1 = None   # title already has the % after the tweet
+        nm = clip(f.get("name") or "", 18)
+        tag = f" · {nm}" if nm and nm.lower() != str(f.get("sym", "")).lower() and f"${f.get('sym')}" in it["title_en"] else ""
+        mv = f" +{round(h1)}% 1h" if isinstance(h1, (int, float)) and 0 < h1 < 100000 else ""
+        if mv or tag:
+            sym = f"${f.get('sym')}"
+            for k in ("title_pl", "title_en"):
+                if sym in it[k] and "%" not in it[k]: it[k] = it[k].replace(sym, sym + tag + mv, 1)
+        for k in ("body_pl", "body_en"):
+            if not it[k].endswith("Kyvo"): it[k] = it[k].rstrip() + " · Kyvo"
+        if f.get("img"): it["icon"] = it["image"] = f["img"]
+        it["hash"] = "#coin/" + urllib.parse.quote(f["k"], safe="")
 
 def fmt_usd(v) -> str:
     if v is None: return "?"
@@ -161,8 +265,11 @@ def audience(kind_tag: str, tiers: list[str]) -> list[dict]:
 def payload(item: dict, filters: list[dict]) -> dict:
     return {"app_id": APP_ID, "target_channel": "push", "filters": filters,
             "headings": {"en": item["title_en"], "pl": item["title_pl"]}, "contents": {"en": item["body_en"], "pl": item["body_pl"]},
-            "url": APP_URL + item["hash"], "web_push_topic": item["topic"][:60], "chrome_web_icon": APP_URL + "icons/icon-192.png",
-            "ttl": 3 * 3600}
+            "url": APP_URL + item["hash"], "web_push_topic": item["topic"][:60], "ttl": 3 * 3600,
+            # v8.24: author avatar / coin logo as the icon, tweet photo / coin logo as the big image (Chrome, Edge, Android, desktop).
+            # iOS / iPadOS home-screen web push ignores both and always shows the Kyvo app icon -> "· Kyvo" is also in the text.
+            "chrome_web_icon": item.get("icon") or APP_URL + "icons/icon-192.png", "firefox_icon": item.get("icon") or APP_URL + "icons/icon-192.png",
+            **({"chrome_web_image": item["image"]} if item.get("image") else {})}
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -190,17 +297,20 @@ def main() -> int:
         named = [c for c in t.get("coins") or [] if c.get("rel", "named") == "named"]   # v8.10: a 'powiązany coin' (key-word match) never pushes on its own
         if kid in sent or age > MAX_TWEET_AGE_S or not named: continue
         if seeding and age > 20 * 60: sent[kid] = now; continue
-        c = named[0]; mins = max(1, round(age / 60))
-        fol = t.get("author_followers")
-        items.append({"id": kid, "kind": "tweets", "topic": kid, "hash": "#tweets",
-                      "title_pl": f"🐦 @{t['handle']} o ${c['symbol']}", "title_en": f"🐦 @{t['handle']} on ${c['symbol']}",
-                      "body_pl": f"{mins} min temu · {c['chain']} · MC {fmt_usd(c.get('mcap'))}" + (f" · {fmt_usd(fol).lstrip('$')} obserwujących" if fol else "") + (" · 🚀 pompuje po tweecie" if c.get("pumping") else ""),
-                      "body_en": f"{mins} min ago · {c['chain']} · MC {fmt_usd(c.get('mcap'))}" + (f" · {fmt_usd(fol).lstrip('$')} followers" if fol else "") + (" · 🚀 pumping after the tweet" if c.get("pumping") else "")})
-    # v8.23 ⭐ VIP: every new Elon / Trump post or reply (grouped per account, gap + daily cap; coin tweets went out above)
+        c = named[0]
+        mv_pl, mv_en = coin_move(c)
+        txt = clip(re.sub(r"^(@\w{1,15}\s+)+", "", t.get("text") or ""), 110)
+        mc = f" · MC {fmt_usd(c.get('mcap'))}" if c.get("mcap") else ""
+        items.append({"id": kid, "kind": "tweets", "topic": kid, "hash": "#tweets",       # v8.24 FOMO-style: who + what + measured move
+                      "title_pl": f"🐦 {author_line(t)}", "title_en": f"🐦 {author_line(t)}",
+                      "body_pl": (f"„{txt}” · " if txt else "") + f"{mv_pl}{mc}" + (" · 🚀 pompuje" if c.get("pumping") else "") + " · Kyvo",
+                      "body_en": (f"“{txt}” · " if txt else "") + f"{mv_en}{mc}" + (" · 🚀 pumping" if c.get("pumping") else "") + " · Kyvo",
+                      "icon": big_avatar(t.get("avatar")), "image": c.get("image") or tweet_photo(t)})
+    # v8.23 ⭐ VIP · v8.24: only IMPORTANT posts (important(); grouped per account, gap + per-account / total daily caps)
     vips = vip_handles()
     if st.get("vip_day") != day: st["vip_day"], st["vip_n"] = day, {}
-    vseed = seeding or not st.get("vip_seeded")
-    vnew: dict[str, list] = {}
+    vseed = seeding or st.get("vip_seeded_v") != VIP_SEED_V
+    vnew: dict[str, list] = {}; n_feed = 0
     for t in load(a.live, {}).get("tweets", []):
         h = str(t.get("handle") or "").lower()
         if h not in vips: continue
@@ -210,13 +320,20 @@ def main() -> int:
         if named and age <= MAX_TWEET_AGE_S: continue                  # pushed by the 🐦 coin block (id tw:<id>)
         if age < -120: continue                                        # clock skew guard
         if vseed or age > VIP_MAX_AGE_S: sent[vid] = now; continue     # first VIP run / too old -> never push
-        vnew.setdefault(h, []).append(t)
-    if vseed: print(f"VIP: first run -> seeded, nothing sent"); st["vip_seeded"] = True
-    for h, ts in vnew.items():
+        why = important(t, vips[h]["rule"])
+        if not why: n_feed += 1; continue                              # feed only; re-checked next run while young (engagement)
+        vnew.setdefault(h, []).append(dict(t, _why=why, _star=vips[h]["star"]))
+    if vseed: print(f"VIP: first v{VIP_SEED_V} run -> seeded, nothing sent"); st["vip_seeded"] = True; st["vip_seeded_v"] = VIP_SEED_V
+    if n_feed: print(f"VIP: {n_feed} fresh post(s) not important -> feed only, no push")
+    n_vip = 0
+    for h, ts in sorted(vnew.items(), key=lambda kv: -max(x.get("ts") or 0 for x in kv[1])):
+        for x in ts: print(f"VIP @{h} [{vips[h]['rule']}] important: {x['_why']} · {clip(x.get('text'), 60)!r}")
         last = (st.get("vip_last") or {}).get(h, 0)
         if now - last < VIP_GAP_S: print(f"VIP @{h}: {len(ts)} new, waiting (gap {int(now - last)}s < {VIP_GAP_S}s)"); continue
-        if (st.get("vip_n") or {}).get(h, 0) >= VIP_DAY_CAP:
-            print(f"VIP @{h}: daily cap {VIP_DAY_CAP} reached -> {len(ts)} skipped"); [sent.__setitem__("vip:" + str(x["id"]), now) for x in ts]; continue
+        if (st.get("vip_n") or {}).get(h, 0) >= VIP_DAY_CAP or sum((st.get("vip_n") or {}).values()) >= VIP_TOTAL_CAP:
+            print(f"VIP @{h}: daily cap ({VIP_DAY_CAP}/account, {VIP_TOTAL_CAP} total) reached -> {len(ts)} skipped"); [sent.__setitem__("vip:" + str(x["id"]), now) for x in ts]; continue
+        if n_vip >= VIP_PER_RUN: print(f"VIP @{h}: per-run limit {VIP_PER_RUN} -> next run"); continue
+        n_vip += 1
         items.append(vip_item(h, ts, now))
     for f in load(a.flags, []):
         if f.get("kind") != "runner": continue
@@ -265,6 +382,7 @@ def main() -> int:
                       "title_pl": f"🏃 Runner: ${f['sym']}", "title_en": f"🏃 Runner: ${f['sym']}",
                       "body_pl": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · mocny wolumen i dużo transakcji. To nie porada finansowa.",
                       "body_en": f"{f['chain']} · MC {fmt_usd(f.get('mc0'))} · strong volume and lots of trades. Not financial advice."})
+    runner_style(items, load(a.flags, []))    # v8.24 FOMO-style Runner pushes: coin logo, real 1 h move, deep link, Kyvo branding
     n_gold = 0
     for g in sorted(load(a.gold, []), key=lambda x: -(x.get("at") or 0)):   # v8.12 🥇 Gold alerts
         kid = "gold:" + str(g.get("id"))
@@ -284,9 +402,9 @@ def main() -> int:
         items.append({"id": kid, "kind": "gold", "smart": True, "topic": kid, "hash": g.get("hash") or "#tracker",
                       "title_pl": g["title_pl"], "title_en": g["title_en"], "body_pl": g["body_pl"], "body_en": g["body_en"]})
     if seeding: print(f"first run: seeded {len(sent)} existing items, nothing sent")
-    items.sort(key=lambda it: 0 if it["title_en"].startswith(("👑", "🚀", "🐦", "⭐")) else 1)
+    items.sort(key=lambda it: 0 if it["title_en"].startswith(("👑", "🚀", "🐦", "⭐", "📣")) else 1)
     for it in items[:MAX_PER_RUN]:
-        print(f"- {it['id']}: {it['title_en']}")
+        print(f"- {it['id']}: {it['title_en']}" + (f"  [why: {it['why']}]" if it.get("why") else ""))
         tiers = tiers_for(it, st)            # v8.16: one notification per item, filtered to the tiers that get it
         pl = payload(it, audience(it["kind"], tiers))
         def count():                         # quota counters (Europe/Warsaw day)

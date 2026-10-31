@@ -39,7 +39,7 @@ MAX_ITEMS = 160
 REL_FROM, REL_TO = -120, 3600      # a 'powiązany coin' must launch between 2 min before and 60 min after the tweet
 REL_SEARCH_H = 1.5                 # keep looking for a related coin while the tweet is this young
 REL_CHAINS = ("solana", "bsc")
-UA = {"User-Agent": "Mozilla/5.0 (kyvo-live/8.23; +https://alezrugla-max.github.io/kyvo-demo-/)", "Accept": "application/json"}
+UA = {"User-Agent": "Mozilla/5.0 (kyvo-live/8.24; +https://alezrugla-max.github.io/kyvo-demo-/)", "Accept": "application/json"}
 T0 = time.time()
 
 def get(url: str, timeout: int = 20, tries: int = 2):

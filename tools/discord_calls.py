@@ -131,6 +131,7 @@ def to_coin(p: dict) -> dict:
         "tx6h": (((p.get("txns") or {}).get("h6") or {}).get("buys") or 0) + (((p.get("txns") or {}).get("h6") or {}).get("sells") or 0) if ((p.get("txns") or {}).get("h6")) else None,
         "age_h": (time.time() * 1000 - created) / 3.6e6 if created else None,
         "buy_ratio": buys / (buys + sells) if buys + sells else None, "tx_h1": buys + sells,
+        "buys5m": ((p.get("txns") or {}).get("m5") or {}).get("buys"), "sells5m": ((p.get("txns") or {}).get("m5") or {}).get("sells"),   # v8.24 early shadow
         "socials": bool(info.get("socials") or info.get("websites")), "image": info.get("imageUrl"),
         "on_curve": dex in ("pumpfun", "fourmeme"), "dex": dex, "boost": ((p.get("boosts") or {}).get("active") or 0),
         "price": float(p["priceUsd"]) if p.get("priceUsd") else None, "pair": p.get("pairAddress") or "",
@@ -256,7 +257,7 @@ def rule_input(c: dict, score: int, checks: list[tuple[str, str]], boost_rank, c
             "onCurve": c["on_curve"], "vol1h": c["vol1h"], "vol24h": c["vol24"], "m5": c["m5"], "h1": c["h1"], "h6": c["h6"],
             "h24": c["h24"], "buys1h": c["buys1h"], "sells1h": c["sells1h"], "ageH": c["age_h"], "smBuyers": 0, "smSellers": 0,
             "tweetNamed": None, "tweetAgeH": None, "sinceTweetPct": None, "top10": None, "boostRank": boost_rank,
-            "vol5m": c.get("vol5m"), "tx6h": c.get("tx6h"), "contract": contract}
+            "vol5m": c.get("vol5m"), "tx6h": c.get("tx6h"), "buys5m": c.get("buys5m"), "sells5m": c.get("sells5m"), "contract": contract}
 
 def good_rule(inputs: list[dict], mode: str = "--good") -> list[dict] | None:
     node = shutil.which("node")
@@ -347,6 +348,28 @@ def write_kol_feed(path: Path, new: list[dict], dry: bool = False) -> None:
         with open(gh, "a") as fh: fh.write(f"kol_commit={'true' if changed else 'false'}\n")
     print(f"kol feed -> {path}: {len(items)} items ({added} new)")
 
+def write_early_shadow(path: Path, hits: list[dict], flags: list[dict]) -> None:
+    """v8.24 shadow log of earlyRunnerRule. First hit per coin is kept (time / price / MC at the early signal); when the same coin
+    later gets a real 🏃 Runner flag, runner_at / runner_px / runner_mc are added -> lead time and price gap can be compared.
+    7-day window, ≤ 1500 coins. Shadow only: nothing here is shown to users or pushed."""
+    try: doc = json.loads(path.read_text())
+    except Exception: doc = {}
+    items = {e["k"]: e for e in doc.get("items", [])}
+    now_ms = int(time.time() * 1000); new = 0
+    for h in hits:
+        if h["k"] not in items: items[h["k"]] = h; new += 1
+        else: items[h["k"]]["hits"] = items[h["k"]].get("hits", 1) + 1; items[h["k"]]["lastHit"] = h["at"]
+    for f in flags:
+        e = items.get(f["k"])
+        if e and f["kind"] == "runner" and not e.get("runner_at"):
+            e.update({"runner_at": f["at"], "runner_px": f["px0"], "runner_mc": f["mc0"], "lead_min": round((f["at"] - e["at"]) / 60000, 1)})
+    keep = sorted((e for e in items.values() if now_ms - e["at"] < 7 * 864e5), key=lambda e: -e["at"])[:1500]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "shadow": True,
+                                "note": "v8.24 SHADOW test of the early Runner rule (EARLY_T). Logged only — never posted or pushed. Not financial advice.",
+                                "items": keep}, ensure_ascii=False, separators=(",", ":")))
+    print(f"early shadow -> {path}: {len(keep)} coins ({new} new)")
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--dry-run", action="store_true", help="print embeds, post nothing")
@@ -356,6 +379,8 @@ def main() -> int:
     ap.add_argument("--flags-out", type=Path, help="v8.3 track record: write every coin that passes the Good / Runner rule "
                     "(first-flag price + MC) to this JSON, even when no webhook is set (tools/track_record.py merges it)")
     ap.add_argument("--kol-out", type=Path, help="v8.8: merge 👑 KOL coin / 🚀 Moon run flags into this JSON (app feed data/kol_live.json)")
+    ap.add_argument("--early-out", type=Path, help="v8.24 SHADOW test: log coins passing earlyRunnerRule (EARLY_T) to this JSON "
+                    "(e.g. data/early_shadow.json) — never posted, never pushed; for comparing with real Runner flags later")
     a = ap.parse_args()
 
     if a.news is not None:
@@ -368,10 +393,12 @@ def main() -> int:
     hooks = {ch: os.environ.get(CHAINS[ch]["secret"], "").strip() for ch in CHAINS}
     chains = [c for c in a.chains.split(",") if c in CHAINS and (a.dry_run or hooks[c] or a.flags_out)]
     flags: list[dict] = []
+    early_hits: list[dict] = []   # v8.24 shadow test of earlyRunnerRule (no Discord post, no push)
     def flag(c: dict, kind: str, ov: dict | None = None):
         if c.get("price") and c.get("mcap"):
             f = {"k": f"{c['chain']}:{c['address']}", "sym": c["symbol"], "name": c["name"], "chain": c["chain"], "addr": c["address"],
-                 "pair": c.get("pair") or "", "img": c.get("image"), "kind": kind, "at": int(time.time() * 1000), "px0": c["price"], "mc0": c["mcap"]}
+                 "pair": c.get("pair") or "", "img": c.get("image"), "kind": kind, "at": int(time.time() * 1000), "px0": c["price"], "mc0": c["mcap"],
+                 "h1": c.get("h1"), "m5": c.get("m5"), "age_h": round(c["age_h"], 3) if c.get("age_h") is not None else None}   # v8.24: push shows the real 1 h move
             if ov and ov.get("badge"):   # v8.8 override: no thresholds stored, only what the app shows
                 f.update({"badge": ov["badge"], "kol": ov.get("handle") if ov["badge"] == "kol" else None, "top_pct": ov.get("top_pct"),
                           "top_is": ov.get("top_is"), "concentrated": ov.get("concentrated"), "evidence": ov.get("evidence") or [],
@@ -434,6 +461,28 @@ def main() -> int:
                 flag(c, "runner", ov if ov and ov.get("badge") == "kol" else None); print(f"  runner ${c['symbol']} MC {fmt_usd(c['mcap'])}" + (" 👑 KOL" if ov and ov.get("badge") == "kol" else ""))
             elif ov and ov.get("badge"):
                 flag(c, "runner", ov); print(f"  runner (override {ov['badge']}) ${c['symbol']} MC {fmt_usd(c['mcap'])} @{ov.get('handle') or '-'} top {ov.get('top_pct')}% ev={ov.get('evidence')}")
+        # v8.24 SHADOW test of the early rule (earlyRunnerRule / EARLY_T, same code as the app): cheap prefilter, ≤ 8 coins, Kyvo Check,
+        # node --early. Hits only go to --early-out (data/early_shadow.json) with the flag price / MC / time — no post, no push.
+        if a.early_out:
+            try:
+                runner_now = {f["addr"] for f in flags if f["kind"] == "runner"}
+                ec = sorted([c for c in coins if (c["mcap"] or 0) and c["mcap"] <= 3e6 and (c["vol5m"] or 0) >= 8000 and (c["vol5m"] or 0) <= 170000
+                             and (c["m5"] or 0) >= 5 and (c["liq"] or 0) >= 10000 and ((c.get("buys5m") or 0) + (c.get("sells5m") or 0)) >= 40],
+                            key=lambda c: -(c["vol5m"] or 0))[:8]
+                ein = []
+                for c in ec:
+                    score, checks = kyvo_check(c, coins); ein.append((c, rule_input(c, score, checks, brank.get(c["address"].lower()))))
+                res_e = good_rule([x for _, x in ein], "--early") or [{} for _ in ein]
+                for (c, _), r in zip(ein, res_e):
+                    if not r.get("ok") or not c.get("price"): continue
+                    early_hits.append({"k": f"{c['chain']}:{c['address']}", "sym": c["symbol"], "name": c["name"], "chain": c["chain"], "addr": c["address"],
+                                       "pair": c.get("pair") or "", "at": int(time.time() * 1000), "px0": c["price"], "mc0": c["mcap"], "liq": c.get("liq"),
+                                       "age_h": round(c["age_h"], 3) if c.get("age_h") is not None else None, "m5": c.get("m5"), "h1": c.get("h1"),
+                                       "vol5m": c.get("vol5m"), "acc": round(r.get("acc") or 0, 2), "br5": round(r.get("br5") or 0, 3), "tx5": r.get("tx5"),
+                                       "runner_same_scan": c["address"] in runner_now})
+                if ein: print(f"  [{chain}] early shadow: {len(ein)} checked, {sum(1 for r in res_e if r.get('ok'))} pass (logged only)")
+            except Exception as e:
+                print(f"  early shadow error: {type(e).__name__}")
         # v8.9 📈 Big runner: established $1M–$100M coins running now (bigRunnerRule, same code as the app) + hard-rug / copycat / unique buyers
         flagged = {f["addr"] for f in flags if f["kind"] == "runner"}
         bc = sorted([c for c in coins if c["address"] not in flagged and 1e6 <= (c["mcap"] or 0) <= 1e8 and (c["age_h"] or 0) >= 6
@@ -494,6 +543,7 @@ def main() -> int:
         a.flags_out.parent.mkdir(parents=True, exist_ok=True); a.flags_out.write_text(json.dumps(flags))
         print(f"flags -> {a.flags_out}: {len(flags)}")
     if a.kol_out: write_kol_feed(a.kol_out, [f for f in flags if f.get("badge")], dry=a.dry_run)
+    if a.early_out: write_early_shadow(a.early_out, early_hits, flags)
     return 0
 
 if __name__ == "__main__":
